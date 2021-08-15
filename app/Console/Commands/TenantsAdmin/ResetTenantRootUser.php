@@ -6,10 +6,13 @@
  *  Version 4.0
  */
 
+
 namespace App\Console\Commands\TenantsAdmin;
 
 use App\Models\User;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Spatie\Multitenancy\Commands\Concerns\TenantAware;
 use App\Models\Tenant;
 use Illuminate\Console\Command;
@@ -33,13 +36,16 @@ class ResetTenantRootUser extends Command
         /** @var Tenant $tenant */
         $tenant = Tenant::current();
 
-        $this->line('Tenant  '.$tenant->name);
 
-        $password='hello';
+        $password=(App::environment('local')?'hello':wordwrap(Str::random(12), 4, '-', true));
 
-        (new User())->updateOrCreate(
-            ['email' => 'root@aiku'],
-            ['name' => 'Admin Account','password'=>Hash::make($password)]
-        );
+
+
+        (new User())->updateOrCreate(['email' => 'root@aiku'], ['name' => 'Admin Account', 'password' => Hash::make($password)]);
+
+        $this->table([
+                         'Password',
+                         'Tenant'
+                     ], [[$password,$tenant->domain]]);
     }
 }
