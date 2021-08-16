@@ -53,9 +53,7 @@
                 </div>
 
                 <div class="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                    <div class="flex-shrink-0 flex items-center px-4">
-                        <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-900-text.svg" alt="Workflow">
-                    </div>
+
 
 
 
@@ -151,12 +149,20 @@
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
                 <div class="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-gray-100">
                     <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                        <div class="flex items-center flex-shrink-0 px-4">
-                            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-900-text.svg" alt="Workflow">
-                        </div>
+
+
                         <nav class="mt-5 flex-1" aria-label="Sidebar">
                             <div class="px-2 space-y-1">
                                 <!-- Current: "bg-gray-200 text-gray-900", Default: "text-gray-600 hover:bg-gray-50 hover:text-gray-900" -->
+                                <a href="#" class="bg-gray-200 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                                    <!--
+                                      Heroicon name: outline/home
+
+                                      Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500"
+                                    -->
+                                    <font-awesome-icon class="text-gray-500  mr-3 h-6 w-6" :icon="['far', 'tachometer-alt-fast']" />
+                                    Dashboard
+                                </a>
                                 <a href="#" class="bg-gray-200 text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                                     <!--
                                       Heroicon name: outline/home
@@ -283,11 +289,19 @@ import JetDropdownLink from "@/Jetstream/DropdownLink";
 import JetNavLink from "@/Jetstream/NavLink";
 import JetResponsiveNavLink from "@/Jetstream/ResponsiveNavLink";
 
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTachometerAltFast } from '@fortawesome/pro-regular-svg-icons'
+library.add(faTachometerAltFast)
+
 export default {
+
     components: {
         JetApplicationMark,
         Head,
         Link,
+        FontAwesomeIcon
     },
 
 }
