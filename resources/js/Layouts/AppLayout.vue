@@ -127,7 +127,7 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-base font-medium text-gray-700 group-hover:text-gray-900">
-                                    Whitney Francis
+                                     {{ $page.props.user.name }}
                                 </p>
                                 <p class="text-sm font-medium text-gray-500 group-hover:text-gray-700">
                                     View profile
@@ -223,7 +223,7 @@
                         </nav>
                     </div>
                     <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
-                        <a href="#" class="flex-shrink-0 w-full group block">
+
                             <div class="flex items-center">
                                 <div>
                                     <img class="inline-block h-9 w-9 rounded-full"
@@ -231,14 +231,16 @@
                                 </div>
                                 <div class="ml-3">
                                     <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                                        Whitney Francis
+                                        {{  $page.props.user.name }}
                                     </p>
+
                                     <p class="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                                        View profile
+                                        <Link :href="route('profile.show')">View profile</Link>
+
                                     </p>
                                 </div>
                             </div>
-                        </a>
+
                     </div>
                 </div>
             </div>
@@ -264,7 +266,9 @@
                 <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none">
                     <!-- Start main area-->
                     <div class="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
-                        <div class="h-full border-2 border-gray-200 border-dashed rounded-lg"></div>
+                        <div class="h-full" >
+                            <slot></slot>
+                        </div>
                     </div>
                     <!-- End main area -->
                 </main>
