@@ -1,3 +1,9 @@
 {
-    "Dashboard": "Dashboard"
+    "Dashboard": "Dashboard",
+    "The provided password does not match your current password.": "The provided password does not match your current password.",
+    "This user already belongs to the team.": "This user already belongs to the team.",
+    "This user has already been invited to the team.": "This user has already been invited to the team.",
+    "View profile": "View profile",
+    "We were unable to find a registered user with this email address.": "We were unable to find a registered user with this email address.",
+    "You may not leave a team that you created.": "You may not leave a team that you created."
 }
