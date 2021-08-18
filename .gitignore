@@ -17,3 +17,4 @@ yarn-error.log
 /.vscode
 /public/copyright.html
 /resources/js/Layouts/AppLayout.bk.vue
+/resources/js/Private/

@@ -97,6 +97,7 @@
     import JetApplicationLogo from '@/Jetstream/ApplicationLogo.vue'
 
     export default {
+        layout:null,
         components: {
             JetApplicationLogo,
         },
