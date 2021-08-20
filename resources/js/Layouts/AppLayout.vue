@@ -31,11 +31,22 @@
                             </div>
                             <nav aria-label="Sidebar" class="mt-5">
                                 <div class="px-2 space-y-1">
-                                    <Link v-for="item in navigation" :key="item.name" :href="item.href"
-                                          :class="[item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
-                                        <font-awesome-icon :icon="item.icon" :class="[item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 h-6 w-6']" aria-hidden="true"/>
-                                        {{ item.name }}
+                                    <Link v-for="item in navigation" :key="item.name" :href="item['href']"
+                                          :class="[route().current(item['module']+'.*')  ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
+                                        <font-awesome-icon :icon="item['icon']" :class="[route().current(item['module']+'.*')  ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 h-6 w-6']" aria-hidden="true"/>
+                                        {{ item['name'] }}
                                     </Link>
+                                </div>
+                                <div class="space-y-1 mt-6">
+
+                                    <div class="space-y-1 " role="group" aria-labelledby="projects-headline">
+                                        <Link v-for="item in secondaryNavigation" :key="item.name" :href="item['href']"
+                                              class="group flex items-center px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50">
+                                            <span class="  truncate">
+                                                {{ item.name }}
+                                            </span>
+                                        </Link>
+                                    </div>
                                 </div>
                             </nav>
                         </div>
@@ -51,7 +62,7 @@
                                             {{ $page.props.user.name }}
                                         </p>
                                         <p class="text-sm font-medium text-gray-500 group-hover:text-gray-700">
-                                            View profile
+                                            {{__('View profile')}}
                                         </p>
                                     </div>
                                 </div>
@@ -95,11 +106,22 @@
                         </div>
                         <nav class="mt-5 flex-1" aria-label="Sidebar">
                             <div class="px-2 space-y-1">
-                                <Link v-for="item in navigation" :key="item.name" :href="item.href"
-                                      :class="[item.current ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
-                                    <font-awesome-icon :icon="item.icon" :class="[item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 h-6 w-6']" aria-hidden="true"/>
-                                    {{ item.name }}
+                                <Link v-for="item in navigation" :key="item.name" :href="item['href']"
+                                      :class="[route().current(item['module']+'.*') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+                                    <font-awesome-icon :icon="item['icon']" :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 h-6 w-6']" aria-hidden="true"/>
+                                    {{ item['name'] }}
                                 </Link>
+                            </div>
+                            <div class="space-y-1 mt-6">
+
+                                <div class="space-y-1 " role="group" aria-labelledby="projects-headline">
+                                    <Link v-for="item in secondaryNavigation" :key="item.name" :href="item['href']"
+                                          class="group flex items-center px-3 py-2 text-xs font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50">
+                                            <span class="  truncate">
+                                                {{ item.name }}
+                                            </span>
+                                    </Link>
+                                </div>
                             </div>
                         </nav>
                     </div>
@@ -148,10 +170,42 @@
                     </div>
                 </div>
             </div>
+
+            <div class="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+                <button type="button" class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden" @click="sidebarOpen = true">
+                    <span class="sr-only">Open sidebar</span>
+                    <MenuAlt2Icon class="h-6 w-6" aria-hidden="true"/>
+                </button>
+                <div class="flex-1 px-4 flex justify-between">
+                    <div class="flex-1 flex">
+                        <form class="w-full flex md:ml-0" action="#" method="GET">
+                            <label for="search-field" class="sr-only">Search</label>
+                            <div class="relative w-full text-gray-400 focus-within:text-gray-600">
+                                <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
+                                    <SearchIcon class="h-5 w-5" aria-hidden="true"/>
+                                </div>
+                                <input id="search-field"
+                                       class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
+                                       placeholder="Search" type="search" name="search"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="sr-only">View notifications</span>
+                            <BellIcon class="h-6 w-6" aria-hidden="true"/>
+                        </button>
+
+
+                    </div>
+                </div>
+            </div>
+
+
             <div class="flex-1 relative z-0 flex overflow-hidden">
                 <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none">
                     <!-- Start main area-->
-                    <div class="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="absolute inset-0 py-2 px-4 sm:px-6 lg:px-7">
                         <div class="h-full ">
                             <slot></slot>
                         </div>
@@ -162,6 +216,7 @@
                     <!-- Start secondary column (hidden on smaller screens) -->
                     <div class="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
                         <div class="h-full ">
+
                             <slot name="secondary"></slot>
                         </div>
                     </div>
@@ -180,41 +235,36 @@ import {__} from 'matice';
 import {Link} from '@inertiajs/inertia-vue3';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {faTachometerAltFast, faUsers} from '@/Private/pro-regular-svg-icons';
-import {MenuIcon, LogoutIcon, XIcon} from '@heroicons/vue/outline';
+import {faTachometerAltFast, faUsers, faRobot} from '@/Private/pro-regular-svg-icons';
+import {MenuIcon, LogoutIcon, XIcon, BellIcon, MenuAlt2Icon} from '@heroicons/vue/outline';
 import {usePage} from '@inertiajs/inertia-vue3';
+import {SearchIcon} from '@heroicons/vue/solid';
+import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
 
-library.add(faTachometerAltFast, faUsers);
+library.add(faTachometerAltFast, faUsers, faRobot);
 
 export default {
     components: {
-        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon,
+        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, SimpleHeader,
 
     }, setup() {
+
         const sidebarOpen = ref(false);
+        let secondaryNavigation = [];
 
-        let navigation;
+        let navigation = [];
+        const modules = usePage().props.value.modules;
+        for (const module in modules) {
 
-        if (usePage().props.value.appType === 'b2b') {
-            navigation = [
+            navigation.push(
                 {
-                    name: __('Dashboard'), href: route('dashboard'), current: route().current('dashboard'), icon: ['far', 'tachometer-alt-fast'],
-                }, {
-                    name: __('Customers'), href: route('customers'), current: route().current('customers'), icon: ['far', 'users'],
+                    name: modules[module].name, href: route(modules[module]['route']), icon: modules[module]['fa'], module: module,
                 },
-
-            ];
-        } else {
-            navigation = [
-                {
-                    name: __('Dashboard'), href: route('dashboard'), current: route().current('dashboard'), icon: ['far', 'tachometer-alt-fast'],
-                },
-
-            ];
+            );
         }
 
         return {
-            navigation, sidebarOpen,
+            navigation, secondaryNavigation, sidebarOpen,
         };
     }, methods: {
         __: __,
@@ -222,5 +272,9 @@ export default {
             this.$inertia.post(route('logout'));
         },
     },
+    mounted() {
+        console.log(this.$slots.default()[0]);
+    },
+
 };
 </script>

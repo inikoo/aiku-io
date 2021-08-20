@@ -18,14 +18,21 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        'phpVersion'     => PHP_VERSION,
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/customers', function () {
     return Inertia::render('Customers');
 })->name('customers');
+
+
+Route::prefix('dashboard')->name('dashboard.')
+    ->middleware(['auth:sanctum', 'verified'])
+    ->group(__DIR__ . '/web/dashboard.php');
+
+Route::prefix('system')->name('system.')
+    ->middleware(['auth:sanctum', 'verified'])
+    ->group(__DIR__ . '/web/system.php');

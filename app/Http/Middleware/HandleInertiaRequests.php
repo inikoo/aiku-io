@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\UI\ModuleController;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,6 +39,16 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             'appType' => app('currentTenant')->type,
+            'modules' => function () use ($request) {
+                if (! $request->user()) {
+                    return [];
+                }
+
+                return (new ModuleController())();
+
+
+
+            },
         ]);
     }
 }

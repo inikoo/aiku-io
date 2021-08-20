@@ -4,6 +4,8 @@ namespace App\Providers;
 
 
 use App\Actions\Jetstream\DeleteUser;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
 
@@ -28,6 +30,18 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
         Jetstream::deleteUsersUsing(DeleteUser::class);
+
+        Collection::macro('toLocale', function ($locale) {
+            return $this->map(function ($item) use ($locale) {
+                $item['name']=Lang::get($item['name']);
+
+
+
+                return $item ;
+
+            });
+        });
+
     }
 
     /**

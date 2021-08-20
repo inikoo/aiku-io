@@ -1,11 +1,12 @@
 <!--
   -  Author: Raul Perusquia <raul@inikoo.com>
-  -  Created: Sat, 21 Aug 2021 03:49:12 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Created: Fri, 20 Aug 2021 18:03:58 Malaysia Time, Kuala Lumpur, Malaysia
   -  Copyright (c) 2021, Inikoo
   -  Version 4.0
   -->
+
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'dashboard'" :buttons="buttons" :actionIcons="actionIcons">{{ title }}</simple-header>
+    <simple-header :breadcrumbs="breadcrumbs" :module="'system'" :buttons="buttons" :actionIcons="actionIcons">{{ title }}</simple-header>
 </template>
 
 <script>
@@ -19,4 +20,3 @@ export default {
 
 };
 </script>
-
