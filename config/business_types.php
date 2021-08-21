@@ -21,7 +21,7 @@ return [
             ],
             'hr'        => [
                 'route'    => 'hr.index',
-                'name'     => 'Human resources',
+                'name'     => 'Staff',
                 'fa'       => ['fal', 'clipboard-user'],
                 'sections' => [
                     'hr.employees'  => [
@@ -73,9 +73,18 @@ return [
                 'fa'       => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
+            'patients'        => [
+                'route'    => 'patients.index',
+                'name'     => 'Patients',
+                'fa'       => ['fal', 'users'],
+                'sections' => [
+
+
+                ]
+            ],
             'hr'        => [
                 'route'    => 'hr.index',
-                'name'     => 'Human resources',
+                'name'     => 'Staff',
                 'fa'       => ['fal', 'clipboard-user'],
                 'sections' => [
                     'hr.employees'  => [

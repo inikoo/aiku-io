@@ -7,7 +7,7 @@
   -->
 
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'hr'" :buttons="buttons" :actionIcons="actionIcons">{{ title }}</simple-header>
+    <simple-header :breadcrumbs="breadcrumbs" :module="'hr'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
 </template>
 
 <script>
@@ -17,7 +17,7 @@ export default {
     components: {
         SimpleHeader,
     },
-    props     : ['title', 'buttons', 'breadcrumbs', 'buttons', 'actionIcons'],
+    props     : ['title', 'buttons', 'breadcrumbs', 'actions', 'actionIcons'],
 
 };
 </script>

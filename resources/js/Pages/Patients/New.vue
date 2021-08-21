@@ -1,14 +1,12 @@
-
-
 <!--
   -  Author: Raul Perusquia <raul@inikoo.com>
-  -  Created: Sat, 21 Aug 2021 04:42:35 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Created: Sat, 21 Aug 2021 21:59:21 Malaysia Time, Kuala Lumpur, Malaysia
   -  Copyright (c) 2021, Inikoo
   -  Version 4.0
   -->
 
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'hr'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
+    <simple-header :breadcrumbs="breadcrumbs" :module="'patients'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
 </template>
 
 <script>
