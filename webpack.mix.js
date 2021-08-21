@@ -16,13 +16,17 @@ mix.js('resources/js/app.js', 'public/js').
     postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),
-    ]).
-    webpackConfig(require('./webpack.config'));
+    ]).webpackConfig(require('./webpack.config'));
 
 if (mix.inProduction()) {
     mix.version();
 }
 
+if(process.env.MIX_ANALYZE_BUNDLE){
+    require('laravel-mix-bundle-analyzer');
+    mix.bundleAnalyzer();
+}
+
 mix.browserSync({
-                    proxy: process.env.APP_URL
+                    proxy: process.env.APP_URL,
                 });
