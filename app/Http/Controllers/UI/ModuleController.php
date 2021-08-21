@@ -19,19 +19,22 @@ class ModuleController extends Controller
     {
         $layout = [];
         if (Auth::user()) {
-            $layout = config('modules.'.app('currentTenant')->type, []);
+            $layout = config('business_types.'.app('currentTenant')->business_type->slug.'.modules', []);
         }
 
+
         $translated = collect($layout)->toLocale('es');
+
         $translated = $translated->map(function ($item) {
-            $sections=collect($item['sections']);
-            $item['sections']=$sections->toLocale('es')->all();
-            return $item ;
+            $sections         = collect($item['sections']);
+            $item['sections'] = $sections->toLocale('es')->all();
+
+            return $item;
         });
+
 
         return $translated->all();
     }
-
 
 
 }

@@ -33,7 +33,8 @@
                                 <div class="px-2 space-y-1">
                                     <Link v-for="item in navigation" :key="item.name" :href="item['href']"
                                           :class="[route().current(item['module']+'.*')  ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-base font-medium rounded-md']">
-                                        <font-awesome-icon :icon="item['icon']" :class="[route().current(item['module']+'.*')  ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 h-6 w-6']" aria-hidden="true"/>
+                                        <font-awesome-icon :icon="item['icon']" :class="[route().current(item['module']+'.*')  ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 h-6 w-6']"
+                                                           aria-hidden="true"/>
                                         {{ item['name'] }}
                                     </Link>
                                 </div>
@@ -62,7 +63,7 @@
                                             {{ $page.props.user.name }}
                                         </p>
                                         <p class="text-sm font-medium text-gray-500 group-hover:text-gray-700">
-                                            {{__('View profile')}}
+                                            {{ __('View profile') }}
                                         </p>
                                     </div>
                                 </div>
@@ -108,7 +109,7 @@
                             <div class="px-2 space-y-1">
                                 <Link v-for="item in navigation" :key="item.name" :href="item['href']"
                                       :class="[route().current(item['module']+'.*') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
-                                    <font-awesome-icon :icon="item['icon']" :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 h-6 w-6']" aria-hidden="true"/>
+                                    <font-awesome-icon fixed-width :icon="item['icon']" :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']" aria-hidden="true"/>
                                     {{ item['name'] }}
                                 </Link>
                             </div>
@@ -235,13 +236,14 @@ import {__} from 'matice';
 import {Link} from '@inertiajs/inertia-vue3';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {faTachometerAltFast, faUsers, faRobot} from '@/Private/pro-regular-svg-icons';
+import { faTachometerAltFast, faUsers,faRobot, faClipboardUser} from '@/Private/pro-light-svg-icons';
+
 import {MenuIcon, LogoutIcon, XIcon, BellIcon, MenuAlt2Icon} from '@heroicons/vue/outline';
 import {usePage} from '@inertiajs/inertia-vue3';
 import {SearchIcon} from '@heroicons/vue/solid';
 import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
 
-library.add(faTachometerAltFast, faUsers, faRobot);
+library.add(faTachometerAltFast, faUsers, faClipboardUser, faRobot);
 
 export default {
     components: {

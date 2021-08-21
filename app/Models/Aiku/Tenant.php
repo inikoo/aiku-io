@@ -1,14 +1,16 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sun, 15 Aug 2021 01:46:57 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sat, 21 Aug 2021 18:49:07 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models;
+namespace App\Models\Aiku;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
+
 
 
 /**
@@ -21,7 +23,12 @@ class Tenant extends SpatieTenant
         'data' => '{}',
     ];
     protected $casts = [
-        'data'     => 'array'
+        'data' => 'array'
     ];
+
+    public function business_type(): BelongsTo
+    {
+        return $this->belongsTo('App\Models\Aiku\BusinessType');
+    }
 
 }

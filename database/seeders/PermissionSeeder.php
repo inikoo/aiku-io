@@ -25,12 +25,12 @@ class PermissionSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        /** @var \App\Models\Tenant $tenant */
+        /** @var \App\Models\Aiku\Tenant $tenant */
         $tenant = Tenant::current();
 
 
-        $permissions = collect(config("permission.permissions.$tenant->type"));
-        $roles       = collect(config("permission.roles.$tenant->type"));
+        $permissions = collect(config("business_types.{$tenant->business_type->slug}.permissions"));
+        $roles       = collect(config("business_types.{$tenant->business_type->slug}.roles"));
 
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
             Permission::create(['name' => $permission]);

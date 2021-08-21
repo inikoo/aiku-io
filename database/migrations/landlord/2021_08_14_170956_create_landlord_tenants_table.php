@@ -14,14 +14,23 @@ class CreateLandlordTenantsTable extends Migration
 {
     public function up()
     {
+
+        Schema::create('business_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('slug')->unique();
+            $table->string('name');
+            $table->jsonb('data');
+            $table->timestampsTz();
+        });
+
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('domain')->unique();
             $table->string('database')->unique();
-            $table->string('type');
+            $table->foreignId('business_type_id')->constrained();
             $table->jsonb('data');
-            $table->timestamps();
+            $table->timestampsTz();
         });
     }
     public function down()

@@ -33,6 +33,12 @@ Route::prefix('dashboard')->name('dashboard.')
     ->middleware(['auth:sanctum', 'verified'])
     ->group(__DIR__ . '/web/dashboard.php');
 
+
+Route::prefix('hr')->name('hr.')
+    ->middleware(['auth:sanctum', 'verified'])
+    ->group(__DIR__ . '/web/hr.php');
+
+
 Route::prefix('system')->name('system.')
     ->middleware(['auth:sanctum', 'verified'])
     ->group(__DIR__ . '/web/system.php');

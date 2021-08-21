@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Multitenancy\Commands\Concerns\TenantAware;
-use App\Models\Tenant;
+use App\Models\Aiku\Tenant;
 use Illuminate\Console\Command;
 
 class ResetTenantRootUser extends Command

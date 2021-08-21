@@ -23,7 +23,7 @@ Route::get('/', function () {
     );
 })->name('index');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/system/users', function () {
+Route::middleware(['auth:sanctum', 'verified'])->get('/users', function () {
     return Inertia::render(
         'System/Users',
         [
@@ -42,7 +42,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/system/users', function (
     );
 })->name('users');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/system/roles', function () {
+Route::middleware(['auth:sanctum', 'verified'])->get('/roles', function () {
     return Inertia::render('System/Roles',
                            [
                                'title'       => __('Roles'),
@@ -59,7 +59,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/system/roles', function (
                            ]);
 })->name('roles');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/system/usage', function () {
+Route::middleware(['auth:sanctum', 'verified'])->get('/usage', function () {
     return Inertia::render('System/Usage',
                            [
                                'title'       => __('System usage'),
@@ -76,7 +76,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/system/usage', function (
                            ]);
 })->name('usage');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/system/billing', function () {
+Route::middleware(['auth:sanctum', 'verified'])->get('/billing', function () {
     return Inertia::render('System/Billing',
                            [
                                'title'       => __('Billing'),

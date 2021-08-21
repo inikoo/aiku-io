@@ -148,31 +148,5 @@ return [
     ],
 
 
-    'permissions' => [
-        'b2b' => [
-            'users.create',
-            'users.edit',
-            'users.delete',
-            'users.*',
-            'look-and-field',
-            'employees.edit',
-            'employees.delete',
-            'employees.payroll',
-            'employees.confidential',
-            'employees.attendance',
-            'employees.*'
-        ]
-    ],
-    'roles'       => [
-        'b2b' => [
-            'super-admin'=>[],
-            'system-admin' => [
-                'users.*',
-                'look-and-field',
-            ],
-            'human-resources-clerk'=>[],
-            'human-resources-admin*'=>[],
-        ]
-    ],
 
 ];

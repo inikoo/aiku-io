@@ -33,7 +33,9 @@ class JetstreamServiceProvider extends ServiceProvider
 
         Collection::macro('toLocale', function ($locale) {
             return $this->map(function ($item) use ($locale) {
-                $item['name']=Lang::get($item['name']);
+
+
+                //$item['name']=Lang::get($item['name']);
 
 
 

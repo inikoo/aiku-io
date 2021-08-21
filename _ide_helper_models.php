@@ -10,24 +10,52 @@
  */
 
 
-namespace App\Models{
+namespace App\Models\Aiku{
 /**
- * App\Models\Tenant
+ * App\Models\Aiku\BusinessType
  *
- * @mixin IdeHelperTenant
+ * @mixin IdeHelperBusinessType
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Spatie\Multitenancy\TenantCollection|\App\Models\Aiku\Tenant[] $tenants
+ * @property-read int|null $tenants_count
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BusinessType whereUpdatedAt($value)
+ */
+	class IdeHelperBusinessType extends \Eloquent {}
+}
+
+namespace App\Models\Aiku{
+/**
+ * App\Models\Aiku\Tenant
+ *
  * @property int $id
  * @property string $name
  * @property string $domain
  * @property string $database
  * @property string $type
+ * @property int $business_type_id
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Aiku\BusinessType $business_type
  * @method static \Spatie\Multitenancy\TenantCollection|static[] all($columns = ['*'])
  * @method static \Spatie\Multitenancy\TenantCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereBusinessTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereDatabase($value)
@@ -36,6 +64,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 	class IdeHelperTenant extends \Eloquent {}
 }
