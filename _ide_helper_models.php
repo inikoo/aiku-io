@@ -16,8 +16,8 @@ namespace App\Models\Aiku{
  *
  * @mixin IdeHelperBusinessType
  * @property int $id
- * @property string $name
  * @property string $slug
+ * @property string $name
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -40,11 +40,11 @@ namespace App\Models\Aiku{
 /**
  * App\Models\Aiku\Tenant
  *
+ * @mixin IdeHelperTenant
  * @property int $id
  * @property string $name
  * @property string $domain
  * @property string $database
- * @property string $type
  * @property int $business_type_id
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -62,11 +62,21 @@ namespace App\Models\Aiku{
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 	class IdeHelperTenant extends \Eloquent {}
+}
+
+namespace App\Models\Health{
+/**
+ * App\Models\Health\Patient
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient query()
+ * @mixin \Eloquent
+ */
+	class IdeHelperPatient extends \Eloquent {}
 }
 
 namespace App\Models{

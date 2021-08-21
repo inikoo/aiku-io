@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render(
-        'Patients/Index',
+        'Patients/Patients',
         [
             'title'       => __('Patients'),
             'breadcrumbs' => [
@@ -33,9 +33,9 @@ Route::get('/', function () {
 
 Route::get('/new', function () {
     return Inertia::render(
-        'Patients/New',
+        'Patients/NewPatient',
         [
-
+            'title'       => __('Patient registration'),
             'breadcrumbs' => [
                 'patients.index' => [
                     'name'    => __('Patients'),
