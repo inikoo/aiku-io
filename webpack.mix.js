@@ -16,13 +16,15 @@ mix.js('resources/js/app.js', 'public/js').
     postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),
-    ]).webpackConfig(require('./webpack.config'));
+    ]).webpackConfig(require('./webpack.config')).extract(['vue']);
 
 if (mix.inProduction()) {
     mix.version();
+}else{
+    mix.sourceMaps();
 }
 
-if(process.env.MIX_ANALYZE_BUNDLE){
+if(process.env.MIX_ANALYZE_BUNDLE==='Yes'){
     require('laravel-mix-bundle-analyzer');
     mix.bundleAnalyzer();
 }

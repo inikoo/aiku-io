@@ -11,7 +11,7 @@
             <li>
                 <div>
                     <Link :href="route('dashboard.index')" class="text-gray-400 hover:text-gray-500">
-                        <font-awesome-icon :icon="['far', 'tachometer-alt-fast']" class="flex-shrink-0 h-4 w-4" aria-hidden="true"/>
+                        <font-awesome-icon :icon="['fal', 'tachometer-alt-fast']" class="flex-shrink-0 h-4 w-4" aria-hidden="true"/>
                         <span class="sr-only">{{ __('Dashboard') }}</span>
                     </Link>
                 </div>
@@ -29,12 +29,9 @@
 <script>
 import {ChevronRightIcon, HomeIcon} from '@heroicons/vue/solid';
 import {Link} from '@inertiajs/inertia-vue3';
-import {faTachometerAltFast} from '@/Private/pro-regular-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import {library} from '@fortawesome/fontawesome-svg-core';
 import {__} from 'matice';
 
-library.add(faTachometerAltFast);
 
 export default {
     props     : ['breadcrumbs'],

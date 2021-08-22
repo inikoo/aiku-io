@@ -12,10 +12,9 @@
 <script>
 import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
 import {__} from 'matice';
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faSlidersHSquare} from '@/Private/pro-light-svg-icons';
-
-library.add(faSlidersHSquare);
+//import {library} from '@fortawesome/fontawesome-svg-core';
+//import {faSlidersHSquare} from '@/Private/pro-light-svg-icons';
+//library.add(faSlidersHSquare);
 /*
 
 const buttons = [
