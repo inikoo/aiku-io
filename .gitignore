@@ -16,6 +16,5 @@ yarn-error.log
 /.idea
 /.vscode
 /public/copyright.html
-/resources/js/Layouts/AppLayout.bk.vue
-/resources/js/Private/
+/resources/js/private/
 /resources/Legacy/
