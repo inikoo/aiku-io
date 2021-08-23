@@ -13,21 +13,33 @@ class CreatePatientsTable extends Migration
      */
     public function up()
     {
+        Schema::create('patient_contacts', function (Blueprint $table) {
+            $table->id();
+            $table->string('slug')->unique();
+            $table->string('name');
+            $table->string('identity_document_type');
+            $table->string('identity_document_number');
+            $table->string('email');
+            $table->string('phone');
+
+
+            $table->jsonb('data');
+            $table->timestampsTz();
+        });
+
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
             $table->string('slug')->unique();
             $table->string('name');
             $table->date('date_of_birth');
             $table->string('gender');
-            $table->string('identity_document_type');
-            $table->string('identity_document_number');
-            $table->string('email');
-            $table->string('phone');
-            $table->string('phone');
+
 
             $table->jsonb('data');
             $table->timestampsTz();
         });
+
+
     }
 
     /**
@@ -37,6 +49,8 @@ class CreatePatientsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('patient_contacts');
         Schema::dropIfExists('patients');
+
     }
 }

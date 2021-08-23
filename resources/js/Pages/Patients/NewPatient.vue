@@ -197,7 +197,7 @@ export default {
     data() {
         return {
             value: 'MY',
-            options: require('../../data/countries')
+            options: require('../../../data/countries')
         }
     }
 
