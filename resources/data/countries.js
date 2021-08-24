@@ -1,3 +1,11 @@
+
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Mon, 23 Aug 2021 23:51:37 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
+
 /**
  * The list of all countries with their 2 digit codes (ISO 3166-2)
  *

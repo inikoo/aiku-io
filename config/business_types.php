@@ -36,6 +36,25 @@ return [
 
                 ]
             ],
+            'system'        => [
+                'route'    => 'system.index',
+                'name'     => 'system',
+                'fa'       => ['fal', 'robot'],
+                'sections' => [
+                    'system.users'  => [
+                        'name' => 'Users',
+                    ],
+                    'system.roles' => [
+                        'name' => 'Roles',
+                    ],
+
+                    'system.billing' => [
+                        'name' => 'Billing',
+                    ],
+
+
+                ]
+            ],
 
 
         ],
@@ -99,7 +118,25 @@ return [
 
                 ]
             ],
+            'system'        => [
+                'route'    => 'system.index',
+                'name'     => 'system',
+                'fa'       => ['fal', 'robot'],
+                'sections' => [
+                    'system.users'  => [
+                        'name' => 'Users',
+                    ],
+                    'system.roles' => [
+                        'name' => 'Roles',
+                    ],
 
+                    'system.billing' => [
+                        'name' => 'Billing',
+                    ],
+
+
+                ]
+            ],
 
         ],
         'permissions' => [

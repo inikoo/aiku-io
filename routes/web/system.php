@@ -6,92 +6,24 @@
  *  Version 4.0
  */
 
-use Inertia\Inertia;
+use App\Http\Controllers\System\SystemController;
+use App\Http\Controllers\System\SystemSettingsController;
 
-Route::get('/', function () {
-    return Inertia::render(
-        'System/Index',
-        [
-            'title'       => __('System'),
-            'breadcrumbs' => [
-                'system.index' => [
-                    'name'    => __('System'),
-                    'current' => true
-                ],
-            ]
-        ]
-    );
-})->name('index');
+Route::get('/', [SystemController::class, 'index'])->name('index');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/users', function () {
-    return Inertia::render(
-        'System/Users',
-        [
-            'title'       => __('Users'),
-            'breadcrumbs' => [
-                'system.index' => [
-                    'name'    => __('System'),
-                    'current' => false
-                ],
-                'system.users' => [
-                    'name'    => __('Users'),
-                    'current' => true
-                ],
-            ]
-        ]
-    );
-})->name('users');
+Route::get('/users', [SystemController::class, 'users'])->name('users');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/roles', function () {
-    return Inertia::render('System/Roles',
-                           [
-                               'title'       => __('Roles'),
-                               'breadcrumbs' => [
-                                   'system.index' => [
-                                       'name'    => __('System'),
-                                       'current' => false
-                                   ],
-                                   'system.roles' => [
-                                       'name'    => __('Roles'),
-                                       'current' => true
-                                   ],
-                               ]
-                           ]);
-})->name('roles');
+Route::get('/roles', [SystemController::class, 'roles'])->name('roles');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/usage', function () {
-    return Inertia::render('System/Usage',
-                           [
-                               'title'       => __('System usage'),
-                               'breadcrumbs' => [
-                                   'system.index' => [
-                                       'name'    => __('System'),
-                                       'current' => false
-                                   ],
-                                   'system.usage' => [
-                                       'name'    => __('Usage'),
-                                       'current' => true
-                                   ],
-                               ]
-                           ]);
-})->name('usage');
+Route::get('/usage', [SystemController::class, 'index'])->name('usage');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/billing', function () {
-    return Inertia::render('System/Billing',
-                           [
-                               'title'       => __('Billing'),
-                               'breadcrumbs' => [
-                                   'system.index' => [
-                                       'name'    => __('System'),
-                                       'current' => false
-                                   ],
-                                   'system.billing' => [
-                                       'name'    => __('Billing'),
-                                       'current' => true
-                                   ],
-                               ]
-                           ]);
-})->name('billing');
+Route::get('/logbook', [SystemController::class, 'logbook'])->name('logbook');
+
+Route::get('/billing', [SystemController::class, 'billing'])->name('billing');
+
+Route::get('/settings', [SystemSettingsController::class, 'settings'])->name('settings');
+
+Route::post('/settings', [SystemSettingsController::class, 'store'])->name('settings');
 
 
 

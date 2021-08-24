@@ -8,14 +8,15 @@
 
 
 <template>
-    <input :id="id" :name="name" type="hidden" :value="value"  />
-    <Multiselect
-                 class="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                 searchable
-                 v-model="value"
-                 :options="options"
 
-                 :classes="{
+    <Multiselect
+        class="max-w-lg block focus:ring-indigo-500 focus:border-indigo-500 w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        searchable
+        v-model="modelValue"
+        :options="options"
+        ref="input"
+        @change="handleChange($event)"
+        :classes="{
   container: 'relative max-w-lg  sm:text-sm w-full flex items-center justify-end box-border cursor-pointer border border-gray-300 rounded bg-white text-base leading-snug outline-none',
   containerDisabled: 'cursor-default bg-gray-100',
   containerOpen: 'rounded-b-none',
@@ -52,7 +53,7 @@
   noOptions: 'py-2 px-3 text-gray-600 bg-white',
   noResults: 'py-2 px-3 text-gray-600 bg-white',
   fakeInput: 'bg-transparent absolute left-0 right-0 -bottom-px w-full h-px border-0 p-0 appearance-none outline-none text-transparent',
-  spacer: 'h-9 py-px box-content',
+  spacer: 'h-9 py-px box-content'
 }"
     />
 
@@ -62,12 +63,17 @@
 <script>
 import Multiselect from '@vueform/multiselect';
 
-
 export default {
     components: {
         Multiselect,
     },
-    props     : ['id','name','options', 'value']
-    ,
+    props     : ['options', 'modelValue'],
+    emits     : ['update:modelValue'],
+    methods   : {
+        handleChange: function($event) {
+            this.$emit('update:modelValue', $event);
+        },
+    },
+
 };
 </script>
