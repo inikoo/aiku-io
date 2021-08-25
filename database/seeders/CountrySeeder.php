@@ -8,7 +8,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Helpers\Country;
+use App\Models\Assets\Country;
 use Exception;
 use Illuminate\Database\Seeder;
 
@@ -21,38 +21,39 @@ class CountrySeeder extends Seeder
      */
     public function run()
     {
-        $row = 1;
-        $handle = fopen(__DIR__."/../../resources/data/countryData.csv", "r");
+        $row    = 1;
+        $handle = fopen(__DIR__."/datasets/countryData.csv", "r");
         if ($handle !== false) {
             while (($data = fgetcsv($handle, 1000)) !== false) {
                 if ($row > 1) {
-
                     try {
 
-                        $country                   = new Country();
-                        $country->name             = $data[0];
-                        $country->code             = $data[1];
-                        $country->code_iso3        = $data[2];
-                        $country->code_iso_numeric = $data[5];
-                        $country->continent        = $data[9];
-                        $country->capital          = $data[10];
-                        $country->timezone         = $data[11];
-                        $country->phone_code       = $data[8];
-                        $country->geoname_id       = (is_numeric($data[6]) ? $data[6] : null);
-                        $country->data             = [
-                            'GDP'           => $data[20],
-                            'Area'          => $data[15],
-                            'E164'          => $data[7],
-                            'FIPS'          => $data[4],
-                            'InternetUsers' => $data[17],
 
-                        ];
-                        $country->save();
-                    }catch (Exception){
-                        //
+                        Country::UpdateOrCreate(
+                            ['code' => $data[1]],
+                            [
+                                'name'             => $data[0],
+                                'code_iso3'        => $data[2],
+                                'code_iso_numeric' =>  (is_numeric($data[6]) ? $data[5] : null),
+                                'continent'        => $data[9],
+                                'capital'          => $data[10],
+                                'phone_code'       => $data[8],
+                                'geoname_id'       => (is_numeric($data[6]) ? $data[6] : null),
+
+                                'data' => [
+                                    'GDP'           => $data[20],
+                                    'Area'          => $data[15],
+                                    'E164'          => $data[7],
+                                    'FIPS'          => $data[4],
+                                    'InternetUsers' => $data[17],
+
+                                ]
+
+                            ]
+                        );
+                    } catch (Exception $e) {
+                        print_r($e->getMessage());
                     }
-
-
                 }
 
                 $row++;

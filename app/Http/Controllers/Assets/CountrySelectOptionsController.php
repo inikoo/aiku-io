@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\Assets;
 
 use App\Http\Controllers\Controller;
-use App\Models\Helpers\Country;
+use App\Models\Assets\Country;
 
 class CountrySelectOptionsController extends Controller
 {

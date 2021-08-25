@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Helpers;
+namespace App\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;

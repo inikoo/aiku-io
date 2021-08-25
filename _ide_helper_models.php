@@ -46,7 +46,10 @@ namespace App\Models\Aiku{
  * @property string $domain
  * @property string $database
  * @property int $business_type_id
- * @property string $country
+ * @property int $country_id
+ * @property string|null $currency
+ * @property string|null $language
+ * @property int $timezone_id
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -57,34 +60,26 @@ namespace App\Models\Aiku{
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant query()
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereBusinessTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCurrency($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereDatabase($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereLanguage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereTimezoneId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereUpdatedAt($value)
  */
 	class IdeHelperTenant extends \Eloquent {}
 }
 
-namespace App\Models\Health{
+namespace App\Models\Assets{
 /**
- * App\Models\Health\Patient
+ * App\Models\Assets\Country
  *
- * @mixin IdeHelperPatient
- * @method static \Illuminate\Database\Eloquent\Builder|Patient newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Patient newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Patient query()
- */
-	class IdeHelperPatient extends \Eloquent {}
-}
-
-namespace App\Models\Helpers{
-/**
- * App\Models\Helpers\Country
- *
+ * @mixin IdeHelperCountry
  * @property int $id
  * @property string $code
  * @property string|null $code_iso3
@@ -95,11 +90,10 @@ namespace App\Models\Helpers{
  * @property string $name
  * @property string $continent
  * @property string $capital
- * @property string $timezone Timezone in capital
- * @property int $shippers_count
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $timezone_id Timezone in capital
  * @method static \Illuminate\Database\Eloquent\Builder|Country newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Country newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Country query()
@@ -115,12 +109,56 @@ namespace App\Models\Helpers{
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country wherePhoneCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Country whereShippersCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Country whereTimezone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Country whereTimezoneId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 	class IdeHelperCountry extends \Eloquent {}
+}
+
+namespace App\Models\Assets{
+/**
+ * App\Models\Assets\Timezone
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $abbreviation
+ * @property int|null $offset in hours
+ * @property int|null $country_id
+ * @property float|null $latitude
+ * @property float|null $longitude
+ * @property string $location
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereAbbreviation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereCountryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereLatitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereLongitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereOffset($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	class IdeHelperTimezone extends \Eloquent {}
+}
+
+namespace App\Models\Health{
+/**
+ * App\Models\Health\Patient
+ *
+ * @mixin IdeHelperPatient
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient query()
+ */
+	class IdeHelperPatient extends \Eloquent {}
 }
 
 namespace App\Models{
