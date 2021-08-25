@@ -89,7 +89,8 @@ namespace App\Models\Assets{
  * @property string|null $currency_code
  * @property string $name
  * @property string $continent
- * @property string $capital
+ * @property string|null $capital
+ * @property string|null $status
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -109,6 +110,7 @@ namespace App\Models\Assets{
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country wherePhoneCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Country whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereTimezoneId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereUpdatedAt($value)
  */
@@ -117,11 +119,39 @@ namespace App\Models\Assets{
 
 namespace App\Models\Assets{
 /**
- * App\Models\Assets\Timezone
+ * App\Models\Assets\Language
  *
  * @property int $id
+ * @property string $code
+ * @property string|null $name
+ * @property string|null $name_en
+ * @property string|null $status
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Language newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Language newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Language query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereNameEn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	class IdeHelperLanguage extends \Eloquent {}
+}
+
+namespace App\Models\Assets{
+/**
+ * App\Models\Assets\Timezone
+ *
+ * @mixin IdeHelperTimezone
+ * @property int $id
  * @property string $name
- * @property string|null $abbreviation
  * @property int|null $offset in hours
  * @property int|null $country_id
  * @property float|null $latitude
@@ -133,7 +163,6 @@ namespace App\Models\Assets{
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone query()
- * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereAbbreviation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereData($value)
@@ -144,7 +173,6 @@ namespace App\Models\Assets{
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereOffset($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 	class IdeHelperTimezone extends \Eloquent {}
 }

@@ -59,7 +59,7 @@ return [
     |
     */
 
-    'api_key' => env('POEDITOR_API_KEY'),
+    'api_key' => env('PO_EDITOR_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,5 +70,5 @@ return [
     |
     */
 
-    'project_id' => env('POEDITOR_PROJECT_ID'),
+    'project_id' => env('PO_EDITOR_PROJECT_ID'),
 ];

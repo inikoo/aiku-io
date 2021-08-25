@@ -9,7 +9,7 @@
 namespace Database\Seeders;
 
 use App\Models\Assets\Country;
-use App\Models\Assets\Timezone;
+use App\Models\Assets\Language;
 use Exception;
 use Illuminate\Database\Seeder;
 
@@ -29,7 +29,7 @@ class CountryTimezoneSeeder extends Seeder
                 if ($row > 1) {
                     if($country=Country::where('code',$data[1])->first()){
 
-                        if($timezone=Timezone::where('name',$data[11])->first()){
+                        if($timezone=Language::where('name', $data[11])->first()){
                             $country->timezone_id=$timezone->id;
                             $country->save();
                         }else{

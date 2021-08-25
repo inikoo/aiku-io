@@ -10,7 +10,7 @@ namespace Database\Seeders;
 
 
 use App\Models\Assets\Country;
-use App\Models\Assets\Timezone;
+use App\Models\Assets\Language;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Seeder;
@@ -44,7 +44,7 @@ class TimezoneSeeder extends Seeder
             }
 
 
-            Timezone::UpdateOrCreate(
+            Language::UpdateOrCreate(
                 ['name' => $tz->getName()],
                 [
                     'offset'     => $tz->getOffset(new DateTime("now", new DateTimeZone("UTC"))),
@@ -58,7 +58,7 @@ class TimezoneSeeder extends Seeder
         }
         foreach (DateTimeZone::listAbbreviations() as $abbreviation => $abbreviationData) {
             foreach ($abbreviationData as $timezoneData) {
-                if ($timezone = Timezone::where('name', $timezoneData['timezone_id'])->first()) {
+                if ($timezone = Language::where('name', $timezoneData['timezone_id'])->first()) {
                     $data          = $timezone->data;
                     $abbreviations = data_get($data, 'abbreviations', []);
                     array_push($abbreviations, $abbreviation);

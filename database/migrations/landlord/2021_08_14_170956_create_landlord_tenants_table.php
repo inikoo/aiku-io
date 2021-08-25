@@ -20,15 +20,12 @@ class CreateLandlordTenantsTable extends Migration
             $table->string('code_iso3', 3)->nullable()->index();
             $table->unsignedSmallInteger('code_iso_numeric')->nullable()->index();
             $table->unsignedInteger('geoname_id')->nullable()->index();
-
             $table->string('phone_code')->nullable();
             $table->string('currency_code')->nullable();
-
             $table->string('name');
             $table->string('continent');
             $table->string('capital')->nullable();
-
-
+            $table->string('status')->nullable()->index();
             $table->jsonb('data');
             $table->timestampsTz();
         });
@@ -37,7 +34,6 @@ class CreateLandlordTenantsTable extends Migration
         Schema::create('timezones', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('name')->unique()->index();
-            $table->string('abbreviation')->nullable()->index();
             $table->bigInteger('offset')->nullable()->comment('in hours');
 
 
@@ -50,6 +46,28 @@ class CreateLandlordTenantsTable extends Migration
             $table->timestampsTz();
         });
 
+        Schema::create('languages', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->string('code')->unique()->index();
+            $table->string('name')->nullable()->index();
+            $table->string('original_name')->nullable()->index();
+            $table->string('status')->nullable()->index();
+            $table->jsonb('data');
+            $table->timestampsTz();
+        });
+
+        Schema::create('country_language', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedSmallInteger('country_id');
+            $table->unsignedSmallInteger('language_id');
+            $table->unsignedSmallInteger('priority')->default(1)->index();
+            $table->string('status')->nullable()->index();
+            $table->jsonb('data');
+            $table->timestampsTz();
+            $table->unique('country_id', 'language_id');
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
+            $table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
+        });
 
         Schema::table('countries', function (Blueprint $table) {
             $table->unsignedSmallInteger('timezone_id')->nullable()->comment('Timezone in capital');
@@ -116,7 +134,10 @@ class CreateLandlordTenantsTable extends Migration
         Schema::table('countries', function (Blueprint $table) {
             $table->dropColumn('timezone_id');
         });
+        Schema::dropIfExists('country_language');
+        Schema::dropIfExists('languages');
         Schema::dropIfExists('timezones');
+
         Schema::dropIfExists('countries');
     }
 }

@@ -22,7 +22,8 @@
         "spatie/laravel-permission": "^4.2",
         "tightenco/ziggy": "^1.0",
         "vemcogroup/laravel-translation": "^3.0",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
