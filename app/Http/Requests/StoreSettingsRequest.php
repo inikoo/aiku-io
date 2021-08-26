@@ -17,10 +17,10 @@ class StoreSettingsRequest extends FormRequest
     {
         return [
             'name'     => 'sometimes|required',
-            'country'  => 'sometimes|required',
-            'currency' => 'sometimes|required',
-            'language' => 'sometimes|required',
-            'timezone' => 'sometimes|required',
+            'country_id'  => 'sometimes|required|exists:App\Models\Assets\Country,id',
+            'currency_id' => 'sometimes|required|exists:App\Models\Assets\Currency,id',
+            'language_id' => 'sometimes|required|exists:App\Models\Assets\Language,id',
+            'timezone_id' => 'sometimes|required|exists:App\Models\Assets\Timezone,id',
         ];
     }
 }

@@ -139,14 +139,17 @@ class CreateLandlordTenantsTable extends Migration
             $table->string('domain')->unique();
             $table->string('database')->unique();
             $table->foreignId('business_type_id')->constrained();
-            $table->unsignedSmallInteger('country_id');
-            $table->foreign('country_id')->references('id')->on('countries');
-            $table->string('currency', 3)->nullable();
-            $table->string('language')->nullable();
-            $table->unsignedSmallInteger('timezone_id');
-            $table->foreign('timezone_id')->references('id')->on('timezones');
+            $table->unsignedSmallInteger('country_id')->nullable();
+            $table->unsignedSmallInteger('currency_id')->nullable();
+            $table->unsignedSmallInteger('language_id')->nullable();
+            $table->unsignedSmallInteger('timezone_id')->nullable();
             $table->jsonb('data');
             $table->timestampsTz();
+            $table->foreign('country_id')->references('id')->on('countries');
+            $table->foreign('currency_id')->references('id')->on('currencies');
+            $table->foreign('language_id')->references('id')->on('languages');
+            $table->foreign('timezone_id')->references('id')->on('timezones');
+
         });
     }
 

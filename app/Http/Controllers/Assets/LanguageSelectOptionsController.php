@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 25 Aug 2021 04:33:42 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Thu, 26 Aug 2021 21:22:20 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
@@ -9,16 +9,16 @@
 namespace App\Http\Controllers\Assets;
 
 use App\Http\Controllers\Controller;
-use App\Models\Assets\Country;
+use App\Models\Assets\Language;
 
-class CountrySelectOptionsController extends Controller
+class LanguageSelectOptionsController extends Controller
 {
     public function __invoke(): array
     {
 
         $selectOptions=[];
-        foreach (Country::all() as $country) {
-            $selectOptions[$country->id]=$country->name.' ('.$country->code.')';
+        foreach (Language::all() as $language) {
+            $selectOptions[$language->id]=$language->name;
         }
         return $selectOptions;
 

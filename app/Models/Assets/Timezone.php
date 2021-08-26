@@ -28,7 +28,7 @@ class Timezone extends Model
         'data' => '{}',
     ];
 
-    protected function formatOffset(): string
+    public function formatOffset(): string
     {
         $hours     = $this->offset / 3600;
         $remainder = $this->offset % 3600;

@@ -10,6 +10,8 @@ namespace App\Http\Controllers\System;
 
 
 use App\Http\Controllers\Assets\CountrySelectOptionsController;
+use App\Http\Controllers\Assets\LanguageSelectOptionsController;
+use App\Http\Controllers\Assets\TimezoneSelectOptionsController;
 use App\Http\Requests\StoreSettingsRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -60,20 +62,32 @@ class SystemSettingsController extends SystemController
                         'title'    => __('Localisation'),
                         'subtitle' => __('Default values used throughout the system'),
                         'fields'   => [
-                            'country' => [
+                            'country_id' => [
                                 'type'    => 'select',
                                 'label'   => __('Country'),
-                                'value'   => $this->tenant->country,
+                                'value'   => $this->tenant->country_id,
                                 'options' => (new CountrySelectOptionsController())()
                             ],
-                            /*
-                            'currency' => [
+
+                            'currency_id' => [
                                 'type'    => 'select',
                                 'label'   => __('Currency'),
-                                'value'   => $this->tenant->country,
-                                'options' => (new CurrencySelectOptionsController())()
-                            ]
-                            */
+                                'value'   => $this->tenant->currency_id,
+                                'options' => (new LanguageSelectOptionsController())()
+                            ],
+                            'language_id' => [
+                                'type'    => 'select',
+                                'label'   => __('Language'),
+                                'value'   => $this->tenant->language_id,
+                                'options' => (new LanguageSelectOptionsController())()
+                            ],
+                            'timezone_id' => [
+                                'type'    => 'select',
+                                'label'   => __('Timezone'),
+                                'value'   => $this->tenant->timezone_id,
+                                'options' => (new TimezoneSelectOptionsController())()
+                            ],
+
                         ]
                     ],
                 ],

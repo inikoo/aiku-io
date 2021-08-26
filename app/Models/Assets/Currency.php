@@ -19,6 +19,9 @@ class Currency extends Model
 {
     use UsesLandlordConnection;
 
+    protected $table = 'currencies';
+
+
     protected $casts = [
         'data' => 'array'
     ];

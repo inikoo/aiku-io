@@ -194,12 +194,7 @@ export default {
         __: __,
     },
 
-    data() {
-        return {
-            value: 'MY',
-            options: require('../../../data/countries')
-        }
-    }
+
 
 
 };
