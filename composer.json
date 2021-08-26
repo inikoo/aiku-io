@@ -9,7 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
+        "ext-curl": "*",
+        "ext-intl": "*",
         "ext-pdo": "*",
+        "commerceguys/addressing": "^1.2",
+        "commerceguys/intl": "^1.1",
         "fruitcake/laravel-cors": "^2.0",
         "genl/matice": "^1.1",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -21,9 +25,7 @@
         "spatie/laravel-multitenancy": "^2.0",
         "spatie/laravel-permission": "^4.2",
         "tightenco/ziggy": "^1.0",
-        "vemcogroup/laravel-translation": "^3.0",
-        "ext-intl": "*",
-        "ext-curl": "*"
+        "vemcogroup/laravel-translation": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",

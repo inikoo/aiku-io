@@ -9,6 +9,7 @@
 namespace App\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
@@ -40,5 +41,10 @@ class Timezone extends Model
         }
 
         return 'GMT'.$sign.str_pad($hour, 2, '0', STR_PAD_LEFT).':'.str_pad($minutes, 2, '0');
+    }
+
+    public function countries(): BelongsToMany
+    {
+        return $this->belongsToMany(Country::class);
     }
 }

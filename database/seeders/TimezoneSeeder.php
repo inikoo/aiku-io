@@ -10,7 +10,9 @@ namespace Database\Seeders;
 
 
 use App\Models\Assets\Country;
-use App\Models\Assets\Language;
+use App\Models\Assets\Currency;
+use App\Models\Assets\Timezone;
+use CommerceGuys\Addressing\Country\CountryRepository;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Seeder;
@@ -23,10 +25,6 @@ class TimezoneSeeder extends Seeder
      */
     public function run()
     {
-
-
-
-
         foreach (DateTimeZone::listIdentifiers() as $identifier) {
             $tz = new DateTimeZone($identifier);
 
@@ -44,7 +42,7 @@ class TimezoneSeeder extends Seeder
             }
 
 
-            Language::UpdateOrCreate(
+            Timezone::UpdateOrCreate(
                 ['name' => $tz->getName()],
                 [
                     'offset'     => $tz->getOffset(new DateTime("now", new DateTimeZone("UTC"))),
@@ -58,7 +56,7 @@ class TimezoneSeeder extends Seeder
         }
         foreach (DateTimeZone::listAbbreviations() as $abbreviation => $abbreviationData) {
             foreach ($abbreviationData as $timezoneData) {
-                if ($timezone = Language::where('name', $timezoneData['timezone_id'])->first()) {
+                if ($timezone = Timezone::where('name', $timezoneData['timezone_id'])->first()) {
                     $data          = $timezone->data;
                     $abbreviations = data_get($data, 'abbreviations', []);
                     array_push($abbreviations, $abbreviation);
@@ -68,7 +66,49 @@ class TimezoneSeeder extends Seeder
                 }
             }
         }
+        $row    = 1;
+        $handle = fopen(__DIR__."/datasets/countryData.csv", "r");
+        if ($handle !== false) {
+            while (($data = fgetcsv($handle, 1000)) !== false) {
+                if ($row > 1) {
+                    if ($country = Country::where('code', $data[1])->first()) {
+                        if ($timezone = Timezone::where('name', $data[11])->first()) {
+                            $country->timezone_id = $timezone->id;
+                            $country->save();
+                        } else {
+                            print "Timezone not found : >{$data[11]}<\n";
+                        }
+                    } else {
+                        print "Country not found : {$data[1]}\n";
+                    }
+                }
 
+                $row++;
+            }
+            fclose($handle);
+        }
+
+
+        $countryRepository = new CountryRepository();
+        $countryList       = $countryRepository->getList('en-GB');
+        foreach ($countryList as $countryCode => $countryName) {
+            if ($country = Country::where('code', $countryCode)->first()) {
+                $_country = $countryRepository->get($countryCode);
+
+                $timezones=[];
+                foreach($_country->getTimezones() as $timezoneName){
+                    if ($timezone = Timezone::where('name', $timezoneName)->first()) {
+                        $timezones[$timezone->id]=$timezone->id;
+                    }
+                }
+
+                $country->timezones()->sync($timezones);
+
+
+
+
+            }
+        }
     }
 
 

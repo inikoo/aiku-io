@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Mon, 23 Aug 2021 18:04:40 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Thu, 26 Aug 2021 05:30:08 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
@@ -9,17 +9,15 @@
 namespace App\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
 /**
- * @mixin IdeHelperCountry
+ * @mixin IdeHelperCurrency
  */
-class Country extends Model {
+class Currency extends Model
+{
     use UsesLandlordConnection;
-
-    protected $table = 'countries';
 
     protected $casts = [
         'data' => 'array'
@@ -28,10 +26,5 @@ class Country extends Model {
     protected $attributes = [
         'data' => '{}',
     ];
-
-    public function timezones(): BelongsToMany
-    {
-        return $this->belongsToMany(Timezone::class);
-    }
 
 }

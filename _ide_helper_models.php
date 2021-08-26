@@ -95,6 +95,7 @@ namespace App\Models\Assets{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $timezone_id Timezone in capital
+ * @property int|null $currency_id Timezone in capital
  * @method static \Illuminate\Database\Eloquent\Builder|Country newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Country newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Country query()
@@ -105,6 +106,7 @@ namespace App\Models\Assets{
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereContinent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereCurrencyCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Country whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereGeonameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereId($value)
@@ -119,12 +121,47 @@ namespace App\Models\Assets{
 
 namespace App\Models\Assets{
 /**
- * App\Models\Assets\Language
+ * App\Models\Assets\Currency
  *
  * @property int $id
  * @property string $code
+ * @property string $name
+ * @property string $symbol
+ * @property string $symbol_native
+ * @property float $rounding
+ * @property int $decimal_digits
+ * @property string|null $status
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereDecimalDigits($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereRounding($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereSymbol($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereSymbolNative($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	class IdeHelperCurrency extends \Eloquent {}
+}
+
+namespace App\Models\Assets{
+/**
+ * App\Models\Assets\Language
+ *
+ * @mixin IdeHelperLanguage
+ * @property int $id
+ * @property string $code
  * @property string|null $name
- * @property string|null $name_en
+ * @property string|null $original_name
  * @property string|null $status
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -137,10 +174,9 @@ namespace App\Models\Assets{
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereNameEn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Language whereOriginalName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 	class IdeHelperLanguage extends \Eloquent {}
 }

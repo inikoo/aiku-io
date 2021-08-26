@@ -20,6 +20,10 @@ class LanguageSeeder extends Seeder
      */
     public function run()
     {
+
+
+
+
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, "https://api.poeditor.com/v2/languages/available");
