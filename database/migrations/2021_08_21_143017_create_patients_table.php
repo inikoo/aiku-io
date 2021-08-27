@@ -13,31 +13,31 @@ class CreatePatientsTable extends Migration
      */
     public function up()
     {
-        Schema::create('patient_contacts', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('identity_document_type')->nullable();
-            $table->string('identity_document_number')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-
-
-            $table->jsonb('data')->nullable();
-            $table->timestampsTz();
-        });
 
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->date('date_of_birth')->nullable();
             $table->string('gender')->nullable();
-
-
+            $table->string('identity_document_type')->nullable();
+            $table->string('identity_document_number')->nullable();
+            $table->unique(['identity_document_type', 'identity_document_number']);
             $table->jsonb('data');
             $table->timestampsTz();
         });
 
+        Schema::create('contact_patient', function (Blueprint $table) {
+            $table->id();
+            $table->string('relation');
 
+            $table->unsignedBigInteger('contact_id')->nullable();
+            $table->unsignedBigInteger('patient_id')->nullable();
+
+            $table->foreign('contact_id')->references('id')->on('contacts');
+            $table->foreign('patient_id')->references('id')->on('patients');
+            $table->unique(['contact_id', 'patient_id']);
+            $table->timestampsTz();
+        });
     }
 
     /**
@@ -47,8 +47,7 @@ class CreatePatientsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('patient_contacts');
+        Schema::dropIfExists('contact_patient');
         Schema::dropIfExists('patients');
-
     }
 }

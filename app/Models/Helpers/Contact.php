@@ -1,23 +1,25 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sat, 21 Aug 2021 22:14:27 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sat, 28 Aug 2021 00:35:14 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Health;
+namespace App\Models\Helpers;
 
-use App\Models\Helpers\Contact;
+use App\Models\Health\Patient;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
+
 /**
- * @mixin IdeHelperPatient
+ * @mixin IdeHelperContact
  */
-class Patient extends Model
+class Contact extends Model
 {
     use UsesTenantConnection;
     use HasFactory;
@@ -34,8 +36,14 @@ class Patient extends Model
         'data' => '{}',
     ];
 
-    public function contacts(): BelongsToMany
+    public function address(): MorphOne
     {
-        return $this->belongsToMany(Contact::class)->withPivot('relation')->withTimestamps();
+        return $this->morphOne(Address::class,'owner');
     }
+
+    public function patients(): BelongsToMany
+    {
+        return $this->belongsToMany(Patient::class)->withPivot('relation')->withTimestamps();
+    }
+
 }

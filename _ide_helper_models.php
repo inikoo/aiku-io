@@ -212,11 +212,112 @@ namespace App\Models\Health{
  * App\Models\Health\Patient
  *
  * @mixin IdeHelperPatient
+ * @property int $id
+ * @property string $name
+ * @property string|null $date_of_birth
+ * @property string|null $gender
+ * @property string|null $identity_document_type
+ * @property string|null $identity_document_number
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|Contact[] $contacts
+ * @property-read int|null $contacts_count
+ * @method static \Database\Factories\Health\PatientFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Patient newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Patient newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Patient query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereDateOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereIdentityDocumentNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereIdentityDocumentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Patient whereUpdatedAt($value)
  */
 	class IdeHelperPatient extends \Eloquent {}
+}
+
+namespace App\Models\Helpers{
+/**
+ * App\Models\Helpers\Address
+ *
+ * @mixin IdeHelperAddress
+ * @property int $id
+ * @property string|null $address_line_1
+ * @property string|null $address_line_2
+ * @property string|null $sorting_code
+ * @property string|null $postal_code
+ * @property string|null $locality
+ * @property string|null $dependent_locality
+ * @property string|null $administrative_area
+ * @property string|null $country_code
+ * @property string|null $checksum
+ * @property int|null $owner_id
+ * @property string|null $owner_type
+ * @property int|null $country_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read Model|\Eloquent $owner
+ * @method static \Database\Factories\Helpers\AddressFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Address newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Address query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereAddressLine1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereAddressLine2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereAdministrativeArea($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereChecksum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereCountryCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereCountryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereDependentLocality($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereLocality($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereOwnerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereOwnerType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address wherePostalCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereSortingCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Address whereUpdatedAt($value)
+ */
+	class IdeHelperAddress extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable {}
+}
+
+namespace App\Models\Helpers{
+/**
+ * App\Models\Helpers\Contact
+ *
+ * @mixin IdeHelperContact
+ * @property int $id
+ * @property string $name
+ * @property string|null $email
+ * @property string|null $phone
+ * @property string|null $identity_document_type
+ * @property string|null $identity_document_number
+ * @property array|null $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Helpers\Address|null $address
+ * @property-read \Illuminate\Database\Eloquent\Collection|Patient[] $patients
+ * @property-read int|null $patients_count
+ * @method static \Database\Factories\Helpers\ContactFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereIdentityDocumentNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereIdentityDocumentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Contact whereUpdatedAt($value)
+ */
+	class IdeHelperContact extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -224,6 +325,19 @@ namespace App\Models{
  * App\Models\User
  *
  * @mixin IdeHelperUser
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property string|null $remember_token
+ * @property int|null $current_team_id
+ * @property string|null $profile_photo_path
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read string $profile_photo_url
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
@@ -239,6 +353,19 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCurrentTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereProfilePhotoPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereTwoFactorRecoveryCodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereTwoFactorSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  */
 	class IdeHelperUser extends \Eloquent {}
 }

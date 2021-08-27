@@ -1,18 +1,50 @@
 <?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Fri, 27 Aug 2021 18:41:38 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
 
 namespace Database\Seeders;
-
+use App\Models\Health\Patient;
+use Spatie\Multitenancy\Models\Tenant;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
+
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        Tenant::checkCurrent()
+            ? $this->runTenantSpecificSeeders()
+            : $this->runLandlordSpecificSeeders();
     }
+
+    public function runTenantSpecificSeeders()
+    {
+
+        $this->call([
+                        PermissionSeeder::class,
+                        RootUserSeeder::class,
+                        PatientSeeder::class,
+                    ]);
+
+
+
+    }
+
+    public function runLandlordSpecificSeeders()
+    {
+
+        $this->call([
+                        BusinessTypeSeeder::class,
+                        CountrySeeder::class,
+                        CurrencySeeder::class,
+                        TimezoneSeeder::class,
+                        LanguageSeeder::class,
+                    ]);
+    }
+
+
 }

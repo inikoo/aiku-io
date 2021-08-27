@@ -84,18 +84,10 @@ class CreateTenant extends Command
 
         Artisan::call('tenants:artisan "migrate:fresh --database=tenant" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --class=PermissionSeeder" --tenant='.$tenant->id);
+        Artisan::call('tenants:artisan "db:seed --class=RootUserSeeder" --tenant='.$tenant->id);
 
 
-        $password = (App::environment('local') ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 
-        $root_user=(new User())->updateOrCreate(['email' => 'root@aiku'], ['name' => 'Admin Account', 'password' => Hash::make($password)]);
-
-        $root_user->assignRole('super-admin');
-
-        $this->table([
-                         'Password',
-                         'Tenant'
-                     ], [[$password, $tenant->domain]]);
 
 
         return 0;
