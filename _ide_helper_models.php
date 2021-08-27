@@ -46,10 +46,10 @@ namespace App\Models\Aiku{
  * @property string $domain
  * @property string $database
  * @property int $business_type_id
- * @property int $country_id
- * @property string|null $currency
- * @property string|null $language
- * @property int $timezone_id
+ * @property int|null $country_id
+ * @property int|null $currency_id
+ * @property int|null $language_id
+ * @property int|null $timezone_id
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -62,12 +62,12 @@ namespace App\Models\Aiku{
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereBusinessTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCurrency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereDatabase($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereLanguage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereLanguageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereTimezoneId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tenant whereUpdatedAt($value)
@@ -82,38 +82,34 @@ namespace App\Models\Assets{
  * @mixin IdeHelperCountry
  * @property int $id
  * @property string $code
- * @property string|null $code_iso3
- * @property int|null $code_iso_numeric
- * @property int|null $geoname_id
+ * @property string|null $iso3
  * @property string|null $phone_code
- * @property string|null $currency_code
  * @property string $name
- * @property string $continent
+ * @property string|null $continent
  * @property string|null $capital
- * @property string|null $status
+ * @property int|null $timezone_id Timezone in capital
+ * @property int|null $currency_id
+ * @property string|null $type
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $timezone_id Timezone in capital
- * @property int|null $currency_id Timezone in capital
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Assets\Timezone[] $timezones
+ * @property-read int|null $timezones_count
  * @method static \Illuminate\Database\Eloquent\Builder|Country newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Country newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Country query()
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereCapital($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Country whereCodeIso3($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Country whereCodeIsoNumeric($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereContinent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Country whereCurrencyCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Country whereGeonameId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Country whereIso3($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country wherePhoneCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Country whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereTimezoneId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Country whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Country whereUpdatedAt($value)
  */
 	class IdeHelperCountry extends \Eloquent {}
@@ -123,13 +119,12 @@ namespace App\Models\Assets{
 /**
  * App\Models\Assets\Currency
  *
+ * @mixin IdeHelperCurrency
  * @property int $id
  * @property string $code
  * @property string $name
  * @property string $symbol
- * @property string $symbol_native
- * @property float $rounding
- * @property int $decimal_digits
+ * @property int $fraction_digits
  * @property string|null $status
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -140,15 +135,12 @@ namespace App\Models\Assets{
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Currency whereDecimalDigits($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Currency whereFractionDigits($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Currency whereRounding($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereSymbol($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Currency whereSymbolNative($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Currency whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 	class IdeHelperCurrency extends \Eloquent {}
 }
@@ -196,6 +188,8 @@ namespace App\Models\Assets{
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Assets\Country[] $countries
+ * @property-read int|null $countries_count
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Timezone query()
