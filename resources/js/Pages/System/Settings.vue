@@ -10,7 +10,7 @@
     <div class="px-4 sm:px-6 md:px-0">
         <div class="py-6">
             <template v-for="(sectionData,sectionName ) in formBlueprint" >
-                <form-section :sectionName="sectionName" :sectionData="sectionData" :postRoute="'/system/settings'" />
+                <form-section :sectionName="sectionName" :sectionData="sectionData" :postURL="'/system/settings'" />
             </template>
 
         </div>

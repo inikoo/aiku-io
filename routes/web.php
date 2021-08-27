@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Health\PatientController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,9 +34,12 @@ Route::prefix('dashboard')->name('dashboard.')
     ->middleware(['auth:sanctum', 'verified'])
     ->group(__DIR__ . '/web/dashboard.php');
 
+
 Route::prefix('patients')->name('patients.')
     ->middleware(['auth:sanctum', 'verified'])
     ->group(__DIR__ . '/web/patients.php');
+
+
 
 
 Route::prefix('hr')->name('hr.')

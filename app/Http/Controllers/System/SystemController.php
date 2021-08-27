@@ -38,7 +38,6 @@ class SystemController extends Controller
                 'title'       => __('System'),
                 'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
                 'actionIcons' => [
-
                     'system.logbook'  => [
                         'name' => 'History',
                         'icon' => ['fal', 'history']

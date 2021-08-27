@@ -15,24 +15,22 @@ class CreatePatientsTable extends Migration
     {
         Schema::create('patient_contacts', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
             $table->string('name');
-            $table->string('identity_document_type');
-            $table->string('identity_document_number');
-            $table->string('email');
-            $table->string('phone');
+            $table->string('identity_document_type')->nullable();
+            $table->string('identity_document_number')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
 
 
-            $table->jsonb('data');
+            $table->jsonb('data')->nullable();
             $table->timestampsTz();
         });
 
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
             $table->string('name');
-            $table->date('date_of_birth');
-            $table->string('gender');
+            $table->date('date_of_birth')->nullable();
+            $table->string('gender')->nullable();
 
 
             $table->jsonb('data');

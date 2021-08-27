@@ -1,10 +1,16 @@
 <?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Wed, 25 Aug 2021 21:00:00 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
 
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSettingsRequest extends FormRequest
+class UpdateSettingsRequest extends FormRequest
 {
 
     public function authorize(): bool

@@ -55,10 +55,8 @@
 
             </div>
             <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
-
-
                 <span class="ml-2" v-for="(actionIcon,href) in actionIcons" :key="actionIcon.name">
-                    <Link :href="route(href)" as="button" >
+                    <Link :href="route(href,actionIcon.route_parameters)" as="button" >
                     <font-awesome-icon :title="actionIcon.name" :icon="actionIcon.icon" class="text-gray-400 hover:text-gray-500 ml-3" size="lg" aria-hidden="true"/>
                     </Link>
                 </span>
@@ -85,8 +83,8 @@ export default {
     setup(props) {
 
         let sections = [];
-
         const items = usePage().props.value.modules[props.module]['sections'];
+        console.log(props)
         for (const item in items) {
             sections.push(
                 {

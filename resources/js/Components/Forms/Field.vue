@@ -1,0 +1,55 @@
+
+<!--
+  -  Author: Raul Perusquia <raul@inikoo.com>
+  -  Created: Fri, 27 Aug 2021 03:40:05 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Copyright (c) 2021, Inikoo
+  -  Version 4.0
+  -->
+
+<template>
+
+        <dl class="divide-y divide-gray-200">
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500">
+                    {{ fieldData.label }}
+                </dt>
+                <dd class="sm:col-span-2  ">
+                    <div class="mt-1 flex text-sm text-gray-900 sm:mt-0">
+                        <div class=" relative  flex-grow">
+
+                            <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
+                            <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="   focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <ExclamationCircleIcon v-if="form.errors[field]" class="h-5 w-5 text-red-500" aria-hidden="true"/>
+                            </div>
+                        </div>
+
+                    </div>
+                    <p v-if="form.errors[field]" class="mt-2 text-sm text-red-600">{{ form.errors[field] }}</p>
+                </dd>
+            </div>
+        </dl>
+
+</template>
+
+<script>
+import {Link} from '@inertiajs/inertia-vue3';
+import {ExclamationCircleIcon} from '@heroicons/vue/solid';
+import Select from '@/Components/Forms/Select';
+
+export default {
+
+    components: {
+        Link, ExclamationCircleIcon, Select,
+    },
+    props     : ['fieldData', 'field','form'],
+    methods   : {
+        handleChange: function(form) {
+            form.clearErrors();
+        },
+    },
+
+
+};
+</script>

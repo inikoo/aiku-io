@@ -1,29 +1,34 @@
 <!--
   -  Author: Raul Perusquia <raul@inikoo.com>
-  -  Created: Thu, 19 Aug 2021 17:40:57 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Created: Fri, 27 Aug 2021 05:56:57 Malaysia Time, Kuala Lumpur, Malaysia
   -  Copyright (c) 2021, Inikoo
   -  Version 4.0
   -->
 
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'system'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
+
+
+    <simple-header :breadcrumbs="breadcrumbs" :module="'patients'" :actions="actions" :actionIcons="actionIcons">
+        {{ title }}
+
+
+    </simple-header>
+
+
 </template>
 
 <script>
 import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
-import {__} from 'matice';
 
 export default {
     components: {
+
         SimpleHeader,
     },
 
     props: ['title', 'buttons', 'breadcrumbs', 'actions', 'actionIcons'],
 
-    methods: {
-        __: __,
-    },
-
 };
 </script>
+
 

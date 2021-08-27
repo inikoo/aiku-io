@@ -1,0 +1,43 @@
+<!--
+  -  Author: Raul Perusquia <raul@inikoo.com>
+  -  Created: Fri, 27 Aug 2021 06:34:49 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Copyright (c) 2021, Inikoo
+  -  Version 4.0
+  -->
+
+<template>
+
+
+    <simple-header :breadcrumbs="breadcrumbs" :module="'patients'" :actions="actions" :actionIcons="actionIcons">
+        {{ title }}
+    </simple-header>
+
+    <div class="px-4 sm:px-6 md:px-0">
+        <div class="py-6">
+            <template v-for="(sectionData,sectionName ) in formBlueprint">
+                <form-section :sectionName="sectionName" :sectionData="sectionData" :postURL="postURL"/>
+            </template>
+
+        </div>
+    </div>
+
+
+</template>
+
+<script>
+import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
+import FormSection from '@/Components/Forms/FormSection';
+
+export default {
+    components: {
+
+        SimpleHeader, FormSection,
+    },
+
+    props  : ['title', 'buttons', 'breadcrumbs', 'actions', 'actionIcons', 'formBlueprint','postURL'],
+
+
+};
+</script>
+
+

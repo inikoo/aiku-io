@@ -243,9 +243,9 @@ import {usePage} from '@inertiajs/inertia-vue3';
 import {SearchIcon} from '@heroicons/vue/solid';
 import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
 
-import {faTachometerAltFast, faUsers, faRobot, faClipboardUser, faSlidersHSquare, faHistory} from '@/Private/pro-light-svg-icons';
+import {faTachometerAltFast, faUsers, faRobot, faClipboardUser, faSlidersHSquare, faHistory, faPlus,faEdit} from '@/Private/pro-light-svg-icons';
 
-library.add(faTachometerAltFast, faUsers, faClipboardUser, faRobot, faSlidersHSquare, faHistory);
+library.add(faTachometerAltFast, faUsers, faClipboardUser, faRobot, faSlidersHSquare, faHistory, faPlus,faEdit);
 
 export default {
     components: {
@@ -276,7 +276,6 @@ export default {
             this.$inertia.post(route('logout'));
         },
     },
-
 
 };
 </script>

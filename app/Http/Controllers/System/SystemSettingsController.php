@@ -12,7 +12,7 @@ namespace App\Http\Controllers\System;
 use App\Http\Controllers\Assets\CountrySelectOptionsController;
 use App\Http\Controllers\Assets\LanguageSelectOptionsController;
 use App\Http\Controllers\Assets\TimezoneSelectOptionsController;
-use App\Http\Requests\StoreSettingsRequest;
+use App\Http\Requests\UpdateSettingsRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -31,7 +31,7 @@ class SystemSettingsController extends SystemController
     }
 
 
-    public function settings(): Response
+    public function edit(): Response
     {
         $breadcrumbs = array_merge($this->breadcrumbs, [
             'settings' => [
@@ -98,7 +98,7 @@ class SystemSettingsController extends SystemController
         );
     }
 
-    public function store(StoreSettingsRequest $request): RedirectResponse
+    public function update(UpdateSettingsRequest $request): RedirectResponse
     {
         app('currentTenant')->update($request->all());
 

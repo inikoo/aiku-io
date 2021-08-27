@@ -1,6 +1,8 @@
+
+
 <!--
   -  Author: Raul Perusquia <raul@inikoo.com>
-  -  Created: Tue, 24 Aug 2021 19:42:23 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Created: Fri, 27 Aug 2021 01:21:08 Malaysia Time, Kuala Lumpur, Malaysia
   -  Copyright (c) 2021, Inikoo
   -  Version 4.0
   -->
@@ -16,8 +18,7 @@
                     <div class="mt-1 flex text-sm text-gray-900 sm:mt-0">
                         <div class=" relative  flex-grow">
 
-                            <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
-                            <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="   focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                            <input @input="handleChange(form)" v-model="form[field]" type="text" class="   focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
 
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <ExclamationCircleIcon v-if="form.errors[field]" class="h-5 w-5 text-red-500" aria-hidden="true"/>
@@ -48,7 +49,7 @@ export default {
     components: {
         Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select,
     },
-    props     : ['fieldData', 'field', 'postRoute'],
+    props     : ['fieldData', 'field', 'postURL'],
     methods   : {
         __          : __,
         handleChange: function(form) {

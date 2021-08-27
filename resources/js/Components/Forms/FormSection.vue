@@ -16,9 +16,9 @@
             </p>
         </div>
         <div class="mt-6">
-
-            <template v-for="(fieldData,field ) in sectionData.fields" >
-              <edit-field  :field="field"  :fieldData="fieldData"  :postRoute="postRoute" />
+            <template v-for="(fieldData,field ) in sectionData.fields">
+                <field v-if="type === 'form'" :form="form" :field="field" :fieldData="fieldData"/>
+                <field-form v-else :field="field" :fieldData="fieldData" :postURL="postURL"/>
             </template>
 
         </div>
@@ -28,14 +28,14 @@
 
 <script>
 
-import EditField from '@/Components/Forms/EditField';
+import FieldForm from '@/Components/Forms/FieldForm';
+import Field from '@/Components/Forms/Field';
 
 export default {
     components: {
-        EditField
+        FieldForm, Field,
     },
-    props: ['sectionName', 'sectionData', 'postRoute'],
-
+    props     : ['sectionName', 'sectionData', 'postURL', 'type', 'form'],
 
 };
 </script>

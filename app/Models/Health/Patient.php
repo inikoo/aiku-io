@@ -18,6 +18,10 @@ class Patient extends Model
 {
     use UsesTenantConnection;
 
+    protected $fillable = [
+        'name',
+    ];
+
     protected $casts = [
         'data'     => 'array'
     ];

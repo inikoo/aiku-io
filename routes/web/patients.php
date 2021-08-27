@@ -6,49 +6,21 @@
  *  Version 4.0
  */
 
-use Inertia\Inertia;
+use App\Http\Controllers\Health\PatientController;
 
-Route::get('/', function () {
-    return Inertia::render(
-        'Patients/Patients',
-        [
-            'title'       => __('Patients'),
-            'breadcrumbs' => [
-                'patients.index' => [
-                    'name'    => __('Patients'),
-                    'current' => true
-                ],
-            ],
-            'actions'     => [
-                [
-                    'type'    => 'link',
-                    'route'   => 'patients.new',
-                    'name'    => __('New patient'),
-                    'primary' => true
-                ]
-            ]
-        ]
-    );
-})->name('index');
 
-Route::get('/new', function () {
-    return Inertia::render(
-        'Patients/NewPatient',
-        [
-            'title'       => __('Patient registration'),
-            'breadcrumbs' => [
-                'patients.index' => [
-                    'name'    => __('Patients'),
-                    'current' => false
-                ],
-                'patients.new' => [
-                    'name'    => __('New patient'),
-                    'current' => true
-                ],
 
-            ],
 
-        ]
-    );
-})->name('new');
+Route::get('/', [PatientController::class, 'index'])->name('index');
+
+Route::get('/create', [PatientController::class, 'create'])->name('create');
+Route::post('/create', [PatientController::class, 'store'])->name('store');
+
+Route::get('/{id}', [PatientController::class, 'show'])->name('show');
+Route::get('/{id}/edit', [PatientController::class, 'edit'])->name('edit');
+Route::post('/{id}/edit', [PatientController::class, 'update'])->name('update');
+
+
+Route::get('/logbook', [PatientController::class, 'logbook'])->name('logbook');
+Route::get('/{id}/logbook', [PatientController::class, 'patientLogbook'])->name('show.logbook');
 
