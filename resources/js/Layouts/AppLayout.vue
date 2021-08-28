@@ -241,15 +241,18 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {MenuIcon, LogoutIcon, XIcon, BellIcon, MenuAlt2Icon} from '@heroicons/vue/outline';
 import {usePage} from '@inertiajs/inertia-vue3';
 import {SearchIcon} from '@heroicons/vue/solid';
-import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
+import Header from '@/Layouts/PageHeader';
 
-import {faTachometerAltFast, faUsers, faRobot, faClipboardUser, faSlidersHSquare, faHistory, faPlus,faEdit} from '@/Private/pro-light-svg-icons';
+import {faTachometerAltFast, faUsers, faRobot, faClipboardUser, faSlidersHSquare, faHistory, faPlus,faEdit,faPortalExit} from '@/Private/pro-light-svg-icons';
+library.add(faTachometerAltFast, faUsers, faClipboardUser, faRobot, faSlidersHSquare, faHistory, faPlus,faEdit,faPortalExit);
 
-library.add(faTachometerAltFast, faUsers, faClipboardUser, faRobot, faSlidersHSquare, faHistory, faPlus,faEdit);
+import {faBirthdayCake,faMars,faVenus} from '@/Private/pro-regular-svg-icons';
+library.add(faBirthdayCake,faMars,faVenus);
+
 
 export default {
     components: {
-        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, SimpleHeader,
+        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header,
 
     }, setup() {
 

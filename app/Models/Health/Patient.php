@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Arr;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
@@ -23,14 +24,14 @@ class Patient extends Model
     use UsesTenantConnection;
     use HasFactory;
 
-    protected $appends = ['age','formatted_id'];
+    protected $appends = ['age', 'formatted_id'];
 
     protected $fillable = [
         'name',
     ];
 
     protected $casts = [
-        'data'     => 'array'
+        'data' => 'array'
     ];
 
     protected $attributes = [
@@ -42,22 +43,58 @@ class Patient extends Model
         return $this->belongsToMany(Contact::class)->withPivot('relation')->withTimestamps();
     }
 
-    public function getAgeAttribute(): string
+    public function getAgeAttribute($labelType): string
     {
+        $labelType = $labelType ?? 'default';
+        $labels    = [
+            'infant' => [
+                'naked'   => '%y, %m',
+                'default' => '%yy, %mm',
+                'verbose' => '%y years, %m months'
+            ],
+            'adult'  => [
+                'naked'   => '%y',
+                'default' => '%y',
+                'verbose' => '%y years'
+            ]
+        ];
+
         $date = Carbon::parse($this->date_of_birth);
-        $now = Carbon::now();
+        $now  = Carbon::now();
 
 
-        if($date->diffInDays($now)<1460){
-            return $date->diff($now)->format('%yy, %mm');
-        }else{
-            return $date->diff($now)->format('%y');
+        if ($date->diffInDays($now) < 1460) {
+            return $date->diff($now)->format(Arr::get($labels, "infant.$labelType"));
+        } else {
+            return $date->diff($now)->format(Arr::get($labels, "adult.$labelType"));
         }
+    }
 
+    public function getFormattedDobAttribute(): string
+    {
+        return Carbon::parse($this->date_of_birth)->locale(auth()->user()->locale??'en')->isoFormat('ll');
     }
 
     public function getFormattedIdAttribute(): string
     {
-        return sprintf('%04d',$this->id);
+        return sprintf('%04d', $this->id);
+    }
+
+    public function getFormattedGenderAttribute(): string
+    {
+        return match ($this->gender) {
+            'Male' => __('Male'),
+            'Female' => __('Female'),
+            default => $this->gender,
+        };
+    }
+
+    public function getGenderIconAttribute(): array
+    {
+        return match ($this->gender) {
+            'Male' => ['far', 'mars'],
+            'Female' => ['far', 'venus'],
+            default => ['far', 'genderless'],
+        };
     }
 }

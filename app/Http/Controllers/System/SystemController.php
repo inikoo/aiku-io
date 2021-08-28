@@ -17,6 +17,7 @@ class SystemController extends Controller
 {
 
     protected array $breadcrumbs = [];
+    private string $module;
 
     public function __construct()
     {
@@ -27,6 +28,8 @@ class SystemController extends Controller
                 'current' => false
             ],
         ];
+
+        $this->module = 'system';
     }
 
 
@@ -35,22 +38,24 @@ class SystemController extends Controller
         return Inertia::render(
             'System/System',
             [
-                'title'       => __('System'),
-                'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
-                'actionIcons' => [
-                    'system.logbook'  => [
-                        'name' => 'History',
-                        'icon' => ['fal', 'history']
-                    ],
-                    'system.settings' => [
-                        'name' => 'Settings',
-                        'icon' => ['fal', 'sliders-h-square']
-                    ],
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'       => __('System'),
+                    'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
+                    'actionIcons' => [
+                        'system.logbook'  => [
+                            'name' => 'History',
+                            'icon' => ['fal', 'history']
+                        ],
+                        'system.settings' => [
+                            'name' => 'Settings',
+                            'icon' => ['fal', 'sliders-h-square']
+                        ],
+                    ]
                 ]
             ]
         );
     }
-
 
 
     public function users(): Response

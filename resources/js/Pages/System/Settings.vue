@@ -6,11 +6,11 @@
   -->
 
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'system'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
+    <page-header :headerData="headerData"/>
     <div class="px-4 sm:px-6 md:px-0">
         <div class="py-6">
-            <template v-for="(sectionData,sectionName ) in formBlueprint" >
-                <form-section :sectionName="sectionName" :sectionData="sectionData" :postURL="'/system/settings'" />
+            <template v-for="(sectionData,sectionName ) in formData['blueprint']" >
+                <form-section :sectionName="sectionName" :sectionData="sectionData" :postURL="formData['postURL']" />
             </template>
 
         </div>
@@ -18,15 +18,15 @@
 </template>
 
 <script>
-import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
+import PageHeader from '@/Layouts/PageHeader';
 import FormSection from '@/Components/Forms/FormSection';
 
 export default {
 
     components: {
-        SimpleHeader, FormSection
+        PageHeader, FormSection
     },
-    props     : ['title', 'buttons', 'breadcrumbs', 'actions', 'actionIcons', 'formBlueprint'],
+    props     : ['headerData', 'formData'],
 
 
 };

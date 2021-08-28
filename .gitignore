@@ -18,3 +18,5 @@ yarn-error.log
 /public/copyright.html
 /resources/js/private/
 /resources/Legacy/
+/_ide_helper.php
+/_ide_helper_models.php

@@ -6,17 +6,17 @@
   -->
 
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'system'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
+    <page-header :headerData="headerData"/>
 </template>
 
 <script>
-import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
+import PageHeader from '@/Layouts/PageHeader';
 
 export default {
     components: {
-        SimpleHeader,
+        PageHeader,
     },
-    props     : ['title', 'buttons', 'breadcrumbs', 'actions', 'actionIcons'],
+    props     : ['headerData'],
 
 };
 </script>

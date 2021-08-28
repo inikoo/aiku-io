@@ -1,5 +1,3 @@
-
-
 <!--
   -  Author: Raul Perusquia <raul@inikoo.com>
   -  Created: Sat, 21 Aug 2021 04:42:35 Malaysia Time, Kuala Lumpur, Malaysia
@@ -8,21 +6,17 @@
   -->
 
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'hr'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
+    <page-header :headerData="headerData"/>
 </template>
 
 <script>
-import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
+import PageHeader from '@/Layouts/PageHeader';
 
 export default {
     components: {
-        SimpleHeader,
+        PageHeader,
     },
-
-    props: ['title', 'buttons', 'breadcrumbs', 'actions', 'actionIcons'],
-
-
+    props     : ['headerData'],
 
 };
 </script>
-

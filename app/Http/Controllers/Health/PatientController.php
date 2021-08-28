@@ -25,6 +25,7 @@ class PatientController extends Controller
 {
 
     protected array $breadcrumbs = [];
+    private string $module;
 
     public function __construct()
     {
@@ -35,6 +36,8 @@ class PatientController extends Controller
                 'current' => false
             ],
         ];
+
+        $this->module='patients';
     }
 
 
@@ -42,7 +45,7 @@ class PatientController extends Controller
     {
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
-                $query->where('name', 'LIKE', "%{$value}%");
+                $query->where('name', 'LIKE', "%$value%");
             });
         });
 
@@ -58,20 +61,26 @@ class PatientController extends Controller
         return Inertia::render(
             'Patients/Patients',
             [
-                'title'       => __('Patients'),
-                'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
-                'actionIcons' => [
 
-                    'patients.logbook' => [
-                        'name' => __('History'),
-                        'icon' => ['fal', 'history']
-                    ],
-                    'patients.create'  => [
-                        'name' => __('Create patient'),
-                        'icon' => ['fal', 'plus']
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'       => __('Patients'),
+                    'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
+                    'actionIcons' => [
+
+                        'patients.logbook' => [
+                            'name' => __('History'),
+                            'icon' => ['fal', 'history']
+                        ],
+                        'patients.create'  => [
+                            'name' => __('Create patient'),
+                            'icon' => ['fal', 'plus']
+                        ],
                     ],
                 ],
-                'patients'    => $patients,
+
+
+                'patients' => $patients,
 
             ]
         )->table(function (InertiaTable $table) {
@@ -105,21 +114,37 @@ class PatientController extends Controller
         return Inertia::render(
             'Patients/NewPatient',
             [
-                'title'         => __('New patient'),
-                'breadcrumbs'   => $breadcrumbs,
-                'formBlueprint' => [
-                    'profile' => [
-                        'title'    => __('Personal information'),
-                        'subtitle' => '',
-                        'fields'   => [
-                            'name' => [
-                                'type'  => 'text',
-                                'label' => __('Name'),
-                                'value' => ''
-                            ]
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'         => __('New patient'),
+                    'breadcrumbs'   => $breadcrumbs,
+                    'actionIcons' => [
+                        'patients.index' => [
+                            'name'            => __('Cancel'),
+                            'icon'            => ['fal', 'portal-exit'],
                         ]
                     ],
-                ],
+                    ],
+
+                'formData'=>[
+                    'postURL'   =>'/patients/create',
+                    'cancelRoute'   =>['patients.index'],
+                    'blueprint' => [
+                        'profile' => [
+                            'title'    => __('Personal information'),
+                            'subtitle' => '',
+                            'fields'   => [
+                                'name' => [
+                                    'type'  => 'text',
+                                    'label' => __('Name'),
+                                    'value' => ''
+                                ]
+                            ]
+                        ],
+                    ],
+                ]
+
+
             ]
         );
     }
@@ -137,31 +162,48 @@ class PatientController extends Controller
         $patient = Patient::find($id);
 
         $breadcrumbs = array_merge($this->breadcrumbs, [
-            'users' => [
-                'route'            => 'patients.show',
-                'route_parameters' => $patient->id,
-                'name'             => __('Patient'),
-                'current'          => true
+            'patients' => [
+                'route'           => 'patients.show',
+                'routeParameters' => $patient->id,
+                'name'            => __('Patient').' '.$patient->formatted_id,
+                'current'         => true
             ]
         ]);
 
         return Inertia::render(
             'Patients/Patient',
             [
-                'title'       => $patient->name,
-                'breadcrumbs' => $breadcrumbs,
-                'actionIcons' => [
-                    'patients.show.logbook' => [
-                        'route_parameters' => $patient->id,
-                        'name'             => __('History'),
-                        'icon'             => ['fal', 'history']
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'       => $patient->name,
+                    'breadcrumbs' => $breadcrumbs,
+                    'actionIcons' => [
+                        'patients.show.logbook' => [
+                            'routeParameters' => $patient->id,
+                            'name'            => __('History'),
+                            'icon'            => ['fal', 'history']
+                        ],
+                        'patients.edit'         => [
+                            'routeParameters' => $patient->id,
+                            'name'            => __('Edit'),
+                            'icon'            => ['fal', 'edit']
+                        ],
                     ],
-                    'patients.edit'         => [
-                        'route_parameters' => $patient->id,
-                        'name'             => __('Edit'),
-                        'icon'             => ['fal', 'edit']
-                    ],
-                ]
+                    'meta'        => [
+                        [
+                            'icon' => ['far', 'birthday-cake'],
+                            'name' => $patient->formatted_dob.' ('.$patient->getAgeAttribute('verbose').')'
+                        ],
+                        [
+                            'icon' => $patient->gender_icon,
+                            'name' => $patient->formatted_gender
+                        ],
+                    ]
+                ],
+
+
+                'patient' => $patient,
+
             ]
         );
     }
@@ -172,33 +214,56 @@ class PatientController extends Controller
         $patient = Patient::findOrFail($id);
 
         $breadcrumbs = array_merge($this->breadcrumbs, [
-            'users' => [
-                'route'            => 'patients.show',
-                'route_parameters' => $patient->id,
-                'name'             => __('Patient'),
-                'current'          => true
+            'show' => [
+                'route'           => 'patients.show',
+                'routeParameters' => $patient->id,
+                'name'            => __('Patient').' '.$patient->formatted_id,
+                'current'         => false
+            ],
+            'edit' => [
+                'route'           => 'patients.edit',
+                'routeParameters' => $patient->id,
+                'name'            => __('Edit'),
+                'current'         => true
             ]
         ]);
 
         return Inertia::render(
             'Patients/EditPatient',
             [
-                'title'       => __('Editing patient', ['name' => $patient->name]),
-                'breadcrumbs' => $breadcrumbs,
-                'postURL'     => "/patients/$patient->id/edit",
 
-                'formBlueprint' => [
-                    'profile' => [
-                        'title'    => __('Personal information'),
-                        'subtitle' => '',
-                        'fields'   => [
-                            'name' => [
-                                'type'  => 'text',
-                                'label' => __('Name'),
-                                'value' => $patient->name
-                            ]
+
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'       => __('Editing patient').' '.$patient->formatted_id,
+                    'breadcrumbs' => $breadcrumbs,
+                    'actionIcons' => [
+                        'patients.show' => [
+                            'routeParameters' => $patient->id,
+                            'name'            => __('Exit edit'),
+                            'icon'            => ['fal', 'portal-exit'],
                         ]
                     ],
+
+                ],
+
+
+                'formData' => [
+                    'postURL'   => "/patients/$patient->id/edit",
+                    'blueprint' => [
+                        'profile' => [
+                            'title'    => __('Personal information'),
+                            'subtitle' => '',
+                            'fields'   => [
+                                'name' => [
+                                    'type'  => 'text',
+                                    'label' => __('Name'),
+                                    'value' => $patient->name
+                                ]
+                            ]
+                        ],
+                    ],
+
                 ],
 
             ]

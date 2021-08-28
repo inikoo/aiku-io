@@ -13,8 +13,11 @@ Route::get('/', function () {
     return Inertia::render(
         'Dashboard',
         [
-            'title'       => __('Dashboard'),
-            'breadcrumbs' => []
+            'headerData' => [
+                'module' => 'dashboard',
+                'title' => __('Dashboard'),
+                'breadcrumbs' => []
+            ]
         ]
     );
 })->name('index');

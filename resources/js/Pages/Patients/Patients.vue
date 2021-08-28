@@ -6,7 +6,7 @@
   -->
 
 <template>
-    <simple-header :breadcrumbs="breadcrumbs" :module="'patients'" :actions="actions" :actionIcons="actionIcons">{{ title }}</simple-header>
+    <page-header :headerData="headerData" />
 
     <Table
 
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import SimpleHeader from '@/Layouts/PageHeadings/SimpleHeader';
+import PageHeader from '@/Layouts/PageHeader';
 import {InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder';
 import {Link} from '@inertiajs/inertia-vue3';
 
@@ -53,11 +53,11 @@ export default {
     mixins: [InteractsWithQueryBuilder],
 
     components: {
-        SimpleHeader, Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link
+        PageHeader, Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link
     },
 
     props: [
-        'title', 'buttons', 'breadcrumbs', 'actions', 'actionIcons','patients'
+        'headerData','patients'
 
     ],
 
