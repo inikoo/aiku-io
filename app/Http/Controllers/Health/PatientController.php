@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 use Inertia\Response;
+use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PatientController extends Controller
 {
@@ -37,6 +40,21 @@ class PatientController extends Controller
 
     public function index(): Response
     {
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                $query->where('name', 'LIKE', "%{$value}%");
+            });
+        });
+
+        $patients = QueryBuilder::for(Patient::class)
+            ->defaultSort('name')
+            ->allowedSorts(['name', 'date_of_birth', 'gender','id'])
+            ->allowedAppends(['age', 'formatted_id'])
+            ->allowedFilters(['name', 'date_of_birth', 'gender', $globalSearch])
+            ->paginate()
+            ->withQueryString();
+
+
         return Inertia::render(
             'Patients/Patients',
             [
@@ -52,9 +70,25 @@ class PatientController extends Controller
                         'name' => __('Create patient'),
                         'icon' => ['fal', 'plus']
                     ],
-                ]
+                ],
+                'patients'    => $patients,
+
             ]
-        );
+        )->table(function (InertiaTable $table) {
+            $table->addSearchRows(
+                [
+                    'name' => 'Name',
+
+                ]
+            )->addFilter('gender', 'gender', [
+                'Male'   => __('Male'),
+                'Female' => __('Female'),
+            ])->addColumns([
+                               'gender'        => 'Gender',
+                               'date_of_birth' => 'Date of birth',
+                               'age'           => 'Age',
+                           ]);
+        });
     }
 
 

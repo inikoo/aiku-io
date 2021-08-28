@@ -9,6 +9,7 @@
 namespace App\Models\Health;
 
 use App\Models\Helpers\Contact;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,6 +22,8 @@ class Patient extends Model
 {
     use UsesTenantConnection;
     use HasFactory;
+
+    protected $appends = ['age','formatted_id'];
 
     protected $fillable = [
         'name',
@@ -37,5 +40,24 @@ class Patient extends Model
     public function contacts(): BelongsToMany
     {
         return $this->belongsToMany(Contact::class)->withPivot('relation')->withTimestamps();
+    }
+
+    public function getAgeAttribute(): string
+    {
+        $date = Carbon::parse($this->date_of_birth);
+        $now = Carbon::now();
+
+
+        if($date->diffInDays($now)<1460){
+            return $date->diff($now)->format('%yy, %mm');
+        }else{
+            return $date->diff($now)->format('%y');
+        }
+
+    }
+
+    public function getFormattedIdAttribute(): string
+    {
+        return sprintf('%04d',$this->id);
     }
 }

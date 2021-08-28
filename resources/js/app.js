@@ -9,27 +9,32 @@
 require('./bootstrap');
 
 import {createApp, h} from 'vue';
-import {createInertiaApp} from '@inertiajs/inertia-vue3';
+import {createInertiaApp,Link} from '@inertiajs/inertia-vue3';
 import {InertiaProgress} from '@inertiajs/progress';
-import AppLayout from "@/Layouts/AppLayout";
+import AppLayout from '@/Layouts/AppLayout';
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
+
+const appName = window.document.getElementsByTagName('title')[0]?.innerText ||
+    'Laravel';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`, resolve: name => {
-        const page = require(`./Pages/${name}`).default
-        if (page.layout === undefined ) {
-            page.layout = AppLayout
-        }
-        return page
-    },
+                     title  : (title) => `${title} - ${appName}`,
+                     resolve: name => {
+                         const page = require(`./Pages/${name}`).default;
+                         if (page.layout === undefined) {
+                             page.layout = AppLayout;
+                         }
+                         return page;
+                     },
 
-    setup({el, app, props, plugin}) {
-        return createApp({render: () => h(app, props)})
-            .use(plugin)
-            .mixin({methods: {route}})
-            .mount(el);
-    },
-});
+                     setup({el, app, props, plugin}) {
+                         return createApp({render: () => h(app, props)}).
+                             use(plugin).
+                             component('InertiaLink',
+                                       Link) // Here happens the magic ;-)
+                             .mixin({methods: {route}}).
+                             mount(el);
+                     },
+                 });
 
 InertiaProgress.init({color: '#4B5563'});
