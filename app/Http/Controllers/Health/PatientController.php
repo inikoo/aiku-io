@@ -171,9 +171,6 @@ class PatientController extends Controller
         ]);
 
 
-
-
-
         return Inertia::render(
             'Patients/Patient',
             [
@@ -218,8 +215,8 @@ class PatientController extends Controller
                                 ]
                             ],
                             [
-                                'type' => 'contacts',
-                                'title'=>__('Contact details'),
+                                'type'     => 'contacts',
+                                'title'    => __('Contact details'),
                                 'contacts' => $patient->contacts
                             ]
                         ]
@@ -249,6 +246,79 @@ class PatientController extends Controller
             ]
         ]);
 
+
+        $personalInformationBlueprint = [
+            'title'    => __('Personal information'),
+            'subtitle' => '',
+            'fields'   => [
+                'name'          => [
+                    'type'  => 'text',
+                    'label' => __('Name'),
+                    'value' => $patient->name
+                ],
+                'date_of_birth' => [
+                    'type'  => 'date',
+                    'label' => __('Date of birth'),
+                    'value' => $patient->date_of_birth
+                ],
+                'gender'        => [
+                    'type'    => 'radio',
+                    'label'   => __('Gender'),
+                    'options' => [
+
+                        [
+                            'value' => 'Male',
+                            'name'  => __('Male')
+                        ],
+                        [
+                            'value' => 'Female',
+                            'name'  => __('Female')
+                        ],
+
+
+                    ],
+                    'value'   => $patient->gender
+                ],
+            ]
+        ];
+        $blueprint                    = [];
+        $blueprint[]                  = $personalInformationBlueprint;
+
+        foreach ($patient->contacts as $contact) {
+            $blueprint[] = [
+                'title'  => __('Contact'),
+                'fields' => [
+                    'relation' => [
+                        'type'    => 'select',
+                        'options' => [
+                            'Mother'   => __('Mother'),
+                            'Father'   => __('Father'),
+                            'Guardian' => __('Guardian'),
+                            'Other'    => __('Other'),
+                        ],
+                        'label'   => __('Relation'),
+                        'value'   => $contact->pivot->relation
+                    ],
+                    'name'     => [
+                        'postURL'   => "/patients/$patient->id/contact/$contact->id/edit",
+                        'type'  => 'text',
+                        'label' => __('Name'),
+                        'value' => $contact->name
+                    ],
+                    'email'    => [
+                        'type'  => 'text',
+                        'label' => __('Email'),
+                        'value' => $contact->email
+                    ],
+                    'phone'    => [
+                        'type'  => 'text',
+                        'label' => __('Phone'),
+                        'value' => $contact->phone
+                    ],
+                ]
+            ];
+        }
+
         return Inertia::render(
             'Patients/EditPatient',
             [
@@ -271,25 +341,7 @@ class PatientController extends Controller
 
                 'formData' => [
                     'postURL'   => "/patients/$patient->id/edit",
-                    'blueprint' => [
-                        'profile' => [
-                            'title'    => __('Personal information'),
-                            'subtitle' => '',
-                            'fields'   => [
-                                'name' => [
-                                    'type'  => 'text',
-                                    'label' => __('Name'),
-                                    'value' => $patient->name
-                                ],
-                                'date_of_birth' => [
-                                    'type'  => 'date',
-                                    'label' => __('Date of birth'),
-                                    'value' => $patient->date_of_birth
-                                ],
-                              
-                            ]
-                        ],
-                    ],
+                    'blueprint' => $blueprint
 
                 ],
 
@@ -301,6 +353,7 @@ class PatientController extends Controller
     public function update(UpdatePatientController $request, $id): RedirectResponse
     {
         $patient = Patient::findOrFail($id);
+
         $patient->update($request->all());
 
         return Redirect::route('patients.edit', $patient->id);

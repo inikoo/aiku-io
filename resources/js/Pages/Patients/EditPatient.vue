@@ -9,8 +9,8 @@
     <page-header :headerData="headerData"/>
     <div class="px-4 sm:px-6 md:px-0">
         <div class="pb-6">
-            <template v-for="(sectionData,sectionName ) in formData['blueprint']">
-                <form-section :sectionName="sectionName" :sectionData="sectionData" :postURL="formData['postURL']"/>
+            <template v-for="(sectionData ) in formData['blueprint']">
+                <form-section  :sectionData="sectionData" :postURL="formData['postURL']"/>
             </template>
 
         </div>

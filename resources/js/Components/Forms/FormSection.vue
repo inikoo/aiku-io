@@ -35,7 +35,7 @@ export default {
     components: {
         FieldForm, Field,
     },
-    props     : ['sectionName', 'sectionData', 'postURL', 'type', 'form'],
+    props     : [ 'sectionData', 'postURL', 'type', 'form'],
 
 };
 </script>

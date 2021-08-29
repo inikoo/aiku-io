@@ -8,8 +8,12 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property mixed date_of_birth
+ */
 class UpdatePatientController extends FormRequest
 {
 
@@ -18,12 +22,24 @@ class UpdatePatientController extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+
+        if($this->date_of_birth){
+            $this->merge([
+                             'date_of_birth' => Carbon::parse($this->date_of_birth)->format('Y-m-d')
+                         ]);
+        }
+
+
+    }
 
     public function rules(): array
     {
         return [
-            'name'     => 'sometimes|required',
-
+            'name'          => 'sometimes|required',
+            'date_of_birth' => 'sometimes|required|date',
+            'gender'        => 'sometimes|required',
         ];
     }
 }

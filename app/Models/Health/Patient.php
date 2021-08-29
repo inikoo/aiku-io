@@ -27,7 +27,7 @@ class Patient extends Model
     protected $appends = ['age', 'formatted_id'];
 
     protected $fillable = [
-        'name',
+        'name','date_of_birth','gender'
     ];
 
     protected $casts = [

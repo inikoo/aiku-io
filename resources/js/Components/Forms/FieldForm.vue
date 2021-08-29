@@ -18,7 +18,8 @@
                         <div class=" relative  flex-grow">
 
                             <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
-                            <DatePicker v-if="fieldData.type === 'date'" v-model="form[field]" >
+                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]"/>
+                            <DatePicker v-else-if="fieldData.type === 'date'" v-model="form[field]" >
                                 <template v-slot="{ inputValue, inputEvents }">
                                     <input type="text"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block  sm:text-sm border-gray-300 rounded-md   "
@@ -36,7 +37,7 @@
                             </div>
                         </div>
                         <span class="ml-4 flex-shrink-0">
-                            <button :title=" __('Update')" type="submit"><SaveIcon class="h-8 w-8 " :class="form.isDirty ? 'text-indigo-500' : 'text-gray-200'" aria-hidden="true"/></button>
+                            <button :title=" __('Update')" :disabled="form.processing  || !form.isDirty "   type="submit"><SaveIcon class="h-8 w-8 " :class="form.isDirty ? 'text-indigo-500' : 'text-gray-200'" aria-hidden="true"/></button>
                         </span>
                     </div>
                     <p v-if="form.errors[field]" class="mt-2 text-sm text-red-600">{{ form.errors[field] }}</p>
@@ -54,11 +55,12 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {ExclamationCircleIcon, CheckCircleIcon, SaveIcon} from '@heroicons/vue/solid';
 import Select from '@/Components/Forms/Select';
 import {DatePicker} from 'v-calendar';
+import Radio from '@/Components/Forms/Radio';
 
 export default {
 
     components: {
-        Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select,DatePicker
+        Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select,DatePicker,Radio
     },
     props     : ['fieldData', 'field', 'postURL'],
     methods   : {
@@ -73,6 +75,9 @@ export default {
                                  [props.field]: props.fieldData.value,
 
                              });
+
+        console.log(form)
+
 
         return {
             form,
