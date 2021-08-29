@@ -280,7 +280,13 @@ class PatientController extends Controller
                                     'type'  => 'text',
                                     'label' => __('Name'),
                                     'value' => $patient->name
-                                ]
+                                ],
+                                'date_of_birth' => [
+                                    'type'  => 'date',
+                                    'label' => __('Date of birth'),
+                                    'value' => $patient->date_of_birth
+                                ],
+                              
                             ]
                         ],
                     ],

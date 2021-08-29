@@ -18,6 +18,17 @@
                         <div class=" relative  flex-grow">
 
                             <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
+                            <DatePicker v-if="fieldData.type === 'date'" v-model="form[field]" >
+                                <template v-slot="{ inputValue, inputEvents }">
+                                    <input
+                                        class="bg-white border px-2 py-1 rounded"
+                                        :value="inputValue"
+                                        v-on="inputEvents"
+                                    />
+                                </template>
+                            </DatePicker>
+
+
                             <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="   focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
 
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -37,11 +48,12 @@
 import {Link} from '@inertiajs/inertia-vue3';
 import {ExclamationCircleIcon} from '@heroicons/vue/solid';
 import Select from '@/Components/Forms/Select';
+import {DatePicker} from 'v-calendar';
 
 export default {
 
     components: {
-        Link, ExclamationCircleIcon, Select,
+        Link, ExclamationCircleIcon, Select,DatePicker
     },
     props     : ['fieldData', 'field','form'],
     methods   : {

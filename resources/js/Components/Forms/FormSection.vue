@@ -11,11 +11,11 @@
             <h3 class="text-lg leading-6 font-medium text-gray-900">
                 {{ sectionData.title }}
             </h3>
-            <p v-if="sectionData['subtitle']" class="max-w-2xl text-sm text-gray-500">
+            <p v-show="sectionData['subtitle']" class="max-w-2xl text-sm text-gray-500">
                 {{ sectionData['subtitle'] }}
             </p>
         </div>
-        <div class="mt-6">
+        <div class="mt-6 pt-4 sm:pt-5 ">
             <template v-for="(fieldData,field ) in sectionData.fields">
                 <field v-if="type === 'form'" :form="form" :field="field" :fieldData="fieldData"/>
                 <field-form v-else :field="field" :fieldData="fieldData" :postURL="postURL"/>
