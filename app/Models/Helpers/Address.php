@@ -8,11 +8,15 @@
 namespace App\Models\Helpers;
 
 use App\Models\Assets\Country;
-use Exception;
+use CommerceGuys\Addressing\Address as Adr;
+use CommerceGuys\Addressing\AddressFormat\AddressFormatRepository;
+use CommerceGuys\Addressing\Country\CountryRepository;
+use CommerceGuys\Addressing\Formatter\DefaultFormatter;
+use CommerceGuys\Addressing\ImmutableAddressInterface;
+use CommerceGuys\Addressing\Subdivision\SubdivisionRepository;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
@@ -34,10 +38,9 @@ class Address extends Model implements Auditable
         static::created(
 
             function (Address $address) {
-
                 if ($country = (new Country())->firstWhere('id', $address->country_id)) {
                     $address->country_code = $country->code;
-                    $address->checksum=$address->getChecksum();
+                    $address->checksum     = $address->getChecksum();
                     $address->save();
                 }
             }
@@ -50,6 +53,36 @@ class Address extends Model implements Auditable
         return $this->morphTo(__FUNCTION__, 'owner_type', 'owner_id');
     }
 
+
+    private function getAdr(): ImmutableAddressInterface|Adr
+    {
+        $address = new Adr();
+
+
+        return $address
+            ->withCountryCode($this->country_code)
+            ->withAdministrativeArea($this->administrative_area)
+            ->withDependentLocality($this->dependent_locality)
+            ->withLocality($this->locality)
+            ->withPostalCode($this->postal_code)
+            ->withSortingCode($this->sorting_code)
+            ->withAddressLine2($this->address_line_2)
+            ->withAddressLine1($this->address_line_1);
+    }
+
+    /** @noinspection PhpUnused */
+    public function getFormattedAddressAttribute(): string
+    {
+        $addressFormatRepository = new AddressFormatRepository();
+        $countryRepository       = new CountryRepository();
+        $subdivisionRepository   = new SubdivisionRepository();
+
+
+        $formatter = new DefaultFormatter($addressFormatRepository, $countryRepository, $subdivisionRepository, ['html' => false]);
+
+
+        return $formatter->format($this->getAdr());
+    }
 
     public function getChecksum(): string
     {
@@ -80,16 +113,7 @@ class Address extends Model implements Auditable
         );
     }
 
-    public function deleteIfOrphan()
-    {
-        if (!DB::table('addressables')->where('address_id', $this->id)->exists()) {
-            try {
-                $this->delete();
-            } catch (Exception) {
-                //
-            }
-        }
-    }
+
 
 
 }

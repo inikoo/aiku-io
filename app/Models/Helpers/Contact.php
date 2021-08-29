@@ -9,6 +9,7 @@
 namespace App\Models\Helpers;
 
 use App\Models\Health\Patient;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,6 +24,9 @@ class Contact extends Model
 {
     use UsesTenantConnection;
     use HasFactory;
+
+    protected $appends = ['formatted_address'];
+
 
     protected $fillable = [
         'name',
@@ -44,6 +48,12 @@ class Contact extends Model
     public function patients(): BelongsToMany
     {
         return $this->belongsToMany(Patient::class)->withPivot('relation')->withTimestamps();
+    }
+
+    /** @noinspection PhpUnused */
+    public function getFormattedAddressAttribute(): string
+    {
+        return $this->address->formatted_address;
     }
 
 }

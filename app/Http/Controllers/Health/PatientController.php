@@ -37,7 +37,7 @@ class PatientController extends Controller
             ],
         ];
 
-        $this->module='patients';
+        $this->module = 'patients';
     }
 
 
@@ -51,7 +51,7 @@ class PatientController extends Controller
 
         $patients = QueryBuilder::for(Patient::class)
             ->defaultSort('name')
-            ->allowedSorts(['name', 'date_of_birth', 'gender','id'])
+            ->allowedSorts(['name', 'date_of_birth', 'gender', 'id'])
             ->allowedAppends(['age', 'formatted_id'])
             ->allowedFilters(['name', 'date_of_birth', 'gender', $globalSearch])
             ->paginate()
@@ -116,20 +116,20 @@ class PatientController extends Controller
             [
                 'headerData' => [
                     'module'      => $this->module,
-                    'title'         => __('New patient'),
-                    'breadcrumbs'   => $breadcrumbs,
+                    'title'       => __('New patient'),
+                    'breadcrumbs' => $breadcrumbs,
                     'actionIcons' => [
                         'patients.index' => [
-                            'name'            => __('Cancel'),
-                            'icon'            => ['fal', 'portal-exit'],
+                            'name' => __('Cancel'),
+                            'icon' => ['fal', 'portal-exit'],
                         ]
                     ],
-                    ],
+                ],
 
-                'formData'=>[
-                    'postURL'   =>'/patients/create',
-                    'cancelRoute'   =>['patients.index'],
-                    'blueprint' => [
+                'formData' => [
+                    'postURL'     => '/patients/create',
+                    'cancelRoute' => ['patients.index'],
+                    'blueprint'   => [
                         'profile' => [
                             'title'    => __('Personal information'),
                             'subtitle' => '',
@@ -170,6 +170,10 @@ class PatientController extends Controller
             ]
         ]);
 
+
+
+
+
         return Inertia::render(
             'Patients/Patient',
             [
@@ -200,9 +204,26 @@ class PatientController extends Controller
                         ],
                     ]
                 ],
-
-
-                'patient' => $patient,
+                'patient'    => $patient,
+                'cardData'   =>
+                    [
+                        'title'     => __('Patient personal information'),
+                        'subTitle'  => '',
+                        'blueprint' => [
+                            [
+                                'type' => 'two_columns',
+                                'data' => [
+                                    ['title' => __('Full name'), 'value' => $patient->name],
+                                    ['title' => __('Date of birth'), 'value' => $patient->formatted_dob]
+                                ]
+                            ],
+                            [
+                                'type' => 'contacts',
+                                'title'=>__('Contact details'),
+                                'contacts' => $patient->contacts
+                            ]
+                        ]
+                    ]
 
             ]
         );

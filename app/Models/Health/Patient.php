@@ -70,16 +70,17 @@ class Patient extends Model
         }
     }
 
+    /** @noinspection PhpUnused */
     public function getFormattedDobAttribute(): string
     {
         return Carbon::parse($this->date_of_birth)->locale(auth()->user()->locale??'en')->isoFormat('ll');
     }
-
+    /** @noinspection PhpUnused */
     public function getFormattedIdAttribute(): string
     {
         return sprintf('%04d', $this->id);
     }
-
+    /** @noinspection PhpUnused */
     public function getFormattedGenderAttribute(): string
     {
         return match ($this->gender) {
@@ -89,6 +90,7 @@ class Patient extends Model
         };
     }
 
+    /** @noinspection PhpUnused */
     public function getGenderIconAttribute(): array
     {
         return match ($this->gender) {

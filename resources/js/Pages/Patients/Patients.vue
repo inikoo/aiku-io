@@ -10,7 +10,6 @@
 
     <Table
 
-        class="mt-5"
 
         :filters="queryBuilderProps.filters"
         :search="queryBuilderProps.search"
