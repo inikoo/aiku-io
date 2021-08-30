@@ -19,7 +19,7 @@
                         <div class=" relative  flex-grow">
 
                             <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
-                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]"/>
+                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]" :form="form"   />
                             <DatePicker v-else-if="fieldData.type === 'date'" v-model="form[field]" >
                                 <template v-slot="{ inputValue, inputEvents }">
                                     <input type="text"
@@ -75,9 +75,23 @@ export default {
 
         const postURL=props.fieldData['postURL']??props.postURL
 
-        const form = useForm({
-                                 [props.field]: props.fieldData.value,
-                             });
+
+        let formFields={
+            [props.field]: props.fieldData.value,
+        };
+
+
+
+
+        if(props.fieldData['hasOther']){
+
+            formFields[props.fieldData['hasOther']['name']]=props.fieldData['hasOther']['value']
+        }
+
+
+        console.log(formFields)
+
+        const form = useForm(formFields);
         return {
             form,postURL
         };

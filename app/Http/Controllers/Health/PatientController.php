@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Health;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePatientGuardianRequest;
 use App\Http\Requests\CreatePatientRequest;
-use App\Http\Requests\UpdatePatientController;
+use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Requests\UpdatePatientGuardianRequest;
 use App\Models\Health\Patient;
 use App\Models\Helpers\Contact;
@@ -201,11 +201,20 @@ class PatientController extends Controller
             ]
         ]);
 
+
+        $idFormattedName= match ($patient->contact->identity_document_type) {
+            'Passport' => __('Passport'),
+            'Other' => Arr::get($patient->contact->data, 'other_identity_document_type',__('Unknown ID')),
+            default => $patient->contact->identity_document_type,
+        };
+
+
+
         $blueprint   = [];
         $blueprint[] = [
             'type' => 'two_columns',
             'data' => [
-                ['title' => __('Full name'), 'value' => $patient->contact->name],
+                ['title' => $idFormattedName, 'value' => $patient->contact->identity_document_number],
                 ['title' => __('Date of birth'), 'value' => $patient->contact->formatted_dob]
             ]
         ];
@@ -227,11 +236,13 @@ class PatientController extends Controller
             ];
         }
 
+
+
         if (count($patient->guardians) > 0) {
             $blueprint[] = [
-                'type'      => 'guardians',
+                'type'      => 'contacts',
                 'title'     => __('Guardian contact details'),
-                'guardians' => $patient->guardians
+                'contacts' => $patient->guardians
             ];
         }
 
@@ -327,6 +338,46 @@ class PatientController extends Controller
             ]
         ];
 
+        $nationalIdBlueprint = [
+            'title'    => __('Id'),
+            'subtitle' => '',
+            'fields'   => [
+
+                'identity_document_type'   => [
+                    'type'     => 'radio',
+                    'label'    => __('Id type'),
+                    'hasOther' =>
+                        [
+                            'name'  => 'other_identity_document_type',
+                            'value' => Arr::get($patient->contact->data, 'other_identity_document_type')
+                        ],
+                    'options'  => [
+
+                        [
+                            'value' => 'MyKad',
+                            'name'  => 'MyKad'
+                        ],
+                        [
+                            'value' => 'Passport',
+                            'name'  => __('Passport')
+                        ],
+                        [
+                            'value'   => 'Other',
+                            'name'    => __('Other'),
+                            'isOther' => true
+                        ],
+
+
+                    ],
+                    'value'    => $patient->contact->identity_document_type
+                ],
+                'identity_document_number' => [
+                    'type'  => 'text',
+                    'label' => __('Id number'),
+                    'value' => $patient->contact->identity_document_number
+                ],
+            ]
+        ];
 
         if ($patient->type == 'dependant') {
             if ($patient->contact->ageInYears() > 18) {
@@ -370,7 +421,9 @@ class PatientController extends Controller
                 ]
             ];
 
+
             $blueprint[] = $personalInformationBlueprint;
+            $blueprint[] = $nationalIdBlueprint;
 
             foreach ($patient->guardians as $guardian) {
                 $blueprint[] = [
@@ -518,6 +571,7 @@ class PatientController extends Controller
             ];
 
             $blueprint[] = $personalInformationBlueprint;
+            $blueprint[] = $nationalIdBlueprint;
         }
 
 
@@ -537,7 +591,6 @@ class PatientController extends Controller
                     ],
 
                 ],
-                //'ageInYears' => $patient->contact->ageInYears(),
 
 
                 'formData' => [
@@ -551,12 +604,21 @@ class PatientController extends Controller
     }
 
 
-    public function update(UpdatePatientController $request, $id): RedirectResponse
+    public function update(UpdatePatientRequest $request, $id): RedirectResponse
     {
         $patient = Patient::findOrFail($id);
 
         $patient->update($request->only('type'));
 
+
+        foreach ($request->only('other_identity_document_type') as $value) {
+
+            $data=$patient->contact->data;
+            data_set($data,'other_identity_document_type',$value);
+            $patient->contact->data=$data;
+            $patient->contact->save();
+
+        }
 
         $patient->contact->update($request->except('type'));
 
