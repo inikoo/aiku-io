@@ -20,11 +20,11 @@
 
         <template #head>
             <tr>
-                <HeaderCell :cell="sortableHeader('id')">ID</HeaderCell>
-                <HeaderCell :cell="sortableHeader('name')">Name</HeaderCell>
-                <HeaderCell :cell="sortableHeader('gender')" v-show="showColumn('gender')" >Gender</HeaderCell>
-                <HeaderCell :cell="sortableHeader('date_of_birth')" v-show="showColumn('date_of_birth')">Date of birth</HeaderCell>
-                <HeaderCell :cell="sortableHeader('date_of_birth')" v-show="showColumn('age')">Age</HeaderCell>
+                <HeaderCell :cell="sortableHeader('patients.id')">ID</HeaderCell>
+                <HeaderCell :cell="sortableHeader('contacts.name')">Name</HeaderCell>
+                <HeaderCell :cell="sortableHeader('contacts.gender')" v-show="showColumn('gender')" >Gender</HeaderCell>
+                <HeaderCell :cell="sortableHeader('contacts.date_of_birth')" v-show="showColumn('date_of_birth')">Date of birth</HeaderCell>
+                <HeaderCell :cell="sortableHeader('contacts.date_of_birth')" v-show="showColumn('age')">Age</HeaderCell>
 
             </tr>
         </template>
@@ -34,7 +34,7 @@
                 <td><Link :href="route('patients.show',patient.id)">{{ patient['formatted_id'] }}</Link></td>
                 <td>{{ patient.name }}</td>
                 <td v-show="showColumn('gender')">{{ patient['gender'] }}</td>
-                <td v-show="showColumn('date_of_birth')">{{ patient['date_of_birth'] }}</td>
+                <td v-show="showColumn('date_of_birth')">{{ patient['formatted_dob'] }}</td>
                 <td v-show="showColumn('age')">{{ patient['age'] }}</td>
 
             </tr>

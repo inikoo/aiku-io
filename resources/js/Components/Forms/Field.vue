@@ -18,18 +18,18 @@
                         <div class=" relative  flex-grow">
 
                             <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
-                            <DatePicker v-if="fieldData.type === 'date'" v-model="form[field]" >
+                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]"/>
+                            <DatePicker v-else-if="fieldData.type === 'date'" v-model="form[field]" >
                                 <template v-slot="{ inputValue, inputEvents }">
-                                    <input
-                                        class="bg-white border px-2 py-1 rounded"
-                                        :value="inputValue"
-                                        v-on="inputEvents"
+                                    <input type="text"
+                                           class="focus:ring-indigo-500 focus:border-indigo-500 block  sm:text-sm border-gray-300 rounded-md   "
+                                           :value="inputValue"
+                                           v-on="inputEvents"
+
                                     />
                                 </template>
                             </DatePicker>
-
-
-                            <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="   focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
+                            <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
 
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <ExclamationCircleIcon v-if="form.errors[field]" class="h-5 w-5 text-red-500" aria-hidden="true"/>
@@ -49,11 +49,12 @@ import {Link} from '@inertiajs/inertia-vue3';
 import {ExclamationCircleIcon} from '@heroicons/vue/solid';
 import Select from '@/Components/Forms/Select';
 import {DatePicker} from 'v-calendar';
+import Radio from '@/Components/Forms/Radio';
 
 export default {
 
     components: {
-        Link, ExclamationCircleIcon, Select,DatePicker
+        Link, ExclamationCircleIcon, Select,DatePicker,Radio
     },
     props     : ['fieldData', 'field','form'],
     methods   : {

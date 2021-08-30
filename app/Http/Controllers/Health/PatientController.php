@@ -9,10 +9,14 @@
 namespace App\Http\Controllers\Health;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreatePatientGuardianRequest;
 use App\Http\Requests\CreatePatientRequest;
 use App\Http\Requests\UpdatePatientController;
+use App\Http\Requests\UpdatePatientGuardianRequest;
 use App\Models\Health\Patient;
+use App\Models\Helpers\Contact;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -49,14 +53,19 @@ class PatientController extends Controller
             });
         });
 
+
         $patients = QueryBuilder::for(Patient::class)
-            ->defaultSort('name')
-            ->allowedSorts(['name', 'date_of_birth', 'gender', 'id'])
-            ->allowedAppends(['age', 'formatted_id'])
-            ->allowedFilters(['name', 'date_of_birth', 'gender', $globalSearch])
+            ->allowedIncludes(['contact'])
+            ->select('contacts.*', 'patients.*')
+            ->rightJoin('contacts', 'contacts.id', '=', 'patients.contact_id')
+            ->defaultSort('-patients.id')
+            ->allowedAppends(['contacts.age', 'patients.formatted_id', 'contacts.formatted_dob'])
+            ->allowedSorts(['contacts.name', 'contacts.date_of_birth', 'contacts.gender', 'patients.id'])
+            ->allowedFilters(['contacts.name', 'contacts.date_of_birth', 'contacts.gender', $globalSearch])
             ->paginate()
             ->withQueryString();
 
+        //dd($patients);
 
         return Inertia::render(
             'Patients/Patients',
@@ -156,6 +165,28 @@ class PatientController extends Controller
         return Redirect::route('patients.show', ['id' => $patient->id]);
     }
 
+    public function storeGuardian($id, CreatePatientGuardianRequest $request): RedirectResponse
+    {
+        $patient = Patient::find($id);
+        $contact = Contact::create($request->except('relation'));
+        $patient->guardians()->attach($contact, $request->only('relation'));
+
+        return Redirect::route('patients.edit', ['id' => $patient->id]);
+    }
+
+    public function editGuardian($id, $guardianId, UpdatePatientGuardianRequest $request): RedirectResponse
+    {
+        $patient = Patient::find($id);
+
+
+        $patient->guardians()->updateExistingPivot($guardianId, $request->only('relation'));
+
+        $patient->guardians()->find($guardianId)->update($request->except('relation'));
+
+
+        return Redirect::route('patients.edit', ['id' => $patient->id]);
+    }
+
 
     public function show($id): Response
     {
@@ -170,13 +201,47 @@ class PatientController extends Controller
             ]
         ]);
 
+        $blueprint   = [];
+        $blueprint[] = [
+            'type' => 'two_columns',
+            'data' => [
+                ['title' => __('Full name'), 'value' => $patient->contact->name],
+                ['title' => __('Date of birth'), 'value' => $patient->contact->formatted_dob]
+            ]
+        ];
+        if ($patient->type == 'adult') {
+            $blueprint[] = [
+                'type' => 'two_columns',
+                'data' => [
+                    ['title' => __('Email'), 'value' => $patient->contact->email],
+                    ['title' => __('Phone'), 'value' => $patient->contact->phone]
+                ]
+            ];
+
+            $blueprint[] = [
+                'type' => 'two_columns',
+                'data' => [
+                    ['title' => __('Address'), 'value' => $patient->contact->formatted_address],
+                    ['title' => '', 'value' => '']
+                ]
+            ];
+        }
+
+        if (count($patient->guardians) > 0) {
+            $blueprint[] = [
+                'type'      => 'guardians',
+                'title'     => __('Guardian contact details'),
+                'guardians' => $patient->guardians
+            ];
+        }
+
 
         return Inertia::render(
             'Patients/Patient',
             [
                 'headerData' => [
                     'module'      => $this->module,
-                    'title'       => $patient->name,
+                    'title'       => $patient->contact->name,
                     'breadcrumbs' => $breadcrumbs,
                     'actionIcons' => [
                         'patients.show.logbook' => [
@@ -193,11 +258,11 @@ class PatientController extends Controller
                     'meta'        => [
                         [
                             'icon' => ['far', 'birthday-cake'],
-                            'name' => $patient->formatted_dob.' ('.$patient->getAgeAttribute('verbose').')'
+                            'name' => $patient->contact->formatted_dob.' ('.$patient->contact->getAgeAttribute('verbose').')'
                         ],
                         [
-                            'icon' => $patient->gender_icon,
-                            'name' => $patient->formatted_gender
+                            'icon' => $patient->contact->gender_icon,
+                            'name' => $patient->contact->formatted_gender
                         ],
                     ]
                 ],
@@ -206,20 +271,7 @@ class PatientController extends Controller
                     [
                         'title'     => __('Patient personal information'),
                         'subTitle'  => '',
-                        'blueprint' => [
-                            [
-                                'type' => 'two_columns',
-                                'data' => [
-                                    ['title' => __('Full name'), 'value' => $patient->name],
-                                    ['title' => __('Date of birth'), 'value' => $patient->formatted_dob]
-                                ]
-                            ],
-                            [
-                                'type'     => 'contacts',
-                                'title'    => __('Contact details'),
-                                'contacts' => $patient->contacts
-                            ]
-                        ]
+                        'blueprint' => $blueprint
                     ]
 
             ]
@@ -246,84 +298,232 @@ class PatientController extends Controller
             ]
         ]);
 
+        $blueprint = [];
 
-        $personalInformationBlueprint = [
-            'title'    => __('Personal information'),
+
+        $patientType = [
+            'title'    => __('Patient type'),
             'subtitle' => '',
             'fields'   => [
-                'name'          => [
-                    'type'  => 'text',
-                    'label' => __('Name'),
-                    'value' => $patient->name
-                ],
-                'date_of_birth' => [
-                    'type'  => 'date',
-                    'label' => __('Date of birth'),
-                    'value' => $patient->date_of_birth
-                ],
-                'gender'        => [
+
+                'type' => [
                     'type'    => 'radio',
-                    'label'   => __('Gender'),
+                    'label'   => __('Type'),
                     'options' => [
 
                         [
-                            'value' => 'Male',
-                            'name'  => __('Male')
+                            'value' => 'dependant',
+                            'name'  => __('Dependent')
                         ],
                         [
-                            'value' => 'Female',
-                            'name'  => __('Female')
+                            'value' => 'adult',
+                            'name'  => __('Adult')
                         ],
 
 
                     ],
-                    'value'   => $patient->gender
+                    'value'   => $patient->type
                 ],
             ]
         ];
-        $blueprint                    = [];
-        $blueprint[]                  = $personalInformationBlueprint;
 
-        foreach ($patient->contacts as $contact) {
-            $blueprint[] = [
-                'title'  => __('Contact'),
-                'fields' => [
-                    'relation' => [
-                        'type'    => 'select',
-                        'options' => [
-                            'Mother'   => __('Mother'),
-                            'Father'   => __('Father'),
-                            'Guardian' => __('Guardian'),
-                            'Other'    => __('Other'),
-                        ],
-                        'label'   => __('Relation'),
-                        'value'   => $contact->pivot->relation
-                    ],
-                    'name'     => [
-                        'postURL'   => "/patients/$patient->id/contact/$contact->id/edit",
+
+        if ($patient->type == 'dependant') {
+            if ($patient->contact->ageInYears() > 18) {
+                $blueprint[] = $patientType;
+            }
+
+
+            $personalInformationBlueprint = [
+                'title'    => __('Personal information'),
+                'subtitle' => '',
+                'fields'   => [
+                    'name'          => [
                         'type'  => 'text',
                         'label' => __('Name'),
-                        'value' => $contact->name
+                        'value' => $patient->contact->name
                     ],
-                    'email'    => [
+                    'date_of_birth' => [
+                        'type'  => 'date',
+                        'label' => __('Date of birth'),
+                        'value' => $patient->contact->date_of_birth
+                    ],
+                    'gender'        => [
+                        'type'    => 'radio',
+                        'label'   => __('Gender'),
+                        'options' => [
+
+                            [
+                                'value' => 'Male',
+                                'name'  => __('Male')
+                            ],
+                            [
+                                'value' => 'Female',
+                                'name'  => __('Female')
+                            ],
+
+
+                        ],
+                        'value'   => $patient->contact->gender
+                    ],
+
+                ]
+            ];
+
+            $blueprint[] = $personalInformationBlueprint;
+
+            foreach ($patient->guardians as $guardian) {
+                $blueprint[] = [
+                    'title'  => __('Guardian'),
+                    'fields' => [
+                        'relation' => [
+                            'postURL' => "/patients/$patient->id/guardians/$guardian->id/edit",
+                            'type'    => 'select',
+                            'options' => [
+                                'Mother'   => __('Mother'),
+                                'Father'   => __('Father'),
+                                'Guardian' => __('Guardian'),
+                                'Other'    => __('Other'),
+                            ],
+                            'label'   => __('Relation'),
+                            'value'   => $guardian->pivot->relation
+                        ],
+                        'name'     => [
+                            'postURL' => "/patients/$patient->id/guardians/$guardian->id/edit",
+                            'type'    => 'text',
+                            'label'   => __('Name'),
+                            'value'   => $guardian->name
+                        ],
+                        'email'    => [
+                            'postURL' => "/patients/$patient->id/guardians/$guardian->id/edit",
+
+                            'type'  => 'text',
+                            'label' => __('Email'),
+                            'value' => $guardian->email
+                        ],
+                        'phone'    => [
+                            'postURL' => "/patients/$patient->id/guardians/$guardian->id/edit",
+
+                            'type'  => 'text',
+                            'label' => __('Phone'),
+                            'value' => $guardian->phone
+                        ],
+                    ]
+                ];
+            }
+
+            if (count($patient->guardians) == 0) {
+                $blueprint[] = [
+                    'title'  => __('Guardian'),
+                    'fields' => [
+
+                        'newGuardian' => [
+                            'type' => 'form',
+
+
+                            'formData' => [
+                                'postURL' => "/patients/$patient->id/guardians/create",
+
+                                'blueprint' => [
+                                    [
+
+                                        'title'       => __('Guardian contact details'),
+                                        'subtitle'    => '',
+                                        'cancelRoute' => null,
+                                        'fields'      => [
+                                            'relation' => [
+                                                'type'    => 'select',
+                                                'options' => [
+                                                    'Mother'   => __('Mother'),
+                                                    'Father'   => __('Father'),
+                                                    'Guardian' => __('Guardian'),
+                                                    'Other'    => __('Other'),
+                                                ],
+                                                'label'   => __('Relation'),
+                                                'value'   => ''
+                                            ],
+                                            'name'     => [
+
+                                                'type'  => 'text',
+                                                'label' => __('Name'),
+                                                'value' => ''
+                                            ],
+                                            'email'    => [
+                                                'type'  => 'text',
+                                                'label' => __('Email'),
+                                                'value' => ''
+                                            ],
+                                            'phone'    => [
+                                                'type'  => 'text',
+                                                'label' => __('Phone'),
+                                                'value' => ''
+                                            ],
+                                        ]
+                                    ]
+                                ],
+
+                            ]
+                        ],
+
+
+                    ]
+                ];
+            }
+        } else {
+            $blueprint[] = $patientType;
+
+            $personalInformationBlueprint = [
+                'title'    => __('Personal information'),
+                'subtitle' => '',
+                'fields'   => [
+                    'name'          => [
+                        'type'  => 'text',
+                        'label' => __('Name'),
+                        'value' => $patient->contact->name
+                    ],
+                    'date_of_birth' => [
+                        'type'  => 'date',
+                        'label' => __('Date of birth'),
+                        'value' => $patient->contact->date_of_birth
+                    ],
+                    'gender'        => [
+                        'type'    => 'radio',
+                        'label'   => __('Gender'),
+                        'options' => [
+
+                            [
+                                'value' => 'Male',
+                                'name'  => __('Male')
+                            ],
+                            [
+                                'value' => 'Female',
+                                'name'  => __('Female')
+                            ],
+
+
+                        ],
+                        'value'   => $patient->contact->gender
+                    ],
+                    'email'         => [
                         'type'  => 'text',
                         'label' => __('Email'),
-                        'value' => $contact->email
+                        'value' => $patient->contact->email
                     ],
-                    'phone'    => [
+                    'phone'         => [
                         'type'  => 'text',
                         'label' => __('Phone'),
-                        'value' => $contact->phone
+                        'value' => $patient->contact->phone
                     ],
                 ]
             ];
+
+            $blueprint[] = $personalInformationBlueprint;
         }
+
 
         return Inertia::render(
             'Patients/EditPatient',
             [
-
-
                 'headerData' => [
                     'module'      => $this->module,
                     'title'       => __('Editing patient').' '.$patient->formatted_id,
@@ -337,6 +537,7 @@ class PatientController extends Controller
                     ],
 
                 ],
+                //'ageInYears' => $patient->contact->ageInYears(),
 
 
                 'formData' => [
@@ -354,7 +555,10 @@ class PatientController extends Controller
     {
         $patient = Patient::findOrFail($id);
 
-        $patient->update($request->all());
+        $patient->update($request->only('type'));
+
+
+        $patient->contact->update($request->except('type'));
 
         return Redirect::route('patients.edit', $patient->id);
     }

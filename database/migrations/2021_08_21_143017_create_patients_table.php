@@ -16,12 +16,9 @@ class CreatePatientsTable extends Migration
 
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->date('date_of_birth')->nullable();
-            $table->string('gender')->nullable();
-            $table->string('identity_document_type')->nullable();
-            $table->string('identity_document_number')->nullable();
-            $table->unique(['identity_document_type', 'identity_document_number']);
+            $table->enum('type', ['dependant', 'adult'])->index();
+            $table->unsignedBigInteger('contact_id')->nullable();
+            $table->foreign('contact_id')->references('id')->on('contacts');
             $table->jsonb('data');
             $table->timestampsTz();
         });
@@ -29,10 +26,8 @@ class CreatePatientsTable extends Migration
         Schema::create('contact_patient', function (Blueprint $table) {
             $table->id();
             $table->string('relation');
-
             $table->unsignedBigInteger('contact_id')->nullable();
             $table->unsignedBigInteger('patient_id')->nullable();
-
             $table->foreign('contact_id')->references('id')->on('contacts');
             $table->foreign('patient_id')->references('id')->on('patients');
             $table->unique(['contact_id', 'patient_id']);
@@ -48,6 +43,7 @@ class CreatePatientsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('contact_patient');
+        Schema::dropIfExists('guardians');
         Schema::dropIfExists('patients');
     }
 }

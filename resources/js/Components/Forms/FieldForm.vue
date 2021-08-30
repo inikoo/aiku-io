@@ -13,7 +13,8 @@
                 <dt class="text-sm font-medium text-gray-500">
                     {{ fieldData.label }}
                 </dt>
-                <dd class="sm:col-span-2  ">
+
+                <dd  class="sm:col-span-2  ">
                     <div class="mt-1 flex text-sm text-gray-900 sm:mt-0">
                         <div class=" relative  flex-grow">
 
@@ -71,16 +72,14 @@ export default {
     },
     setup(props) {
 
+
+        const postURL=props.fieldData['postURL']??props.postURL
+
         const form = useForm({
                                  [props.field]: props.fieldData.value,
-
                              });
-
-        console.log(form)
-
-
         return {
-            form,
+            form,postURL
         };
     },
 

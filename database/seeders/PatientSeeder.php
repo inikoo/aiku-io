@@ -10,23 +10,40 @@ namespace Database\Seeders;
 
 use App\Models\Health\Patient;
 use App\Models\Helpers\Contact;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
+
 
 class PatientSeeder extends Seeder
 {
 
     public function run()
     {
-        Patient::factory()
-            ->count(50)->hasAttached(
-                Contact::factory()->count(1),
 
-                function () {
-                    return ['relation' => Arr::random(['Mother','Mother','Father'])];
-                }
+       $faker = Factory::create();
 
-            )
-            ->create();
+        foreach(range(1,50) as $ignored) {
+           if($faker->boolean()){
+               /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+               Patient::factory()
+                   ->count(1)->isDependant()
+                   ->create()->each(
+                       function($patient) {
+                           $patient->guardians()->attach(Contact::factory()->create(),['relation'=> Arr::random(['Mother','Mother','Father'])]);
+                       }
+
+                   );
+           }else{
+               Patient::factory()->count(1)->create();
+
+           }
+        }
+
+
+
+
     }
+
+
 }

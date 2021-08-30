@@ -62,7 +62,7 @@ class Address extends Model implements Auditable
         return $address
             ->withCountryCode($this->country_code)
             ->withAdministrativeArea($this->administrative_area)
-            ->withDependentLocality($this->dependent_locality)
+            ->withDependentLocality($this->dependant_locality)
             ->withLocality($this->locality)
             ->withPostalCode($this->postal_code)
             ->withSortingCode($this->sorting_code)

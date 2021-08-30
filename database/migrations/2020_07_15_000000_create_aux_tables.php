@@ -39,7 +39,7 @@ class CreateAuxTables extends Migration
             $table->string('sorting_code')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('locality')->nullable();
-            $table->string('dependent_locality')->nullable();
+            $table->string('dependant_locality')->nullable();
             $table->string('administrative_area')->nullable();
             $table->string('country_code',2)->nullable()->index();
             $table->string('checksum')->index()->nullable();
@@ -183,6 +183,8 @@ class CreateAuxTables extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->date('date_of_birth')->nullable();
+            $table->string('gender')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('identity_document_type')->nullable();

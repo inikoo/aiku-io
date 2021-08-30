@@ -11,6 +11,7 @@ namespace Database\Factories\Helpers;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Contact;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 
 class ContactFactory extends Factory
 {
@@ -21,10 +22,28 @@ class ContactFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->email(),
-            'phone' => $this->faker->phoneNumber(),
-
+            'name'                     => $this->faker->name(),
+            'date_of_birth'            => $this->faker->dateTimeBetween('-40 years','-18 years'),
+            'gender'                   => function () {
+                return Arr::random(['Male', 'Female']);
+            },
+            'email'                    => $this->faker->email(),
+            'phone'                    => $this->faker->phoneNumber(),
+            'identity_document_type'   => function () {
+                return match (config('app.faker_locale')) {
+                    'en_GB' => 'NI number',
+                    'ms_MY' => 'MyKad',
+                    default => 'Passport',
+                };
+            },
+            'identity_document_number' => function () {
+                /** @noinspection PhpUndefinedMethodInspection */
+                return match (config('app.faker_locale')) {
+                    'en_GB' => $this->faker->nino(),
+                    'ms_MY' => $this->faker->myKadNumber(),
+                    default => $this->faker->shuffle('123456789ABC'),
+                };
+            }
 
         ];
     }
@@ -32,11 +51,29 @@ class ContactFactory extends Factory
     public function configure(): ContactFactory
     {
         return $this->afterMaking(function (Contact $contact) {
-
         })->afterCreating(function (Contact $contact) {
-            Address::factory()->count(1)->for(
-                $contact, 'owner'
-            )->create();
+
+            if(!Arr::get($contact->data,'dev.forDependantPatient')){
+                Address::factory()->count(1)->for(
+                    $contact,
+                    'owner'
+                )->create();
+            }
+
+
+        });
+    }
+
+
+    public function forDependantPatient(): ContactFactory
+    {
+        return $this->state(function () {
+            return [
+                'date_of_birth'=>$this->faker->dateTimeBetween('-10 years','-6 months'),
+                'email' => '',
+                'phone'=>'',
+                'data'=>['dev'=>['forDependantPatient'=>true]]
+            ];
         });
     }
 

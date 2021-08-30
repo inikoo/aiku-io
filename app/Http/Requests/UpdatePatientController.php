@@ -40,6 +40,8 @@ class UpdatePatientController extends FormRequest
             'name'          => 'sometimes|required',
             'date_of_birth' => 'sometimes|required|date',
             'gender'        => 'sometimes|required',
+            'email'        => 'sometimes|required|email',
+            'phone'        => 'sometimes|required',
         ];
     }
 }

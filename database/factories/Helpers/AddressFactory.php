@@ -20,8 +20,12 @@ class AddressFactory extends Factory
 
     public function definition(): array
     {
-        $country = Country::firstWhere('code', 'GB');
 
+        $country= match (config('app.faker_locale')) {
+            'en_GB' => Country::firstWhere('code', 'MY'),
+            'ms_MY' => Country::firstWhere('code', 'GB'),
+            default => Country::firstWhere('code', 'US')
+        };
 
         return [
             'address_line_1' => $this->faker->streetAddress(),

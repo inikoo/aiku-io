@@ -9,11 +9,10 @@
 namespace App\Models\Health;
 
 use App\Models\Helpers\Contact;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Arr;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
@@ -24,10 +23,10 @@ class Patient extends Model
     use UsesTenantConnection;
     use HasFactory;
 
-    protected $appends = ['age', 'formatted_id'];
+    protected $appends = [ 'formatted_id','formatted_dob','age'];
 
     protected $fillable = [
-        'name','date_of_birth','gender'
+        'type'
     ];
 
     protected $casts = [
@@ -38,65 +37,36 @@ class Patient extends Model
         'data' => '{}',
     ];
 
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
+    public function guardians(): BelongsToMany
+    {
+        return $this->belongsToMany(Contact::class)->withPivot('relation')->withTimestamps();
+    }
+
     public function contacts(): BelongsToMany
     {
         return $this->belongsToMany(Contact::class)->withPivot('relation')->withTimestamps();
     }
 
-    public function getAgeAttribute($labelType): string
+    /** @noinspection PhpUnused */
+    public function getFormattedIdAttribute(): string
     {
-        $labelType = $labelType ?? 'default';
-        $labels    = [
-            'infant' => [
-                'naked'   => '%y, %m',
-                'default' => '%yy, %mm',
-                'verbose' => '%y years, %m months'
-            ],
-            'adult'  => [
-                'naked'   => '%y',
-                'default' => '%y',
-                'verbose' => '%y years'
-            ]
-        ];
-
-        $date = Carbon::parse($this->date_of_birth);
-        $now  = Carbon::now();
-
-
-        if ($date->diffInDays($now) < 1460) {
-            return $date->diff($now)->format(Arr::get($labels, "infant.$labelType"));
-        } else {
-            return $date->diff($now)->format(Arr::get($labels, "adult.$labelType"));
-        }
+        return sprintf('%04d', $this->getAttribute('id'));
     }
 
     /** @noinspection PhpUnused */
     public function getFormattedDobAttribute(): string
     {
-        return Carbon::parse($this->date_of_birth)->locale(auth()->user()->locale??'en')->isoFormat('ll');
+        return $this->contact->formatted_dob;
     }
     /** @noinspection PhpUnused */
-    public function getFormattedIdAttribute(): string
+    public function getAgeAttribute(): string
     {
-        return sprintf('%04d', $this->id);
-    }
-    /** @noinspection PhpUnused */
-    public function getFormattedGenderAttribute(): string
-    {
-        return match ($this->gender) {
-            'Male' => __('Male'),
-            'Female' => __('Female'),
-            default => $this->gender,
-        };
+        return $this->contact->age;
     }
 
-    /** @noinspection PhpUnused */
-    public function getGenderIconAttribute(): array
-    {
-        return match ($this->gender) {
-            'Male' => ['far', 'mars'],
-            'Female' => ['far', 'venus'],
-            default => ['far', 'genderless'],
-        };
-    }
 }
