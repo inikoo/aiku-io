@@ -57,7 +57,7 @@ class PatientController extends Controller
         $patients = QueryBuilder::for(Patient::class)
             ->allowedIncludes(['contact'])
             ->select('contacts.*', 'patients.*')
-            ->rightJoin('contacts', 'contacts.id', '=', 'patients.contact_id')
+            ->leftJoin('contacts', 'contacts.id', '=', 'patients.contact_id')
             ->defaultSort('-patients.id')
             ->allowedAppends(['contacts.age', 'patients.formatted_id', 'contacts.formatted_dob'])
             ->allowedSorts(['contacts.name', 'contacts.date_of_birth', 'contacts.gender', 'patients.id'])
@@ -65,7 +65,6 @@ class PatientController extends Controller
             ->paginate()
             ->withQueryString();
 
-        //dd($patients);
 
         return Inertia::render(
             'Patients/Patients',

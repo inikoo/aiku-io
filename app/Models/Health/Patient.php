@@ -61,12 +61,13 @@ class Patient extends Model
     /** @noinspection PhpUnused */
     public function getFormattedDobAttribute(): string
     {
-        return $this->contact->formatted_dob;
+        return $this->contact ? $this->contact->formatted_dob : __('Contact missing');
     }
     /** @noinspection PhpUnused */
     public function getAgeAttribute(): string
     {
-        return $this->contact->age;
+        return $this->contact ? $this->contact->age : __('Contact missing');
+
     }
 
 }
