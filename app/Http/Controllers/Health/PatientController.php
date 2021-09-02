@@ -8,9 +8,11 @@
 
 namespace App\Http\Controllers\Health;
 
+use App\Http\Controllers\Assets\CountrySelectOptionsController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePatientGuardianRequest;
 use App\Http\Requests\CreatePatientRequest;
+use App\Http\Requests\UpdatePatientGuardianAddressRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Requests\UpdatePatientGuardianRequest;
 use App\Models\Health\Patient;
@@ -160,7 +162,6 @@ class PatientController extends Controller
     public function store(CreatePatientRequest $request): RedirectResponse
     {
         $patient = Patient::create($request->all());
-
         return Redirect::route('patients.show', ['id' => $patient->id]);
     }
 
@@ -169,23 +170,27 @@ class PatientController extends Controller
         $patient = Patient::find($id);
         $contact = Contact::create($request->except('relation'));
         $patient->guardians()->attach($contact, $request->only('relation'));
-
         return Redirect::route('patients.edit', ['id' => $patient->id]);
     }
 
     public function editGuardian($id, $guardianId, UpdatePatientGuardianRequest $request): RedirectResponse
     {
         $patient = Patient::find($id);
-
-
         $patient->guardians()->updateExistingPivot($guardianId, $request->only('relation'));
-
         $patient->guardians()->find($guardianId)->update($request->except('relation'));
-
-
         return Redirect::route('patients.edit', ['id' => $patient->id]);
     }
 
+    public function editGuardianAddress($id, $guardianId, UpdatePatientGuardianAddressRequest $request): RedirectResponse
+    {
+        $patient = Patient::findOrFail($id);
+        $patient->guardians()->updateExistingPivot($guardianId, $request->only('relation'));
+        /** @var \App\Models\Helpers\Contact $contact **/
+        $contact=$patient->guardians()->findOrFail($guardianId);
+        $address=$contact->address();
+        $address->update($request->all());
+        return Redirect::route('patients.edit', ['id' => $patient->id]);
+    }
 
     public function show($id): Response
     {
@@ -201,12 +206,11 @@ class PatientController extends Controller
         ]);
 
 
-        $idFormattedName= match ($patient->contact->identity_document_type) {
+        $idFormattedName = match ($patient->contact->identity_document_type) {
             'Passport' => __('Passport'),
-            'Other' => Arr::get($patient->contact->data, 'other_identity_document_type',__('Unknown ID')),
+            'Other' => Arr::get($patient->contact->data, 'other_identity_document_type', __('Unknown ID')),
             default => $patient->contact->identity_document_type,
         };
-
 
 
         $blueprint   = [];
@@ -236,11 +240,10 @@ class PatientController extends Controller
         }
 
 
-
         if (count($patient->guardians) > 0) {
             $blueprint[] = [
-                'type'      => 'contacts',
-                'title'     => __('Guardian contact details'),
+                'type'     => 'contacts',
+                'title'    => __('Guardian contact details'),
                 'contacts' => $patient->guardians
             ];
         }
@@ -379,7 +382,7 @@ class PatientController extends Controller
         ];
 
         if ($patient->type == 'dependant') {
-            if ($patient->contact->ageInYears() > 18) {
+            if ($patient->contact->ageInYears > 18) {
                 $blueprint[] = $patientType;
             }
 
@@ -459,6 +462,12 @@ class PatientController extends Controller
                             'type'  => 'text',
                             'label' => __('Phone'),
                             'value' => $guardian->phone
+                        ],
+                        'address'  => [
+                            'postURL' => "/patients/$patient->id/guardians/$guardian->id/address/edit",
+                            'type'  => 'address',
+                            'label' => __('Address'),
+                            'value' => $guardian->address
                         ],
                     ]
                 ];
@@ -593,8 +602,12 @@ class PatientController extends Controller
 
 
                 'formData' => [
-                    'postURL'   => "/patients/$patient->id/edit",
-                    'blueprint' => $blueprint
+
+                    'blueprint' => $blueprint,
+                    'args'=>[
+                        'countriesAddressData' =>  (new CountrySelectOptionsController())->getCountriesAddressData(),
+                        'postURL'   => "/patients/$patient->id/edit",
+                    ]
 
                 ],
 
@@ -611,12 +624,10 @@ class PatientController extends Controller
 
 
         foreach ($request->only('other_identity_document_type') as $value) {
-
-            $data=$patient->contact->data;
-            data_set($data,'other_identity_document_type',$value);
-            $patient->contact->data=$data;
+            $data = $patient->contact->data;
+            data_set($data, 'other_identity_document_type', $value);
+            $patient->contact->data = $data;
             $patient->contact->save();
-
         }
 
         $patient->contact->update($request->except('type'));

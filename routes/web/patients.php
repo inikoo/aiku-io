@@ -19,9 +19,9 @@ Route::post('/create', [PatientController::class, 'store'])->name('store');
 Route::get('/{id}', [PatientController::class, 'show'])->name('show');
 Route::get('/{id}/edit', [PatientController::class, 'edit'])->name('edit');
 Route::post('/{id}/edit', [PatientController::class, 'update'])->name('update');
-Route::post('/{id}/guardians/create', [PatientController::class, 'storeGuardian'])->name('store');
-Route::post('/{id}/guardians/{guardianId}/edit', [PatientController::class, 'editGuardian'])->name('store');
-
+Route::post('/{id}/guardians/create', [PatientController::class, 'storeGuardian'])->name('store.guardian');
+Route::post('/{id}/guardians/{guardianId}/edit', [PatientController::class, 'editGuardian'])->name('edit.guardian');
+Route::post('/{id}/guardians/{guardianId}/address/edit', [PatientController::class, 'editGuardianAddress'])->name('edit.address');
 
 Route::get('/logbook', [PatientController::class, 'logbook'])->name('logbook');
 Route::get('/{id}/logbook', [PatientController::class, 'patientLogbook'])->name('show.logbook');

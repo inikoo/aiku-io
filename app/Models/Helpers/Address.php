@@ -114,6 +114,4 @@ class Address extends Model implements Auditable
     }
 
 
-
-
 }

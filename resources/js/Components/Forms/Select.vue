@@ -14,6 +14,8 @@
         searchable
         v-model="modelValue"
         :options="options"
+        :valueProp="valueProp"
+        :label="label"
         ref="input"
         @change="handleChange($event)"
         :classes="{
@@ -67,7 +69,7 @@ export default {
     components: {
         Multiselect,
     },
-    props     : ['options', 'modelValue'],
+    props     : ['options', 'modelValue','valueProp','label'],
     emits     : ['update:modelValue'],
     methods   : {
         handleChange: function($event) {

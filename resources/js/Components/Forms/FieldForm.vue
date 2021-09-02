@@ -7,38 +7,42 @@
   -->
 
 <template>
-    <form @submit.prevent="form.post(postURL)" >
+    <form @submit.prevent="form.post(postURL)">
         <dl class="divide-y divide-gray-200  ">
             <div class="pb-4 sm:pb-5 sm:grid sm:grid-cols-3 sm:gap-4 ">
                 <dt class="text-sm font-medium text-gray-500">
                     {{ fieldData.label }}
                 </dt>
 
-                <dd  class="sm:col-span-2  ">
+                <dd class="sm:col-span-2  ">
                     <div class="mt-1 flex text-sm text-gray-900 sm:mt-0">
                         <div class=" relative  flex-grow">
 
                             <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
-                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]" :form="form"   />
-                            <DatePicker v-else-if="fieldData.type === 'date'" v-model="form[field]" >
+                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]" :form="form"/>
+                            <DatePicker v-else-if="fieldData.type === 'date'" v-model="form[field]">
                                 <template v-slot="{ inputValue, inputEvents }">
                                     <input type="text"
-                                        class="focus:ring-indigo-500 focus:border-indigo-500 block  sm:text-sm border-gray-300 rounded-md   "
-                                        :value="inputValue"
-                                        v-on="inputEvents"
+                                           class="focus:ring-indigo-500 focus:border-indigo-500 block  sm:text-sm border-gray-300 rounded-md   "
+                                           :value="inputValue"
+                                           v-on="inputEvents"
 
                                     />
                                 </template>
                             </DatePicker>
+                            <Address v-else-if="fieldData.type === 'address'" :fieldData="fieldData" :form="form" :countriesAddressData="args['countriesAddressData']"/>
                             <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
 
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <ExclamationCircleIcon v-if="form.errors[field]" class="h-5 w-5 text-red-500" aria-hidden="true"/>
-                                <CheckCircleIcon v-if="form.recentlySuccessful" class="h-5 w-5 text-green-500" aria-hidden="true"/>
-                            </div>
+
                         </div>
-                        <span class="ml-4 flex-shrink-0">
-                            <button :title=" __('Update')" :disabled="form.processing  || !form.isDirty "   type="submit"><SaveIcon class="h-8 w-8 " :class="form.isDirty ? 'text-indigo-500' : 'text-gray-200'" aria-hidden="true"/></button>
+                        <span class="ml-4 flex-shrink-0 w-5 ">
+                               <ExclamationCircleIcon v-if="form.errors[field]" class="mt-1.5  h-5 w-5 text-red-500" aria-hidden="true"/>
+                                <CheckCircleIcon v-if="form.recentlySuccessful" class="mt-1.5  h-5 w-5 text-green-500" aria-hidden="true"/>
+                        </span>
+                        <span class="ml-2 flex-shrink-0">
+                            <button :title=" __('Update')" :disabled="form.processing  || !form.isDirty " type="submit">
+                                <SaveIcon class="h-7 w-7 " :class="form.isDirty ? 'text-indigo-500' : 'text-gray-200'" aria-hidden="true"/>
+                            </button>
                         </span>
                     </div>
                     <p v-if="form.errors[field]" class="mt-2 text-sm text-red-600">{{ form.errors[field] }}</p>
@@ -57,13 +61,14 @@ import {ExclamationCircleIcon, CheckCircleIcon, SaveIcon} from '@heroicons/vue/s
 import Select from '@/Components/Forms/Select';
 import {DatePicker} from 'v-calendar';
 import Radio from '@/Components/Forms/Radio';
+import Address from '@/Components/Forms/Address';
 
 export default {
 
     components: {
-        Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select,DatePicker,Radio
+        Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select, DatePicker, Radio, Address,
     },
-    props     : ['fieldData', 'field', 'postURL'],
+    props     : ['fieldData', 'field', 'args'],
     methods   : {
         __          : __,
         handleChange: function(form) {
@@ -72,28 +77,35 @@ export default {
     },
     setup(props) {
 
+        const postURL = props.fieldData['postURL'] ?? props.args['postURL'];
+        let formFields = {};
 
-        const postURL=props.fieldData['postURL']??props.postURL
+        if (props.fieldData['type'] === 'address') {
+
+            formFields['country_id'] = props.fieldData.value.country_id;
+            formFields['administrative_area'] = props.fieldData.value.administrative_area;
+            formFields['dependant_locality'] = props.fieldData.value.dependant_locality;
+            formFields['locality'] = props.fieldData.value.locality;
+            formFields['postal_code'] = props.fieldData.value.postal_code;
+            formFields['sorting_code'] = props.fieldData.value.sorting_code;
+            formFields['address_line_2'] = props.fieldData.value.address_line_2;
+            formFields['address_line_1'] = props.fieldData.value.address_line_1;
 
 
-        let formFields={
-            [props.field]: props.fieldData.value,
-        };
+        } else {
+            formFields = {
+                [props.field]: props.fieldData.value,
+            };
 
+            if (props.fieldData['hasOther']) {
+                formFields[props.fieldData['hasOther']['name']] = props.fieldData['hasOther']['value'];
+            }
 
-
-
-        if(props.fieldData['hasOther']){
-
-            formFields[props.fieldData['hasOther']['name']]=props.fieldData['hasOther']['value']
         }
-
-
-        console.log(formFields)
 
         const form = useForm(formFields);
         return {
-            form,postURL
+            form, postURL,
         };
     },
 

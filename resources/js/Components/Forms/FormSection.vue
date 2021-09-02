@@ -18,7 +18,7 @@
         <div class="mt-6 pt-4 sm:pt-5 ">
             <template v-for="(fieldData,field ) in sectionData.fields">
                 <Form v-if="fieldData.type === 'form'" :formData="fieldData['formData']"/>
-                <field-form v-else :field="field" :fieldData="fieldData" :postURL="postURL"/>
+                <FieldForm v-else :field="field" :fieldData="fieldData" :args="args"/>
             </template>
 
         </div>
@@ -26,17 +26,11 @@
 
 </template>
 
-<script>
+<script setup>
 
 import FieldForm from '@/Components/Forms/FieldForm';
-import Field from '@/Components/Forms/Field';
 import Form from '@/Components/Forms/Form';
 
-export default {
-    components: {
-        FieldForm, Field,Form
-    },
-    props     : [ 'sectionData', 'postURL', 'type', 'form'],
+const props = defineProps(['sectionData', 'args', 'type', 'form']);
 
-};
 </script>

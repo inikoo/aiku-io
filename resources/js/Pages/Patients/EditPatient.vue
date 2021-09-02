@@ -6,33 +6,20 @@
   -->
 
 <template>
-    <page-header :headerData="headerData"/>
+    <PageHeader :headerData="headerData"/>
     <div class="px-4 sm:px-6 md:px-0">
         <div class="pb-6">
             <template v-for="(sectionData ) in formData['blueprint']">
-                <form-section  :sectionData="sectionData" :postURL="formData['postURL']"/>
+                <FormSection :sectionData="sectionData" :args="formData['args']"/>
             </template>
-
         </div>
     </div>
-
-
 </template>
 
-<script>
+<script setup>
 import FormSection from '@/Components/Forms/FormSection';
 import PageHeader from '@/Layouts/PageHeader';
-
-export default {
-    components: {
-
-        PageHeader, FormSection,
-    },
-
-    props  : ['headerData', 'formData'],
-
-
-};
+const props = defineProps(['headerData', 'formData']);
 </script>
 
 

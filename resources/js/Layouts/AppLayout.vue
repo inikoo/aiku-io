@@ -204,10 +204,10 @@
             </div>
 
 
-            <div class="flex-1 relative z-0 flex overflow-hidden">
+            <div class="flex-1 relative z-0 flex overflow-hidden ">
                 <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none">
                     <!-- Start main area-->
-                    <div class="absolute inset-0 py-2 px-4 sm:px-6 lg:px-7">
+                    <div class="absolute inset-0 py-2 px-4 sm:px-6 lg:px-7 ">
                         <div class="h-full ">
                             <slot></slot>
                         </div>

@@ -22,8 +22,8 @@ class AddressFactory extends Factory
     {
 
         $country= match (config('app.faker_locale')) {
-            'en_GB' => Country::firstWhere('code', 'MY'),
-            'ms_MY' => Country::firstWhere('code', 'GB'),
+            'en_GB' => Country::firstWhere('code', 'GB'),
+            'ms_MY' => Country::firstWhere('code', 'MY'),
             default => Country::firstWhere('code', 'US')
         };
 

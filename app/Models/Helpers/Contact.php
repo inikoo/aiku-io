@@ -27,15 +27,21 @@ class Contact extends Model
     use UsesTenantConnection;
     use HasFactory;
 
-    protected $appends = ['age', 'formatted_address','formatted_dob'];
+    protected $appends = ['age', 'formatted_address', 'formatted_dob'];
 
 
     protected $fillable = [
-        'name','date_of_birth','gender','email','phone','identity_document_type','identity_document_number'
+        'name',
+        'date_of_birth',
+        'gender',
+        'email',
+        'phone',
+        'identity_document_type',
+        'identity_document_number'
     ];
 
     protected $casts = [
-        'data'     => 'array'
+        'data' => 'array'
     ];
 
     protected $attributes = [
@@ -44,7 +50,7 @@ class Contact extends Model
 
     public function address(): MorphOne
     {
-        return $this->morphOne(Address::class,'owner');
+        return $this->morphOne(Address::class, 'owner');
     }
 
     public function dependants(): BelongsToMany
@@ -55,28 +61,22 @@ class Contact extends Model
     /** @noinspection PhpUnused */
     public function getFormattedDobAttribute(): string
     {
-        return Carbon::parse($this->date_of_birth)->locale(auth()->user()->locale??'en')->isoFormat('ll');
+        return Carbon::parse($this->date_of_birth)->locale(auth()->user()->locale ?? 'en')->isoFormat('ll');
     }
 
     /** @noinspection PhpUnused */
     public function getFormattedAddressAttribute(): string
     {
-        if($this->address){
+        if ($this->address) {
             return $this->address->formatted_address;
-        }else{
+        } else {
             return '';
         }
-
-
-
-
     }
 
     /** @noinspection PhpUnused */
     public function getFormattedGenderAttribute(): string
     {
-
-
         return match ($this->gender) {
             'Male' => __('Male'),
             'Female' => __('Female'),
@@ -121,12 +121,10 @@ class Contact extends Model
         }
     }
 
-
-    public function ageInYears(): float|int
+    /** @noinspection PhpUnused */
+    public function getAgeInYearsAttribute(): float|int
     {
-
         return Carbon::parse($this->date_of_birth)->floatDiffInYears();
-
     }
 
 }
