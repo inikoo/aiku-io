@@ -8,7 +8,7 @@
 <template>
     <div class="mt-10 divide-y divide-gray-200">
         <div class="space-y-1">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
+            <h3  class="text-lg leading-6 font-medium text-gray-900">
                 {{ sectionData.title }}
             </h3>
             <p v-show="sectionData['subtitle']" class="max-w-2xl text-sm text-gray-500">
@@ -17,8 +17,7 @@
         </div>
         <div class="mt-6 pt-4 sm:pt-5 ">
             <template v-for="(fieldData,field ) in sectionData.fields">
-                <Form v-if="fieldData.type === 'form'" :formData="fieldData['formData']"/>
-                <FieldForm v-else :field="field" :fieldData="fieldData" :args="args"/>
+                <FieldForm  :field="field" :fieldData="fieldData" :args="args"/>
             </template>
 
         </div>
@@ -29,7 +28,6 @@
 <script setup>
 
 import FieldForm from '@/Components/Forms/FieldForm';
-import Form from '@/Components/Forms/Form';
 
 const props = defineProps(['sectionData', 'args', 'type', 'form']);
 

@@ -29,9 +29,11 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap(
             [
-                'Contact'                  => 'App\Models\Helpers\Contact',
-
-
+                'Contact' => 'App\Models\Helpers\Contact',
+                'Address' => 'App\Models\Helpers\Address',
+                'Tenant'  => 'App\Tenant',
+                'User'    => 'App\User',
+                'Patient' => 'App\Models\Health\Patient',
                 /*
                 'Admin'                    => 'App\Models\System\Admin',
                 'Guest'                    => 'App\Models\System\Guest',

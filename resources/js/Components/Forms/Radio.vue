@@ -52,8 +52,8 @@ import {RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption} fr
 import {ExclamationCircleIcon} from '@heroicons/vue/outline';
 
 const settings = [
-    {value: 'Male', name: 'Male'},
-    {value: 'Female', name: 'Female'},
+    {value: 'male', name: 'Male'},
+    {value: 'female', name: 'Female'},
 ];
 
 export default {

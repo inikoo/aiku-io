@@ -25,7 +25,7 @@ class ContactFactory extends Factory
             'name'                     => $this->faker->name(),
             'date_of_birth'            => $this->faker->dateTimeBetween('-40 years','-18 years'),
             'gender'                   => function () {
-                return Arr::random(['Male', 'Female']);
+                return Arr::random(['male', 'female']);
             },
             'email'                    => $this->faker->email(),
             'phone'                    => $this->faker->phoneNumber(),

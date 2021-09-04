@@ -18,7 +18,7 @@
                         <div class=" relative  flex-grow">
 
                             <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
-                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]"/>
+                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]" :form="form"/>
                             <DatePicker v-else-if="fieldData.type === 'date'" v-model="form[field]" >
                                 <template v-slot="{ inputValue, inputEvents }">
                                     <input type="text"
@@ -29,6 +29,10 @@
                                     />
                                 </template>
                             </DatePicker>
+                            <Phone  v-else-if="fieldData.type === 'phone'" v-model="form[field]" :defaultCountry="fieldData['defaultCountryCode']"  ></Phone>
+
+                            <Address v-else-if="fieldData.type === 'address'" :fieldData="fieldData" :form="form" :countriesAddressData="args['countriesAddressData']"/>
+
                             <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
 
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -50,19 +54,24 @@ import {ExclamationCircleIcon} from '@heroicons/vue/solid';
 import Select from '@/Components/Forms/Select';
 import {DatePicker} from 'v-calendar';
 import Radio from '@/Components/Forms/Radio';
+import Address from '@/Components/Forms/Address';
+import Phone from '@/Components/Forms/Phone';
 
 export default {
 
     components: {
-        Link, ExclamationCircleIcon, Select,DatePicker,Radio
+        Link, ExclamationCircleIcon, Select,DatePicker,Radio,Address,Phone
     },
-    props     : ['fieldData', 'field','form'],
+    props     : ['fieldData', 'field','form','args'],
     methods   : {
         handleChange: function(form) {
             form.clearErrors();
         },
     },
+    setup(props) {
 
+
+    }
 
 };
 </script>

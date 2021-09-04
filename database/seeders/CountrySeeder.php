@@ -113,12 +113,12 @@ class CountrySeeder extends Seeder
                 }
             }
 
-            $tmp=[];
-            foreach($data['fields'] as $key=>$value){
-                $_key=Str::snake(preg_replace('/addressLine/','addressLine_',$key));
-                $tmp[$_key]=$value;
+            $tmp = [];
+            foreach ($data['fields'] as $key => $value) {
+                $_key       = Str::snake(preg_replace('/addressLine/', 'addressLine_', $key));
+                $tmp[$_key] = $value;
             }
-            $data['fields']=$tmp;
+            $data['fields'] = $tmp;
 
 
             foreach ($subdivisionRepository->getAll([$countryCode]) as $subDivision) {
@@ -128,6 +128,32 @@ class CountrySeeder extends Seeder
                     'iso_code' => $subDivision->getIsoCode()
                 ];
             }
+
+            $data['identity_document_type'] = match ($countryCode) {
+                'GB' => [
+                    [
+                        'value' => 'ninp',
+                        'name'  => 'National Insurance number'
+                    ]
+                ],
+                'MY' => [
+                    [
+                        'value' => 'mykad',
+                        'name'  => 'MyKad'
+                    ]
+                ],
+                'MX' => [
+                    [
+                        'value' => 'ife',
+                        'name'  => 'IFE'
+                    ],
+                    [
+                        'value' => 'curp',
+                        'name'  => 'CURP'
+                    ]
+                ],
+                default => []
+            };
 
 
             $country->data = $data;

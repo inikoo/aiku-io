@@ -14,20 +14,32 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
+use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 
 /**
  * @mixin IdeHelperContact
  */
-class Contact extends Model
+class Contact extends Model implements Auditable
 {
     use UsesTenantConnection;
     use HasFactory;
+    use \OwenIt\Auditing\Auditable;
 
     protected $appends = ['age', 'formatted_address', 'formatted_dob'];
+
+    public function generateTags(): array
+    {
+        return [
+            //$this->patient->id??'xx',
+
+        ];
+    }
 
 
     protected $fillable = [
@@ -52,6 +64,12 @@ class Contact extends Model
     {
         return $this->morphOne(Address::class, 'owner');
     }
+
+    public function patient(): HasOne
+    {
+        return $this->hasOne(Patient::class);
+    }
+
 
     public function dependants(): BelongsToMany
     {
@@ -78,8 +96,8 @@ class Contact extends Model
     public function getFormattedGenderAttribute(): string
     {
         return match ($this->gender) {
-            'Male' => __('Male'),
-            'Female' => __('Female'),
+            'male' => __('Male'),
+            'female' => __('Female'),
             default => $this->gender,
         };
     }
@@ -88,8 +106,8 @@ class Contact extends Model
     public function getGenderIconAttribute(): array
     {
         return match ($this->gender) {
-            'Male' => ['far', 'mars'],
-            'Female' => ['far', 'venus'],
+            'male' => ['far', 'mars'],
+            'female' => ['far', 'venus'],
             default => ['far', 'genderless'],
         };
     }

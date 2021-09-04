@@ -6,28 +6,18 @@
   -->
 
 <template>
-
-    <page-header :headerData="headerData"/>
-
-
-    <Form :formData="formData"/>
-
-
+    <PageHeader :headerData="headerData"/>
+    <Form :formData="formData" class="mb-10 sm:mb-40"/>
+    &nbsp;
 </template>
 
-<script>
+<script setup>
 import PageHeader from '@/Layouts/PageHeader';
 import Form from '@/Components/Forms/Form';
 
-export default {
-    components: {
+const props = defineProps( ['headerData', 'formData'])
 
-        PageHeader, Form,
-    },
 
-    props: ['headerData', 'formData'],
-
-};
 </script>
 
 

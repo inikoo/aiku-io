@@ -82,8 +82,8 @@ class CreateAuxTables extends Migration
             $table->text('old_values')->nullable();
             $table->text('new_values')->nullable();
             $table->text('url')->nullable();
-            $table->unsignedBigInteger('ip_address')->nullable()->index();
-            $table->unsignedBigInteger('user_agent')->nullable()->index();
+            $table->ipAddress('ip_address')->nullable();
+            $table->string('user_agent', 1023)->nullable();
             $table->string('tags')->nullable();
             $table->timestamps();
 

@@ -39,6 +39,7 @@
         "@vueform/multiselect": "^2.1.2",
         "axios": "^0.21",
         "matice": "^1.1.4",
-        "v-calendar": "^3.0.0-alpha.5"
+        "v-calendar": "^3.0.0-alpha.5",
+        "vue-tel-input": "^6.0.0-beta.4"
     }
 }

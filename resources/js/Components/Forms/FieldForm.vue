@@ -30,6 +30,9 @@
                                     />
                                 </template>
                             </DatePicker>
+
+                            <Phone  v-else-if="fieldData.type === 'phone'" v-model="form[field]" ></Phone>
+
                             <Address v-else-if="fieldData.type === 'address'" :fieldData="fieldData" :form="form" :countriesAddressData="args['countriesAddressData']"/>
                             <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
 
@@ -62,11 +65,12 @@ import Select from '@/Components/Forms/Select';
 import {DatePicker} from 'v-calendar';
 import Radio from '@/Components/Forms/Radio';
 import Address from '@/Components/Forms/Address';
+import Phone from '@/Components/Forms/Phone';
 
 export default {
 
     components: {
-        Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select, DatePicker, Radio, Address,
+        Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select, DatePicker, Radio, Address,Phone
     },
     props     : ['fieldData', 'field', 'args'],
     methods   : {

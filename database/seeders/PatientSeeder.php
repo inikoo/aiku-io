@@ -21,28 +21,29 @@ class PatientSeeder extends Seeder
     public function run()
     {
 
-       $faker = Factory::create();
 
-        foreach(range(1,50) as $ignored) {
-           if($faker->boolean()){
-               /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-               Patient::factory()
-                   ->count(1)->isDependant()
-                   ->create()->each(
-                       function($patient) {
-                           $patient->guardians()->attach(Contact::factory()->create(),['relation'=> Arr::random(['Mother','Mother','Father'])]);
-                       }
+        $numberPatients = 50;
 
-                   );
-           }else{
-               Patient::factory()->count(1)->create();
+        $faker = Factory::create();
 
-           }
+        foreach (range(1, $numberPatients) as $ignored) {
+            if ($faker->boolean()) {
+                /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+                Patient::factory()
+                    ->count(1)->isDependant()
+                    ->create()->each(
+                        function ($patient) {
+                            $patient->guardians()->attach(Contact::factory()->create(), [
+                                'relation' => Arr::random(['Mother', 'Mother', 'Father']
+                                )
+                            ]);
+                        }
+
+                    );
+            } else {
+                Patient::factory()->count(1)->create();
+            }
         }
-
-
-
-
     }
 
 

@@ -14,13 +14,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * @mixin IdeHelperPatient
  */
-class Patient extends Model
+class Patient extends Model implements Auditable
 {
     use UsesTenantConnection;
+    use \OwenIt\Auditing\Auditable;
     use HasFactory;
 
     protected $appends = [ 'formatted_id','formatted_dob','age'];
