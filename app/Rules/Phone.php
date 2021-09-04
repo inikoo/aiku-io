@@ -26,7 +26,7 @@ class Phone implements Rule
 
 
         try {
-            $twilio = new Client(env('TWILIO_SID'), env('TWILIO_TOKEN'));
+            $twilio = new Client(config('app.twilio_sid'), config('app.twilio_token'));
             $twilio->lookups->v1->phoneNumbers($value)->fetch();
 
             return true;
