@@ -37,7 +37,7 @@ class CreateTenant extends Command
         if (DB::connection('scaffolding')->table('INFORMATION_SCHEMA.SCHEMATA')->select('SCHEMA_NAME')->where('SCHEMA_NAME', $database)->first()) {
             $this->error("Database $database already exists");
             //return 0;
-        }else{
+        } else {
             DB::connection('scaffolding')->statement("CREATE DATABASE $database CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci");
         }
 
@@ -55,15 +55,12 @@ class CreateTenant extends Command
         }
 
 
-
-        $business_type=BusinessType::where('slug',$this->option('type'))->first();
-        if(!$business_type){
+        $business_type = BusinessType::where('slug', $this->option('type'))->first();
+        if (!$business_type) {
             $this->error("Business type {$this->option('type')} not found");
+
             return 0;
         }
-
-
-
 
 
         $tenant = new Tenant([
@@ -74,20 +71,13 @@ class CreateTenant extends Command
                              ]);
 
 
-
         $business_type->tenants()->save($tenant);
-
-        $this->line("Tenant $tenant->domain created");
-
+        $this->line("Tenant $tenant->domain created :)");
         $tenant->makeCurrent();
-
-
-        Artisan::call('tenants:artisan "migrate:fresh --database=tenant" --tenant='.$tenant->id);
-        Artisan::call('tenants:artisan "db:seed --class=PermissionSeeder" --tenant='.$tenant->id);
-        Artisan::call('tenants:artisan "db:seed --class=RootUserSeeder" --tenant='.$tenant->id);
-
-
-
+        Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
+        Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
+        Artisan::call('tenants:artisan "db:seed --force --class=RootUserSeeder" --tenant='.$tenant->id);
+        $this->line("Tenant $tenant->domain seeded");
 
 
         return 0;

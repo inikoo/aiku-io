@@ -37,8 +37,8 @@ class ResetTenantRootUser extends Command
         $tenant = Tenant::current();
 
 
-        $password=(App::environment('local')?'hello':wordwrap(Str::random(12), 4, '-', true));
-
+        //$password=(App::environment('local')?'hello':wordwrap(Str::random(12), 4, '-', true));
+        $password='hello';
 
 
         (new User())->updateOrCreate(['email' => 'root@aiku'], ['name' => 'Admin Account', 'password' => Hash::make($password)]);

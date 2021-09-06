@@ -237,8 +237,9 @@ return [
     ],
 
 
-    'twilio_sid'  => env('TWILIO_SID'),
-    'twilio_token'  => env('TWILIO_TOKEN'),
+    'twilio_sid'        => env('TWILIO_SID'),
+    'twilio_token'      => env('TWILIO_TOKEN'),
+    'po_editor_api_key' => env('PO_EDITOR_READ_ONLY_API_KEY', ''),
 
 
 ];

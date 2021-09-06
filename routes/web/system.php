@@ -18,7 +18,7 @@ Route::get('/billing', [SystemController::class, 'billing'])->name('billing');
 
 
 Route::get('/settings', [SystemSettingsController::class, 'edit'])->name('settings');
-Route::post('/settings', [SystemSettingsController::class, 'update'])->name('settings');
+Route::post('/settings', [SystemSettingsController::class, 'update'])->name('edit.settings');
 
 
 

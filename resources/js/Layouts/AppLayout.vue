@@ -243,10 +243,10 @@ import {usePage} from '@inertiajs/inertia-vue3';
 import {SearchIcon} from '@heroicons/vue/solid';
 import Header from '@/Layouts/PageHeader';
 
-import {faTachometerAltFast, faUsers, faRobot, faClipboardUser, faSlidersHSquare, faHistory, faPlus,faEdit,faPortalExit} from '@/Private/pro-light-svg-icons';
+import {faTachometerAltFast, faUsers, faRobot, faClipboardUser, faSlidersHSquare, faHistory, faPlus,faEdit,faPortalExit} from '@/private/pro-light-svg-icons';
 library.add(faTachometerAltFast, faUsers, faClipboardUser, faRobot, faSlidersHSquare, faHistory, faPlus,faEdit,faPortalExit);
 
-import {faBirthdayCake,faMars,faVenus} from '@/Private/pro-regular-svg-icons';
+import {faBirthdayCake,faMars,faVenus} from '@/private/pro-regular-svg-icons';
 library.add(faBirthdayCake,faMars,faVenus);
 
 
