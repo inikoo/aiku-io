@@ -53,7 +53,7 @@ $php = empty($php) ? 'php' : $php;
 
 @story('deploy')
 create_folders
-rsync
+
 setup_symlinks
 composer_install
 npm_install
