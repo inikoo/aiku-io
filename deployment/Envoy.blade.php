@@ -37,12 +37,10 @@ $date = ( new DateTime )->format('Y-m-d_H:i:s');
 
 $current_release_dir = $path . '/current';
 $releases_dir = $path . '/releases';
-$src_dir = $path . '/src';
-
+$stagging_dir = $path . '/stagging';
+$repo_dir = $path . '/repo';
 $new_release_dir = $releases_dir . '/' . $date;
 
-$remote = $user . '@' . $host . ':' . $new_release_dir;
-$remoteSrc=$user . '@' . $host . ':' . $src_dir;
 
 // Command or path to invoke PHP
 $php = empty($php) ? 'php' : $php;
@@ -53,7 +51,8 @@ $php = empty($php) ? 'php' : $php;
 
 @story('deploy')
 create_folders
-
+pull
+stagging
 setup_symlinks
 composer_install
 npm_install
@@ -69,23 +68,27 @@ cleanup
 @endstory
 
 
-@task('debug', ['on' => 'localhost'])
-ls -la {{ $dir }}
-@endtask
 
 @task('create_folders', ['on' => 'production'])
-/bin/mkdir -p {{ $new_release_dir }}
-/bin/mkdir -p {{ $new_release_dir }}/public/
+mkdir -p {{ $new_release_dir }}
+mkdir -p {{ $new_release_dir }}/public/
 @endtask
 
-@task('rsync', ['on' => 'localhost'])
-echo "* Deploying code from {{ $dir }} to {{ $remoteSrc }} *"
-rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from=deployment-exclude-list.txt {{ $dir }}/ {{ $remoteSrc }}
+@task('pull', ['on' => 'production'])
+echo "* Pulling repo *"
+cd {{$repo_dir}}
+git pull origin {{ $branch }}
+@endtask
+
+
+@task('stagging', ['on' => 'production'])
+echo "* Stagging code from {{ $repo_dir }} to {{ $stagging_dir }} *"
+rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from={{ $repo_dir }}/deployment/deployment-exclude-list.txt {{ $repo_dir }}/ {{ $stagging_dir }}
 @endtask
 
 @task('composer_install', ['on' => 'production'])
 echo "* Composer install *"
-cd {{$src_dir}}
+cd {{$stagging_dir}}
 
 /usr/bin/php8.0  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
 
@@ -94,14 +97,14 @@ cd {{$src_dir}}
 
 @task('npm_install', ['on' => 'production'])
 echo "* NPM install *"
-cd {{$src_dir}}
+cd {{$stagging_dir}}
 npm install
 @endtask
 
 @task('build', ['on' => 'production'])
 echo "* build VUE *"
-cd {{$src_dir}}
-ln -sf {{ $path }}/private/ {{ $src_dir }}/resources/js/
+cd {{$stagging_dir}}
+ln -sf {{ $path }}/private/ {{ $stagging_dir }}/resources/js/
 npm run prod
 @endtask
 
@@ -131,7 +134,7 @@ ln -nsf {{ $path }}/storage/app/public {{ $new_release_dir }}/public/storage
 
 @task('move_to_release_dir', ['on' => 'production'])
 echo "* Moving code from src  to {{ $new_release_dir }} *"
-rsync -auz --exclude 'node_modules' {{ $src_dir }}/ {{ $new_release_dir }}
+rsync -auz --exclude 'node_modules' {{ $stagging_dir }}/ {{ $new_release_dir }}
 @endtask
 
 @task('verify_install', ['on' => 'production'])
