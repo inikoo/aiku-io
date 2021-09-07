@@ -74,8 +74,8 @@ ls -la {{ $dir }}
 @endtask
 
 @task('create_folders', ['on' => 'production'])
-mkdir -p {{ $new_release_dir }}
-mkdir -p {{ $new_release_dir }}/public/
+/bin/mkdir -p {{ $new_release_dir }}
+/bin/mkdir -p {{ $new_release_dir }}/public/
 @endtask
 
 @task('rsync', ['on' => 'localhost'])
