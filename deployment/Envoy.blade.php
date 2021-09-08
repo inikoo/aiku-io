@@ -17,12 +17,6 @@ if (empty($user)) {
 if (empty($path)) {
     exit('ERROR: $path var empty or not defined');
 }
-if (empty($build)) {
-    exit('ERROR: $build var empty or not defined');
-}
-if (empty($commit)) {
-    exit('ERROR: $commit var empty or not defined');
-}
 
 if (file_exists($path) || is_writable($path)) {
     exit("ERROR: cannot access $path");
@@ -41,15 +35,23 @@ $stagging_dir = $path . '/stagging';
 $repo_dir = $path . '/repo';
 $new_release_dir = $releases_dir . '/' . $date;
 
+$env_file='/home/vagrant/aiku-io/deployment/.env';
 
 // Command or path to invoke PHP
 $php = empty($php) ? 'php' : $php;
 
+
+$skip_build=false;
+
 @endsetup
 
+@story('test')
+start_deployment
+@endstory
 
 
 @story('deploy')
+start_deployment
 create_folders
 pull
 stagging
@@ -57,7 +59,6 @@ setup_symlinks
 composer_install
 npm_install
 build
-manifest_file
 move_to_release_dir
 verify_install
 activate_release
@@ -68,6 +69,43 @@ cleanup
 @endstory
 
 
+@task('start_deployment', ['on' => 'localhost'])
+
+. {{ $env_file }}
+
+DEPLOY=$(curl --silent --location --request GET 'http://api.aiku/deployment/create' --header 'Authorization: Bearer '$TOKEN)
+echo $VERSION | jq -r '.id'
+
+echo $DEPLOY
+
+@endtask
+
+@task('caca4', ['on' => 'localhost'])
+
+echo $DEPLOY
+
+@endtask
+
+@task('caca', ['on' => 'localhost'])
+
+variable_name=$(<.env)
+
+echo $variable
+
+#VERSION=$(curl --silent --location --request GET 'http://api.aiku/deployment/create' --header 'Authorization: Bearer 1|MDMsSL2ODCtOp97l2kQtnDORJb3HCJH3aX2sE2Rc')
+
+#echo $VERSION | jq -r '.skip_composer_install'
+
+
+
+@endtask
+
+@task('caca2', ['on' => 'localhost'])
+
+VERSION=$(curl --silent --location --request GET 'http://api.aiku/deployment/last' --header 'Authorization: Bearer 1|MDMsSL2ODCtOp97l2kQtnDORJb3HCJH3aX2sE2Rc')
+
+echo $VERSION | jq -r '.skip_composer_install'
+@endtask
 
 @task('create_folders', ['on' => 'production'])
 mkdir -p {{ $new_release_dir }}
@@ -200,3 +238,9 @@ ls -t | tail -n +2 | xargs rm -rf
 #ln -nsf {{ $path }}/$(find . -maxdepth 1 -name "20*" | sort | tail -n 2 | head -n1) {{ $path }}/current
 echo "Rolled back to $(find . -maxdepth 1 -name "20*" | sort | tail -n 2 | head -n1)"
 @endtask
+
+@error
+if ($task === 'deploy') {
+// ...
+}
+@enderror

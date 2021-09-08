@@ -10,10 +10,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLandlordTenantsTable extends Migration
+class CreateTenantTables extends Migration
 {
     public function up()
     {
+
+
         Schema::create('countries', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('code', 2)->unique()->index();
@@ -34,8 +36,6 @@ class CreateLandlordTenantsTable extends Migration
             $table->smallIncrements('id');
             $table->string('name')->unique()->index();
             $table->bigInteger('offset')->nullable()->comment('in hours');
-
-
             $table->unsignedSmallInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries');
             $table->float('latitude')->nullable();
@@ -73,7 +73,6 @@ class CreateLandlordTenantsTable extends Migration
             $table->unsignedSmallInteger('language_id');
             $table->unsignedSmallInteger('priority')->default(1)->index();
             $table->string('status')->nullable()->index();
-
             $table->timestampsTz();
             $table->unique(['country_id', 'language_id']);
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
@@ -93,11 +92,8 @@ class CreateLandlordTenantsTable extends Migration
         });
 
         Schema::table('countries', function (Blueprint $table) {
-
-
             $table->foreign('timezone_id')->references('id')->on('timezones');
             $table->foreign('currency_id')->references('id')->on('currencies');
-
         });
 
         Schema::create('ip_geolocations', function (Blueprint $table) {
@@ -138,6 +134,7 @@ class CreateLandlordTenantsTable extends Migration
             $table->string('name');
             $table->string('domain')->unique();
             $table->string('database')->unique();
+            $table->string('password');
             $table->foreignId('business_type_id')->constrained();
             $table->unsignedSmallInteger('country_id')->nullable();
             $table->unsignedSmallInteger('currency_id')->nullable();
@@ -166,7 +163,7 @@ class CreateLandlordTenantsTable extends Migration
         Schema::dropIfExists('country_language');
         Schema::dropIfExists('languages');
         Schema::dropIfExists('timezones');
-
         Schema::dropIfExists('countries');
+
     }
 }

@@ -26,6 +26,7 @@ use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Spatie\Multitenancy\Http\Middleware\EnsureValidTenantSession;
 use Spatie\Multitenancy\Http\Middleware\NeedsTenant;
 
@@ -64,14 +65,16 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             SubstituteBindings::class,
             EnsureValidTenantSession::class,
-
             HandleInertiaRequests::class,
         ],
 
         'api' => [
+            EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             SubstituteBindings::class,
         ],
+
+
     ];
 
     /**
@@ -92,4 +95,6 @@ class Kernel extends HttpKernel
         'throttle'         => ThrottleRequests::class,
         'verified'         => EnsureEmailIsVerified::class,
     ];
+
+
 }

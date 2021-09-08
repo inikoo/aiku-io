@@ -8,10 +8,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\System\Permission;
+use App\Models\System\Role;
 use Illuminate\Database\Seeder;
 use Spatie\Multitenancy\Models\Tenant;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+
 use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
@@ -35,7 +36,6 @@ class PermissionSeeder extends Seeder
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
             Permission::create(['name' => $permission]);
         });
-
         $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) {
             Role::create(['name' => $role]);
         });

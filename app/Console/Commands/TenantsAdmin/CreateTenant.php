@@ -67,6 +67,7 @@ class CreateTenant extends Command
                                  'domain'   => $this->argument('domain'),
                                  'database' => $database,
                                  'name'     => $this->argument('name'),
+                                 'password' => '',
                                  'data'     => $data
                              ]);
 

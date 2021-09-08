@@ -31,6 +31,8 @@
         "spatie/laravel-multitenancy": "^2.0",
         "spatie/laravel-permission": "^4.2",
         "spatie/laravel-query-builder": "^3.5",
+        "spatie/laravel-sluggable": "^3.1",
+        "symfony/process": "^5.3",
         "tightenco/ziggy": "^1.0",
         "twilio/sdk": "^6.28",
         "vemcogroup/laravel-translation": "^3.0"
