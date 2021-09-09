@@ -1,37 +1,47 @@
+{{--
 //  Author: Raul Perusquia <raul@inikoo.com>
 //  Created: Sun, 05 Sep 2021 20:27:54 Malaysia Time, Kuala Lumpur, Malaysia
 //  Copyright (c) 2021, Inikoo
 //  Version 4.0
+--}}
 
+@include('../vendor/autoload.php')
 
 @servers(['production' => $user.'@'.$host,'localhost' => '127.0.0.1'])
 
 @setup
+$dotenv = Dotenv\Dotenv::createImmutable('../');
+$dotenv->load();
+
+$api_url=$_ENV['PRODUCTION_API_URL'];
+$api_key=$_ENV['PRODUCTION_API_KEY'];
+
+
 // Sanity checks
 if (empty($host)) {
-    exit('ERROR: $host var empty or not defined');
+exit('ERROR: $host var empty or not defined');
 }
 if (empty($user)) {
-    exit('ERROR: $user var empty or not defined');
+exit('ERROR: $user var empty or not defined');
 }
 if (empty($path)) {
-    exit('ERROR: $path var empty or not defined');
+exit('ERROR: $path var empty or not defined');
 }
 
 if (file_exists($path) || is_writable($path)) {
-    exit("ERROR: cannot access $path");
+exit("ERROR: cannot access $path");
 }
 
 // Ensure given $path is a potential web directory (/home/* or /var/www/*)
 if (!(preg_match("/(\/home\/|\/var\/www\/)/i", $path) === 1)) {
-    exit('ERROR: $path provided doesn\'t look like a web directory path?');
+exit('ERROR: $path provided doesn\'t look like a web directory path?');
 }
 
 $date = ( new DateTime )->format('Y-m-d_H:i:s');
 
 $current_release_dir = $path . '/current';
 $releases_dir = $path . '/releases';
-$stagging_dir = $path . '/stagging';
+$staging_dir = $path . '/staging';
 $repo_dir = $path . '/repo';
 $new_release_dir = $releases_dir . '/' . $date;
 
@@ -46,7 +56,7 @@ $skip_build=false;
 @endsetup
 
 @story('test')
-start_deployment
+pull
 @endstory
 
 
@@ -54,7 +64,7 @@ start_deployment
 start_deployment
 create_folders
 pull
-stagging
+staging
 setup_symlinks
 composer_install
 npm_install
@@ -70,42 +80,12 @@ cleanup
 
 
 @task('start_deployment', ['on' => 'localhost'])
-
-. {{ $env_file }}
-
-DEPLOY=$(curl --silent --location --request GET 'http://api.aiku/deployment/create' --header 'Authorization: Bearer '$TOKEN)
-echo $VERSION | jq -r '.id'
-
-echo $DEPLOY
-
+DEPLOY=$(curl --silent --location --request POST '{{$api_url}}/deployments/create' --header 'Authorization: Bearer {{$api_key}}')
+echo $DEPLOY | jq -r '.version'
 @endtask
 
-@task('caca4', ['on' => 'localhost'])
-
-echo $DEPLOY
-
-@endtask
-
-@task('caca', ['on' => 'localhost'])
-
-variable_name=$(<.env)
-
-echo $variable
-
-#VERSION=$(curl --silent --location --request GET 'http://api.aiku/deployment/create' --header 'Authorization: Bearer 1|MDMsSL2ODCtOp97l2kQtnDORJb3HCJH3aX2sE2Rc')
-
-#echo $VERSION | jq -r '.skip_composer_install'
 
 
-
-@endtask
-
-@task('caca2', ['on' => 'localhost'])
-
-VERSION=$(curl --silent --location --request GET 'http://api.aiku/deployment/last' --header 'Authorization: Bearer 1|MDMsSL2ODCtOp97l2kQtnDORJb3HCJH3aX2sE2Rc')
-
-echo $VERSION | jq -r '.skip_composer_install'
-@endtask
 
 @task('create_folders', ['on' => 'production'])
 mkdir -p {{ $new_release_dir }}
@@ -119,15 +99,18 @@ git pull origin {{ $branch }}
 @endtask
 
 
-@task('stagging', ['on' => 'production'])
-echo "* Stagging code from {{ $repo_dir }} to {{ $stagging_dir }} *"
-rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from={{ $repo_dir }}/deployment/deployment-exclude-list.txt {{ $repo_dir }}/ {{ $stagging_dir }}
+@task('staging', ['on' => 'production'])
+echo "* staging code from {{ $repo_dir }} to {{ $staging_dir }} *"
+rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from={{ $repo_dir }}/deployment/deployment-exclude-list.txt {{ $repo_dir }}/ {{ $staging_dir }}
 @endtask
 
 @task('composer_install', ['on' => 'production'])
 echo "* Composer install *"
-cd {{$stagging_dir}}
 
+DEPLOY=$(curl --silent --location --request GET '{{$api_url}}/deployments/{{$deployment['id']}}' --header 'Authorization: Bearer {{$api_key}}')
+echo $DEPLOY | jq -r '.version'
+
+cd {{$staging_dir}}
 /usr/bin/php8.0  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
 
 
@@ -135,14 +118,14 @@ cd {{$stagging_dir}}
 
 @task('npm_install', ['on' => 'production'])
 echo "* NPM install *"
-cd {{$stagging_dir}}
+cd {{$staging_dir}}
 npm install
 @endtask
 
 @task('build', ['on' => 'production'])
 echo "* build VUE *"
-cd {{$stagging_dir}}
-ln -sf {{ $path }}/private/ {{ $stagging_dir }}/resources/js/
+cd {{$staging_dir}}
+ln -sf {{ $path }}/private/ {{ $staging_dir }}/resources/js/
 npm run prod
 @endtask
 
@@ -153,14 +136,11 @@ echo -e "{\"build\":\""{{ $build }}"\", \"commit\":\""{{ $commit }}"\", \"branch
 @endtask
 
 
-
-
 @task('setup_symlinks', ['on' => 'production'])
 
 
 echo "* Linking .env file to new release dir ({{ $path }}/.env -> {{ $new_release_dir }}/.env) *"
 ln -nsf {{ $path }}/.env {{ $new_release_dir }}/.env
-
 
 
 echo "* Linking storage directory to new release dir ({{ $path }}/storage -> {{ $new_release_dir }}/storage) *"
@@ -172,7 +152,7 @@ ln -nsf {{ $path }}/storage/app/public {{ $new_release_dir }}/public/storage
 
 @task('move_to_release_dir', ['on' => 'production'])
 echo "* Moving code from src  to {{ $new_release_dir }} *"
-rsync -auz --exclude 'node_modules' {{ $stagging_dir }}/ {{ $new_release_dir }}
+rsync -auz --exclude 'node_modules' {{ $staging_dir }}/ {{ $new_release_dir }}
 @endtask
 
 @task('verify_install', ['on' => 'production'])
@@ -196,7 +176,6 @@ cd {{ $new_release_dir }}
 @task('optimise', ['on' => 'production'])
 echo '* Clearing cache and optimising *'
 cd {{ $new_release_dir }}
-
 
 
 {{ $php }} artisan optimize:clear --quiet
@@ -244,3 +223,30 @@ if ($task === 'deploy') {
 // ...
 }
 @enderror
+
+@after
+if ($task === 'start_deployment') {
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+CURLOPT_URL => $api_url.'/deployments/latest',
+CURLOPT_RETURNTRANSFER => true,
+CURLOPT_ENCODING => '',
+CURLOPT_MAXREDIRS => 10,
+CURLOPT_TIMEOUT => 0,
+CURLOPT_FOLLOWLOCATION => true,
+CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+CURLOPT_CUSTOMREQUEST => 'GET',
+CURLOPT_HTTPHEADER => array(
+'Accept-Encoding: application/json',
+'Accept: application/json',
+'Authorization: Bearer '.$api_key
+),
+));
+
+$response = curl_exec($curl);
+
+curl_close($curl);
+$deployment= json_decode($response,true);
+}
+@endafter

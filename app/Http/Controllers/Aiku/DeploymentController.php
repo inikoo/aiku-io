@@ -7,7 +7,7 @@ use App\Models\Aiku\Deployment;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 
-//use Illuminate\Http\Request;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use PHLAK\SemVer\Version;
@@ -16,11 +16,16 @@ use Symfony\Component\Process\Process;
 
 class DeploymentController extends Controller
 {
-    public function last(): Response|Application|ResponseFactory
+    public function latest(): Deployment
     {
-        $latestDeployment = Deployment::latest()->first();
+        return Deployment::latest()->first();
 
-        return response($latestDeployment, 200);
+    }
+
+    public function show($deploymentID): Deployment
+    {
+        return Deployment::findOrFail($deploymentID);
+
     }
 
     /**
