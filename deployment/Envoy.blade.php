@@ -114,11 +114,8 @@ cd {{$new_release_dir}}
 
 /usr/bin/php8.0 artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
 /usr/bin/php8.0 artisan db:seed  --force  --database=landlord
-
-echo /usr/bin/php8.0 artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
-
 /usr/bin/php8.0 artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
-/usr/bin/php8.0 artisan admin:token {{$adminSlug}}
+/usr/bin/php8.0 artisan admin:token {{$adminSlug}} admin
 
 @endtask
 
