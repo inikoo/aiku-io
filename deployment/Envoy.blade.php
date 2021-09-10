@@ -7,7 +7,6 @@
 
 @include('../vendor/autoload.php')
 
-@servers(['production' => $user.'@'.$host,'localhost' => '127.0.0.1'])
 
 @setup
 $dotenv = Dotenv\Dotenv::createImmutable('../');
@@ -16,26 +15,29 @@ $dotenv->load();
 $api_url=$_ENV['PRODUCTION_API_URL'];
 $api_key=$_ENV['PRODUCTION_API_KEY'];
 
+$host=$_ENV['PRODUCTION_API_KEY'];
 
 // Sanity checks
-if (empty($host)) {
-exit('ERROR: $host var empty or not defined');
-}
-if (empty($user)) {
-exit('ERROR: $user var empty or not defined');
-}
-if (empty($path)) {
-exit('ERROR: $path var empty or not defined');
-}
 
-if (file_exists($path) || is_writable($path)) {
-exit("ERROR: cannot access $path");
+if (empty($_ENV['DEPLOYMENT_HOST'])) {
+exit('ERROR: DEPLOYMENT_HOST var empty or not defined');
 }
+$host=$_ENV['DEPLOYMENT_HOST'];
 
-// Ensure given $path is a potential web directory (/home/* or /var/www/*)
-if (!(preg_match("/(\/home\/|\/var\/www\/)/i", $path) === 1)) {
-exit('ERROR: $path provided doesn\'t look like a web directory path?');
+if (empty($_ENV['DEPLOYMENT_USER'])) {
+exit('ERROR: DEPLOYMENT_USER var empty or not defined');
 }
+$user=$_ENV['DEPLOYMENT_USER'];
+
+if (empty($_ENV['DEPLOYMENT_PATH'])) {
+exit('ERROR: DEPLOYMENT_PATH var empty or not defined');
+}
+$path=$_ENV['DEPLOYMENT_PATH'];
+
+
+
+
+
 
 $date = ( new DateTime )->format('Y-m-d_H:i:s');
 
@@ -45,7 +47,6 @@ $staging_dir = $path . '/staging';
 $repo_dir = $path . '/repo';
 $new_release_dir = $releases_dir . '/' . $date;
 
-$env_file='/home/vagrant/aiku-io/deployment/.env';
 
 // Command or path to invoke PHP
 $php = empty($php) ? 'php8.0' : $php;
@@ -57,6 +58,9 @@ $skip_build=false;
 
 @endsetup
 
+@servers(['production' => $user.'@'.$host,'localhost' => '127.0.0.1'])
+
+
 @story('first_time_DANGER')
 confirm_reset_DANGER
 confirm_reset_DANGER_2
@@ -67,6 +71,8 @@ setup_symlinks
 composer_install_first_time
 move_to_release_dir
 verify_install
+activate_release
+optimise
 setup_first_time_DANGER_FINAL_WARNING
 
 @endstory
@@ -89,6 +95,8 @@ migrate
 additional_tasks
 cleanup
 @endstory
+
+
 
 @task('composer_install_first_time', ['on' => 'production'])
 echo "* Setting up first time *"
@@ -121,8 +129,12 @@ cd {{$new_release_dir}}
 
 
 
-@task('start_deployment', ['on' => 'localhost'])
+@task('start_deployment', ['on' => 'production'])
+echo ' --silent --location --request POST {{$api_url}}/deployments/create --header Authorization: Bearer {{$api_key}}'
 DEPLOY=$(curl --silent --location --request POST '{{$api_url}}/deployments/create' --header 'Authorization: Bearer {{$api_key}}')
+
+
+echo 'caca'
 echo $DEPLOY | jq -r '.version'
 @endtask
 

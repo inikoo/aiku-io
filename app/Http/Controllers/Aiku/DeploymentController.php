@@ -4,34 +4,47 @@ namespace App\Http\Controllers\Aiku;
 
 use App\Http\Controllers\Controller;
 use App\Models\Aiku\Deployment;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
-
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use PHLAK\SemVer\Version;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
+use Throwable;
 
 class DeploymentController extends Controller
 {
-    public function latest(): Deployment
+    public function latest(): JsonResponse|Deployment
     {
-        return Deployment::latest()->first();
-
+        if ($deployment = Deployment::latest()->first()) {
+            return $deployment;
+        } else {
+            return response()->json(
+                [
+                    'message' => 'There is no deployments.'
+                ],
+                404
+            );
+        }
     }
 
-    public function show($deploymentID): Deployment
+    public function show($deploymentID): JsonResponse|Deployment
     {
-        return Deployment::findOrFail($deploymentID);
-
+        if ($deployment = Deployment::find($deploymentID)) {
+            return $deployment;
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Record not found.'
+                ],
+                404
+            );
+        }
     }
 
     /**
      * @throws \PHLAK\SemVer\Exceptions\InvalidVersionException
      */
-    public function store(): Response|JsonResponse|Application|ResponseFactory
+    public function store(): Deployment|JsonResponse
     {
         $data = [
             'skip' => []
@@ -77,15 +90,21 @@ class DeploymentController extends Controller
             $version = new Version();
         }
 
-
-        $deployment = Deployment::create([
-                                             'version' => (string)$version,
-                                             'hash'    => $currentHash,
-                                             'data'    => $data
-                                         ]);
-
-
-        return response($deployment, 200);
+        try {
+            return Deployment::create([
+                                          'version' => (string)$version,
+                                          'hash'    => $currentHash,
+                                          'data'    => $data
+                                      ]);
+        } catch (Throwable $e) {
+            report($e);
+            return response()->json(
+                [
+                    'message' => 'Error creating the deployment.'
+                ],
+                404
+            );
+        }
     }
 
     private function runShellCommand($command): string

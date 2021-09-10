@@ -37,7 +37,7 @@ class Deployment extends Model
         return Arr::get($this->data,'skip.composer_install',false);
     }
     public function getSkipNpmInstallAttribute(){
-        return Arr::get($this->data,'npm_install.build',false);
+        return Arr::get($this->data,'skip.npm_install',false);
     }
     public function getSkipBuildAttribute(){
         return Arr::get($this->data,'skip.build',false);
