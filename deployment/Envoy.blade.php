@@ -113,7 +113,7 @@ cd {{$new_release_dir}}
 
 /usr/bin/php8.0 artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
 /usr/bin/php8.0 artisan db:seed  --force  --database=landlord
-/usr/bin/php8.0 artisan admin:new {{$adminName}} {{$adminEmail}} {{$adminSlug}} --quiet
+/usr/bin/php8.0 artisan admin:new {{$adminName}} {{$adminEmail}} {{$adminSlug}} --randomPassword
 /usr/bin/php8.0 artisan admin:token {{$adminSlug}}
 
 @endtask

@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 class CreateAdmin extends Command
 {
 
-    protected $signature = 'admin:new {name} {email} {slug?} {--quiet}';
+    protected $signature = 'admin:new {name} {email} {slug?} {--randomPassword}';
 
     protected $description = 'Create new admin';
 
@@ -28,7 +28,7 @@ class CreateAdmin extends Command
 
     public function handle(): int
     {
-        if($this->option('quiet')){
+        if($this->option('randomPassword')){
             $password = Str::random(32);
         }else{
             $password = $this->secret('What is the password?');
