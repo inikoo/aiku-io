@@ -51,7 +51,7 @@ class DeploymentController extends Controller
         ];
 
 
-        $currentHash = $this->runShellCommand('git describe --always');
+        $currentHash = $this->runGitCommand('git describe --always');
         if ($latestDeployment = Deployment::latest()->first()) {
             $latestHash = $latestDeployment->hash;
 
@@ -62,7 +62,7 @@ class DeploymentController extends Controller
 
                                         ], 400);
             } else {
-                $filesChanged = $this->runShellCommand("git diff --name-only $currentHash $latestHash");
+                $filesChanged = $this->runGitCommand("git diff --name-only $currentHash $latestHash");
 
                 if (!preg_match('/composer\.lock/', $filesChanged)) {
                     $data['skip']['composer_install'] = true;
@@ -107,9 +107,10 @@ class DeploymentController extends Controller
         }
     }
 
-    private function runShellCommand($command): string
+    private function runGitCommand($command): string
     {
-        $path = base_path();
+        $path = config('deployments.repo_path');
+
 
         try {
             if (method_exists(Process::class, 'fromShellCommandline')) {

@@ -79,6 +79,12 @@ setup_first_time_DANGER_FINAL_WARNING
 
 
 @story('deploy')
+
+start_deployment
+
+@endstory
+
+@story('deployx')
 start_deployment
 create_folders
 pull
@@ -95,8 +101,6 @@ migrate
 additional_tasks
 cleanup
 @endstory
-
-
 
 @task('composer_install_first_time', ['on' => 'production'])
 echo "* Setting up first time *"
@@ -129,12 +133,8 @@ cd {{$new_release_dir}}
 
 
 
-@task('start_deployment', ['on' => 'production'])
-echo ' --silent --location --request POST {{$api_url}}/deployments/create --header Authorization: Bearer {{$api_key}}'
-DEPLOY=$(curl --silent --location --request POST '{{$api_url}}/deployments/create' --header 'Authorization: Bearer {{$api_key}}')
-
-
-echo 'caca'
+@task('start_deployment', ['on' => 'localhost'])
+DEPLOY=$(curl  --location --request POST '{{$api_url}}/deployments/create' --header 'Authorization: Bearer {{$api_key}}')
 echo $DEPLOY | jq -r '.version'
 @endtask
 

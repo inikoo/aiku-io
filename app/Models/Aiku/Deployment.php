@@ -43,29 +43,4 @@ class Deployment extends Model
         return Arr::get($this->data,'skip.build',false);
     }
 
-    private function runShellCommand($command): string
-    {
-        $path = base_path();
-
-
-        try {
-            if (method_exists(Process::class, 'fromShellCommandline')) {
-                $process = Process::fromShellCommandline($command, $path);
-            } else {
-                $process = new Process([$command], $path);
-            }
-
-            $process->mustRun();
-
-            return trim($process->getOutput());
-        } catch (RuntimeException) {
-            return '';
-        }
-    }
-
-    private function validateHash($hash): bool
-    {
-        return preg_match('/^[0-9a-f]{7,40}$/', $hash) == true;
-    }
-
 }
