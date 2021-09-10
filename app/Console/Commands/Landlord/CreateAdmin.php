@@ -11,12 +11,13 @@ namespace App\Console\Commands\Landlord;
 use App\Models\Aiku\Admin;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 
 class CreateAdmin extends Command
 {
 
-    protected $signature = 'admin:new {name} {email} {slug?}';
+    protected $signature = 'admin:new {name} {email} {slug?} {--quiet}';
 
     protected $description = 'Create new admin';
 
@@ -27,7 +28,11 @@ class CreateAdmin extends Command
 
     public function handle(): int
     {
-        $password = $this->secret('What is the password?');
+        if($this->option('quiet')){
+            $password = Str::random(32);
+        }else{
+            $password = $this->secret('What is the password?');
+        }
 
         if(strlen($password)<8){
             $this->error("Password needs to be at least 8 characters");

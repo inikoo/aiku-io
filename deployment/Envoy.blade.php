@@ -50,13 +50,24 @@ $env_file='/home/vagrant/aiku-io/deployment/.env';
 // Command or path to invoke PHP
 $php = empty($php) ? 'php' : $php;
 
+$deployment_key=null;
 
 $skip_build=false;
 
 @endsetup
 
-@story('test')
+@story('first_time_DANGER')
+confirm_reset_DANGER
+confirm_reset_DANGER_2
+create_folders
 pull
+staging
+setup_symlinks
+composer_install_first_time
+move_to_release_dir
+verify_install
+setup_first_time_DANGER_FINAL_WARNING
+
 @endstory
 
 
@@ -77,6 +88,36 @@ migrate
 additional_tasks
 cleanup
 @endstory
+
+@task('composer_install_first_time', ['on' => 'production'])
+echo "* Setting up first time *"
+cd {{$staging_dir}}
+/usr/bin/php8.0  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
+
+
+@endtask
+
+@task('confirm_reset_DANGER', ['on' => 'production','confirm' => true])
+echo "* This will DELETE aiku database are you sure!!!!*"
+@endtask
+@task('confirm_reset_DANGER_2', ['on' => 'production','confirm' => true])
+echo "* DANGER AHEAD*"
+@endtask
+
+
+
+@task('setup_first_time_DANGER_FINAL_WARNING', ['on' => 'production','confirm' => true])
+echo "* Setting up first time *"
+cd {{$new_release_dir}}
+/usr/bin/php8.0  /usr/local/bin/composer dump-autoload -o
+
+/usr/bin/php8.0 artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
+/usr/bin/php8.0 artisan db:seed  --force  --database=landlord
+/usr/bin/php8.0 artisan admin:new {{$adminName}} {{$adminEmail}} {{$adminSlug}} --quiet
+/usr/bin/php8.0 artisan admin:token {{$adminSlug}}
+
+@endtask
+
 
 
 @task('start_deployment', ['on' => 'localhost'])
@@ -104,10 +145,13 @@ echo "* staging code from {{ $repo_dir }} to {{ $staging_dir }} *"
 rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from={{ $repo_dir }}/deployment/deployment-exclude-list.txt {{ $repo_dir }}/ {{ $staging_dir }}
 @endtask
 
+
+
+
 @task('composer_install', ['on' => 'production'])
 echo "* Composer install *"
 
-DEPLOY=$(curl --silent --location --request GET '{{$api_url}}/deployments/{{$deployment['id']}}' --header 'Authorization: Bearer {{$api_key}}')
+DEPLOY=$(curl --silent --location --request GET '{{$api_url}}/deployments/{{$deployment_id}}' --header 'Authorization: Bearer {{$api_key}}')
 echo $DEPLOY | jq -r '.version'
 
 cd {{$staging_dir}}
@@ -158,6 +202,7 @@ rsync -auz --exclude 'node_modules' {{ $staging_dir }}/ {{ $new_release_dir }}
 @task('verify_install', ['on' => 'production'])
 echo "* Verifying install ({{ $new_release_dir }}) *"
 cd {{ $new_release_dir }}
+
 {{ $php }} artisan --version
 @endtask
 
@@ -247,6 +292,13 @@ CURLOPT_HTTPHEADER => array(
 $response = curl_exec($curl);
 
 curl_close($curl);
+
+
+exit(1);
+
 $deployment= json_decode($response,true);
+$deployment_key=$deployment['id'];
+
+
 }
 @endafter
