@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 class CreateAdmin extends Command
 {
 
-    protected $signature = 'admin:new {name} {email} {slug?} {--randomPassword}';
+    protected $signature = 'admin:new {--randomPassword} {name} {email} {slug?}';
 
     protected $description = 'Create new admin';
 

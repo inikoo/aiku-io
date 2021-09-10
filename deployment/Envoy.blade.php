@@ -48,7 +48,8 @@ $new_release_dir = $releases_dir . '/' . $date;
 $env_file='/home/vagrant/aiku-io/deployment/.env';
 
 // Command or path to invoke PHP
-$php = empty($php) ? 'php' : $php;
+$php = empty($php) ? 'php8.0' : $php;
+$branch = empty($branch) ? 'master' : $branch;
 
 $deployment_key=null;
 
@@ -113,7 +114,10 @@ cd {{$new_release_dir}}
 
 /usr/bin/php8.0 artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
 /usr/bin/php8.0 artisan db:seed  --force  --database=landlord
-/usr/bin/php8.0 artisan admin:new {{$adminName}} {{$adminEmail}} {{$adminSlug}} --randomPassword
+
+echo /usr/bin/php8.0 artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
+
+/usr/bin/php8.0 artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
 /usr/bin/php8.0 artisan admin:token {{$adminSlug}}
 
 @endtask
