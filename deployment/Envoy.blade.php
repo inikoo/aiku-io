@@ -64,48 +64,11 @@ $skip_build=false;
 @story('first_time_DANGER')
 confirm_reset_DANGER
 confirm_reset_DANGER_2
-create_folders
-pull
-staging
-setup_symlinks
-composer_install_first_time
-move_to_release_dir
-verify_install
-activate_release
-optimise
 setup_first_time_DANGER_FINAL_WARNING
 
 @endstory
 
 
-
-
-@story('deploy')
-start_deployment
-create_folders
-pull
-staging
-setup_symlinks
-composer_install
-npm_install
-build
-move_to_release_dir
-verify_install
-activate_release
-optimise
-migrate
-additional_tasks
-cleanup
-end_deployment
-@endstory
-
-@task('composer_install_first_time', ['on' => 'production'])
-echo "* Setting up first time *"
-cd {{$staging_dir}}
-{{$php}}  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
-
-
-@endtask
 
 @task('confirm_reset_DANGER', ['on' => 'production','confirm' => true])
 echo "* This will DELETE aiku database are you sure!!!!*"
@@ -113,11 +76,35 @@ echo "* This will DELETE aiku database are you sure!!!!*"
 @task('confirm_reset_DANGER_2', ['on' => 'production','confirm' => true])
 echo "* DANGER AHEAD*"
 @endtask
-
-
-
 @task('setup_first_time_DANGER_FINAL_WARNING', ['on' => 'production','confirm' => true])
 echo "* Setting up first time *"
+
+mkdir -p {{ $new_release_dir }}
+mkdir -p {{ $new_release_dir }}/public/
+
+echo "* Pulling repo *"
+
+cd {{$repo_dir}}
+git pull origin {{ $branch }}
+
+
+rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from={{ $repo_dir }}/deployment/deployment-exclude-list.txt {{ $repo_dir }}/ {{ $staging_dir }}
+
+ln -nsf {{ $path }}/.env {{ $new_release_dir }}/.env
+ln -nsf {{ $path }}/storage {{ $new_release_dir }}/storage
+ln -nsf {{ $path }}/storage/app/public {{ $new_release_dir }}/public/storage
+
+cd {{$staging_dir}}
+{{$php}}  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
+
+rsync -auz --exclude 'node_modules' {{ $staging_dir }}/ {{ $new_release_dir }}
+
+cd {{ $new_release_dir }}
+{{ $php }} artisan --version
+
+ln -nsf {{ $new_release_dir }} {{ $current_release_dir }}
+
+
 cd {{$new_release_dir}}
 {{$php}}  /usr/local/bin/composer dump-autoload -o
 {{$php}} artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
@@ -127,40 +114,35 @@ cd {{$new_release_dir}}
 {{$php}} artisan admin:token {{$adminSlug}} admin root
 @endtask
 
-@task('start_deployment', ['on' => 'production'])
+
+@task('deploy', ['on' => 'production'])
 DEPLOY=$(curl --silent --location --request POST '{{$api_url}}/deployments/create' --header 'Authorization: Bearer {{$api_key}}')
 echo $DEPLOY | jq -r '.version'
 echo $DEPLOY > {{$path}}/deploy-manifest.json
-@endtask
 
-@task('create_folders', ['on' => 'production'])
 mkdir -p {{ $new_release_dir }}
 mkdir -p {{ $new_release_dir }}/public/
-@endtask
 
-@task('pull', ['on' => 'production'])
 echo "* Pulling repo *"
 cd {{$repo_dir}}
 git pull origin {{ $branch }}
-@endtask
 
-@task('staging', ['on' => 'production'])
 echo "* staging code from {{ $repo_dir }} to {{ $staging_dir }} *"
 rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from={{ $repo_dir }}/deployment/deployment-exclude-list.txt {{ $repo_dir }}/ {{ $staging_dir }}
 mv {{$path}}/deploy-manifest.json {{ $staging_dir }}/
-@endtask
 
-@task('composer_install', ['on' => 'production'])
+ln -nsf {{ $path }}/.env {{ $new_release_dir }}/.env
+ln -nsf {{ $path }}/storage {{ $new_release_dir }}/storage
+ln -nsf {{ $path }}/storage/app/public {{ $new_release_dir }}/public/storage
+
 DEPLOY=$(cat {{ $staging_dir }}/deploy-manifest.json | jq -r '.skip_composer_install' )
 if [ $DEPLOY != true ]
-    then
+then
     echo "* Composer install *"
     cd {{$staging_dir}}
     {{$php}}  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
 fi
-@endtask
 
-@task('npm_install', ['on' => 'production'])
 DEPLOY=$(cat {{ $staging_dir }}/deploy-manifest.json | jq -r '.skip_npm_install' )
 if [ $DEPLOY != true ]
 then
@@ -168,9 +150,7 @@ then
     cd {{$staging_dir}}
     npm install
 fi
-@endtask
 
-@task('build', ['on' => 'production'])
 DEPLOY=$(cat {{ $staging_dir }}/deploy-manifest.json | jq -r '.skip_build' )
 if [ $DEPLOY != true ]
 then
@@ -179,42 +159,21 @@ then
     ln -sf {{ $path }}/private/ {{ $staging_dir }}/resources/js/
     npm run prod
 fi
-@endtask
 
-@task('setup_symlinks', ['on' => 'production'])
-
-echo "* Linking .env file to new release dir ({{ $path }}/.env -> {{ $new_release_dir }}/.env) *"
-ln -nsf {{ $path }}/.env {{ $new_release_dir }}/.env
-echo "* Linking storage directory to new release dir ({{ $path }}/storage -> {{ $new_release_dir }}/storage) *"
-ln -nsf {{ $path }}/storage {{ $new_release_dir }}/storage
-echo "* Linking storage directory to new release dir ({{ $path }}/storage/app/public -> {{ $new_release_dir }}/public/storage) *"
-ln -nsf {{ $path }}/storage/app/public {{ $new_release_dir }}/public/storage
-@endtask
-
-@task('move_to_release_dir', ['on' => 'production'])
 echo "* Sync code from {{ $staging_dir }}  to {{ $new_release_dir }} *"
 rsync -auz --exclude 'node_modules' {{ $staging_dir }}/ {{ $new_release_dir }}
-@endtask
 
-@task('verify_install', ['on' => 'production'])
-echo "* Verifying install ({{ $new_release_dir }}) *"
 cd {{ $new_release_dir }}
 {{ $php }} artisan --version
-@endtask
 
-@task('activate_release', ['on' => 'production'])
 echo "* Activating new release ({{ $new_release_dir }} -> {{ $current_release_dir }}) *"
 ln -nsf {{ $new_release_dir }} {{ $current_release_dir }}
-@endtask
 
-@task('migrate', ['on' => 'production'])
 echo '* Running migrations *'
 cd {{ $new_release_dir }}
 {{ $php }} artisan migrate --force  --path=database/migrations/landlord --database=landlord
 {{ $php }} artisan tenants:artisan "migrate --force   --database=tenant"
-@endtask
 
-@task('optimise', ['on' => 'production'])
 echo '* Clearing cache and optimising *'
 cd {{ $new_release_dir }}
 {{ $php }} artisan optimize:clear --quiet
@@ -230,28 +189,15 @@ echo "Cache"
 #{{ $php }} artisan optimize
 {{ $php }} artisan route:cache
 
-echo "Deployment ({{ $date }}) finished"
-@endtask
-
-@task('additional_tasks', ['on' => 'production'])
-cd {{ $new_release_dir }}
-
-echo "* Additional Tasks *"
-
-@endtask
-
-@task('cleanup', ['on' => 'production'])
 echo "* Executing cleanup command in {{ $releases_dir }} *"
 cd {{$releases_dir}}
 ls -t | tail -n +2 | xargs rm -rf
-@endtask
 
-@task('end_deployment', ['on' => 'production'])
 DEPLOY=$(curl --silent --location --request POST '{{$api_url}}/deployments/latest/edit?state=deployed' --header 'Authorization: Bearer {{$api_key}}')
 echo $DEPLOY
+
+echo "Deployment ({{ $date }}) finished"
 @endtask
-
-
 
 
 @error
