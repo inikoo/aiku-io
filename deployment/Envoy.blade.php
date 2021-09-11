@@ -78,13 +78,9 @@ setup_first_time_DANGER_FINAL_WARNING
 @endstory
 
 
+
+
 @story('deploy')
-
-start_deployment
-
-@endstory
-
-@story('deployx')
 start_deployment
 create_folders
 pull
@@ -100,12 +96,13 @@ optimise
 migrate
 additional_tasks
 cleanup
+end_deployment
 @endstory
 
 @task('composer_install_first_time', ['on' => 'production'])
 echo "* Setting up first time *"
 cd {{$staging_dir}}
-/usr/bin/php8.0  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
+{{$php}}  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
 
 
 @endtask
@@ -122,24 +119,19 @@ echo "* DANGER AHEAD*"
 @task('setup_first_time_DANGER_FINAL_WARNING', ['on' => 'production','confirm' => true])
 echo "* Setting up first time *"
 cd {{$new_release_dir}}
-/usr/bin/php8.0  /usr/local/bin/composer dump-autoload -o
-
-/usr/bin/php8.0 artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
-/usr/bin/php8.0 artisan db:seed  --force  --database=landlord
-/usr/bin/php8.0 artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
-/usr/bin/php8.0 artisan admin:token {{$adminSlug}} admin
-
+{{$php}}  /usr/local/bin/composer dump-autoload -o
+{{$php}} artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
+{{$php}} artisan db:seed  --force  --database=landlord
+{{$php}} artisan tenant:new  demo.aiku.io "Demo" --type=b2b
+{{$php}} artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
+{{$php}} artisan admin:token {{$adminSlug}} admin root
 @endtask
 
-
-
-@task('start_deployment', ['on' => 'localhost'])
-DEPLOY=$(curl  --location --request POST '{{$api_url}}/deployments/create' --header 'Authorization: Bearer {{$api_key}}')
+@task('start_deployment', ['on' => 'production'])
+DEPLOY=$(curl --silent --location --request POST '{{$api_url}}/deployments/create' --header 'Authorization: Bearer {{$api_key}}')
 echo $DEPLOY | jq -r '.version'
+echo $DEPLOY > {{$path}}/deploy-manifest.json
 @endtask
-
-
-
 
 @task('create_folders', ['on' => 'production'])
 mkdir -p {{ $new_release_dir }}
@@ -152,70 +144,61 @@ cd {{$repo_dir}}
 git pull origin {{ $branch }}
 @endtask
 
-
 @task('staging', ['on' => 'production'])
 echo "* staging code from {{ $repo_dir }} to {{ $staging_dir }} *"
 rsync   -rlptgoDPzSlh  --no-p --chmod=g=rwX  --delete  --stats --exclude-from={{ $repo_dir }}/deployment/deployment-exclude-list.txt {{ $repo_dir }}/ {{ $staging_dir }}
+mv {{$path}}/deploy-manifest.json {{ $staging_dir }}/
 @endtask
 
-
-
-
 @task('composer_install', ['on' => 'production'])
-echo "* Composer install *"
-
-DEPLOY=$(curl --silent --location --request GET '{{$api_url}}/deployments/{{$deployment_id}}' --header 'Authorization: Bearer {{$api_key}}')
-echo $DEPLOY | jq -r '.version'
-
-cd {{$staging_dir}}
-/usr/bin/php8.0  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
-
-
+DEPLOY=$(cat {{ $staging_dir }}/deploy-manifest.json | jq -r '.skip_composer_install' )
+if [ $DEPLOY != true ]
+    then
+    echo "* Composer install *"
+    cd {{$staging_dir}}
+    {{$php}}  /usr/local/bin/composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader --prefer-dist
+fi
 @endtask
 
 @task('npm_install', ['on' => 'production'])
-echo "* NPM install *"
-cd {{$staging_dir}}
-npm install
+DEPLOY=$(cat {{ $staging_dir }}/deploy-manifest.json | jq -r '.skip_npm_install' )
+if [ $DEPLOY != true ]
+then
+    echo "* NPM install *"
+    cd {{$staging_dir}}
+    npm install
+fi
 @endtask
 
 @task('build', ['on' => 'production'])
-echo "* build VUE *"
-cd {{$staging_dir}}
-ln -sf {{ $path }}/private/ {{ $staging_dir }}/resources/js/
-npm run prod
+DEPLOY=$(cat {{ $staging_dir }}/deploy-manifest.json | jq -r '.skip_build' )
+if [ $DEPLOY != true ]
+then
+    echo "* build VUE *"
+    cd {{$staging_dir}}
+    ln -sf {{ $path }}/private/ {{ $staging_dir }}/resources/js/
+    npm run prod
+fi
 @endtask
-
-@task('manifest_file', ['on' => 'production'])
-echo "* Writing deploy manifest file *"
-
-echo -e "{\"build\":\""{{ $build }}"\", \"commit\":\""{{ $commit }}"\", \"branch\":\""{{ $branch }}"\"}" > {{ $new_release_dir }}/deploy-manifest.json
-@endtask
-
 
 @task('setup_symlinks', ['on' => 'production'])
 
-
 echo "* Linking .env file to new release dir ({{ $path }}/.env -> {{ $new_release_dir }}/.env) *"
 ln -nsf {{ $path }}/.env {{ $new_release_dir }}/.env
-
-
 echo "* Linking storage directory to new release dir ({{ $path }}/storage -> {{ $new_release_dir }}/storage) *"
 ln -nsf {{ $path }}/storage {{ $new_release_dir }}/storage
 echo "* Linking storage directory to new release dir ({{ $path }}/storage/app/public -> {{ $new_release_dir }}/public/storage) *"
 ln -nsf {{ $path }}/storage/app/public {{ $new_release_dir }}/public/storage
 @endtask
 
-
 @task('move_to_release_dir', ['on' => 'production'])
-echo "* Moving code from src  to {{ $new_release_dir }} *"
+echo "* Sync code from {{ $staging_dir }}  to {{ $new_release_dir }} *"
 rsync -auz --exclude 'node_modules' {{ $staging_dir }}/ {{ $new_release_dir }}
 @endtask
 
 @task('verify_install', ['on' => 'production'])
 echo "* Verifying install ({{ $new_release_dir }}) *"
 cd {{ $new_release_dir }}
-
 {{ $php }} artisan --version
 @endtask
 
@@ -228,19 +211,14 @@ ln -nsf {{ $new_release_dir }} {{ $current_release_dir }}
 echo '* Running migrations *'
 cd {{ $new_release_dir }}
 {{ $php }} artisan migrate --force  --path=database/migrations/landlord --database=landlord
-{{ $php }} artisan tenants:artisan "migrate --force   --database=tenant" --tenant=1
+{{ $php }} artisan tenants:artisan "migrate --force   --database=tenant"
 @endtask
 
 @task('optimise', ['on' => 'production'])
 echo '* Clearing cache and optimising *'
 cd {{ $new_release_dir }}
-
-
 {{ $php }} artisan optimize:clear --quiet
-
-/usr/bin/php8.0  /usr/local/bin/composer dump-autoload -o
-
-
+{{$php}}  /usr/local/bin/composer dump-autoload -o
 echo "Queue restarted"
 #{{ $php }} artisan queue:restart --quiet
 
@@ -264,54 +242,20 @@ echo "* Additional Tasks *"
 
 @task('cleanup', ['on' => 'production'])
 echo "* Executing cleanup command in {{ $releases_dir }} *"
-
 cd {{$releases_dir}}
 ls -t | tail -n +2 | xargs rm -rf
-
 @endtask
 
-@task('deployment_rollback')
-#cd {{ $path }}
-#ln -nsf {{ $path }}/$(find . -maxdepth 1 -name "20*" | sort | tail -n 2 | head -n1) {{ $path }}/current
-echo "Rolled back to $(find . -maxdepth 1 -name "20*" | sort | tail -n 2 | head -n1)"
+@task('end_deployment', ['on' => 'production'])
+DEPLOY=$(curl --silent --location --request POST '{{$api_url}}/deployments/latest/edit?state=deployed' --header 'Authorization: Bearer {{$api_key}}')
+echo $DEPLOY
 @endtask
+
+
+
 
 @error
 if ($task === 'deploy') {
 // ...
 }
 @enderror
-
-@after
-if ($task === 'start_deployment') {
-$curl = curl_init();
-
-curl_setopt_array($curl, array(
-CURLOPT_URL => $api_url.'/deployments/latest',
-CURLOPT_RETURNTRANSFER => true,
-CURLOPT_ENCODING => '',
-CURLOPT_MAXREDIRS => 10,
-CURLOPT_TIMEOUT => 0,
-CURLOPT_FOLLOWLOCATION => true,
-CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-CURLOPT_CUSTOMREQUEST => 'GET',
-CURLOPT_HTTPHEADER => array(
-'Accept-Encoding: application/json',
-'Accept: application/json',
-'Authorization: Bearer '.$api_key
-),
-));
-
-$response = curl_exec($curl);
-
-curl_close($curl);
-
-
-exit(1);
-
-$deployment= json_decode($response,true);
-$deployment_key=$deployment['id'];
-
-
-}
-@endafter

@@ -263,7 +263,7 @@ class PatientController extends Controller
         return Redirect::route('patients.edit', ['id' => $patient->id]);
     }
 
-    public function editGuardian($id, $guardianId, UpdatePatientGuardianRequest $request): RedirectResponse
+    public function updateGuardian($id, $guardianId, UpdatePatientGuardianRequest $request): RedirectResponse
     {
         $patient = Patient::find($id);
         $patient->guardians()->updateExistingPivot($guardianId, $request->only('relation'));
@@ -272,7 +272,7 @@ class PatientController extends Controller
         return Redirect::route('patients.edit', ['id' => $patient->id]);
     }
 
-    public function editGuardianAddress($id, $guardianId, UpdatePatientGuardianAddressRequest $request): RedirectResponse
+    public function updateGuardianAddress($id, $guardianId, UpdatePatientGuardianAddressRequest $request): RedirectResponse
     {
         $patient = Patient::findOrFail($id);
         $patient->guardians()->updateExistingPivot($guardianId, $request->only('relation'));

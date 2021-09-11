@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Aiku;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateLatestDeploymentRequest;
 use App\Models\Aiku\Deployment;
 
 use Illuminate\Http\JsonResponse;
@@ -13,6 +14,31 @@ use Throwable;
 
 class DeploymentController extends Controller
 {
+
+    public function updateLatest(UpdateLatestDeploymentRequest $request)
+    {
+        if ($deployment = Deployment::latest()->first()) {
+            $deployment->update($request->all());
+            $changes= $deployment->getChanges();
+            return response()->json(
+                [
+                    'updated'=>count($changes),
+                    'fields'=>$changes
+                ],
+
+            );
+
+            //return $deployment;
+        } else {
+            return response()->json(
+                [
+                    'message' => 'There is no deployments.'
+                ],
+                404
+            );
+        }
+    }
+
     public function latest(): JsonResponse|Deployment
     {
         if ($deployment = Deployment::latest()->first()) {
@@ -98,6 +124,7 @@ class DeploymentController extends Controller
                                       ]);
         } catch (Throwable $e) {
             report($e);
+
             return response()->json(
                 [
                     'message' => 'Error creating the deployment.'
