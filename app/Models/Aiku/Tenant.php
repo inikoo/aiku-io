@@ -8,16 +8,20 @@
 
 namespace App\Models\Aiku;
 
+use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
-
-
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 /**
  * @mixin IdeHelperTenant
  */
 class Tenant extends SpatieTenant
 {
+    use HasSlug;
+
     protected $guarded = [];
     protected $attributes = [
         'data' => '{}',
@@ -26,9 +30,22 @@ class Tenant extends SpatieTenant
         'data' => 'array'
     ];
 
-    public function business_type(): BelongsTo
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('database')
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function businessType(): BelongsTo
     {
         return $this->belongsTo('App\Models\Aiku\BusinessType');
+    }
+
+    public function appAdmin(): MorphOne
+    {
+        return $this->morphOne(User::class, 'userable');
     }
 
 }

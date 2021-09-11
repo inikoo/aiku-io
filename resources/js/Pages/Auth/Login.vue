@@ -1,5 +1,5 @@
 <template>
-    <Head title="Log in" />
+    <Head title="Log in" ></Head>
 
     <jet-authentication-card>
         <template #logo>
@@ -14,8 +14,8 @@
 
         <form @submit.prevent="submit">
             <div>
-                <jet-label for="email" value="Email" />
-                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus />
+                <jet-label for="slug" value="Username" />
+                <jet-input id="slug" type="text" class="mt-1 block w-full" v-model="form.slug" required autofocus />
             </div>
 
             <div class="mt-4">
@@ -31,9 +31,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
-                    Forgot your password?
-                </Link>
+
 
                 <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
@@ -75,7 +73,7 @@
         data() {
             return {
                 form: this.$inertia.form({
-                    email: '',
+                    slug: '',
                     password: '',
                     remember: false
                 })

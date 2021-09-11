@@ -12,6 +12,9 @@ namespace App\Models\System;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use Spatie\Permission\Models\Role as SpatieRole;
 
+/**
+ * @mixin IdeHelperRole
+ */
 class Role extends SpatieRole
 {
     use UsesTenantConnection;

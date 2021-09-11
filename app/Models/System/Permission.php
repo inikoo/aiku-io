@@ -11,6 +11,9 @@ namespace App\Models\System;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use Spatie\Permission\Models\Permission as SpatiePermission;
 
+/**
+ * @mixin IdeHelperPermission
+ */
 class Permission extends SpatiePermission
 {
     use UsesTenantConnection;

@@ -10,9 +10,8 @@ namespace App\Console\Commands\TenantsAdmin;
 
 use App\Models\Aiku\BusinessType;
 use App\Models\Aiku\Tenant;
-use App\Models\User;
+use App\Models\System\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +20,7 @@ use Illuminate\Support\Str;
 class CreateTenant extends Command
 {
 
-    protected $signature = 'tenant:new {domain} {name} {--type=b2b} {--legacy_db=}';
+    protected $signature = 'tenant:new {domain} {name} {email} {--slug} {--type=b2b} {--legacy_db=} {--randomPassword}';
 
     protected $description = 'Create new tenant';
 
@@ -55,11 +54,17 @@ class CreateTenant extends Command
         }
 
 
-        $business_type = BusinessType::where('slug', $this->option('type'))->first();
-        if (!$business_type) {
+        $businessType = BusinessType::where('slug', $this->option('type'))->first();
+        if (!$businessType) {
             $this->error("Business type {$this->option('type')} not found");
 
             return 0;
+        }
+
+        if ($this->option('randomPassword')) {
+            $password = wordwrap(Str::random(12), 4, '-', true);
+        } else {
+            $password = $this->secret('What is the password?');
         }
 
 
@@ -67,18 +72,56 @@ class CreateTenant extends Command
                                  'domain'   => $this->argument('domain'),
                                  'database' => $database,
                                  'name'     => $this->argument('name'),
-                                 'password' => '',
+                                 'email'    => $this->argument('email'),
+                                 'password' => $password,
                                  'data'     => $data
                              ]);
 
 
-        $business_type->tenants()->save($tenant);
-        $this->line("Tenant $tenant->domain created :)");
+        if ($this->option('slug')) {
+            $tenant->slug = $this->option('slug');
+        }
+
+
+        $businessType->tenants()->save($tenant);
+
         $tenant->makeCurrent();
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
-        Artisan::call('tenants:artisan "db:seed --force --class=RootUserSeeder" --tenant='.$tenant->id);
-        $this->line("Tenant $tenant->domain seeded");
+
+        $appAdminPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
+
+
+        $appAdmin       = new User([
+                                       'email'    => $this->argument('email'),
+                                       'password' => Hash::make($appAdminPassword),
+                                   ]);
+        $appAdmin->slug = 'admin';
+
+
+        $tenant->appAdmin()->save($appAdmin);
+        $appAdmin->assignRole('super-admin');
+
+        $this->line("Tenant $tenant->domain created :)");
+        if ($this->option('randomPassword')) {
+            $this->line("Tenant credentials ");
+        }
+
+        $this->table(
+            ['Account', 'Username', 'Email'],
+            [
+                [
+                    'tenant',
+                    $this->argument('email'),
+                    ($this->option('randomPassword') ? $password : '*****'),
+                ],
+                [
+                    'appAdmin',
+                    'admin',
+                    $appAdminPassword
+                ]
+            ]
+        );
 
 
         return 0;

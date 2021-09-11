@@ -19,7 +19,7 @@ class ModuleController extends Controller
     {
         $layout = [];
         if (Auth::user()) {
-            $layout = config('business_types.'.app('currentTenant')->business_type->slug.'.modules', []);
+            $layout = config('business_types.'.app('currentTenant')->businessType->slug.'.modules', []);
         }
 
 

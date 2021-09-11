@@ -9,7 +9,7 @@
 
 namespace App\Console\Commands\TenantsAdmin;
 
-use App\Models\User;
+use App\Models\System\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

@@ -31,8 +31,8 @@ class AppServiceProvider extends ServiceProvider
             [
                 'Contact' => 'App\Models\Helpers\Contact',
                 'Address' => 'App\Models\Helpers\Address',
-                'Tenant'  => 'App\Tenant',
-                'User'    => 'App\User',
+                'Tenant'  => 'App\Models\Aiku\Tenant',
+                'User'    => 'App\Models\System\User',
                 'Patient' => 'App\Models\Health\Patient',
                 /*
                 'Admin'                    => 'App\Models\System\Admin',
