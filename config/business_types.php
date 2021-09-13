@@ -7,54 +7,60 @@
  */
 
 
+$human_resources = [
+    'route'    => 'human_resources.index',
+    'name'     => 'Staff',
+    'fa'       => ['fal', 'clipboard-user'],
+    'sections' => [
+        'human_resources.employees.index' => [
+            'name' => 'Employees',
+        ],
+        'human_resources.timesheets.index'      => [
+            'name' => 'Timesheets',
+        ],
+        'human_resources.logbook'         => [
+            'name' => 'Logbook',
+        ],
+
+    ]
+];
+
+$system=[
+    'route'    => 'system.index',
+    'name'     => 'system',
+    'fa'       => ['fal', 'robot'],
+    'sections' => [
+        'system.users' => [
+            'name' => 'Users',
+        ],
+        'system.roles' => [
+            'name' => 'Roles',
+        ],
+
+        'system.billing' => [
+            'name' => 'Billing',
+        ],
+
+
+    ]
+];
+
+
 return [
 
     'b2b'    => [
 
         'name'        => 'B2B commerce',
         'modules'     => [
-            'dashboard' => [
+            'dashboard'       => [
                 'route'    => 'dashboard.index',
                 'name'     => 'Dashboard',
                 'fa'       => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
-            'hr'        => [
-                'route'    => 'hr.index',
-                'name'     => 'Staff',
-                'fa'       => ['fal', 'clipboard-user'],
-                'sections' => [
-                    'hr.employees'  => [
-                        'name' => 'Employees',
-                    ],
-                    'hr.timesheets' => [
-                        'name' => 'Timesheets',
-                    ],
-                    'hr.logbook'    => [
-                        'name' => 'Logbook',
-                    ],
+            'human_resources' => $human_resources,
+            'system'          => $system
 
-                ]
-            ],
-            'system'        => [
-                'route'    => 'system.index',
-                'name'     => 'system',
-                'fa'       => ['fal', 'robot'],
-                'sections' => [
-                    'system.users'  => [
-                        'name' => 'Users',
-                    ],
-                    'system.roles' => [
-                        'name' => 'Roles',
-                    ],
-
-                    'system.billing' => [
-                        'name' => 'Billing',
-                    ],
-
-
-                ]
-            ],
 
 
         ],
@@ -86,7 +92,7 @@ return [
     'health' => [
         'name'        => 'Health',
         'modules'     => [
-            'dashboard' => [
+            'dashboard'       => [
                 'route'    => 'dashboard.index',
                 'name'     => 'Dashboard',
                 'fa'       => ['fal', 'tachometer-alt-fast'],
@@ -101,42 +107,9 @@ return [
 
                 ]
             ],
-            'hr'        => [
-                'route'    => 'hr.index',
-                'name'     => 'Staff',
-                'fa'       => ['fal', 'clipboard-user'],
-                'sections' => [
-                    'hr.employees'  => [
-                        'name' => 'Employees',
-                    ],
-                    'hr.timesheets' => [
-                        'name' => 'Timesheets',
-                    ],
-                    'hr.logbook'    => [
-                        'name' => 'Logbook',
-                    ],
+            'human_resources' => $human_resources,
+            'system'          => $system
 
-                ]
-            ],
-            'system'        => [
-                'route'    => 'system.index',
-                'name'     => 'system',
-                'fa'       => ['fal', 'robot'],
-                'sections' => [
-                    'system.users'  => [
-                        'name' => 'Users',
-                    ],
-                    'system.roles' => [
-                        'name' => 'Roles',
-                    ],
-
-                    'system.billing' => [
-                        'name' => 'Billing',
-                    ],
-
-
-                ]
-            ],
 
         ],
         'permissions' => [

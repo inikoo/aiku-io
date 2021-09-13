@@ -40,9 +40,9 @@ Route::prefix('patients')->name('patients.')
     ->group(__DIR__ . '/web/patients.php');
 
 
-Route::prefix('hr')->name('hr.')
+Route::prefix('human_resources')->name('human_resources.')
     ->middleware(['auth:sanctum', 'verified'])
-    ->group(__DIR__ . '/web/hr.php');
+    ->group(__DIR__.'/web/human_resources.php');
 
 
 Route::prefix('system')->name('system.')
