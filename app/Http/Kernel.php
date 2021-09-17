@@ -4,7 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\HandleInertiaLandlordRequests;
+use App\Http\Middleware\HandleInertiaTenantsRequests;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
@@ -63,7 +64,17 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             SubstituteBindings::class,
             EnsureValidTenantSession::class,
-            HandleInertiaRequests::class,
+            HandleInertiaTenantsRequests::class,
+        ],
+        'landlord' => [
+
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            HandleInertiaLandlordRequests::class,
         ],
 
         'api' => [
