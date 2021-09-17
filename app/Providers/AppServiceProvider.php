@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
+use Closure;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * @method map(Closure $param)
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -62,5 +67,19 @@ class AppServiceProvider extends ServiceProvider
                 */
             ]
         );
+
+        Collection::macro('toLocale', function ($locale) {
+            return $this->map(function ($item) use ($locale) {
+
+
+                //$item['name']=Lang::get($item['name']);
+
+
+
+                return $item ;
+
+            });
+        });
+
     }
 }

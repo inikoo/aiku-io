@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="ml-3">
                                         <p class="text-base font-medium text-gray-700 group-hover:text-gray-900">
-                                            {{ $page.props.user.name }}
+                                            {{ $page.props.auth.user.name }}
                                         </p>
                                         <p class="text-sm font-medium text-gray-500 group-hover:text-gray-700">
                                             {{ __('View profile') }}
@@ -136,7 +136,7 @@
                         </Link>
                         <div class="ml-3 w-full">
                             <p class="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                                {{ $page.props.user.name }}
+                                {{ $page.props.auth.user.name }}
                             </p>
                             <div class="flex text-xs font-medium text-gray-500">
                                 <div class="flex-1">

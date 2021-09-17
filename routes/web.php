@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Health\PatientController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,33 +17,42 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
-        'phpVersion'     => PHP_VERSION,
+        'phpVersion' => PHP_VERSION,
     ]);
 });
 
 
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/customers', function () {
+Route::middleware(['auth', 'verified'])->get('/customers', function () {
     return Inertia::render('Customers');
 })->name('customers');
 
 
 Route::prefix('dashboard')->name('dashboard.')
-    ->middleware(['auth:sanctum', 'verified'])
+    ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/dashboard.php');
 
 
 Route::prefix('patients')->name('patients.')
-    ->middleware(['auth:sanctum', 'verified'])
+    ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/patients.php');
 
 
 Route::prefix('human_resources')->name('human_resources.')
-    ->middleware(['auth:sanctum', 'verified'])
+    ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/human_resources.php');
 
 
 Route::prefix('system')->name('system.')
-    ->middleware(['auth:sanctum', 'verified'])
+    ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/system.php');
+
+
+Route::middleware(['auth', 'verified'])->get('/profile', function () {
+    return Inertia::render('Profile');
+})->name('profile.show');
+
+
+require __DIR__.'/auth.php';
