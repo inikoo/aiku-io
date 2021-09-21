@@ -10,6 +10,10 @@ namespace App\Console\Commands\TenantsAdmin;
 
 use App\Models\Aiku\BusinessType;
 use App\Models\Aiku\Tenant;
+use App\Models\Assets\Country;
+use App\Models\Assets\Currency;
+use App\Models\Assets\Language;
+use App\Models\Assets\Timezone;
 use App\Models\System\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -20,7 +24,7 @@ use Illuminate\Support\Str;
 class CreateTenant extends Command
 {
 
-    protected $signature = 'tenant:new {domain} {name} {email} {--slug} {--type=b2b} {--legacy_db=} {--randomPassword}';
+    protected $signature = 'tenant:new {domain} {name} {email} {slug?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en}   ';
 
     protected $description = 'Create new tenant';
 
@@ -49,9 +53,6 @@ class CreateTenant extends Command
         }
 
         $data = [];
-        if ($this->option('legacy_db')) {
-            $data['legacy_db'] = $this->option('legacy_db');
-        }
 
 
         $businessType = BusinessType::where('slug', $this->option('type'))->first();
@@ -62,28 +63,56 @@ class CreateTenant extends Command
         }
 
         if ($this->option('randomPassword')) {
-            $password = wordwrap(Str::random(12), 4, '-', true);
+            $password = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
         } else {
             $password = $this->secret('What is the password?');
+            if (strlen($password) < 8) {
+                $this->error("Password needs to be at least 8 characters");
+
+                return 0;
+            }
         }
+
+        $country  = Country::where('code', $this->option('country'))->firstOrFail();
+        $currency = Currency::where('code', $this->option('currency'))->firstOrFail();
+        $language = Language::where('code', $this->option('language'))->firstOrFail();
+        $timezone = Timezone::where('name', $this->option('timezone'))->firstOrFail();
+
+
 
 
         $tenant = new Tenant([
-                                 'domain'   => $this->argument('domain'),
-                                 'database' => $database,
-                                 'name'     => $this->argument('name'),
-                                 'email'    => $this->argument('email'),
-                                 'password' => $password,
-                                 'data'     => $data
+                                 'domain'      => $this->argument('domain'),
+                                 'database'    => $database,
+                                 'name'        => $this->argument('name'),
+                                 'email'       => $this->argument('email'),
+                                 'country_id'  => $country->id,
+                                 'currency_id' => $currency->id,
+                                 'language_id' => $language->id,
+                                 'timezone_id' => $timezone->id,
+                                 'data'        => $data
                              ]);
 
 
-        if ($this->option('slug')) {
-            $tenant->slug = $this->option('slug');
+        if ($this->argument('slug')) {
+            $tenant->slug = $this->argument('slug');
+        }
+        /** @var Tenant $tenant */
+        $tenant = $businessType->tenants()->save($tenant);
+
+
+        $username = $tenant->slug;
+        if ($this->argument('username')) {
+            $username = $this->argument('username');
         }
 
 
-        $businessType->tenants()->save($tenant);
+        $tenantUser = new \App\Models\Aiku\User([
+                                                    'username' => $username,
+                                                    'password' => Hash::make($password)
+                                                ]);
+
+        $tenant->user()->save($tenantUser);
 
         $tenant->makeCurrent();
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
@@ -92,11 +121,10 @@ class CreateTenant extends Command
         $appAdminPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 
 
-        $appAdmin       = new User([
-                                       'email'    => $this->argument('email'),
-                                       'password' => Hash::make($appAdminPassword),
-                                   ]);
-        $appAdmin->slug = 'admin';
+        $appAdmin = new User([
+                                 'username' => 'admin',
+                                 'password' => Hash::make($appAdminPassword),
+                             ]);
 
 
         $tenant->appAdmin()->save($appAdmin);
@@ -108,15 +136,17 @@ class CreateTenant extends Command
         }
 
         $this->table(
-            ['Account', 'Username', 'Email'],
+            ['Account', 'Slug', 'Username', 'Password'],
             [
                 [
                     'tenant',
-                    $this->argument('email'),
+                    $tenant->slug,
+                    $tenant->user->username,
                     ($this->option('randomPassword') ? $password : '*****'),
                 ],
                 [
                     'appAdmin',
+                    '',
                     'admin',
                     $appAdminPassword
                 ]

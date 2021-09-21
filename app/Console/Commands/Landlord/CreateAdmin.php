@@ -9,6 +9,7 @@
 namespace App\Console\Commands\Landlord;
 
 use App\Models\Aiku\Admin;
+use App\Models\Aiku\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -17,7 +18,7 @@ use Illuminate\Support\Str;
 class CreateAdmin extends Command
 {
 
-    protected $signature = 'admin:new {--randomPassword} {name} {email} {slug?}';
+    protected $signature = 'admin:new {--randomPassword} {name} {email} {slug?} {username?}';
 
     protected $description = 'Create new admin';
 
@@ -28,32 +29,57 @@ class CreateAdmin extends Command
 
     public function handle(): int
     {
-        if($this->option('randomPassword')){
-            $password = Str::random(32);
-        }else{
+        if ($this->option('randomPassword')) {
+            $password = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(), 4, '-', true));
+
+        } else {
             $password = $this->secret('What is the password?');
+            if (strlen($password) < 8) {
+                $this->error("Password needs to be at least 8 characters");
+                return 0;
+            }
         }
 
-        if(strlen($password)<8){
-            $this->error("Password needs to be at least 8 characters");
 
-            return 0;
-        }
 
         $admin = new Admin([
-                               'name'     => $this->argument('name'),
-                               'email'    => $this->argument('email'),
-                               'password' => Hash::make($password)
+                               'name' => $this->argument('name'),
+                               'email' => $this->argument('email'),
+
 
                            ]);
-        if($this->argument('slug')){
-            $admin->slug=$this->argument('slug');
+        if ($this->argument('slug')) {
+            $admin->slug = $this->argument('slug');
+        }
+        $username = $admin->slug;
+        if ($this->argument('username')) {
+            $username = $this->argument('slug');
         }
 
         $admin->save();
 
 
-         $this->line("Admin created $admin->slug");
+        $user = new User([
+                             'username' => $username,
+                             'password' => Hash::make($password)
+                         ]);
+
+        $admin->user()->save($user);
+
+        $this->line("Admin created $admin->slug");
+
+        $this->table(
+            ['Code', 'Username', 'Password'],
+            [
+                [
+
+                    $admin->slug,
+                    $user->username,
+                    ($this->option('randomPassword') ? $password : '*****'),
+                ],
+
+            ]
+        );
 
 
         return 0;

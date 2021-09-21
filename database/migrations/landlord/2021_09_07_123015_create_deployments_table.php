@@ -24,7 +24,7 @@ class CreateDeploymentsTable extends Migration
             $table->string('name');
             $table->string('slug')->unique()->index();
             $table->string('email')->unique();
-            $table->string('password');
+
             $table->jsonb('data');
             $table->timestampsTz();
         });

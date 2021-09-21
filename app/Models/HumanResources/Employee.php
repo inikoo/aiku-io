@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use OwenIt\Auditing\Contracts\Auditable;
 
+/**
+ * @mixin IdeHelperEmployee
+ */
 class Employee extends Model implements Auditable
 {
     use HasFactory;

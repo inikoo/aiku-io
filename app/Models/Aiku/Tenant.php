@@ -8,7 +8,6 @@
 
 namespace App\Models\Aiku;
 
-use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
@@ -43,9 +42,16 @@ class Tenant extends SpatieTenant
         return $this->belongsTo('App\Models\Aiku\BusinessType');
     }
 
-    public function appAdmin(): MorphOne
+
+
+    public function user(): MorphOne
     {
         return $this->morphOne(User::class, 'userable');
+    }
+
+    public function appAdmin(): MorphOne
+    {
+        return $this->morphOne(\App\Models\System\User::class, 'userable');
     }
 
 }

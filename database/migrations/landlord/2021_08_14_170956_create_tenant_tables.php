@@ -135,8 +135,8 @@ class CreateTenantTables extends Migration
             $table->string('name')->comment('E.g. company name');
             $table->string('domain')->unique();
             $table->string('database')->unique();
-            $table->string('email')->unique()->comment('Used for login');
-            $table->string('password');
+            $table->string('email')->unique();
+
             $table->foreignId('business_type_id')->constrained();
             $table->unsignedSmallInteger('country_id')->nullable();
             $table->unsignedSmallInteger('currency_id')->nullable();

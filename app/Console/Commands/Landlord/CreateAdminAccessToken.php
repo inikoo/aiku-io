@@ -27,7 +27,7 @@ class CreateAdminAccessToken extends Command
     public function handle(): int
     {
         if ($admin = Admin::firstWhere('slug', $this->argument('slug'))) {
-            $token= $admin->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
+            $token= $admin->user->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
             $this->line("Admin access token: $token");
         } else {
             $this->error("Admin not found: {$this->argument('slug')}");

@@ -9,8 +9,8 @@
 namespace App\Models\Aiku;
 
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -19,9 +19,8 @@ use Spatie\Sluggable\SlugOptions;
 /**
  * @mixin IdeHelperAdmin
  */
-class Admin extends Authenticatable
+class Admin extends Model
 {
-    use HasApiTokens;
     use UsesLandlordConnection;
     use HasSlug;
 
@@ -32,10 +31,7 @@ class Admin extends Authenticatable
     protected $casts = [
         'data' => 'array'
     ];
-    protected $hidden = [
-        'password',
 
-    ];
 
     public function getSlugOptions() : SlugOptions
     {
@@ -45,6 +41,11 @@ class Admin extends Authenticatable
             ->doNotGenerateSlugsOnUpdate()
             ->saveSlugsTo('slug');
 
+    }
+
+    public function user(): MorphOne
+    {
+        return $this->morphOne(User::class, 'userable');
     }
 
 }

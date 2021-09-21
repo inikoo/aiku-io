@@ -34,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap(
             [
+                'AikuUser'    => 'App\Models\Aiku\User',
+                'AikuAdmin'    => 'App\Models\Aiku\Admin',
                 'Contact' => 'App\Models\Helpers\Contact',
                 'Address' => 'App\Models\Helpers\Address',
                 'Tenant'  => 'App\Models\Aiku\Tenant',
