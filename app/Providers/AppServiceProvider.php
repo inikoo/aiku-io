@@ -34,17 +34,18 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap(
             [
-                'AikuUser'    => 'App\Models\Aiku\User',
-                'AikuAdmin'    => 'App\Models\Aiku\Admin',
+                'AikuUser' => 'App\Models\Aiku\User',
+                'AikuAdmin' => 'App\Models\Aiku\Admin',
                 'Contact' => 'App\Models\Helpers\Contact',
                 'Address' => 'App\Models\Helpers\Address',
-                'Tenant'  => 'App\Models\Aiku\Tenant',
-                'User'    => 'App\Models\System\User',
+                'Tenant' => 'App\Models\Aiku\Tenant',
+                'User' => 'App\Models\System\User',
                 'Patient' => 'App\Models\Health\Patient',
+                'Employee' => 'App\Models\HumanResources\Employee',
                 /*
                 'Admin'                    => 'App\Models\System\Admin',
                 'Guest'                    => 'App\Models\System\Guest',
-                'Employee'                 => 'App\Models\HR\Employee',
+
                 'Customer'                 => 'App\Models\CRM\Customer',
                 'CustomerClient'           => 'App\Models\CRM\CustomerClient',
                 'Prospect'                 => 'App\Models\CRM\Prospect',
@@ -72,16 +73,11 @@ class AppServiceProvider extends ServiceProvider
 
         Collection::macro('toLocale', function ($locale) {
             return $this->map(function ($item) use ($locale) {
-
-
                 //$item['name']=Lang::get($item['name']);
 
 
-
-                return $item ;
-
+                return $item;
             });
         });
-
     }
 }
