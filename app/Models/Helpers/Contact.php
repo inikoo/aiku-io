@@ -10,6 +10,7 @@ namespace App\Models\Helpers;
 
 use App\Models\Health\Patient;
 
+use App\Models\HumanResources\Employee;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -65,10 +67,13 @@ class Contact extends Model implements Auditable
         return $this->morphOne(Address::class, 'owner');
     }
 
-    public function patient(): HasOne
+
+
+    public function contactable(): MorphTo
     {
-        return $this->hasOne(Patient::class);
+        return $this->morphTo();
     }
+
 
 
     public function dependants(): BelongsToMany

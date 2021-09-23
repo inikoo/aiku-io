@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Actions\HumanResources\Employee\ShowEmployee;
+use App\Actions\HumanResources\Employee\ShowEmployees;
+use App\Actions\HumanResources\Employee\StoreEmployee;
+use App\Actions\HumanResources\Employee\UpdateEmployee;
+
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+
+Route::get('/employees', ShowEmployees::class)->name('employees.index');
+Route::post('/employees', StoreEmployee::class)->name('employees.store');
+Route::get('/employees/{employee}',ShowEmployee::class)->name('employees.show');
+Route::patch('/employees/{employee}',UpdateEmployee::class)->name('employees.update');
+
 

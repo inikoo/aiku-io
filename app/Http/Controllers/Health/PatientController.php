@@ -18,6 +18,7 @@ use App\Http\Requests\UpdatePatientGuardianRequest;
 use App\Models\Assets\Country;
 use App\Models\Health\Patient;
 use App\Models\Helpers\Contact;
+use App\Http\Controllers\Traits\HasContact;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redirect;
@@ -30,10 +31,12 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class PatientController extends Controller
 {
+    use HasContact;
 
     protected array $breadcrumbs = [];
     private string $module;
     private array $guardiansTypes;
+
     private array $identityDocumentTypes;
     private mixed $defaultCountry;
 

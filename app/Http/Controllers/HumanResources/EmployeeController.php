@@ -3,18 +3,51 @@
 namespace App\Http\Controllers\HumanResources;
 
 
+use App\Http\Controllers\Assets\CountrySelectOptionsController;
 use App\Models\HumanResources\Employee;
+use App\Http\Controllers\Traits\HasContact;
+use Illuminate\Support\Arr;
 use Inertia\Inertia;
 use Inertia\Response;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class EmployeesController extends HumanResourcesController
+class EmployeeController extends HumanResourcesController
 {
+    use HasContact;
+
+    private array $identityDocumentTypes;
+    private mixed $defaultCountry;
+
+
+
+
     public function __construct()
     {
         parent::__construct();
+
+
+        $this->defaultCountry = $this->getDefaultCountry();
+        $this->identityDocumentTypes=$this->getDefaultDocumentTypes($this->defaultCountry);
+
+        if (Arr::get($this->defaultCountry->data, 'identity_document_type')) {
+            $this->identityDocumentTypes = array_merge(
+                Arr::get($this->defaultCountry->data, 'identity_document_type'),
+                [
+                    [
+                        'value' => 'Passport',
+                        'name'  => __('Passport')
+                    ],
+                    [
+                        'value'   => 'Other',
+                        'name'    => __('Other'),
+                        'isOther' => true
+                    ]
+                ]
+            );
+        }
+
     }
 
     public function index(): Response
@@ -78,5 +111,50 @@ class EmployeesController extends HumanResourcesController
                                'age'           => 'Age',
                            ]);
         });
+    }
+
+    public function create(): Response
+    {
+        $breadcrumbs = array_merge($this->breadcrumbs, [
+            'users' => [
+                'route'   => 'employees.create',
+                'name'    => __('Employee registration'),
+                'current' => true
+            ]
+        ]);
+
+        $blueprint   = [];
+        $blueprint[] = $this->employeeTypeBlueprint();
+        $blueprint[] = $this->personalInformationBlueprint();
+        $blueprint[] = $this->identityDocumentBlueprint();
+        $blueprint[] = $this->contactInformationBlueprint(withGuardian: true);
+
+        return Inertia::render(
+            'Employees/NewEmployee',
+            [
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'       => __('New employee'),
+                    'breadcrumbs' => $breadcrumbs,
+                    'actionIcons' => [
+                        'employees.index' => [
+                            'name' => __('Cancel'),
+                            'icon' => ['fal', 'portal-exit'],
+                        ]
+                    ],
+                ],
+
+                'formData' => [
+                    'postURL'     => '/employees/create',
+                    'cancelRoute' => ['employees.index'],
+                    'blueprint'   => $blueprint,
+                    'args'        => [
+                        'countriesAddressData' => (new CountrySelectOptionsController())->getCountriesAddressData(),
+                    ]
+                ]
+
+
+            ]
+        );
     }
 }

@@ -24,7 +24,7 @@ use Illuminate\Support\Str;
 class CreateTenant extends Command
 {
 
-    protected $signature = 'tenant:new {domain} {name} {email} {slug?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en}   ';
+    protected $signature = 'tenant:new {domain} {name} {email} {slug?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en} {--aurora_db=}   ';
 
     protected $description = 'Create new tenant';
 
@@ -53,6 +53,10 @@ class CreateTenant extends Command
         }
 
         $data = [];
+
+        if($this->option('aurora_db')){
+            $data['aurora_db']=$this->option('aurora_db');
+        }
 
 
         $businessType = BusinessType::where('slug', $this->option('type'))->first();

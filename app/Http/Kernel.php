@@ -4,11 +4,13 @@ namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\HandleInertiaLandlordRequests;
 use App\Http\Middleware\HandleInertiaTenantsRequests;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
+use App\Http\Middleware\TrustHosts;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\VerifyCsrfToken;
 use Fruitcake\Cors\HandleCors;
@@ -40,7 +42,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        // \App\Http\Middleware\TrustHosts::class,
+        TrustHosts::class,
         TrustProxies::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
@@ -49,12 +51,9 @@ class Kernel extends HttpKernel
         ConvertEmptyStringsToNull::class,
     ];
 
-    /**
-     * The application's route middleware groups.
-     *
-     * @var array
-     */
+
     protected $middlewareGroups = [
+
         'web' => [
             NeedsTenant::class,
             EncryptCookies::class,
@@ -65,7 +64,19 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             EnsureValidTenantSession::class,
             HandleInertiaTenantsRequests::class,
+
         ],
+
+        'api' => [
+            ForceJsonResponse::class,
+            NeedsTenant::class,
+            EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            SubstituteBindings::class,
+            'auth:api'
+        ],
+
+
         'landlord' => [
 
             EncryptCookies::class,
@@ -77,10 +88,13 @@ class Kernel extends HttpKernel
             HandleInertiaLandlordRequests::class,
         ],
 
-        'api' => [
+
+        'landlord_api' => [
+            ForceJsonResponse::class,
             EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             SubstituteBindings::class,
+            'auth:landlord_api'
         ],
 
 
@@ -94,6 +108,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'json.response'    => ForceJsonResponse::class,
         'auth'             => Authenticate::class,
         'auth.basic'       => AuthenticateWithBasicAuth::class,
         'cache.headers'    => SetCacheHeaders::class,

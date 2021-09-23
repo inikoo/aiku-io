@@ -41,13 +41,19 @@ class RouteServiceProvider extends ServiceProvider
 
 
             Route::domain('api.'.config('app,domain'))
-                ->middleware('api')
+                ->middleware('landlord_api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/landlord/api/api.php'));
             Route::domain('www.'.config('app.domain'))
                 ->middleware('landlord')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/landlord/web.php'));
+
+
+            Route::prefix('api')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
 
             Route::middleware('web')
                 ->namespace($this->namespace)

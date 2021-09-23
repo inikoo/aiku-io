@@ -19,7 +19,6 @@ class CreateEmployeesTable extends Migration
      */
     public function up()
     {
-
         Schema::create('job_positions', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('slug')->unique();
@@ -30,15 +29,18 @@ class CreateEmployeesTable extends Migration
 
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('contact_id')->nullable();
-            $table->foreign('contact_id')->references('id')->on('contacts');
+            $table->string('nickname')->unique();
+            $table->string('worker_number')->nullable();
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('status')->default('working');
-            $table->string('slug')->nullable()->unique();
-
+            $table->enum('type', ['Employee', 'Volunteer', 'Contractor', 'TemporalWorker', 'WorkExperience'])->default('employee');
+            $table->enum('state', ['Hired', 'Working', 'Left'])->default('working');
+            $table->date('employment_start_at')->nullable();
+            $table->date('employment_end_at')->nullable();
             $table->jsonb('data');
             $table->timestampsTz();
+            $table->unsignedBigInteger('aurora_id')->nullable()->index();
+
         });
     }
 

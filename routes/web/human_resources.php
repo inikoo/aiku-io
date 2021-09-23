@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-use App\Http\Controllers\HumanResources\EmployeesController;
+use App\Http\Controllers\HumanResources\EmployeeController;
 use App\Http\Controllers\HumanResources\HumanResourcesController;
 use App\Http\Controllers\HumanResources\TimesheetsController;
 
@@ -14,11 +14,11 @@ use App\Http\Controllers\HumanResources\TimesheetsController;
 Route::get('/', [HumanResourcesController::class, 'index'])->name('index');
 Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
 
-Route::get('/employees', [EmployeesController::class, 'index'])->name('employees.index');
-Route::get('/employees/logbook', [EmployeesController::class, 'logbook'])->name('employees.logbook');
+Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::get('/employees/logbook', [EmployeeController::class, 'logbook'])->name('employees.logbook');
 
-Route::get('/employees/create', [EmployeesController::class, 'create'])->name('employees.create');
-Route::post('/employees/create', [EmployeesController::class, 'store'])->name('employees.store');
+Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+Route::post('/employees/create', [EmployeeController::class, 'store'])->name('employees.store');
 
 
 Route::get('/timesheets', [TimesheetsController::class, 'index'])->name('timesheets.index');

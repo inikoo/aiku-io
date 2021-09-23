@@ -38,12 +38,21 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'tenant_users',
         ],
 
         'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
+            'driver' => 'sanctum',
+            'provider' => 'tenant_users',
+            'hash' => false,
+        ],
+        'landlord_web' => [
+            'driver' => 'session',
+            'provider' => 'landlord_users',
+        ],
+        'landlord_api' => [
+            'driver' => 'sanctum',
+            'provider' => 'landlord_users',
             'hash' => false,
         ],
     ],
@@ -66,15 +75,16 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'tenant_users' => [
             'driver' => 'eloquent',
             'model' => App\Models\System\User::class,
         ],
+        'landlord_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Aiku\User::class,
+        ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+
     ],
 
     /*

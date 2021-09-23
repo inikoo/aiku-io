@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateAuxTables extends Migration
 {
-    public function up() {
-
+    public function up()
+    {
         //https://github.com/commerceguys/addressing
         /*
             Country code (The two-letter country code)
@@ -32,25 +32,27 @@ class CreateAuxTables extends Migration
          */
 
         Schema::create(
-            'addresses', function (Blueprint $table) {
-            $table->id();
-            $table->string('address_line_1')->nullable();
-            $table->string('address_line_2')->nullable();
-            $table->string('sorting_code')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('locality')->nullable();
-            $table->string('dependant_locality')->nullable();
-            $table->string('administrative_area')->nullable();
-            $table->string('country_code',2)->nullable()->index();
-            $table->string('checksum')->index()->nullable();
-            $table->foreignId('owner_id')->nullable()->index();
-            $table->string('owner_type')->nullable()->index();
-            $table->unsignedSmallInteger('country_id')->nullable()->index();
-            $table->foreign('country_id')->references('id')->on('aiku.countries');
-            $table->index(['checksum', 'owner_id','owner_type']);
+            'addresses',
+            function (Blueprint $table) {
+                $table->id();
+                $table->string('address_line_1')->nullable();
+                $table->string('address_line_2')->nullable();
+                $table->string('sorting_code')->nullable();
+                $table->string('postal_code')->nullable();
+                $table->string('locality')->nullable();
+                $table->string('dependant_locality')->nullable();
+                $table->string('administrative_area')->nullable();
+                $table->string('country_code', 2)->nullable()->index();
+                $table->string('checksum')->index()->nullable();
+                $table->foreignId('owner_id')->nullable()->index();
+                $table->string('owner_type')->nullable()->index();
+                $table->unsignedSmallInteger('country_id')->nullable()->index();
+                $table->foreign('country_id')->references('id')->on('aiku.countries');
+                $table->index(['checksum', 'owner_id', 'owner_type']);
 
-            $table->timestampsTz();
-        });
+                $table->timestampsTz();
+            }
+        );
 
         Schema::create('addressables', function (Blueprint $table) {
             $table->id();
@@ -64,7 +66,6 @@ class CreateAuxTables extends Migration
 
 
         Schema::create('dates', function (Blueprint $table) {
-
             $table->mediumIncrements('id');
             $table->date('date')->unique();
             $table->string('holiday');
@@ -99,7 +100,6 @@ class CreateAuxTables extends Migration
             $table->softDeletesTz();
             $table->unsignedMediumInteger('legacy_id')->nullable()->index();
             $table->unsignedMediumInteger('tenant_id');
-
         });
 
         Schema::create('image_models', function (Blueprint $table) {
@@ -114,9 +114,8 @@ class CreateAuxTables extends Migration
             $table->smallInteger('precedence')->default(0);
             $table->jsonb('data');
             $table->timestampsTz();
-            $table->index(['imageable_id', 'imageable_type','scope']);
-            $table->unique(['image_id','imageable_id', 'imageable_type','scope']);
-
+            $table->index(['imageable_id', 'imageable_type', 'scope']);
+            $table->unique(['image_id', 'imageable_id', 'imageable_type', 'scope']);
         });
 
         Schema::create('attachments', function (Blueprint $table) {
@@ -129,7 +128,6 @@ class CreateAuxTables extends Migration
             $table->softDeletesTz();
             $table->unsignedMediumInteger('legacy_id')->nullable()->index();
             $table->unsignedMediumInteger('tenant_id');
-
         });
 
         Schema::create('attachment_models', function (Blueprint $table) {
@@ -137,15 +135,14 @@ class CreateAuxTables extends Migration
             $table->unsignedBigInteger('attachment_id');
             $table->foreign('attachment_id')->references('id')->on('attachments');
 
-            $table->string('attachmentable_type',64)->nullable()->index();
+            $table->string('attachmentable_type', 64)->nullable()->index();
             $table->unsignedBigInteger('attachmentable_id')->nullable()->index();
 
-            $table->string('scope',64)->index();
+            $table->string('scope', 64)->index();
             $table->jsonb('data');
             $table->timestampsTz();
-            $table->index(['attachmentable_id', 'attachmentable_type','scope'],'attachments_idx1');
-            $table->unique(['attachment_id','attachmentable_id', 'attachmentable_type','scope'],'attachments_idx2');
-
+            $table->index(['attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx1');
+            $table->unique(['attachment_id', 'attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx2');
         });
 
         Schema::create('categories', function (Blueprint $table) {
@@ -163,11 +160,9 @@ class CreateAuxTables extends Migration
             $table->softDeletesTz();
             $table->unsignedMediumInteger('legacy_id')->nullable()->index();
             $table->unsignedMediumInteger('tenant_id');
-            $table->index(['container','container_id']);
-            $table->unique(['legacy_id','tenant_id']);
-
+            $table->index(['container', 'container_id']);
+            $table->unique(['legacy_id', 'tenant_id']);
         });
-
 
 
         Schema::create('categoriables', function (Blueprint $table) {
@@ -175,8 +170,7 @@ class CreateAuxTables extends Migration
             $table->foreignId('category_id')->index()->constrained();
             $table->morphs('categoriable');
             $table->timestampsTz();
-            $table->unique(['category_id','categoriable_type','categoriable_id'],'categoriables_idx');
-
+            $table->unique(['category_id', 'categoriable_type', 'categoriable_id'], 'categoriables_idx');
         });
 
 
@@ -184,20 +178,21 @@ class CreateAuxTables extends Migration
             $table->id();
             $table->string('name');
             $table->date('date_of_birth')->nullable();
-            $table->string('gender')->nullable();
+            $table->enum('gender', ['Make', 'Female', 'Other'])->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('identity_document_type')->nullable();
             $table->string('identity_document_number')->nullable();
             $table->unique(['identity_document_type', 'identity_document_number']);
+            $table->morphs('contactable');
             $table->jsonb('data')->nullable();
             $table->timestampsTz();
         });
-
     }
 
 
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('contacts');
         Schema::dropIfExists('categoriables');
         Schema::dropIfExists('categories');
