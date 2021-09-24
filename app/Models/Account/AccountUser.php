@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Aiku;
+namespace App\Models\Account;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -16,9 +16,9 @@ use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
 /**
- * @mixin IdeHelperUser
+ * @mixin IdeHelperAccountUser
  */
-class User extends Authenticatable
+class AccountUser extends Authenticatable
 {
     use HasFactory;
     use HasApiTokens;

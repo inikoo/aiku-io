@@ -81,7 +81,7 @@ return [
         ],
         'landlord_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Aiku\User::class,
+            'model' => App\Models\Account\AccountUser::class,
         ],
 
 

@@ -6,16 +6,16 @@
  *  Version 4.0
  */
 
-namespace App\Console\Commands\Landlord;
+namespace App\Console\Commands\Account;
 
-use App\Models\Aiku\Admin;
-use App\Models\Aiku\User;
+use App\Actions\Account\AccountUser\StoreAccountUser;
+use App\Models\Account\AccountAdmin;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 
-class CreateAdmin extends Command
+class CreateAccountAdmin extends Command
 {
 
     protected $signature = 'admin:new {--randomPassword} {name} {email} {slug?} {username?}';
@@ -31,23 +31,22 @@ class CreateAdmin extends Command
     {
         if ($this->option('randomPassword')) {
             $password = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(), 4, '-', true));
-
         } else {
             $password = $this->secret('What is the password?');
             if (strlen($password) < 8) {
                 $this->error("Password needs to be at least 8 characters");
+
                 return 0;
             }
         }
 
 
+        $admin = new AccountAdmin([
+                                      'name' => $this->argument('name'),
+                                      'email' => $this->argument('email'),
 
-        $admin = new Admin([
-                               'name' => $this->argument('name'),
-                               'email' => $this->argument('email'),
 
-
-                           ]);
+                                  ]);
         if ($this->argument('slug')) {
             $admin->slug = $this->argument('slug');
         }
@@ -59,14 +58,16 @@ class CreateAdmin extends Command
         $admin->save();
 
 
-        $user = new User([
-                             'username' => $username,
-                             'password' => Hash::make($password)
-                         ]);
+        $user = StoreAccountUser::run($admin,
+                                      [
+                                          'username' => $username,
+                                          'password' => Hash::make($password)
+                                      ]
+        );
 
-        $admin->user()->save($user);
 
-        $this->line("Admin created $admin->slug");
+
+        $this->line("Account admin created $admin->slug");
 
         $this->table(
             ['Code', 'Username', 'Password'],

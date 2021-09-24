@@ -34,16 +34,16 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap(
             [
-                'AikuUser' => 'App\Models\Aiku\User',
-                'AikuAdmin' => 'App\Models\Aiku\Admin',
+                'AccountUser' => 'App\Models\Account\AccountUser',
+                'AccountAdmin' => 'App\Models\Account\AccountAdmin',
                 'Contact' => 'App\Models\Helpers\Contact',
                 'Address' => 'App\Models\Helpers\Address',
-                'Tenant' => 'App\Models\Aiku\Tenant',
+                'Tenant' => 'App\Models\Account\Tenant',
                 'User' => 'App\Models\System\User',
                 'Patient' => 'App\Models\Health\Patient',
                 'Employee' => 'App\Models\HumanResources\Employee',
                 /*
-                'Admin'                    => 'App\Models\System\Admin',
+                'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
                 'Guest'                    => 'App\Models\System\Guest',
 
                 'Customer'                 => 'App\Models\CRM\Customer',
@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
                 'Category'                 => 'App\Models\Helpers\Category',
                 'OriginalImage'            => 'App\Models\Helpers\OriginalImage',
                 'ProcessedImage'           => 'App\Models\Helpers\ProcessedImage',
-                'User'                     => 'App\User',
+                'AccountUser'                     => 'App\AccountUser',
                 'Tenant'                   => 'App\Tenant',
                 */
             ]

@@ -42,7 +42,7 @@ return [
      *
      * It must be or extend `Spatie\Multitenancy\Models\Tenant::class`
      */
-    'tenant_model' => \App\Models\Aiku\Tenant::class,
+    'tenant_model' => \App\Models\Account\Tenant::class,
 
     /*
      * If there is a current tenant when dispatching a job, the id of the current tenant

@@ -4,18 +4,22 @@ namespace App\Console\Commands\AuroraMigration;
 
 use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
-use App\Models\Aiku\Tenant;
+use App\Actions\System\User\StoreUser;
+use App\Actions\System\User\UpdateUser;
+use App\Models\Account\Tenant;
 use App\Models\HumanResources\Employee;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
-class EmployeesAurora extends Command
+class MigrateHumanResources extends Command
 {
 
     use AuroraMigratory;
 
-    protected $signature = 'au_migration:employees {--reset} {--all} {--t|tenant=* : Tenant slug}';
-    protected $description = 'Migrate aurora employees/users';
+    protected $signature = 'au_migration:hr {--reset} {--all} {--t|tenant=* : Tenant slug}';
+    protected $description = 'Migrate aurora human resources';
 
     private array $results;
 
@@ -42,8 +46,7 @@ class EmployeesAurora extends Command
     private function migrate(Tenant $tenant)
     {
         foreach (DB::connection('aurora')->table('Staff Dimension')->get() as $auroraData) {
-          //  print_r($auroraData);
-
+            //print_r($auroraData);
             $contactData = [
                 'name'                     => $auroraData->{'Staff Name'},
                 'email'                    => $auroraData->{'Staff Email'},
@@ -75,20 +78,19 @@ class EmployeesAurora extends Command
 
             $this->results[$tenant->slug]['models']++;
 
+            $updated = false;
+
             if ($auroraData->aiku_id) {
                 $employee = Employee::find($auroraData->aiku_id);
 
-                if ($employee->id) {
-                     $employee = UpdateEmployee::run($employee, $contactData, $employeeData);
+                if ($employee) {
+                    $employee = UpdateEmployee::run($employee, $contactData, $employeeData);
 
 
                     $changes = $employee->getChanges();
-
-
                     if (count($changes) > 0) {
-                        $this->results[$tenant->slug]['updated']++;
+                        $updated = true;
                     }
-
                 } else {
                     $this->results[$tenant->slug]['errors']++;
                     DB::connection('aurora')->table('Staff Dimension')
@@ -105,6 +107,35 @@ class EmployeesAurora extends Command
 
                     $this->results[$tenant->slug]['inserted']++;
                 }
+            }
+
+            if ($auroraUserData = DB::connection('aurora')->table('User Dimension')
+                ->where('User Type', 'Staff')->where('User Parent Key', $auroraData->{'Staff Key'})
+                ->first()) {
+                //print_r($auroraUserData);
+
+
+                $userData = [
+                    'username'    => strtolower($auroraUserData->{'User Handle'}),
+                    'password'    => Hash::make(config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(), 4, '-', true)),
+                    'aurora_id'   => $auroraUserData->{'User Key'},
+                    'language_id' => $this->parseLanguageID($auroraUserData->{'User Preferred Locale'}),
+                    'status'      => $auroraUserData->{'User Active'} == 'Yes' ? 'Active' : 'Suspended'
+                ];
+
+                if ($employee->user) {
+                    $user = UpdateUser::run($employee->user, $userData);
+                    if (count($user->getChanges()) > 0) {
+                        $updated = true;
+                    }
+                } else {
+                    // print_r($userData);
+                    StoreUser::run($employee, $userData, []);
+                }
+            }
+
+            if ($updated) {
+                $this->results[$tenant->slug]['updated']++;
             }
         }
     }

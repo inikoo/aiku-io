@@ -8,7 +8,8 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
-use App\Models\Aiku\Tenant;
+use App\Models\Account\Tenant;
+use App\Models\Assets\Language;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -90,6 +91,15 @@ trait AuroraMigratory
         });
 
         $this->showResults();
+    }
+
+    private function parseLanguageID($locale): int|null
+    {
+        if($locale!=''){
+            $locale=substr($locale, 0, 2);
+            return Language::where('code' ,$locale)->first()->id;
+        }
+        return null;
     }
 
 }

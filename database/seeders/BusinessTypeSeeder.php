@@ -8,7 +8,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Aiku\BusinessType;
+use App\Models\Account\BusinessType;
 use Illuminate\Database\Seeder;
 
 class BusinessTypeSeeder extends Seeder

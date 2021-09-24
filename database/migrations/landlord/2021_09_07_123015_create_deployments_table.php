@@ -19,7 +19,7 @@ class CreateDeploymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('admins', function (Blueprint $table) {
+        Schema::create('account_admins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique()->index();

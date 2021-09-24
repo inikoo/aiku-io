@@ -26,7 +26,7 @@ class PermissionSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        /** @var \App\Models\Aiku\Tenant $tenant */
+        /** @var \App\Models\Account\Tenant $tenant */
         $tenant = Tenant::current();
 
 

@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Aiku;
+namespace App\Models\Account;
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,9 +17,9 @@ use Spatie\Sluggable\SlugOptions;
 
 
 /**
- * @mixin IdeHelperAdmin
+ * @mixin IdeHelperAccountAdmin
  */
-class Admin extends Model
+class AccountAdmin extends Model
 {
     use UsesLandlordConnection;
     use HasSlug;
@@ -43,9 +43,9 @@ class Admin extends Model
 
     }
 
-    public function user(): MorphOne
+    public function accountUser(): MorphOne
     {
-        return $this->morphOne(User::class, 'userable');
+        return $this->morphOne(AccountUser::class, 'userable');
     }
 
 }

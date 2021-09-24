@@ -8,13 +8,15 @@
 
 namespace App\Console\Commands\TenantsAdmin;
 
-use App\Models\Aiku\BusinessType;
-use App\Models\Aiku\Tenant;
+use App\Actions\Account\AccountUser\StoreAccountUser;
+use App\Actions\Account\Tenant\StoreTenant;
+use App\Actions\System\User\StoreUser;
+use App\Models\Account\BusinessType;
+use App\Models\Account\Tenant;
 use App\Models\Assets\Country;
 use App\Models\Assets\Currency;
 use App\Models\Assets\Language;
 use App\Models\Assets\Timezone;
-use App\Models\System\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -54,8 +56,8 @@ class CreateTenant extends Command
 
         $data = [];
 
-        if($this->option('aurora_db')){
-            $data['aurora_db']=$this->option('aurora_db');
+        if ($this->option('aurora_db')) {
+            $data['aurora_db'] = $this->option('aurora_db');
         }
 
 
@@ -83,26 +85,22 @@ class CreateTenant extends Command
         $timezone = Timezone::where('name', $this->option('timezone'))->firstOrFail();
 
 
+        $tenantData = [
+            'domain'      => $this->argument('domain'),
+            'database'    => $database,
+            'name'        => $this->argument('name'),
+            'email'       => $this->argument('email'),
+            'country_id'  => $country->id,
+            'currency_id' => $currency->id,
+            'language_id' => $language->id,
+            'timezone_id' => $timezone->id,
+            'data'        => $data,
 
-
-        $tenant = new Tenant([
-                                 'domain'      => $this->argument('domain'),
-                                 'database'    => $database,
-                                 'name'        => $this->argument('name'),
-                                 'email'       => $this->argument('email'),
-                                 'country_id'  => $country->id,
-                                 'currency_id' => $currency->id,
-                                 'language_id' => $language->id,
-                                 'timezone_id' => $timezone->id,
-                                 'data'        => $data
-                             ]);
-
-
+        ];
         if ($this->argument('slug')) {
-            $tenant->slug = $this->argument('slug');
+            $tenantData['slug'] = $this->argument('slug');
         }
-        /** @var Tenant $tenant */
-        $tenant = $businessType->tenants()->save($tenant);
+        $tenant = StoreTenant::run($businessType, $tenantData);
 
 
         $username = $tenant->slug;
@@ -111,32 +109,38 @@ class CreateTenant extends Command
         }
 
 
-        $tenantUser = new \App\Models\Aiku\User([
-                                                    'username' => $username,
-                                                    'password' => Hash::make($password)
-                                                ]);
+        StoreAccountUser::run($tenant,
+                              [
+                                  'username' => $username,
+                                  'password' => Hash::make($password)
+                              ]
+        );
 
-        $tenant->user()->save($tenantUser);
 
         $tenant->makeCurrent();
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
 
-        $appAdminPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
+        $userPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 
 
-        $appAdmin = new User([
-                                 'username' => 'admin',
-                                 'password' => Hash::make($appAdminPassword),
-                             ]);
+         StoreUser::run($tenant,
+                               [
+                                   'username' => 'admin',
+                                   'password' => Hash::make($userPassword),
+                               ],
+                               [
+                                   'super-admin'
+                               ]
+
+        );
 
 
-        $tenant->appAdmin()->save($appAdmin);
-        $appAdmin->assignRole('super-admin');
+
 
         $this->line("Tenant $tenant->domain created :)");
         if ($this->option('randomPassword')) {
-            $this->line("Tenant credentials ");
+            $this->line("Tenant credentials");
         }
 
         $this->table(
@@ -152,7 +156,7 @@ class CreateTenant extends Command
                     'appAdmin',
                     '',
                     'admin',
-                    $appAdminPassword
+                    $userPassword
                 ]
             ]
         );

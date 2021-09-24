@@ -6,9 +6,9 @@
  *  Version 4.0
  */
 
-namespace App\Console\Commands\Landlord;
+namespace App\Console\Commands\Account;
 
-use App\Models\Aiku\Admin;
+use App\Models\Account\AccountAdmin;
 use Illuminate\Console\Command;
 
 
@@ -26,11 +26,11 @@ class CreateAdminAccessToken extends Command
 
     public function handle(): int
     {
-        if ($admin = Admin::firstWhere('slug', $this->argument('slug'))) {
-            $token= $admin->user->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
-            $this->line("Admin access token: $token");
+        if ($admin = AccountAdmin::firstWhere('slug', $this->argument('slug'))) {
+            $token= $admin->accountUser->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
+            $this->line("AccountAdmin access token: $token");
         } else {
-            $this->error("Admin not found: {$this->argument('slug')}");
+            $this->error("AccountAdmin not found: {$this->argument('slug')}");
         }
 
         return 0;

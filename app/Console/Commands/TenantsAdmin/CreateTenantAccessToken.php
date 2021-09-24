@@ -8,7 +8,7 @@
 
 namespace App\Console\Commands\TenantsAdmin;
 
-use App\Models\Aiku\Tenant;
+use App\Models\Account\Tenant;
 use Illuminate\Console\Command;
 
 
@@ -28,7 +28,7 @@ class CreateTenantAccessToken extends Command
     {
         if ($tenant = Tenant::firstWhere('slug', $this->argument('slug'))) {
             $tenant->makeCurrent();
-            $token= $tenant->appAdmin->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
+            $token= $tenant->user->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
             $this->line("Tenant access token: $token");
         } else {
             $this->error("Tenant not found: {$this->argument('slug')}");

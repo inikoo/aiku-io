@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Aiku;
+namespace App\Models\Account;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,6 +29,6 @@ class BusinessType extends Model
 
     public function tenants(): HasMany
     {
-        return $this->hasMany('App\Models\Aiku\Tenant');
+        return $this->hasMany('App\Models\Account\Tenant');
     }
 }

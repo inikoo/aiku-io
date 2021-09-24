@@ -9,6 +9,7 @@
 namespace App\Models\HumanResources;
 
 use App\Models\Helpers\Contact;
+use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,6 +57,11 @@ class Employee extends Model implements Auditable
     public function contact(): MorphOne
     {
         return $this->morphOne(Contact::class, 'contactable');
+    }
+
+    public function user(): MorphOne
+    {
+        return $this->morphOne(User::class, 'userable');
     }
 
 }

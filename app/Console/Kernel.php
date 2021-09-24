@@ -2,9 +2,9 @@
 
 namespace App\Console;
 
-use App\Console\Commands\AuroraMigration\EmployeesAurora;
-use App\Console\Commands\Landlord\CreateAdmin;
-use App\Console\Commands\Landlord\CreateAdminAccessToken;
+use App\Console\Commands\AuroraMigration\MigrateHumanResources;
+use App\Console\Commands\Account\CreateAccountAdmin;
+use App\Console\Commands\Account\CreateAdminAccessToken;
 use App\Console\Commands\TenantsAdmin\CreateTenant;
 use App\Console\Commands\TenantsAdmin\CreateTenantAccessToken;
 use Illuminate\Console\Scheduling\Schedule;
@@ -20,9 +20,9 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         CreateTenantAccessToken::class,
         CreateTenant::class,
-        CreateAdmin::class,
+        CreateAccountAdmin::class,
         CreateAdminAccessToken::class,
-        EmployeesAurora::class
+        MigrateHumanResources::class
     ];
 
     /**

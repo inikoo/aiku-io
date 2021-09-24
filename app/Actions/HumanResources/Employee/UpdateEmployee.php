@@ -4,7 +4,6 @@ namespace App\Actions\HumanResources\Employee;
 
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,7 +22,7 @@ class UpdateEmployee
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->tokenCan('root') || $request->user()->tokenCan('employee:store');
+        return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit');
     }
 
     public function rules(): array

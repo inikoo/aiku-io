@@ -18,7 +18,6 @@ use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use Spatie\Permission\Traits\HasRoles;
 
 
-
 /**
  * @mixin IdeHelperUser
  */
@@ -30,10 +29,7 @@ class User extends Authenticatable
     use UsesTenantConnection;
     use HasRoles;
 
-    protected $fillable = [
-        'username',
-        'password',
-    ];
+    protected $guarded = [];
 
     protected $attributes = [
         'data' => '{}',
@@ -44,7 +40,7 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'data'              => 'array'
+        'data' => 'array'
     ];
 
 
