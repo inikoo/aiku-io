@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Shop;
+namespace App\Models\Selling;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +19,7 @@ use Spatie\Sluggable\SlugOptions;
 /**
  * @mixin IdeHelperStore
  */
-class Store extends Model implements Auditable
+class Shop extends Model implements Auditable
 {
     use HasSlug;
     use UsesTenantConnection;
@@ -27,12 +27,22 @@ class Store extends Model implements Auditable
     use SoftDeletes;
     use HasFactory;
 
+    protected $casts = [
+        'data' => 'array'
+    ];
+
+    protected $attributes = [
+        'data' => '{}',
+    ];
+
+    protected $guarded =[];
 
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('code')
-            ->saveSlugsTo('slug')
+            ->saveSlugsTo('code')
+            ->doNotGenerateSlugsOnCreate()
             ->doNotGenerateSlugsOnUpdate();
     }
 

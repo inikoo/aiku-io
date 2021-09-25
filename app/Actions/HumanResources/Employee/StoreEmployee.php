@@ -29,7 +29,6 @@ class StoreEmployee
     public function handle(array $contactData, array $employeeData): Employee
     {
 
-
         $employee = Employee::create($employeeData);
         $employee->contact()->create($contactData);
         $employee->generateSlug();

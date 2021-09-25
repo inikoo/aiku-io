@@ -9,13 +9,23 @@
 namespace App\Console\Commands\AuroraMigration;
 
 use App\Models\Account\Tenant;
-use App\Models\Assets\Language;
-use Carbon\Carbon;
+
+use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-trait AuroraMigratory
+class MigrateAurora extends Command
 {
+
+    protected array $results;
+    protected $signature = 'au_migration:base';
+    protected $description = 'Migrate aurora';
+
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     private function set_aurora_connection($database_name)
     {
@@ -26,22 +36,16 @@ trait AuroraMigratory
         DB::purge('aurora');
     }
 
-    private function sanitizeData($date): array
+    protected function reset()
     {
-        return array_filter($date, fn($value) => !is_null($value) && $value !== ''
-            && $value != '0000-00-00 00:00:00'
-            && $value != '2018-00-00 00:00:00'
-        );
+
+    }
+    protected function migrate(Tenant $tenant)
+    {
+
     }
 
-    private function getDate($value): string
-    {
-       return ($value !== '' && $value != '0000-00-00 00:00:00'
-           && $value != '2018-00-00 00:00:00' ) ?  Carbon::parse($value)->format('Y-m-d') : '';
-    }
-
-
-    private function showResults()
+    protected function showResults()
     {
         $this->table(
             ['Tenant', 'Models', 'Inserted', 'Updated', 'Errors'],
@@ -49,7 +53,7 @@ trait AuroraMigratory
         );
     }
 
-    private function handleMigration()
+    protected function handleMigration()
     {
         $this->results = [];
 
@@ -93,13 +97,11 @@ trait AuroraMigratory
         $this->showResults();
     }
 
-    private function parseLanguageID($locale): int|null
-    {
-        if($locale!=''){
-            $locale=substr($locale, 0, 2);
-            return Language::where('code' ,$locale)->first()->id;
-        }
-        return null;
+    protected function recordAction(Tenant $tenant,$result){
+        $this->results[$tenant->slug]['models']++;
+        $this->results[$tenant->slug]['updated']+=$result['updated'];
+        $this->results[$tenant->slug]['inserted']+=$result['inserted'];
+        $this->results[$tenant->slug]['errors']+=$result['errors'];
     }
 
 }

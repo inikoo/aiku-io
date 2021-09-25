@@ -57,7 +57,7 @@ class AppServiceProvider extends ServiceProvider
                 'Invoice'                  => 'App\Models\Sales\Invoice',
                 'DeliveryNote'             => 'App\Models\Distribution\DeliveryNote',
                 'Stock'                    => 'App\Models\Distribution\Stock',
-                'Store'                    => 'App\Models\Stores\Store',
+                'Shop'                    => 'App\Models\Stores\Shop',
                 'Product'                  => 'App\Models\Stores\Product',
                 'ProductHistoricVariation' => 'App\Models\Stores\ProductHistoricVariation',
                 'EmailService'             => 'App\Models\Notifications\EmailService',
