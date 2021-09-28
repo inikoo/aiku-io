@@ -5,16 +5,22 @@
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
+
 namespace App\Actions\Migrations;
 
+use App\Models\Assets\Country;
 use App\Models\Assets\Currency;
 use App\Models\Assets\Language;
 use App\Models\Assets\Timezone;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 trait MigrateAurora
 {
+
+
     private function set_aurora_connection($database_name)
     {
         $database_settings = data_get(config('database.connections'), 'aurora');
@@ -52,9 +58,10 @@ trait MigrateAurora
     private function parseCurrencyID($currencyCode): int|null
     {
         if ($currencyCode != '') {
-            if($currencyCode=='LEU'){
-                $currencyCode='RON';
+            if ($currencyCode == 'LEU') {
+                $currencyCode = 'RON';
             }
+
             return Currency::where('code', $currencyCode)->firstOrFail()->id;
         }
 
@@ -68,6 +75,36 @@ trait MigrateAurora
         }
 
         return null;
+    }
+
+    private function parseCountryID($country): int|null
+    {
+        if ($country != '') {
+            try {
+                return Country::where('code', $country)->firstOrFail()->id;
+
+            }catch (Exception){
+                print "Country $country not found\n";
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private function parseAddress($prefix,$auroraData): array
+    {
+        $addressData                        = [];
+        $addressData['address_line_1']      = Str::of($auroraData->{$prefix.' Address Line 1'})->limit(191);
+        $addressData['address_line_2']      = Str::of($auroraData->{$prefix.' Address Line 2'})->limit(191);
+        $addressData['sorting_code']        = Str::of($auroraData->{$prefix.' Address Sorting Code'})->limit(191);
+        $addressData['postal_code']         = Str::of($auroraData->{$prefix.' Address Postal Code'})->limit(191);
+        $addressData['locality']            = Str::of($auroraData->{$prefix.' Address Locality'})->limit(191);
+        $addressData['dependant_locality']  = Str::of($auroraData->{$prefix.' Address Dependent Locality'})->limit(191);
+        $addressData['administrative_area'] = Str::of($auroraData->{$prefix.' Address Administrative Area'})->limit(191);
+        $addressData['country_id']        = $this->parseCountryID($auroraData->{$prefix.' Address Country 2 Alpha Code'});
+
+        return $addressData;
     }
 
 }

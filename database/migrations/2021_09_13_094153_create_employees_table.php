@@ -39,7 +39,7 @@ class CreateEmployeesTable extends Migration
             $table->date('employment_end_at')->nullable();
             $table->jsonb('data');
             $table->timestampsTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->index();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
         });
     }

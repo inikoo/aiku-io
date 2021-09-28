@@ -14,7 +14,7 @@ use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
 
-class MigrateHumanResources extends MigrateAurora
+class MigrateHR extends MigrateAurora
 {
 
 
@@ -41,6 +41,11 @@ class MigrateHumanResources extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('User Dimension')->where('User Type', 'Staff')
             ->update(['aiku_id' => null]);
+    }
+
+    protected function count(): int
+    {
+        return DB::connection('aurora')->table('Staff Dimension')->count();
     }
 
     protected function migrate(Tenant $tenant)

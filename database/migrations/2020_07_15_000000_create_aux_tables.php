@@ -35,8 +35,8 @@ class CreateAuxTables extends Migration
             'addresses',
             function (Blueprint $table) {
                 $table->id();
-                $table->string('address_line_1')->nullable();
-                $table->string('address_line_2')->nullable();
+                $table->string('address_line_1',255)->nullable();
+                $table->string('address_line_2',255)->nullable();
                 $table->string('sorting_code')->nullable();
                 $table->string('postal_code')->nullable();
                 $table->string('locality')->nullable();
@@ -60,7 +60,6 @@ class CreateAuxTables extends Migration
             $table->foreignId('addressable_id')->index();
             $table->string('addressable_type')->index();
             $table->string('scope')->nullable()->index();
-
             $table->timestampsTz();
         });
 
@@ -172,6 +171,8 @@ class CreateAuxTables extends Migration
             $table->timestampsTz();
             $table->unique(['category_id', 'categoriable_type', 'categoriable_id'], 'categoriables_idx');
         });
+
+
 
 
         Schema::create('contacts', function (Blueprint $table) {

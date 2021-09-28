@@ -35,7 +35,8 @@
         "symfony/process": "^5.3",
         "tightenco/ziggy": "^1.0",
         "twilio/sdk": "^6.28",
-        "vemcogroup/laravel-translation": "^3.0"
+        "vemcogroup/laravel-translation": "^3.0",
+        "ext-zlib": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",

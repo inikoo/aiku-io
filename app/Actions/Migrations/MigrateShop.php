@@ -11,6 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\Selling\Shop\StoreShop;
 use App\Actions\Selling\Shop\UpdateShop;
 use App\Models\Selling\Shop;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -28,8 +29,8 @@ class MigrateShop
             'errors'   => 0
         ];
 
-        $storeData = [
-            'type'        => $auroraData->{'Store Type'},
+        $shopData = [
+            'type'        => strtolower($auroraData->{'Store Type'}),
             'name'        => $auroraData->{'Store Name'},
             'code'        => strtolower($auroraData->{'Store Code'}),
             'language_id' => $this->parseLanguageID($auroraData->{'Store Locale'}),
@@ -42,16 +43,16 @@ class MigrateShop
             'closed_at'   => $this->getDate($auroraData->{'Store Valid To'}),
 
         ];
-        //print_r($storeData);
+        //print_r($shopData);
 
-        $storeData=$this->sanitizeData($storeData);
+        $shopData=$this->sanitizeData($shopData);
 
 
         if ($auroraData->aiku_id) {
             $shop = Shop::find($auroraData->aiku_id);
 
             if ($shop) {
-                $shop = UpdateShop::run($shop, $storeData);
+                $shop = UpdateShop::run($shop, $shopData);
 
 
                 $changes = $shop->getChanges();
@@ -60,20 +61,27 @@ class MigrateShop
                 }
             } else {
                 $result['errors']++;
-                DB::connection('aurora')->table('Staff Dimension')
-                    ->where('Staff Key', $auroraData->{'Staff Key'})
+                DB::connection('aurora')->table('Store Dimension')
+                    ->where('Store Key', $auroraData->{'Store Key'})
                     ->update(['aiku_id' => null]);
             }
 
 
         } else {
-            $store = StoreShop::run($storeData);
-            if ($store) {
-                DB::connection('aurora')->table('Store Dimension')
-                    ->where('Store Key', $auroraData->{'Store Key'})
-                    ->update(['aiku_id' => $store->id]);
-                $result['inserted']++;
+
+            try {
+                $shop = StoreShop::run($shopData);
+
+                    DB::connection('aurora')->table('Store Dimension')
+                        ->where('Store Key', $auroraData->{'Store Key'})
+                        ->update(['aiku_id' => $shop->id]);
+                    $result['inserted']++;
+
+            }catch (Exception){
+
+                $result['errors']++;
             }
+
         }
 
         return $result;

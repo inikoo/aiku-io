@@ -2,7 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\AuroraMigration\MigrateHumanResources;
+use App\Console\Commands\AuroraMigration\MigrateCustomers;
+use App\Console\Commands\AuroraMigration\MigrateHR;
 use App\Console\Commands\Account\CreateAccountAdmin;
 use App\Console\Commands\Account\CreateAdminAccessToken;
 use App\Console\Commands\TenantsAdmin\CreateTenant;
@@ -22,7 +23,8 @@ class Kernel extends ConsoleKernel
         CreateTenant::class,
         CreateAccountAdmin::class,
         CreateAdminAccessToken::class,
-        MigrateHumanResources::class
+        MigrateHR::class,
+        MigrateCustomers::class
     ];
 
     /**

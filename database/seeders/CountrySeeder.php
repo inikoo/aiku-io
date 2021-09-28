@@ -35,6 +35,15 @@ class CountrySeeder extends Seeder
             }
         }
 
+        $otherCountriesData['CS']=[
+            'names'=>'Czechoslovakia',
+            'iso3'=>null,
+            'continent'=>null,
+            'capital'=>'Prague',
+            'phone'=>null
+        ];
+        $countriesData=array_merge($countriesData,$otherCountriesData);
+
         foreach ($countriesData as $countryCode => $countryData) {
             Country::UpdateOrCreate(
                 ['code' => $countryCode],
@@ -47,6 +56,7 @@ class CountrySeeder extends Seeder
                 ]
             );
         }
+
         $countryRepository = new CountryRepository();
 
         $countryList = $countryRepository->getList('en-GB');

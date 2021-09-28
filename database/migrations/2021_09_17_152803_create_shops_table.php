@@ -16,11 +16,11 @@ class CreateShopsTable extends Migration
     public function up()
     {
         Schema::create('shops', function (Blueprint $table) {
-            $table->id();
+            $table->mediumIncrements('id');
             $table->string('code')->unique()->index();
             $table->string('name');
             $table->enum('state',['InProcess','Open','ClosingDown','Closed'])->index();
-            $table->enum('type',['B2B','B2C','Fulfilment','Dropshipping','External']);
+            $table->enum('type',['b2b','b2c','fulfilment','dropshipping','external']);
 
 
             $table->string('url')->nullable();
@@ -32,11 +32,11 @@ class CreateShopsTable extends Migration
             $table->foreign('currency_id')->references('id')->on('aiku.currencies');
             $table->unsignedSmallInteger('timezone_id');
             $table->foreign('timezone_id')->references('id')->on('aiku.timezones');
-            $table->json('data');
+            $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
 
-            $table->unsignedBigInteger('aurora_id')->nullable()->index();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
 
 

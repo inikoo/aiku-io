@@ -18,16 +18,9 @@ class MigrateShops extends MigrateAurora
     protected $signature = 'au_migration:shops {--reset} {--all} {--t|tenant=* : Tenant slug}';
     protected $description = 'Migrate aurora stores resources';
 
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle(): int
     {
         $this->handleMigration();
-
         return 0;
     }
 
@@ -35,6 +28,11 @@ class MigrateShops extends MigrateAurora
     {
         DB::connection('aurora')->table('Store Dimension')
             ->update(['aiku_id' => null]);
+    }
+
+    protected function count(): int
+    {
+        return DB::connection('aurora')->table('Store Dimension')->count();
     }
 
     protected function migrate(Tenant $tenant)

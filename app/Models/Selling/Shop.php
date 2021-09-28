@@ -10,6 +10,7 @@ namespace App\Models\Selling;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -17,7 +18,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 /**
- * @mixin IdeHelperStore
+ * @mixin IdeHelperShop
  */
 class Shop extends Model implements Auditable
 {
@@ -35,7 +36,7 @@ class Shop extends Model implements Auditable
         'data' => '{}',
     ];
 
-    protected $guarded =[];
+    protected $guarded = [];
 
     public function getSlugOptions(): SlugOptions
     {
@@ -45,6 +46,13 @@ class Shop extends Model implements Auditable
             ->doNotGenerateSlugsOnCreate()
             ->doNotGenerateSlugsOnUpdate();
     }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany('App\Models\CRM\Customer');
+    }
+
+
 
 
 }

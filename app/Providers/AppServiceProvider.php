@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(125);
+        Schema::defaultStringLength(191);
 
         Relation::morphMap(
             [
@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
                 'User' => 'App\Models\System\User',
                 'Patient' => 'App\Models\Health\Patient',
                 'Employee' => 'App\Models\HumanResources\Employee',
+                'Customer'                 => 'App\Models\CRM\Customer',
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
                 'Guest'                    => 'App\Models\System\Guest',
