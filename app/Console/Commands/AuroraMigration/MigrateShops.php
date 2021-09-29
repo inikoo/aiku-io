@@ -8,6 +8,7 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
+use App\Actions\Migrations\MigrateProduct;
 use App\Actions\Migrations\MigrateShop;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ class MigrateShops extends MigrateAurora
     public function handle(): int
     {
         $this->handleMigration();
+
         return 0;
     }
 
@@ -28,23 +30,32 @@ class MigrateShops extends MigrateAurora
     {
         DB::connection('aurora')->table('Store Dimension')
             ->update(['aiku_id' => null]);
+
+        DB::connection('aurora')->table('Product Dimension')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
-        return DB::connection('aurora')->table('Store Dimension')->count();
+        $count = DB::connection('aurora')->table('Store Dimension')->count();
+        $count += DB::connection('aurora')->table('Product Dimension')->count();
+
+        return $count;
     }
 
     protected function migrate(Tenant $tenant)
     {
-        foreach (DB::connection('aurora')->table('Store Dimension')->get() as $auroraData) {
-
-            $result=MigrateShop::run($auroraData);
-            $this->recordAction($tenant,$result);
-
+        foreach (DB::connection('aurora')->table('Store Dimension')->get() as $auroraStoreData) {
+            $result = MigrateShop::run($auroraStoreData);
+            $this->recordAction($tenant, $result);
+            DB::connection('aurora')->table('Product Dimension')->where('Product Store Key', $auroraStoreData->{'Store Key'})->orderBy('Product ID')->chunk(100, function ($chunk) use ($tenant) {
+                foreach ($chunk as $auroraData) {
+                    $result = MigrateProduct::run($auroraData);
+                    $this->recordAction($tenant, $result);
+                }
+            });
         }
     }
-
 
 
 }

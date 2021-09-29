@@ -52,7 +52,10 @@ class Shop extends Model implements Auditable
         return $this->hasMany('App\Models\CRM\Customer');
     }
 
-
+    public function products(): HasMany
+    {
+        return $this->hasMany('App\Models\Selling\Product');
+    }
 
 
 }

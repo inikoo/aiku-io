@@ -108,4 +108,39 @@ trait MigrateAurora
         return $addressData;
     }
 
+    /*
+    protected function getImageData($tenant, $legacy_image_key)
+    {
+        $sql = "* from `Image Dimension` I   where  `Image Key`=?";
+        foreach (
+            DB::connection('legacy')->select(
+                "select $sql ", [$legacy_image_key]
+            ) as $image_legacy_data
+        ) {
+            $image_filename_data = get_image_filename_legacy($tenant, $image_legacy_data);
+            if ($image_filename_data) {
+                return create_image_from_legacy($tenant, $image_legacy_data, $image_filename_data);
+            }
+        }
+
+        return false;
+    }
+*/
+
+    protected function getModelImagesCollection($model, $id): Collection
+    {
+
+
+            return DB::connection('aurora')
+                ->table('Image Subject Bridge')
+                ->leftJoin('Image Dimension', 'Image Subject Image Key', '=', 'Image Key')
+                ->where('Image Subject Object', $model)
+                ->where('Image Subject Object Key', $id)
+                ->orderByRaw("FIELD(`Image Subject Is Principal`, 'Yes','No')")
+                ->get() ;
+    }
+
+
+
+
 }

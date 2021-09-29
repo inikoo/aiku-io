@@ -146,7 +146,6 @@ class MigrateCustomer
         $shop = Shop::withTrashed()->firstWhere('aurora_id', $auroraData->{'Customer Store Key'});
         if (!$shop) {
             $result['errors']++;
-
             return $result;
         }
 

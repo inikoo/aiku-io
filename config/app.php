@@ -242,5 +242,7 @@ return [
     'twilio_token'      => env('TWILIO_TOKEN'),
     'po_editor_api_key' => env('PO_EDITOR_READ_ONLY_API_KEY', ''),
 
+    'aurora_image_path'=>env('AURORA_IMAGE_PATH')
+
 
 ];

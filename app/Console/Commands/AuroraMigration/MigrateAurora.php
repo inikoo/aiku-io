@@ -41,11 +41,10 @@ class MigrateAurora extends Command
 
     protected function reset()
     {
-
     }
+
     protected function migrate(Tenant $tenant)
     {
-
     }
 
     protected function showResults()
@@ -65,29 +64,21 @@ class MigrateAurora extends Command
 
     private function startProgressBar($tenants)
     {
-
-
-        $tenants->each(function ($tenant){
+        $tenants->each(function ($tenant) {
             if (Arr::get($tenant->data, 'aurora_db')) {
                 $this->set_aurora_connection($tenant->data['aurora_db']);
-                $this->total+=$this->count();
+                $this->total += $this->count();
             }
         });
-
 
 
         $this->bar = $this->output->createProgressBar($this->total);
         $this->bar->setFormat('debug');
         $this->bar->start();
-
     }
 
     protected function handleMigration()
     {
-
-
-
-
         $this->results = [];
 
         if (!$this->option('all') and count($this->option('tenant')) == 0) {
@@ -101,7 +92,6 @@ class MigrateAurora extends Command
         }
 
         $this->startProgressBar($tenants);
-
 
 
         $tenants->each(function ($tenant) {
@@ -134,13 +124,15 @@ class MigrateAurora extends Command
         $this->showResults();
     }
 
-    protected function recordAction(Tenant $tenant,$result){
+    protected function recordAction(Tenant $tenant, $result)
+    {
         $this->results[$tenant->slug]['models']++;
-        $this->results[$tenant->slug]['updated']+=$result['updated'];
-        $this->results[$tenant->slug]['inserted']+=$result['inserted'];
-        $this->results[$tenant->slug]['errors']+=$result['errors'];
+        $this->results[$tenant->slug]['updated']  += $result['updated'];
+        $this->results[$tenant->slug]['inserted'] += $result['inserted'];
+        $this->results[$tenant->slug]['errors']   += $result['errors'];
         $this->bar->advance();
     }
+
 
 }
 

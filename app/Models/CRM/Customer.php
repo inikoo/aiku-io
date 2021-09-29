@@ -8,6 +8,7 @@
 
 namespace App\Models\CRM;
 
+use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,8 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+
 
 /**
  * @mixin IdeHelperCustomer
@@ -37,15 +37,14 @@ class Customer extends Model implements Auditable
         'data' => '{}',
     ];
 
+    protected array $slugSettings=[
+        'from'=>'name'
+        ];
+
+
     protected $guarded = [];
 
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->slugsShouldBeNoLongerThan(32)
-            ->saveSlugsTo('slug');
-    }
+
 
     public function shop(): BelongsTo
     {
