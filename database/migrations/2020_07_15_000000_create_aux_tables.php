@@ -92,13 +92,11 @@ class CreateAuxTables extends Migration
 
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('communal_image_id')->nullable()->index();
-            $table->string('checksum')->nullable()->index();
+            $table->unsignedBigInteger('communal_image_id')->nullable()->unique();
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('legacy_id')->nullable()->index();
-            $table->unsignedMediumInteger('tenant_id');
+            $table->unsignedMediumInteger('aurora_id')->nullable()->unique();
         });
 
         Schema::create('image_models', function (Blueprint $table) {
@@ -109,12 +107,17 @@ class CreateAuxTables extends Migration
             $table->string('imageable_type')->nullable()->index();
             $table->unsignedBigInteger('imageable_id')->nullable()->index();
 
-            $table->string('scope')->index();
-            $table->smallInteger('precedence')->default(0);
-            $table->jsonb('data');
+            $table->string('scope',16)->index();
+            $table->smallInteger('rank')->default(0);
+            $table->string('filename',255);
+
+
+            //$table->jsonb('data');
             $table->timestampsTz();
             $table->index(['imageable_id', 'imageable_type', 'scope']);
             $table->unique(['image_id', 'imageable_id', 'imageable_type', 'scope']);
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+
         });
 
         Schema::create('attachments', function (Blueprint $table) {
@@ -125,8 +128,7 @@ class CreateAuxTables extends Migration
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('legacy_id')->nullable()->index();
-            $table->unsignedMediumInteger('tenant_id');
+            $table->unsignedMediumInteger('aurora_id')->nullable()->unique();
         });
 
         Schema::create('attachment_models', function (Blueprint $table) {
@@ -157,10 +159,8 @@ class CreateAuxTables extends Migration
             $table->nestedSet();
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('legacy_id')->nullable()->index();
-            $table->unsignedMediumInteger('tenant_id');
+            $table->unsignedMediumInteger('aurora_id')->nullable()->unique();
             $table->index(['container', 'container_id']);
-            $table->unique(['legacy_id', 'tenant_id']);
         });
 
 

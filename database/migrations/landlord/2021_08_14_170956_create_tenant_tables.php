@@ -150,10 +150,16 @@ class CreateTenantTables extends Migration
             $table->foreign('timezone_id')->references('id')->on('timezones');
 
         });
+
+
+
+
     }
 
     public function down()
     {
+
+
         Schema::dropIfExists('tenants');
         Schema::dropIfExists('business_types');
         Schema::dropIfExists('user_agents');

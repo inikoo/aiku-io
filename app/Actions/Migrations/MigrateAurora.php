@@ -14,6 +14,7 @@ use App\Models\Assets\Language;
 use App\Models\Assets\Timezone;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -82,9 +83,9 @@ trait MigrateAurora
         if ($country != '') {
             try {
                 return Country::where('code', $country)->firstOrFail()->id;
-
-            }catch (Exception){
+            } catch (Exception) {
                 print "Country $country not found\n";
+
                 return null;
             }
         }
@@ -92,7 +93,7 @@ trait MigrateAurora
         return null;
     }
 
-    private function parseAddress($prefix,$auroraData): array
+    private function parseAddress($prefix, $auroraData): array
     {
         $addressData                        = [];
         $addressData['address_line_1']      = Str::of($auroraData->{$prefix.' Address Line 1'})->limit(191);
@@ -102,7 +103,7 @@ trait MigrateAurora
         $addressData['locality']            = Str::of($auroraData->{$prefix.' Address Locality'})->limit(191);
         $addressData['dependant_locality']  = Str::of($auroraData->{$prefix.' Address Dependent Locality'})->limit(191);
         $addressData['administrative_area'] = Str::of($auroraData->{$prefix.' Address Administrative Area'})->limit(191);
-        $addressData['country_id']        = $this->parseCountryID($auroraData->{$prefix.' Address Country 2 Alpha Code'});
+        $addressData['country_id']          = $this->parseCountryID($auroraData->{$prefix.' Address Country 2 Alpha Code'});
 
         return $addressData;
     }

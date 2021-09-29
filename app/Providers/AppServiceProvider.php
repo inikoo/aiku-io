@@ -34,15 +34,19 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap(
             [
-                'AccountUser' => 'App\Models\Account\AccountUser',
-                'AccountAdmin' => 'App\Models\Account\AccountAdmin',
-                'Contact' => 'App\Models\Helpers\Contact',
-                'Address' => 'App\Models\Helpers\Address',
-                'Tenant' => 'App\Models\Account\Tenant',
-                'User' => 'App\Models\System\User',
-                'Patient' => 'App\Models\Health\Patient',
-                'Employee' => 'App\Models\HumanResources\Employee',
-                'Customer'                 => 'App\Models\CRM\Customer',
+                'AccountUser'    => 'App\Models\Account\AccountUser',
+                'AccountAdmin'   => 'App\Models\Account\AccountAdmin',
+                'Contact'        => 'App\Models\Helpers\Contact',
+                'Address'        => 'App\Models\Helpers\Address',
+                'Tenant'         => 'App\Models\Account\Tenant',
+                'User'           => 'App\Models\System\User',
+                'Patient'        => 'App\Models\Health\Patient',
+                'Employee'       => 'App\Models\HumanResources\Employee',
+                'Customer'       => 'App\Models\CRM\Customer',
+                'RawImage'       => 'App\Models\Assets\RawImage',
+                'ProcessedImage' => 'App\Models\Assets\ProcessedImage',
+                'Product'        => 'App\Models\Selling\Product',
+
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
                 'Guest'                    => 'App\Models\System\Guest',
@@ -64,8 +68,7 @@ class AppServiceProvider extends ServiceProvider
                 'EmailService'             => 'App\Models\Notifications\EmailService',
                 'Mailshot'                 => 'App\Models\Notifications\Mailshot',
                 'Category'                 => 'App\Models\Helpers\Category',
-                'OriginalImage'            => 'App\Models\Helpers\OriginalImage',
-                'ProcessedImage'           => 'App\Models\Helpers\ProcessedImage',
+
                 'AccountUser'                     => 'App\AccountUser',
                 'Tenant'                   => 'App\Tenant',
                 */
