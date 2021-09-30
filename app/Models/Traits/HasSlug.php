@@ -17,9 +17,9 @@ trait HasSlug{
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom($this->slugOptions['source']??'slug_source')
-            ->slugsShouldBeNoLongerThan($this->slugOptions['length']??32)
-            ->saveSlugsTo($this->slugOptions['field']??'slug');
+            ->generateSlugsFrom($this->slugSettings['source']??'slug_source')
+            ->slugsShouldBeNoLongerThan($this->slugSettings['length']??32)
+            ->saveSlugsTo($this->slugSettings['field']??'slug');
     }
 }
 

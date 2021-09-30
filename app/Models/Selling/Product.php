@@ -40,7 +40,7 @@ class Product extends Model
 
     public function getSlugSourceAttribute(): string
     {
-        return $this->code.'-';
+        return $this->code.'-'.$this->shop->code;
     }
 
     protected $guarded = [];

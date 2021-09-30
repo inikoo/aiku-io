@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class MigrateShops extends MigrateAurora
 {
 
-    protected $signature = 'au_migration:shops {--reset} {--all} {--t|tenant=* : Tenant slug}';
+    protected $signature = 'au_migration:shops {--reset} {--all} {--t|tenant=* : Tenant slug} {--only_shops}';
     protected $description = 'Migrate aurora stores resources';
 
     public function handle(): int
@@ -38,7 +38,9 @@ class MigrateShops extends MigrateAurora
     protected function count(): int
     {
         $count = DB::connection('aurora')->table('Store Dimension')->count();
-        $count += DB::connection('aurora')->table('Product Dimension')->count();
+        if (!$this->option('only_shops')) {
+            $count += DB::connection('aurora')->table('Product Dimension')->count();
+        }
 
         return $count;
     }
@@ -48,12 +50,14 @@ class MigrateShops extends MigrateAurora
         foreach (DB::connection('aurora')->table('Store Dimension')->get() as $auroraStoreData) {
             $result = MigrateShop::run($auroraStoreData);
             $this->recordAction($tenant, $result);
-            DB::connection('aurora')->table('Product Dimension')->where('Product Store Key', $auroraStoreData->{'Store Key'})->orderBy('Product ID')->chunk(100, function ($chunk) use ($tenant) {
-                foreach ($chunk as $auroraData) {
-                    $result = MigrateProduct::run($auroraData);
-                    $this->recordAction($tenant, $result);
-                }
-            });
+            if (!$this->option('only_shops')) {
+                DB::connection('aurora')->table('Product Dimension')->where('Product Store Key', $auroraStoreData->{'Store Key'})->orderBy('Product ID')->chunk(100, function ($chunk) use ($tenant) {
+                    foreach ($chunk as $auroraData) {
+                        $result = MigrateProduct::run($auroraData);
+                        $this->recordAction($tenant, $result);
+                    }
+                });
+            }
         }
     }
 
