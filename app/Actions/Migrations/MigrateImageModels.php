@@ -47,7 +47,7 @@ class MigrateImageModels
                     $model->images()->save($imageModel);
                     $rank--;
                 } catch (Exception) {
-                    print "Skipping duplicated image\n";
+                    //print "Skipping duplicated image\n";
                 }
             }
         }
