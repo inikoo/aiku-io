@@ -108,6 +108,7 @@ ln -nsf {{ $new_release_dir }} {{ $current_release_dir }}
 cd {{$new_release_dir}}
 {{$php}}  /usr/local/bin/composer dump-autoload -o
 {{$php}} artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
+{{$php}} artisan migrate:fresh --force --path=database/migrations/media --database=media
 {{$php}} artisan db:seed --force --database=landlord
 {{$php}} artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
 {{$php}} artisan admin:token {{$adminSlug}} admin root
