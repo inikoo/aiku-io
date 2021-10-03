@@ -22,6 +22,7 @@ class MigrateImage
             $image = StoreImage::run(Arr::get($imageData, 'image_path'), Arr::get($imageData, 'mime'));
 
             $image->aurora_id = $auroraImageData->{'Image Key'};
+            $image->created_at = $auroraImageData->{'Image Creation Date'};
             $image->save();
 
 

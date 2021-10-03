@@ -9,6 +9,7 @@
 namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -47,6 +48,11 @@ class User extends Authenticatable
     public function userable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_models', 'imageable_type', 'imageable_id');
     }
 
 }

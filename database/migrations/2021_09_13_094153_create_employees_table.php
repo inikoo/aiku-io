@@ -33,7 +33,7 @@ class CreateEmployeesTable extends Migration
             $table->string('worker_number')->nullable();
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->enum('type', ['Employee', 'Volunteer', 'Contractor', 'TemporalWorker', 'WorkExperience'])->default('employee');
+            $table->enum('type', ['employee', 'volunteer', 'contractor', 'temporal-worker', 'work-experience'])->default('employee');
             $table->enum('state', ['Hired', 'Working', 'Left'])->default('working');
             $table->date('employment_start_at')->nullable();
             $table->date('employment_end_at')->nullable();

@@ -4,7 +4,9 @@ namespace App\Actions\Migrations;
 
 use App\Models\Helpers\ImageModel;
 use App\Models\Selling\Product;
+use App\Models\System\User;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -12,7 +14,7 @@ class MigrateImageModels
 {
     use AsAction;
 
-    public function handle(Product $model, $imageModelsData)
+    public function handle(Model|Product|User $model, $imageModelsData)
     {
         $old = [];
         $new = [];

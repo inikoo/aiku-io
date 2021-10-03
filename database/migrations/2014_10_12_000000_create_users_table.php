@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->morphs('userable');
-            $table->enum('status',['Active','Suspended'])->default('Active');
+            $table->enum('status',['active','suspended'])->default('Active');
             $table->unsignedSmallInteger('language_id');
             $table->foreign('language_id')->references('id')->on('aiku.languages');
             $table->unsignedSmallInteger('timezone_id');

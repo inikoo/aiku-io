@@ -50,7 +50,7 @@ class MigrateEmployee
             'worker_number'       => $auroraData->{'Staff ID'},
             'employment_start_at' => $this->getDate($auroraData->{'Staff Valid From'}),
             'employment_end_at'   => $this->getDate($auroraData->{'Staff Valid To'}),
-            'type'                => $auroraData->{'Staff Type'},
+            'type'                => Str::snake($auroraData->{'Staff Type'},'-'),
             'aurora_id'           => $auroraData->{'Staff Key'},
             'state'               => match ($auroraData->{'Staff Currently Working'}) {
                 'No' => 'Left',
@@ -113,7 +113,7 @@ class MigrateEmployee
                 'password'    => Hash::make(config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(), 4, '-', true)),
                 'aurora_id'   => $auroraUserData->{'User Key'},
                 'language_id' => $this->parseLanguageID($auroraUserData->{'User Preferred Locale'}),
-                'status'      => $auroraUserData->{'User Active'} == 'Yes' ? 'Active' : 'Suspended'
+                'status'      => $auroraUserData->{'User Active'} == 'Yes' ? 'active' : 'suspended'
             ];
 
             if ($employee->user) {
@@ -123,8 +123,20 @@ class MigrateEmployee
                 }
             } else {
                 // print_r($userData);
-                StoreUser::run($employee, $userData, []);
+                $user=StoreUser::run($employee, $userData, []);
             }
+
+            $auroraImagesCollection = $this->getModelImagesCollection('Staff', $auroraData->{'Staff Key'});
+            $auroraImagesCollectionWithImage=$auroraImagesCollection->each(function ($auroraImage)  {
+                if($image = MigrateImage::run($auroraImage)){
+                    return $auroraImage->image_id=$image->id;
+                }else{
+                    return $auroraImage->image_id=null;
+                }
+
+            });
+
+            MigrateImageModels::run($user,$auroraImagesCollectionWithImage);
         }
 
         if ($updated) {
