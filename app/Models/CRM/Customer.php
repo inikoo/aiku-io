@@ -8,7 +8,6 @@
 
 namespace App\Models\CRM;
 
-use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,7 +22,6 @@ use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
  */
 class Customer extends Model implements Auditable
 {
-    use HasSlug;
     use UsesTenantConnection;
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
@@ -37,9 +35,6 @@ class Customer extends Model implements Auditable
         'data' => '{}',
     ];
 
-    protected array $slugSettings=[
-        'from'=>'name'
-        ];
 
 
     protected $guarded = [];

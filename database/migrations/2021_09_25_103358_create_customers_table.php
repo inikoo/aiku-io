@@ -17,7 +17,6 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->unsignedMediumInteger('shop_id')->index();
             $table->foreign('shop_id')->references('id')->on('shops');
-            $table->string('slug', 64)->index();
             $table->string('name', 256)->nullable();
 
             $table->string('email')->nullable();

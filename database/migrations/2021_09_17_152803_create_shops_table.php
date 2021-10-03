@@ -17,9 +17,9 @@ class CreateShopsTable extends Migration
     {
         Schema::create('shops', function (Blueprint $table) {
             $table->mediumIncrements('id');
-            $table->string('code')->unique()->index();
+            $table->string('code')->unique();
             $table->string('name');
-            $table->enum('state',['InProcess','Open','ClosingDown','Closed'])->index();
+            $table->enum('state',['in-process','open','closing-down','closed'])->index();
             $table->enum('type',['b2b','b2c','fulfilment','dropshipping','external']);
 
 

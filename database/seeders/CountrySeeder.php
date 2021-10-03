@@ -36,12 +36,30 @@ class CountrySeeder extends Seeder
         }
 
         $otherCountriesData['CS']=[
-            'names'=>'Czechoslovakia',
-            'iso3'=>null,
-            'continent'=>null,
-            'capital'=>'Prague',
-            'phone'=>null
+            'names'=>'Serbia and Montenegro',
+            'iso3'=>'SCG',
+            'continent'=>'EU',
+            'capital'=>null,
+            'phone'=>null,
+            'deleted_at'=>'2006-09-26'
         ];
+        $otherCountriesData['YU']=[
+            'names'=>'Yugoslavia',
+            'iso3'=>'YUG',
+            'continent'=>'EU',
+            'capital'=>null,
+            'phone'=>null,
+            'deleted_at'=>'2003-07-23'
+        ];
+        $otherCountriesData['AN']=[
+            'names'=>'Netherlands Antilles',
+            'iso3'=>'ANT',
+            'continent'=>'NA',
+            'capital'=>null,
+            'phone'=>null,
+            'deleted_at'=>'2010-12-15'
+        ];
+
         $countriesData=array_merge($countriesData,$otherCountriesData);
 
         foreach ($countriesData as $countryCode => $countryData) {
@@ -169,5 +187,10 @@ class CountrySeeder extends Seeder
             $country->data = $data;
             $country->save();
         }
+
+
+
+        Country::whereIn('code',['AQ','BV','CP','HM'])->update(['type'=>'uninhabited']);
+
     }
 }

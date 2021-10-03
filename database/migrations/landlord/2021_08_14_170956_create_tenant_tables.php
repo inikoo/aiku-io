@@ -26,9 +26,11 @@ class CreateTenantTables extends Migration
             $table->string('capital')->nullable();
             $table->unsignedSmallInteger('timezone_id')->nullable()->comment('Timezone in capital')->index();
             $table->unsignedSmallInteger('currency_id')->nullable()->index();
-            $table->string('type')->nullable()->index();
+            $table->string('type')->nullable()->index()->default('independent');
             $table->jsonb('data');
             $table->timestampsTz();
+            $table->softDeletesTz();
+
         });
 
 

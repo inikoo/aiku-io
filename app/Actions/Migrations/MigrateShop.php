@@ -13,6 +13,7 @@ use App\Actions\Selling\Shop\UpdateShop;
 use App\Models\Selling\Shop;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -38,14 +39,14 @@ class MigrateShop
             'timezone_id' => $this->parseTimezoneID($auroraData->{'Store Timezone'}),
             'aurora_id'   => $auroraData->{'Store Key'},
             'url'         => $auroraData->{'Store URL'},
-            'state'       => $auroraData->{'Store Status'} == 'Normal' ? 'Open' : $auroraData->{'Store Status'},
+            'state'       => Str::snake($auroraData->{'Store Status'} == 'Normal' ? 'Open' : $auroraData->{'Store Status'}, '-'),
             'open_at'     => $this->getDate($auroraData->{'Store Valid From'}),
             'closed_at'   => $this->getDate($auroraData->{'Store Valid To'}),
 
         ];
         //print_r($shopData);
 
-        $shopData=$this->sanitizeData($shopData);
+        $shopData = $this->sanitizeData($shopData);
 
 
         if ($auroraData->aiku_id) {
@@ -65,23 +66,17 @@ class MigrateShop
                     ->where('Store Key', $auroraData->{'Store Key'})
                     ->update(['aiku_id' => null]);
             }
-
-
         } else {
-
             try {
                 $shop = StoreShop::run($shopData);
 
-                    DB::connection('aurora')->table('Store Dimension')
-                        ->where('Store Key', $auroraData->{'Store Key'})
-                        ->update(['aiku_id' => $shop->id]);
-                    $result['inserted']++;
-
-            }catch (Exception){
-
+                DB::connection('aurora')->table('Store Dimension')
+                    ->where('Store Key', $auroraData->{'Store Key'})
+                    ->update(['aiku_id' => $shop->id]);
+                $result['inserted']++;
+            } catch (Exception) {
                 $result['errors']++;
             }
-
         }
 
         return $result;

@@ -10,6 +10,7 @@ namespace App\Models\Assets;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
@@ -18,6 +19,7 @@ use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
  */
 class Country extends Model {
     use UsesLandlordConnection;
+    use SoftDeletes;
 
     protected $table = 'countries';
 

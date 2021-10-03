@@ -32,7 +32,7 @@ class TimezoneSeeder extends Seeder
 
             $data = [];
 
-            $country = Country::where('code', $tz_location['country_code'])->first();
+            $country = Country::withTrashed()->where('code', $tz_location['country_code'])->first();
 
             $country_id = null;
             if ($country) {
@@ -71,7 +71,7 @@ class TimezoneSeeder extends Seeder
         if ($handle !== false) {
             while (($data = fgetcsv($handle, 1000)) !== false) {
                 if ($row > 1) {
-                    if ($country = Country::where('code', $data[1])->first()) {
+                    if ($country = Country::withTrashed()->where('code', $data[1])->first()) {
                         if ($timezone = Timezone::where('name', $data[11])->first()) {
                             $country->timezone_id = $timezone->id;
                             $country->save();
@@ -92,7 +92,7 @@ class TimezoneSeeder extends Seeder
         $countryRepository = new CountryRepository();
         $countryList       = $countryRepository->getList('en-GB');
         foreach ($countryList as $countryCode => $countryName) {
-            if ($country = Country::where('code', $countryCode)->first()) {
+            if ($country = Country::withTrashed()->where('code', $countryCode)->first()) {
                 $_country = $countryRepository->get($countryCode);
 
                 $timezones=[];

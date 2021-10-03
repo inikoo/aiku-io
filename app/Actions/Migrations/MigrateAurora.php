@@ -82,7 +82,7 @@ trait MigrateAurora
     {
         if ($country != '') {
             try {
-                return Country::where('code', $country)->firstOrFail()->id;
+                return Country::withTrashed()->where('code', $country)->firstOrFail()->id;
             } catch (Exception) {
                 print "Country $country not found\n";
 
@@ -96,13 +96,13 @@ trait MigrateAurora
     private function parseAddress($prefix, $auroraData): array
     {
         $addressData                        = [];
-        $addressData['address_line_1']      = Str::of($auroraData->{$prefix.' Address Line 1'})->limit(191);
-        $addressData['address_line_2']      = Str::of($auroraData->{$prefix.' Address Line 2'})->limit(191);
-        $addressData['sorting_code']        = Str::of($auroraData->{$prefix.' Address Sorting Code'})->limit(191);
-        $addressData['postal_code']         = Str::of($auroraData->{$prefix.' Address Postal Code'})->limit(191);
-        $addressData['locality']            = Str::of($auroraData->{$prefix.' Address Locality'})->limit(191);
-        $addressData['dependant_locality']  = Str::of($auroraData->{$prefix.' Address Dependent Locality'})->limit(191);
-        $addressData['administrative_area'] = Str::of($auroraData->{$prefix.' Address Administrative Area'})->limit(191);
+        $addressData['address_line_1']      = Str::of($auroraData->{$prefix.' Address Line 1'})->limit(251);
+        $addressData['address_line_2']      = Str::of($auroraData->{$prefix.' Address Line 2'})->limit(251);
+        $addressData['sorting_code']        = Str::of($auroraData->{$prefix.' Address Sorting Code'})->limit(187);
+        $addressData['postal_code']         = Str::of($auroraData->{$prefix.' Address Postal Code'})->limit(187);
+        $addressData['locality']            = Str::of($auroraData->{$prefix.' Address Locality'})->limit(187);
+        $addressData['dependant_locality']  = Str::of($auroraData->{$prefix.' Address Dependent Locality'})->limit(187);
+        $addressData['administrative_area'] = Str::of($auroraData->{$prefix.' Address Administrative Area'})->limit(187);
         $addressData['country_id']          = $this->parseCountryID($auroraData->{$prefix.' Address Country 2 Alpha Code'});
 
         return $addressData;
