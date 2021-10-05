@@ -25,7 +25,6 @@ class MigrateProduct
         $data     = [];
         $settings = [];
 
-
         $status = true;
         if ($auroraData->{'Product Status'} == 'Discontinued') {
             $status = false;
@@ -96,8 +95,8 @@ class MigrateProduct
         if ($auroraData->aiku_id) {
             $product = Product::withTrashed()->find($auroraData->aiku_id);
             if ($product) {
-                $customer = UpdateProduct::run($product, $productData);
-                $changes  = $customer->getChanges();
+                $product = UpdateProduct::run($product, $productData);
+                $changes  = $product->getChanges();
                 if (count($changes) > 0) {
                     $result['updated']++;
                 }

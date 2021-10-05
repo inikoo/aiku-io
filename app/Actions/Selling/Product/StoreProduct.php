@@ -18,7 +18,6 @@ class StoreProduct
 
     public function handle(Shop $shop, array $data): Model
     {
-        //print_r($data);
         return $shop->products()->create($data);
     }
 }

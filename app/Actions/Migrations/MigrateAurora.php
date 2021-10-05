@@ -109,21 +109,79 @@ trait MigrateAurora
     }
 
 
-
     protected function getModelImagesCollection($model, $id): Collection
     {
-
-
-            return DB::connection('aurora')
-                ->table('Image Subject Bridge')
-                ->leftJoin('Image Dimension', 'Image Subject Image Key', '=', 'Image Key')
-                ->where('Image Subject Object', $model)
-                ->where('Image Subject Object Key', $id)
-                ->orderByRaw("FIELD(`Image Subject Is Principal`, 'Yes','No')")
-                ->get() ;
+        return DB::connection('aurora')
+            ->table('Image Subject Bridge')
+            ->leftJoin('Image Dimension', 'Image Subject Image Key', '=', 'Image Key')
+            ->where('Image Subject Object', $model)
+            ->where('Image Subject Object Key', $id)
+            ->orderByRaw("FIELD(`Image Subject Is Principal`, 'Yes','No')")
+            ->get();
     }
 
+    private function updateAuroraModel($table, $table_id_field, $id, $value = null)
+    {
+        DB::connection('aurora')->table($table)
+            ->where($table_id_field, $id)
+            ->update(['aiku_id' => $value]);
+    }
 
+    protected function process($auroraData): array
+    {
+        $result = [
+            'updated'  => 0,
+            'inserted' => 0,
+            'errors'   => 0
+        ];
+
+
+        $parent = $this->getParent($auroraData);
+
+        $modelData = $this->getModelData($auroraData, $parent);
+
+
+        if ($auroraData->aiku_id) {
+            $model = $this->getModel($auroraData);
+            if ($model) {
+                $model = $this->updateModel($model, $modelData);
+
+                $changes = $model->getChanges();
+                if (count($changes) > 0) {
+                    $result['updated']++;
+                }
+            } else {
+                $result['errors']++;
+
+                $this->updateAuroraModel();
+                /*
+               DB::connection('aurora')->table('Location Dimension')
+                   ->where('Location Key', $auroraData->{'Location Key'})
+                   ->update(['aiku_id' => null]);
+*/
+
+               return $result;
+           }
+       } else {
+           $model = $this->storeModel();
+
+           if (!$model) {
+               $result['errors']++;
+
+               return $result;
+           }
+           $this->updateAuroraModel();
+           /*
+           DB::connection('aurora')->table('Location Dimension')
+               ->where('Location Key', $auroraData->{'Location Key'})
+               ->update(['aiku_id' => $location->id]);
+*/
+            $result['inserted']++;
+        }
+
+
+        return $result;
+    }
 
 
 }

@@ -8,7 +8,6 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
-use App\Actions\Migrations\MigrateProduct;
 use App\Actions\Migrations\MigrateShop;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;

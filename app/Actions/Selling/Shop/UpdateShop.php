@@ -15,9 +15,9 @@ class UpdateShop
 {
     use AsAction;
 
-    public function handle(Shop $shop, array $storeData): Shop
+    public function handle(Shop $shop, array $data): Shop
     {
-        $shop->update($storeData);
+        $shop->update($data);
 
         return $shop;
     }
