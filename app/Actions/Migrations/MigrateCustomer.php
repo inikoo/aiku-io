@@ -9,115 +9,71 @@
 namespace App\Actions\Migrations;
 
 use App\Actions\CRM\StoreCustomer;
-use App\Actions\CRM\UpdateCustomer;
-use App\Actions\Helpers\Address\DeleteAddress;
-use App\Actions\Helpers\Address\StoreAddress;
-use App\Actions\Helpers\Address\UpdateAddress;
+
 use App\Models\CRM\Customer;
 use App\Models\Selling\Shop;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Lorisleiva\Actions\Concerns\AsAction;
+use JetBrains\PhpStorm\Pure;
 
-class MigrateCustomer
+class MigrateCustomer extends MigrateModel
 {
-    use AsAction;
-    use MigrateAurora;
+use WithCustomer;
 
-
-    private function parseMetadata($data, $auroraData): array
+    #[Pure] public function __construct()
     {
-        if ($auroraData->{'Customer Tax Number'} != '') {
-            if ($auroraData->{'Customer Tax Number Registered Name'}) {
-                data_set($data, 'tax_number.registered_name', $auroraData->{'Customer Tax Number Registered Name'});
-            }
-            if ($auroraData->{'Customer Tax Number Registered Address'}) {
-                data_set($data, 'tax_number.registered_address', $auroraData->{'Customer Tax Number Registered Address'});
-            }
-            if ($auroraData->{'Customer Tax Number Validation Source'}) {
-                data_set($data, 'tax_number.validation.registered_address', strtolower($auroraData->{'Customer Tax Number Validation Source'}));
-            }
-            if ($auroraData->{'Customer Tax Number Validation Date'}) {
-                data_set($data, 'tax_number.validation.registered_address', $auroraData->{'Customer Tax Number Validation Date'});
-            }
-            if ($auroraData->{'Customer Tax Number Validation Message'}) {
-                data_set($data, 'tax_number.validation.message', $auroraData->{'Customer Tax Number Validation Message'});
-            }
-            if ($auroraData->{'Customer Tax Number Valid'} == 'API_Down') {
-                data_set($data, 'tax_number.validation.last_error', 'vies_api_down');
-            } else {
-                Arr::forget($data, 'tax_number.validation.last_error');
-            }
-        }
-
-        $marketing_can_send = [];
-        $subscriptions      = [];
-        if ($auroraData->{'Customer Send Newsletter'} == 'Yes') {
-            $subscriptions[] = 'newsletter';
-        }
-        if ($auroraData->{'Customer Send Email Marketing'} == 'Yes') {
-            $marketing_can_send[] = 'email_marketing';
-        }
-        if ($auroraData->{'Customer Send Postal Marketing'} == 'Yes') {
-            $marketing_can_send[] = 'postal_marketing';
-        }
-        data_set($data, 'marketing.subscriptions', $subscriptions);
-        data_set($data, 'marketing.can_send', $marketing_can_send);
-
-        return $data;
+        parent::__construct();
+        $this->auModel->table    = 'Customer Dimension';
+        $this->auModel->id_field = 'Customer Key';
     }
 
-
-    private function parseAuroraData($auroraData): array
+    public function parseModelData()
     {
         $status = 'approved';
         $state  = 'active';
-        if ($auroraData->{'Customer Type by Activity'} == 'Rejected') {
+        if ($this->auModel->data->{'Customer Type by Activity'} == 'Rejected') {
             $status = 'rejected';
-        } elseif ($auroraData->{'Customer Type by Activity'} == 'ToApprove') {
+        } elseif ($this->auModel->data->{'Customer Type by Activity'} == 'ToApprove') {
             $state  = 'registered';
             $status = 'pending-approval';
-        } elseif ($auroraData->{'Customer Type by Activity'} == 'Losing') {
+        } elseif ($this->auModel->data->{'Customer Type by Activity'} == 'Losing') {
             $state = 'losing';
-        } elseif ($auroraData->{'Customer Type by Activity'} == 'Lost') {
+        } elseif ($this->auModel->data->{'Customer Type by Activity'} == 'Lost') {
             $state = 'lost';
         }
 
 
-        $customerData = [
-            'name'                => $auroraData->{'Customer Name'},
-            'company'             => $auroraData->{'Customer Company Name'},
-            'contact_name'        => $auroraData->{'Customer Main Contact Name'},
-            'website'             => $auroraData->{'Customer Website'},
-            'email'               => $auroraData->{'Customer Main Plain Email'},
-            'phone'               => $auroraData->{'Customer Main Plain Mobile'},
-            'state'               => $state,
-            'status'              => $status,
-            'aurora_id'           => $auroraData->{'Customer Key'},
-            'registration_number' => Str::limit($auroraData->{'Customer Registration Number'}, 20),
-            'tax_number'          => $auroraData->{'Customer Tax Number'},
-            'tax_number_status'   => $auroraData->{'Customer Tax Number'} == ''
-                ? 'na'
-                : match ($auroraData->{'Customer Tax Number Valid'}) {
-                    'Yes' => 'valid',
-                    'No' => 'invalid',
-                    default => 'unknown'
-                },
+        $this->modelData['customer'] = $this->sanitizeData(
+            [
+                'name'                => $this->auModel->data->{'Customer Name'},
+                'company'             => $this->auModel->data->{'Customer Company Name'},
+                'contact_name'        => $this->auModel->data->{'Customer Main Contact Name'},
+                'website'             => $this->auModel->data->{'Customer Website'},
+                'email'               => $this->auModel->data->{'Customer Main Plain Email'},
+                'phone'               => $this->auModel->data->{'Customer Main Plain Mobile'},
+                'state'               => $state,
+                'status'              => $status,
+                'aurora_id'           => $this->auModel->data->{'Customer Key'},
+                'registration_number' => Str::limit($this->auModel->data->{'Customer Registration Number'}, 20),
+                'tax_number'          => $this->auModel->data->{'Customer Tax Number'},
+                'tax_number_status'   => $this->auModel->data->{'Customer Tax Number'} == ''
+                    ? 'na'
+                    : match ($this->auModel->data->{'Customer Tax Number Valid'}) {
+                        'Yes' => 'valid',
+                        'No' => 'invalid',
+                        default => 'unknown'
+                    },
 
-            'created_at' => $auroraData->{'Customer First Contacted Date'}
-        ];
-
-        return $this->sanitizeData($customerData);
-    }
+                'created_at' => $this->auModel->data->{'Customer First Contacted Date'}
+            ]
+        );
 
 
-    private function parseCustomerAddressees($auroraData): array
-    {
         $addresses = [];
 
-        $billingAddress  = $this->parseAddress(prefix: 'Customer Invoice', auroraData: $auroraData);
-        $deliveryAddress = $this->parseAddress(prefix: 'Customer Delivery', auroraData: $auroraData);
+        $billingAddress  = $this->parseAddress(prefix: 'Customer Invoice',auAddressData:$this->auModel->data);
+        $deliveryAddress = $this->parseAddress(prefix: 'Customer Delivery',auAddressData:$this->auModel->data);
 
         $addresses['billing'] = [
             $billingAddress
@@ -127,13 +83,41 @@ class MigrateCustomer
                 $deliveryAddress
             ];
         }
+        $this->modelData['addresses'] = $addresses;
 
 
-        return $addresses;
+        $this->auModel->id = $this->auModel->data->{'Customer Key'};
+    }
+    public function getParent(): Model|Shop|Builder|\Illuminate\Database\Query\Builder|null
+    {
+       return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Store Key'});
+
+    }
+
+    public function setModel()
+    {
+        $this->model = Customer::withTrashed()->find($this->auModel->data->aiku_id);
+    }
+
+    public function updateModel()
+    {
+        $this->updateCustomer($this->auModel->data);
+    }
+
+    public function storeModel(): ?int
+    {
+        $this->modelData['customer']['data'] = $this->parseMetadata([],$this->auModel->data);
+        $customer    = StoreCustomer::run($this->parent, $this->modelData['customer'], $this->modelData['addresses']);
+        $this->model = $customer;
+
+        return $customer?->id;
     }
 
 
-    public function handle($auroraData, array $deletedData = null): array
+
+
+/*
+    public function handle_old($auroraData, array $deletedData = null): array
     {
         $table = 'Customer Dimension';
 
@@ -146,6 +130,7 @@ class MigrateCustomer
         $shop = Shop::withTrashed()->firstWhere('aurora_id', $auroraData->{'Customer Store Key'});
         if (!$shop) {
             $result['errors']++;
+
             return $result;
         }
 
@@ -190,11 +175,10 @@ class MigrateCustomer
                         $customer->delivery_address_id = $address->id;
                         $customer->save();
                     }
-                } elseif ($customer->deliveryAddress and $customer->deliveryAddress->id!= $customer->billingAddress->id) {
+                } elseif ($customer->deliveryAddress and $customer->deliveryAddress->id != $customer->billingAddress->id) {
                     $customer->delivery_address_id = null;
                     $customer->save();
                     DeleteAddress::run($customer->deliveryAddress);
-
                 }
             } else {
                 $result['errors']++;
@@ -222,4 +206,5 @@ class MigrateCustomer
 
         return $result;
     }
+*/
 }

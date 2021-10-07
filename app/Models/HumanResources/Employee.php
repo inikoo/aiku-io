@@ -13,10 +13,10 @@ use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use OwenIt\Auditing\Contracts\Auditable;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+
 
 /**
  * @mixin IdeHelperEmployee
@@ -25,7 +25,7 @@ class Employee extends Model implements Auditable
 {
     use HasFactory;
     use UsesTenantConnection;
-    use HasSlug;
+    use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
 
     protected $casts = [
@@ -38,14 +38,6 @@ class Employee extends Model implements Auditable
 
     protected $guarded =[];
 
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('nickname')
-            ->doNotGenerateSlugsOnUpdate()
-            ->doNotGenerateSlugsOnCreate();
-    }
 
 
     public function getNameAttribute()

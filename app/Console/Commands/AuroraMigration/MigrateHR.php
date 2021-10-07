@@ -9,7 +9,9 @@
 namespace App\Console\Commands\AuroraMigration;
 
 
+use App\Actions\Migrations\MigrateDeletedEmployee;
 use App\Actions\Migrations\MigrateEmployee;
+use App\Actions\Migrations\MigrateUser;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -39,13 +41,18 @@ class MigrateHR extends MigrateAurora
     {
         DB::connection('aurora')->table('Staff Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Staff Deleted Dimension')
+            ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('User Dimension')->where('User Type', 'Staff')
             ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
-        return DB::connection('aurora')->table('Staff Dimension')->count();
+        $count = DB::connection('aurora')->table('Staff Dimension')->count();
+        $count += DB::connection('aurora')->table('Staff Deleted Dimension')->count();
+        $count += DB::connection('aurora')->table('User Dimension')->where('User Type', 'Staff')->count();
+        return $count;
     }
 
     protected function migrate(Tenant $tenant)
@@ -53,6 +60,23 @@ class MigrateHR extends MigrateAurora
         foreach (DB::connection('aurora')->table('Staff Dimension')->get() as $auroraData) {
             $this->results[$tenant->slug]['models']++;
             $result = MigrateEmployee::run($auroraData);
+            $this->recordAction($tenant, $result);
+        }
+
+        foreach (DB::connection('aurora')->table('Staff Deleted Dimension')->get() as $auroraData) {
+            $this->results[$tenant->slug]['models']++;
+
+            $result = MigrateDeletedEmployee::run($auroraData);
+            $this->recordAction($tenant, $result);
+        }
+
+        foreach (
+            DB::connection('aurora')->table('User Dimension')
+                ->where('User Type', 'Staff')
+                ->get() as $auroraUserData
+        ) {
+            $this->results[$tenant->slug]['models']++;
+            $result = MigrateUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }
     }

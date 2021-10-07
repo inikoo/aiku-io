@@ -9,6 +9,7 @@
 namespace App\Console\Commands\AuroraMigration;
 
 use App\Actions\Migrations\MigrateCustomer;
+use App\Actions\Migrations\MigrateDeletedCustomer;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -50,6 +51,7 @@ class MigrateCustomers extends MigrateAurora
             }
         });
 
+
         DB::connection('aurora')->table('Customer Deleted Dimension')->orderBy('Customer Key')->chunk(1000, function ($chunk) use ($tenant) {
             foreach ($chunk as $auroraData) {
                 if (!$auroraData->{'Customer Key'}) {
@@ -59,15 +61,14 @@ class MigrateCustomers extends MigrateAurora
                     continue;
                 }
 
-                $auroraDeletedData = json_decode(gzuncompress($auroraData->{'Customer Deleted Metadata'}));
-                $auroraDeletedData->aiku_id=$auroraData->aiku_id;
 
-                $result = MigrateCustomer::run(
-                    $auroraDeletedData,
-                    deletedData: ['deleted_at' => $auroraData->{'Customer Deleted Date'}]
+                $result = MigrateDeletedCustomer::run(
+                    $auroraData
                 );
                 $this->recordAction($tenant, $result);
             }
         });
     }
+
+
 }

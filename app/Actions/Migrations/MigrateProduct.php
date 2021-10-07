@@ -12,25 +12,29 @@ use App\Actions\Selling\Product\StoreProduct;
 use App\Actions\Selling\Product\UpdateProduct;
 use App\Models\Selling\Product;
 use App\Models\Selling\Shop;
-use Illuminate\Support\Facades\DB;
-use Lorisleiva\Actions\Concerns\AsAction;
+use JetBrains\PhpStorm\Pure;
 
-class MigrateProduct
+class MigrateProduct extends MigrateModel
 {
-    use AsAction;
-    use MigrateAurora;
 
-    private function parseAuroraData($auroraData): array
+    #[Pure] public function __construct()
+    {
+        parent::__construct();
+        $this->auModel->table    = 'Product Dimension';
+        $this->auModel->id_field = 'Product ID';
+    }
+
+    public function parseModelData()
     {
         $data     = [];
         $settings = [];
 
         $status = true;
-        if ($auroraData->{'Product Status'} == 'Discontinued') {
+        if ($this->auModel->data->{'Product Status'} == 'Discontinued') {
             $status = false;
         }
 
-        $state = match ($auroraData->{'Product Status'}) {
+        $state = match ($this->auModel->data->{'Product Status'}) {
             'InProcess' => 'creating',
             'Discontinuing' => 'discontinuing',
             'Discontinued' => 'discontinued',
@@ -38,109 +42,78 @@ class MigrateProduct
         };
 
 
-        $units = $auroraData->{'Product Units Per Case'};
+        $units = $this->auModel->data->{'Product Units Per Case'};
         if ($units == 0) {
             $units = 1;
         }
 
-        if ($auroraData->{'Product Valid From'} == '0000-00-00 00:00:00') {
+        if ($this->auModel->data->{'Product Valid From'} == '0000-00-00 00:00:00') {
             $created_at = null;
         } else {
-            $created_at = $auroraData->{'Product Valid From'};
+            $created_at = $this->auModel->data->{'Product Valid From'};
         }
 
-        $productData = [
+
+        $this->modelData = $this->sanitizeData(
+            [
+                'code' => $this->auModel->data->{'Product Code'},
+                'name' => $this->auModel->data->{'Product Name'},
+
+                'unit_price' => $this->auModel->data->{'Product Price'} / $units,
+                'units'      => $units,
+
+                'status' => $status,
+                'state'  => $state,
+
+                'data'       => $data,
+                'settings'   => $settings,
+                'created_at' => $created_at,
+                'aurora_id'  => $this->auModel->data->{'Product ID'}
+            ]
+        );
 
 
-            'code' => $auroraData->{'Product Code'},
-            'name' => $auroraData->{'Product Name'},
-
-            'unit_price' => $auroraData->{'Product Price'} / $units,
-            'units'      => $units,
-
-            'status' => $status,
-            'state'  => $state,
-
-            'data'       => $data,
-            'settings'   => $settings,
-            'created_at' => $created_at,
-            'aurora_id'  => $auroraData->{'Product ID'}
-        ];
-
-        return $this->sanitizeData($productData);
+        $this->auModel->id = $this->auModel->data->{'Product ID'};
     }
 
-    public function handle($auroraData): array
+    protected function migrateImages()
     {
-        $table  = 'Product Dimension';
-        $result = [
-            'updated'  => 0,
-            'inserted' => 0,
-            'errors'   => 0
-        ];
-        $shop   = Shop::withTrashed()->firstWhere('aurora_id', $auroraData->{'Product Store Key'});
-
-
-        if (!$shop) {
-            $result['errors']++;
-
-            return $result;
-        }
-
-        $productData = $this->parseAuroraData($auroraData);
-
-        $auroraImagesCollection = $this->getModelImagesCollection('Product', $auroraData->{'Product ID'});
-
-
-        if ($auroraData->aiku_id) {
-            $product = Product::withTrashed()->find($auroraData->aiku_id);
-            if ($product) {
-                $product = UpdateProduct::run($product, $productData);
-                $changes  = $product->getChanges();
-                if (count($changes) > 0) {
-                    $result['updated']++;
-                }
+        $images = $this->getModelImagesCollection(
+            'Product',
+            $this->auModel->data->{'Product ID'}
+        )->each(function ($auroraImage) {
+            if ($image = MigrateImage::run($auroraImage)) {
+                return $auroraImage->image_id = $image->id;
             } else {
-                $result['errors']++;
-                DB::connection('aurora')->table($table)
-                    ->where('Product ID', $auroraData->{'Product ID'})
-                    ->update(['aiku_id' => null]);
-
-                return $result;
+                return $auroraImage->image_id = null;
             }
-        } else {
-            $product = StoreProduct::run($shop, $productData);
-            if (!$product) {
-                $result['errors']++;
-
-                return $result;
-            }
-
-
-            DB::connection('aurora')->table($table)
-                ->where('Product ID', $auroraData->{'Product ID'})
-                ->update(['aiku_id' => $product->id]);
-            $result['inserted']++;
-        }
-
-
-
-
-
-
-        $auroraImagesCollectionWithImage=$auroraImagesCollection->each(function ($auroraImage)  {
-            if($image = MigrateImage::run($auroraImage)){
-                return $auroraImage->image_id=$image->id;
-            }else{
-                return $auroraImage->image_id=null;
-            }
-
         });
 
-        MigrateImageModels::run($product,$auroraImagesCollectionWithImage);
 
+        MigrateImageModels::run($this->model, $images);
+    }
 
-        return $result;
+    public function setModel()
+    {
+        $this->model = Product::withTrashed()->find($this->auModel->data->aiku_id);
+    }
+
+    public function updateModel()
+    {
+        $this->model = UpdateProduct::run($this->model, $this->modelData);
+    }
+
+    public function storeModel(): ?int
+    {
+        $product     = StoreProduct::run($this->parent, $this->modelData);
+        $this->model = $product;
+
+        return $product?->id;
+    }
+
+    public function getParent(): Shop|null
+    {
+        return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Product Store Key'});
     }
 
 }

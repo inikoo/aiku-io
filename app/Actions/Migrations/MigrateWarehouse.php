@@ -11,80 +11,55 @@ namespace App\Actions\Migrations;
 use App\Actions\Distribution\Warehouse\StoreWarehouse;
 use App\Actions\Distribution\Warehouse\UpdateWarehouse;
 use App\Models\Distribution\Warehouse;
-use Exception;
-use Illuminate\Support\Facades\DB;
-use Lorisleiva\Actions\Concerns\AsAction;
+use JetBrains\PhpStorm\Pure;
 
-class MigrateWarehouse
+class MigrateWarehouse extends MigrateModel
 {
-    use AsAction;
-    use MigrateAurora;
 
-    public function handle($auroraData): array
+    #[Pure] public function __construct()
     {
-
-
-        $result = [
-            'updated'  => 0,
-            'inserted' => 0,
-            'errors'   => 0
-        ];
-        $warehouseData = [
-            'name'       => $auroraData->{'Warehouse Name'},
-            'code'       => strtolower($auroraData->{'Warehouse Code'}),
-            'aurora_id'  => $auroraData->{'Warehouse Key'},
-            'created_at' => $this->getDate($auroraData->{'Warehouse Valid From'}??null),
-        ];
-
-        $warehouseData = $this->sanitizeData($warehouseData);
-
-
-        if ($auroraData->aiku_id) {
-            $warehouse = Warehouse::find($auroraData->aiku_id);
-
-            if ($warehouse) {
-                $warehouse = UpdateWarehouse::run($warehouse, $warehouseData);
-
-
-                $changes = $warehouse->getChanges();
-                if (count($changes) > 0) {
-                    $result['updated']++;
-                }
-            } else {
-
-                $result['errors']++;
-                if(isset($auroraData->{'Warehouse Area Key'})){
-                    DB::connection('aurora')->table('Warehouse Dimension')
-                        ->where('Warehouse Area Key', $auroraData->{'Warehouse Area Key'})
-                        ->update(['aiku_id' => null]);
-                }else{
-                    DB::connection('aurora')->table('Warehouse Dimension')
-                        ->where('Warehouse Key', $auroraData->{'Warehouse Key'})
-                        ->update(['aiku_id' => null]);
-                }
-
-            }
-        } else {
-            try {
-                $warehouse = StoreWarehouse::run($warehouseData);
-
-                if(isset($auroraData->{'Warehouse Area Key'})){
-                    DB::connection('aurora')->table('Warehouse Area Dimension')
-                        ->where('Warehouse Area Key', $auroraData->{'Warehouse Area Key'})
-                        ->update(['aiku_id' => $warehouse->id]);
-                }else{
-                    DB::connection('aurora')->table('Warehouse Dimension')
-                        ->where('Warehouse Key', $auroraData->{'Warehouse Key'})
-                        ->update(['aiku_id' => $warehouse->id]);
-                }
-
-                $result['inserted']++;
-            } catch (Exception $e) {
-                print $e->getMessage();
-                $result['errors']++;
-            }
-        }
-
-        return $result;
+        parent::__construct();
+        $this->auModel->table    = 'Warehouse Dimension';
+        $this->auModel->id_field = 'Warehouse Key';
     }
+
+
+    public function parseModelData()
+    {
+        $this->modelData = $this->sanitizeData(
+            [
+                'name'       => $this->auModel->data->{'Warehouse Name'},
+                'code'       => strtolower($this->auModel->data->{'Warehouse Code'}),
+                'aurora_id'  => $this->auModel->data->{'Warehouse Key'},
+                'created_at' => $this->getDate($this->auModel->data->{'Warehouse Valid From'} ?? null),
+            ]
+        );
+        if (isset($this->auModel->data->{'Warehouse Area Key'})) {
+            $this->auModel->id       = $this->auModel->data->{'Warehouse Area Key'};
+            $this->auModel->table    = 'Warehouse Area Dimension';
+            $this->auModel->id_field = 'Warehouse Area Key';
+        } else {
+            $this->auModel->id = $this->auModel->data->{'Warehouse Key'};
+        }
+    }
+
+    public function setModel()
+    {
+        $this->model = Warehouse::find($this->auModel->data->aiku_id);
+    }
+
+    public function updateModel()
+    {
+        $this->model = UpdateWarehouse::run($this->model, $this->modelData);
+    }
+
+    public function storeModel(): ?int
+    {
+        $warehouse   = StoreWarehouse::run($this->modelData);
+        $this->model = $warehouse;
+
+        return $warehouse?->id;
+    }
+
+
 }

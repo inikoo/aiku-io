@@ -30,7 +30,7 @@ class MigrateAurora extends Command
         parent::__construct();
     }
 
-    private function set_aurora_connection($database_name)
+    private function setAuroraConnection($database_name)
     {
         $database_settings = data_get(config('database.connections'), 'aurora');
         data_set($database_settings, 'database', $database_name);
@@ -66,7 +66,7 @@ class MigrateAurora extends Command
     {
         $tenants->each(function ($tenant) {
             if (Arr::get($tenant->data, 'aurora_db')) {
-                $this->set_aurora_connection($tenant->data['aurora_db']);
+                $this->setAuroraConnection($tenant->data['aurora_db']);
                 $this->total += $this->count();
             }
         });
@@ -105,7 +105,7 @@ class MigrateAurora extends Command
                     'errors'   => 0
                 ];
 
-                $this->set_aurora_connection($tenant->data['aurora_db']);
+                $this->setAuroraConnection($tenant->data['aurora_db']);
                 if ($this->option('reset')) {
                     if (config('app.env') == 'production') {
                         if ($this->confirm('Do you really want to reset?')) {

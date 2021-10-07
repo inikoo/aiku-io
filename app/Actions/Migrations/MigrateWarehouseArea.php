@@ -12,77 +12,51 @@ use App\Actions\Distribution\WarehouseArea\StoreWarehouseArea;
 use App\Actions\Distribution\WarehouseArea\UpdateWarehouseArea;
 use App\Models\Distribution\Warehouse;
 use App\Models\Distribution\WarehouseArea;
-use Illuminate\Support\Facades\DB;
-use Lorisleiva\Actions\Concerns\AsAction;
+use JetBrains\PhpStorm\Pure;
 
-class MigrateWarehouseArea
+class MigrateWarehouseArea extends MigrateModel
 {
-    use AsAction;
-
-    public function handle($auroraData)
+    #[Pure] public function __construct()
     {
-        $result = [
-            'updated'  => 0,
-            'inserted' => 0,
-            'errors'   => 0
-        ];
-
-
-        if ($auroraData->{'Warehouse Area Place'} == 'Local') {
-            $warehouse = (new Warehouse())->firstWhere('aurora_id', $auroraData->{'Warehouse Area Warehouse Key'});
-            if (!$warehouse) {
-                $result['errors']++;
-
-                return $result;
-            }
-
-            $warehouseAreaData = [
-                'name'      => $auroraData->{'Warehouse Area Name'} ?? 'Name not set',
-                'code'      => $auroraData->{'Warehouse Area Code'},
-                'aurora_id' => $auroraData->{'Warehouse Area Key'},
-
-            ];
-
-
-            if ($auroraData->aiku_id) {
-                $warehouseArea = WarehouseArea::withTrashed()->find($auroraData->aiku_id);
-                if ($warehouseArea) {
-                    $warehouseArea = UpdateWarehouseArea::run($warehouseArea, $warehouseAreaData);
-                    $changes       = $warehouseArea->getChanges();
-                    if (count($changes) > 0) {
-                        $result['updated']++;
-                    }
-                } else {
-                    $result['errors']++;
-
-                    DB::connection('aurora')->table('Warehouse Area Dimension')
-                        ->where('Warehouse Area Key', $auroraData->{'Warehouse Area Key'})
-                        ->update(['aiku_id' => null]);
-
-                    return $result;
-                }
-            } else {
-                $warehouseArea = StoreWarehouseArea::run($warehouse, $warehouseAreaData);
-                if (!$warehouseArea) {
-                    $result['errors']++;
-
-                    return $result;
-                }
-
-                DB::connection('aurora')->table('Warehouse Area Dimension')
-                    ->where('Warehouse Area Key', $auroraData->{'Warehouse Area Key'})
-                    ->update(['aiku_id' => $warehouseArea->id]);
-
-                $result['inserted']++;
-            }
-
-            return $result;
-        } else {
-            $auroraData->{'Warehouse Name'} = $auroraData->{'Warehouse Area Name'};
-            $auroraData->{'Warehouse Code'} = $auroraData->{'Warehouse Area Code'};
-            $auroraData->{'Warehouse Key'}  = $auroraData->{'Warehouse Area Key'};
-
-            return MigrateWarehouse::run($auroraData);
-        }
+        parent::__construct();
+        $this->auModel->table    = 'Warehouse Area Dimension';
+        $this->auModel->id_field = 'Warehouse Area Key';
     }
+
+    public function parseModelData()
+    {
+        $this->modelData   = $this->sanitizeData(
+            [
+                'name'      => $this->auModel->data->{'Warehouse Area Name'} ?? 'Name not set',
+                'code'      => $this->auModel->data->{'Warehouse Area Code'},
+                'aurora_id' => $this->auModel->data->{'Warehouse Area Key'},
+            ]
+        );
+        $this->auModel->id = $this->auModel->data->{'Warehouse Area Key'};
+    }
+
+    public function getParent(): Warehouse|null
+    {
+        return (new Warehouse())->firstWhere('aurora_id', $this->auModel->data->{'Warehouse Area Warehouse Key'});
+    }
+
+    public function setModel()
+    {
+        $this->model = WarehouseArea::withTrashed()->find($this->auModel->data->aiku_id);
+    }
+
+    public function updateModel()
+    {
+        $this->model = UpdateWarehouseArea::run($this->model, $this->modelData);
+    }
+
+    public function storeModel(): ?int
+    {
+        $warehouseArea = StoreWarehouseArea::run($this->parent, $this->modelData);
+        $this->model   = $warehouseArea;
+
+        return $warehouseArea?->id;
+    }
+
+
 }

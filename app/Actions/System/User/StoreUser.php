@@ -11,6 +11,7 @@ namespace App\Actions\System\User;
 
 use App\Models\Account\Tenant;
 use App\Models\HumanResources\Employee;
+use App\Models\System\User;
 use Illuminate\Validation\Rules\Password;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -19,10 +20,11 @@ class StoreUser
 {
     use AsAction;
 
-    public function handle($userable, array $userData, array $roles)
+    public function handle(Employee|Tenant $userable, array $userData, array $roles=[]): User
     {
         $userData['language_id'] = $userData['language_id'] ?? app('currentTenant')->language_id;
         $userData['timezone_id'] = $userData['timezone_id'] ?? app('currentTenant')->timezone_id;
+        /** @var \App\Models\System\User $user */
         $user = $userable->user()->create($userData);
         foreach ($roles as $role) {
             $user->assignRole($role);
@@ -51,7 +53,7 @@ class StoreUser
         }
     }
 
-    public function asController(Employee|Tenant $userable, ActionRequest $request): Employee
+    public function asController(Employee|Tenant $userable, ActionRequest $request): User
     {
         $roles = [];
 

@@ -31,12 +31,6 @@ class StoreEmployee
 
         $employee = Employee::create($employeeData);
         $employee->contact()->create($contactData);
-        $employee->generateSlug();
-
-        if(Arr::get($employeeData,'nickname')){
-            $employee->nickname=Arr::get($employeeData,'nickname');
-        }
-
         $employee->save();
 
         return $employee;

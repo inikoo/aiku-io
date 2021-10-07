@@ -13,84 +13,71 @@ use App\Actions\Distribution\Location\UpdateLocation;
 use App\Models\Distribution\Location;
 use App\Models\Distribution\Warehouse;
 use App\Models\Distribution\WarehouseArea;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class MigrateLocation
+class MigrateLocation extends MigrateModel
 {
     use AsAction;
 
-    public function handle($auroraData): array
+
+    #[Pure] public function __construct()
     {
-        $result = [
-            'updated'  => 0,
-            'inserted' => 0,
-            'errors'   => 0
-        ];
-
-
-        $LocationData = [
-            'code'      => $auroraData->{'Location Code'},
-            'aurora_id' => $auroraData->{'Location Key'},
-
-        ];
-
-        $parent = (new Warehouse())->firstWhere('aurora_id', $auroraData->{'Location Warehouse Key'});
-
-
-        if ($auroraData->{'Location Warehouse Area Key'}) {
-            $auroraWarehouseArea = DB::connection('aurora')->table('Warehouse Area Dimension')->where('Warehouse Area Key', $auroraData->{'Location Warehouse Area Key'})->first();
-            //print_r($auroraWarehouseArea);
-            //print_r($auroraWarehouseArea->{'Warehouse Area Place'});
-            if ($auroraWarehouseArea and $auroraWarehouseArea->{'Warehouse Area Place'} == 'Local') {
-                $parent = (new WarehouseArea())->firstWhere('aurora_id', $auroraData->{'Location Warehouse Area Key'});
-            }
-        }
-
-        if ($auroraData->aiku_id) {
-            //$LocationData['warehouse_id']=
-
-            $location = Location::withTrashed()->find($auroraData->aiku_id);
-            if ($location) {
-                if (class_basename($parent::class) == 'WarehouseArea') {
-                    $LocationData['warehouse_id']      = $parent->warehouse_id;
-                    $LocationData['warehouse_area_id'] = $parent->id;
-                } else {
-                    $LocationData['warehouse_id']      = $parent->id;
-                    $LocationData['warehouse_area_id'] = null;
-                }
-
-                $location = UpdateLocation::run($location, $LocationData);
-                $changes  = $location->getChanges();
-                if (count($changes) > 0) {
-                    $result['updated']++;
-                }
-            } else {
-
-                $result['errors']++;
-                DB::connection('aurora')->table('Location Dimension')
-                    ->where('Location Key', $auroraData->{'Location Key'})
-                    ->update(['aiku_id' => null]);
-
-
-                return $result;
-            }
-        } else {
-            $location = StoreLocation::run($parent, $LocationData);
-
-            if (!$location) {
-                $result['errors']++;
-                return $result;
-            }
-
-            DB::connection('aurora')->table('Location Dimension')
-                ->where('Location Key', $auroraData->{'Location Key'})
-                ->update(['aiku_id' => $location->id]);
-
-            $result['inserted']++;
-        }
-
-
-        return $result;
+        parent::__construct();
+        $this->auModel->table    = 'Location Dimension';
+        $this->auModel->id_field = 'Location Key';
     }
+
+    public function getParent(): Model|Warehouse|WarehouseArea|null
+    {
+        if ($this->auModel->data->{'Location Warehouse Area Key'}) {
+            $auroraWarehouseArea = DB::connection('aurora')->table('Warehouse Area Dimension')->where('Warehouse Area Key', $this->auModel->data->{'Location Warehouse Area Key'})->first();
+
+            if ($auroraWarehouseArea and $auroraWarehouseArea->{'Warehouse Area Place'} == 'Local') {
+                return (new WarehouseArea())->firstWhere('aurora_id', $this->auModel->data->{'Location Warehouse Area Key'});
+            }
+        }
+
+        return (new Warehouse())->firstWhere('aurora_id', $this->auModel->data->{'Location Warehouse Key'});
+    }
+
+    public function parseModelData()
+    {
+        $this->modelData   = [
+            'code'      => $this->auModel->data->{'Location Code'},
+            'aurora_id' => $this->auModel->data->{'Location Key'},
+
+        ];
+        $this->auModel->id = $this->auModel->data->{'Location Key'};
+    }
+
+
+    public function setModel()
+    {
+        $this->model = Location::withTrashed()->find($this->auModel->data->aiku_id);
+    }
+
+    public function updateModel()
+    {
+        if (class_basename($this->parent::class) == 'WarehouseArea') {
+            $this->modelData['warehouse_id']      = $this->parent->warehouse_id;
+            $this->modelData['warehouse_area_id'] = $this->parent->id;
+        } else {
+            $this->modelData['warehouse_id']      = $this->parent->id;
+            $this->modelData['warehouse_area_id'] = null;
+        }
+        $this->model = UpdateLocation::run($this->model, $this->modelData);
+    }
+
+    public function storeModel(): ?int
+    {
+        $location    = StoreLocation::run($this->parent, $this->modelData);
+        $this->model = $location;
+
+        return $location?->id;
+    }
+
+
 }
