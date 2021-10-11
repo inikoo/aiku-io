@@ -14,7 +14,15 @@ class CreateTenantTables extends Migration
 {
     public function up()
     {
+        Schema::create('aiku', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->string('version')->nullable();
+            $table->dateTimeTz('deployed_at')->nullable();
+            $table->jsonb('data');
+            $table->jsonb('settings');
+            $table->timestampsTz();
 
+        });
 
         Schema::create('countries', function (Blueprint $table) {
             $table->smallIncrements('id');
