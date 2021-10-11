@@ -18,9 +18,9 @@ trait WithCustomer
 {
     public function updateCustomer($auData)
     {
-        /** @var \App\Models\CRM\Customer $customer*/
+        /** @var \App\Models\CRM\Customer $customer */
 
-        $customer=$this->model;
+        $customer = $this->model;
 
         $this->modelData['customer']['data'] = $this->parseMetadata($customer->data, $auData);
 
@@ -50,6 +50,7 @@ trait WithCustomer
             $customer->save();
             DeleteAddress::run($customer->deliveryAddress);
         }
+        $this->model = $customer;
     }
 
     private function parseMetadata($data, $auData): array

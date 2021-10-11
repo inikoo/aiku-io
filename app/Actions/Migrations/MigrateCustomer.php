@@ -102,6 +102,9 @@ use WithCustomer;
     public function updateModel()
     {
         $this->updateCustomer($this->auModel->data);
+
+
+
     }
 
     public function storeModel(): ?int
@@ -114,97 +117,4 @@ use WithCustomer;
     }
 
 
-
-
-/*
-    public function handle_old($auroraData, array $deletedData = null): array
-    {
-        $table = 'Customer Dimension';
-
-        $result = [
-            'updated'  => 0,
-            'inserted' => 0,
-            'errors'   => 0
-        ];
-
-        $shop = Shop::withTrashed()->firstWhere('aurora_id', $auroraData->{'Customer Store Key'});
-        if (!$shop) {
-            $result['errors']++;
-
-            return $result;
-        }
-
-
-        $customerData   = $this->parseAuroraData($auroraData);
-        $addresseesData = $this->parseCustomerAddressees($auroraData);
-
-        if ($deletedData) {
-            $table                  = 'Customer Deleted Dimension';
-            $customerData['state']  = 'deleted';
-            $customerData['status'] = 'deleted';
-
-            $customerData = array_merge($customerData, $deletedData);
-        }
-
-        if ($auroraData->aiku_id) {
-            $customer = Customer::withTrashed()->find($auroraData->aiku_id);
-
-            if ($customer) {
-                $customer['data'] = $this->parseMetadata(data: $customer->data, auroraData: $auroraData);
-                $customer         = UpdateCustomer::run($customer, $customerData);
-                $changes          = $customer->getChanges();
-                if (count($changes) > 0) {
-                    $result['updated']++;
-                }
-
-
-                if (isset($addresseesData['billing']) and count($addresseesData['billing']) > 0) {
-                    UpdateAddress::run($customer->billingAddress, $addresseesData['billing'][0]);
-                }
-
-                if (isset($addresseesData['delivery']) and count($addresseesData['delivery']) > 0) {
-                    if ($customer->deliveryAddress) {
-                        UpdateAddress::run($customer->deliveryAddress, $addresseesData['delivery'][0]);
-                    } else {
-                        $address = StoreAddress::run($addresseesData['delivery'][0]);
-                        $customer->addresses()->associate(
-                            [
-                                $address->id => ['scope' => 'delivery']
-                            ]
-                        );
-                        $customer->delivery_address_id = $address->id;
-                        $customer->save();
-                    }
-                } elseif ($customer->deliveryAddress and $customer->deliveryAddress->id != $customer->billingAddress->id) {
-                    $customer->delivery_address_id = null;
-                    $customer->save();
-                    DeleteAddress::run($customer->deliveryAddress);
-                }
-            } else {
-                $result['errors']++;
-                DB::connection('aurora')->table($table)
-                    ->where('Customer Key', $auroraData->{'Customer Key'})
-                    ->update(['aiku_id' => null]);
-
-                return $result;
-            }
-        } else {
-            $customer['data'] = $this->parseMetadata(data: [], auroraData: $auroraData);
-
-            $customer = StoreCustomer::run($shop, $customerData, $addresseesData);
-            if (!$customer) {
-                $result['errors']++;
-
-                return $result;
-            }
-            DB::connection('aurora')->table($table)
-                ->where('Customer Key', $auroraData->{'Customer Key'})
-                ->update(['aiku_id' => $customer->id]);
-            $result['inserted']++;
-        }
-
-
-        return $result;
-    }
-*/
 }

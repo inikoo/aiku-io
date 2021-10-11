@@ -164,11 +164,17 @@ class MigrateModel
         return null;
     }
 
-    private function parseCountryID($country): int|null
+    protected function parseCountryID($country): int|null
     {
         if ($country != '') {
             try {
-                return Country::withTrashed()->where('code', $country)->firstOrFail()->id;
+                if (strlen($country) == 2) {
+                    return Country::withTrashed()->where('code', $country)->firstOrFail()->id;
+                } elseif (strlen($country) == 3) {
+                    return Country::withTrashed()->where('iso3', $country)->firstOrFail()->id;
+                } else {
+                    return Country::withTrashed()->where('name', $country)->firstOrFail()->id;
+                }
             } catch (Exception) {
                 print "Country $country not found\n";
 

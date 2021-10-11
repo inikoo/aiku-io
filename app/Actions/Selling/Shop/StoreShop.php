@@ -15,9 +15,9 @@ class StoreShop
 {
     use AsAction;
 
-    public function handle($shopData): Shop
+    public function handle(array $data): Shop
     {
-        return Shop::create($shopData);
+        return Shop::create($data);
     }
 
 

@@ -46,6 +46,8 @@ class AppServiceProvider extends ServiceProvider
                 'RawImage'       => 'App\Models\Assets\RawImage',
                 'ProcessedImage' => 'App\Models\Assets\ProcessedImage',
                 'Product'        => 'App\Models\Selling\Product',
+                'Agent'          => 'App\Models\Suppliers\Agent',
+                'Supplier'       => 'App\Models\Suppliers\Supplier',
 
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',

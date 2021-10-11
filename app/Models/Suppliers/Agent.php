@@ -1,59 +1,52 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sat, 25 Sep 2021 19:22:29 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Fri, 08 Oct 2021 17:52:06 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\CRM;
+namespace App\Models\Suppliers;
 
+use App\Models\Helpers\Address;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
-
 /**
- * @mixin IdeHelperCustomer
+ * @mixin IdeHelperAgent
  */
-class Customer extends Model implements Auditable
+class Agent extends Model implements Auditable
 {
+    use HasFactory;
     use UsesTenantConnection;
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
-    use HasFactory;
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'settings' => 'array',
     ];
 
     protected $attributes = [
         'data' => '{}',
+        'settings' => '{}',
     ];
 
     protected $guarded = [];
-
-    public function shop(): BelongsTo
-    {
-        return $this->belongsTo('App\Models\Selling\Shop');
-    }
 
     public function addresses(): MorphToMany
     {
         return $this->morphToMany('App\Models\Helpers\Address', 'addressable')->withTimestamps();
     }
 
-    public function billingAddress(): BelongsTo
-    {
-        return $this->belongsTo('App\Models\Helpers\Address');
-    }
-
-    public function deliveryAddress(): BelongsTo
+    public function address(): BelongsTo
     {
         return $this->belongsTo('App\Models\Helpers\Address');
     }

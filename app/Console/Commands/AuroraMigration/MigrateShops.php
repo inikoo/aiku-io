@@ -8,7 +8,7 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
-use App\Actions\Migrations\MigrateShop;
+use App\Actions\Migrations\MigrateAgent;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -42,7 +42,7 @@ class MigrateShops extends MigrateAurora
     protected function migrate(Tenant $tenant)
     {
         foreach (DB::connection('aurora')->table('Store Dimension')->get() as $auroraStoreData) {
-            $result = MigrateShop::run($auroraStoreData);
+            $result = MigrateAgent::run($auroraStoreData);
             $this->recordAction($tenant, $result);
 
         }
