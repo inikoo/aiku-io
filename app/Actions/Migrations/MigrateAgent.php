@@ -27,14 +27,22 @@ class MigrateAgent extends MigrateModel
         $this->auModel->id_field = 'Agent Key';
     }
 
+
+    public function getParent()
+    {
+        return app('currentTenant');
+    }
+
+
     public function parseSettings($settings, $auData)
     {
+        data_set($settings, 'order.port_of_export', $auData->{'Agent Default Port of Export'});
+        data_set($settings, 'order.port_of_import', $auData->{'Agent Default Port of Import'});
+        data_set($settings, 'order.incoterm', $auData->{'Agent Default Incoterm'});
+        data_set($settings, 'order.terms_and_conditions', $auData->{'Agent Default PO Terms and Conditions'});
+        data_set($settings, 'order.id_format', $auData->{'Agent Order Public ID Format'});
 
-        data_set($settings, 'port_of_export', $auData->{'Agent Default Port of Export'});
-        data_set($settings, 'port_of_import', $auData->{'Agent Default Port of Import'});
-        data_set($settings, 'incoterm', $auData->{'Agent Default Incoterm'});
-        data_set($settings, 'terms_and_conditions', $auData->{'Agent Default PO Terms and Conditions'});
-        data_set($settings, 'order_id_format', $auData->{'Agent Order Public ID Format'});
+        data_set($settings, 'products.origin', $this->parseCountryID($this->auModel->data->{'Agent Products Origin Country Code'}));
 
 
         return $settings;
@@ -50,6 +58,22 @@ class MigrateAgent extends MigrateModel
 
     public function parseModelData()
     {
+        $phone = $this->auModel->data->{'Agent Main Plain Mobile'};
+        if ($phone == '') {
+            $phone = $this->auModel->data->{'Agent Main Plain Telephone'};
+        }
+
+        $this->modelData['contact'] = $this->sanitizeData(
+            [
+                'company' => $this->auModel->data->{'Agent Company Name'},
+                'name'    => $this->auModel->data->{'Agent Main Contact Name'},
+                'email'   => $this->auModel->data->{'Agent Main Plain Email'},
+                'phone'   => $phone,
+
+            ]
+        );
+
+
         $this->modelData['agent'] = $this->sanitizeData(
             [
                 'name' => $this->auModel->data->{'Agent Name'},
@@ -59,7 +83,7 @@ class MigrateAgent extends MigrateModel
                     '-'
                 ),
 
-                'country_id'  => $this->parseCountryID($this->auModel->data->{'Agent Products Origin Country Code'}),
+
                 'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Agent Default Currency Code'}),
                 'aurora_id'   => $this->auModel->data->{'Agent Key'},
 
@@ -85,8 +109,12 @@ class MigrateAgent extends MigrateModel
         $this->modelData['agent']['data']     = $this->parseMetadata($agent->data, $this->auModel->data);
         $this->modelData['agent']['settings'] = $this->parseSettings($agent->settings, $this->auModel->data);
 
-        $agent = UpdateAgent::run($agent, $this->modelData['agent']);
-        UpdateAddress::run($agent->address, $this->modelData['address']);
+        $agent = UpdateAgent::run(
+            agent: $agent,
+            data:  $this->modelData['agent'],
+            contactData: $this->modelData['contact']
+        );
+        UpdateAddress::run($agent->contact->address, $this->modelData['address']);
 
         $this->model = $agent;
     }
@@ -96,7 +124,12 @@ class MigrateAgent extends MigrateModel
         $this->modelData['agent']['data']     = $this->parseMetadata([], $this->auModel->data);
         $this->modelData['agent']['settings'] = $this->parseSettings([], $this->auModel->data);
 
-        $agent       = StoreAgent::run($this->modelData['agent'], $this->modelData['address']);
+        $agent       = StoreAgent::run(
+            parent:      $this->parent,
+            data:        $this->modelData['agent'],
+            contactData: $this->modelData['contact'],
+            addressData: $this->modelData['address']
+        );
         $this->model = $agent;
 
         return $agent?->id;

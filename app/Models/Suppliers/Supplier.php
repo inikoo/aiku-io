@@ -1,28 +1,23 @@
 <?php
-/*
- *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Fri, 08 Oct 2021 17:52:06 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
- *  Version 4.0
- */
 
 namespace App\Models\Suppliers;
 
 use App\Models\Helpers\Contact;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
+
 /**
- * @mixin IdeHelperAgent
+ * @mixin IdeHelperSupplier
  */
-class Agent extends Model implements Auditable
+class Supplier extends Model implements Auditable
 {
     use HasFactory;
     use UsesTenantConnection;
@@ -41,7 +36,6 @@ class Agent extends Model implements Auditable
 
     protected $guarded = [];
 
-
     public function contact(): MorphOne
     {
         return $this->morphOne(Contact::class, 'contactable');
@@ -57,9 +51,8 @@ class Agent extends Model implements Auditable
         return $this->morphMany('App\Models\Helpers\ImageModel', 'image_models', 'imageable_type', 'imageable_id');
     }
 
-    public function suppliers(): MorphMany
+    public function owner(): MorphTo
     {
-        return $this->morphMany(Supplier::class, 'owner');
+        return $this->morphTo();
     }
-
 }

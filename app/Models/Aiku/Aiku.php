@@ -12,6 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
+/**
+ * @mixin IdeHelperAiku
+ */
 class Aiku extends Model
 {
     use UsesLandlordConnection;

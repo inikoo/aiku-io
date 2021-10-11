@@ -14,6 +14,7 @@ use App\Models\HumanResources\Employee;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -62,9 +63,9 @@ class Contact extends Model implements Auditable
         'data' => '{}',
     ];
 
-    public function address(): MorphOne
+    public function address(): BelongsTo
     {
-        return $this->morphOne(Address::class, 'owner');
+        return $this->belongsTo(Address::class);
     }
 
 

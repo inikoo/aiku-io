@@ -10,6 +10,7 @@ namespace App\Console\Commands\AuroraMigration;
 
 
 use App\Actions\Migrations\MigrateAgent;
+use App\Actions\Migrations\MigrateSupplier;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -50,8 +51,11 @@ class MigrateSuppliers extends MigrateAurora
         foreach (DB::connection('aurora')->table('Agent Dimension')->get() as $auData) {
             $result = MigrateAgent::run($auData);
             $this->recordAction($tenant, $result);
+        }
 
-
+        foreach (DB::connection('aurora')->table('Supplier Dimension')->get() as $auData) {
+            $result = MigrateSupplier::run($auData);
+            $this->recordAction($tenant, $result);
         }
     }
 

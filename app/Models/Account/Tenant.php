@@ -8,8 +8,11 @@
 
 namespace App\Models\Account;
 
+use App\Models\Suppliers\Agent;
+use App\Models\Suppliers\Supplier;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
 use Spatie\Sluggable\HasSlug;
@@ -53,6 +56,16 @@ class Tenant extends SpatieTenant
     public function user(): MorphOne
     {
         return $this->morphOne(User::class, 'userable');
+    }
+
+    public function agents(): MorphMany
+    {
+        return $this->morphMany(Agent::class, 'owner');
+    }
+
+    public function suppliers(): MorphMany
+    {
+        return $this->morphMany(Supplier::class, 'owner');
     }
 
 }

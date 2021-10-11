@@ -177,11 +177,18 @@ class CreateAuxTables extends Migration
 
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name',256)->nullable();
+            $table->string('company',256)->nullable();
+
             $table->date('date_of_birth')->nullable();
             $table->enum('gender', ['Make', 'Female', 'Other'])->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
+            $table->string('website',256)->nullable();
+            $table->string('qq')->nullable();
+            $table->unsignedBigInteger('address_id')->nullable()->index();
+            $table->foreign('address_id')->references('id')->on('addresses');
+
             $table->string('identity_document_type')->nullable();
             $table->string('identity_document_number')->nullable();
             $table->unique(['identity_document_type', 'identity_document_number']);
