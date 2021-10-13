@@ -6,9 +6,9 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Selling\Product;
+namespace App\Actions\Helpers\Product;
 
-use App\Models\Selling\Product;
+use App\Models\Helpers\Product;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateProduct

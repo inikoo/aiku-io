@@ -19,22 +19,26 @@ class CreateProductsTable extends Migration
     {
         Schema::create(
             'products', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('slug')->nullable()->index();
 
-            $table->unsignedMediumInteger('shop_id')->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
+
+            $table->morphs('vendor');
 
 
-            $table->string('state')->nullable()->index();
+
+
+            $table->enum('state',['creating','active','no-available','discontinuing','discontinued'])->nullable()->index();
             $table->boolean('status')->nullable()->index();
 
             $table->string('code')->index();
-            $table->text('name')->nullable();
+            $table->string('name',255)->nullable();
             $table->text('description')->nullable();
 
-            $table->decimal('unit_price');
-            $table->unsignedMediumInteger('units');
+            $table->unsignedDecimal('price',  18,4)->comment('unit price');
+            $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
+            $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
+            $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
 
             $table->unsignedMediumInteger('available')->default(0)->nullable();
             $table->unsignedBigInteger('image_id')->nullable();
@@ -44,7 +48,8 @@ class CreateProductsTable extends Migration
 
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('aurora_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_product_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_supplier_product_id')->nullable()->unique();
 
 
         }

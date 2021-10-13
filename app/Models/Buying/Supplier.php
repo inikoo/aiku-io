@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models\Suppliers;
+namespace App\Models\Buying;
 
 use App\Models\Helpers\Contact;
+use App\Models\Helpers\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -54,5 +55,10 @@ class Supplier extends Model implements Auditable
     public function owner(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function products(): MorphMany
+    {
+        return $this->morphMany(Product::class, 'vendor');
     }
 }

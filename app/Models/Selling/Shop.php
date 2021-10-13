@@ -8,9 +8,11 @@
 
 namespace App\Models\Selling;
 
+use App\Models\Helpers\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -52,9 +54,9 @@ class Shop extends Model implements Auditable
         return $this->hasMany('App\Models\CRM\Customer');
     }
 
-    public function products(): HasMany
+    public function products(): MorphMany
     {
-        return $this->hasMany('App\Models\Selling\Product');
+        return $this->morphMany(Product::class, 'vendor');
     }
 
 

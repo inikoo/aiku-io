@@ -18,7 +18,7 @@ class MigrateSuppliers extends MigrateAurora
 {
 
     protected $signature = 'au_migration:suppliers {--reset} {--all} {--t|tenant=* : Tenant slug} ';
-    protected $description = 'Migrate aurora suppliers';
+    protected $description = 'Migrate aurora suppliers and agents';
 
     public function handle(): int
     {
@@ -33,15 +33,13 @@ class MigrateSuppliers extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Supplier Dimension')
             ->update(['aiku_id' => null]);
-        DB::connection('aurora')->table('Supplier Part Dimension')
-            ->update(['aiku_id' => null]);
+
     }
 
     protected function count(): int
     {
         $count = DB::connection('aurora')->table('Agent Dimension')->count();
         $count += DB::connection('aurora')->table('Supplier Dimension')->count();
-        $count += DB::connection('aurora')->table('Supplier Part Dimension')->count();
 
         return $count;
     }

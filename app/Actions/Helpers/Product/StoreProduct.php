@@ -6,8 +6,9 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Selling\Product;
+namespace App\Actions\Helpers\Product;
 
+use App\Models\Buying\Supplier;
 use App\Models\Selling\Shop;
 use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -16,8 +17,8 @@ class StoreProduct
 {
     use AsAction;
 
-    public function handle(Shop $shop, array $data): Model
+    public function handle(Shop|Supplier $vendor, array $data): Model
     {
-        return $shop->products()->create($data);
+        return $vendor->products()->create($data);
     }
 }

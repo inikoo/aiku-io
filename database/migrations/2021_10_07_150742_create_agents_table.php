@@ -40,7 +40,7 @@ class CreateAgentsTable extends Migration
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('aurora_id');
+            $table->unsignedBigInteger('aurora_id');
         });
     }
 

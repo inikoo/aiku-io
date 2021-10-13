@@ -96,7 +96,7 @@ class CreateAuxTables extends Migration
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('aurora_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
 
         Schema::create('image_models', function (Blueprint $table) {
@@ -128,7 +128,7 @@ class CreateAuxTables extends Migration
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('aurora_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
 
         Schema::create('attachment_models', function (Blueprint $table) {
@@ -159,7 +159,7 @@ class CreateAuxTables extends Migration
             $table->nestedSet();
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedMediumInteger('aurora_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
             $table->index(['container', 'container_id']);
         });
 

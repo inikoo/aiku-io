@@ -11,10 +11,10 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Helpers\Address\UpdateAddress;
 
-use App\Actions\Suppliers\Supplier\StoreSupplier;
-use App\Actions\Suppliers\Supplier\UpdateSupplier;
-use App\Models\Suppliers\Agent;
-use App\Models\Suppliers\Supplier;
+use App\Actions\Buying\Supplier\StoreSupplier;
+use App\Actions\Buying\Supplier\UpdateSupplier;
+use App\Models\Buying\Agent;
+use App\Models\Buying\Supplier;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;

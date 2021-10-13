@@ -9,6 +9,7 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
+use App\Actions\Migrations\MigrateHistoricProduct;
 use App\Actions\Migrations\MigrateProduct;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
@@ -30,11 +31,16 @@ class MigrateProducts extends MigrateAurora
     {
         DB::connection('aurora')->table('Product Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Product History Dimension')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
-        return DB::connection('aurora')->table('Product Dimension')->count();
+        $count= DB::connection('aurora')->table('Product Dimension')->count();
+        $count+= DB::connection('aurora')->table('Product History Dimension')->count();
+        return $count;
+
     }
 
     protected function migrate(Tenant $tenant)
@@ -44,6 +50,12 @@ class MigrateProducts extends MigrateAurora
                 foreach ($chunk as $auroraData) {
                     $result = MigrateProduct::run($auroraData);
                     $this->recordAction($tenant, $result);
+
+                    foreach (DB::connection('aurora')->table('Product History Dimension')->where('Product ID','=',$auroraData->{'Product ID'})->get() as $auroraHistoricData) {
+                        $result = MigrateHistoricProduct::run($auroraHistoricData);
+                        $this->recordAction($tenant, $result);
+
+                    }
                 }
             });
         }

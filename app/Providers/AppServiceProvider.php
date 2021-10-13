@@ -45,9 +45,10 @@ class AppServiceProvider extends ServiceProvider
                 'Customer'       => 'App\Models\CRM\Customer',
                 'RawImage'       => 'App\Models\Assets\RawImage',
                 'ProcessedImage' => 'App\Models\Assets\ProcessedImage',
-                'Product'        => 'App\Models\Selling\Product',
-                'Agent'          => 'App\Models\Suppliers\Agent',
-                'Supplier'       => 'App\Models\Suppliers\Supplier',
+                'Product'        => 'App\Models\Helpers\Product',
+                'Agent'          => 'App\Models\Buying\Agent',
+                'Supplier'       => 'App\Models\Buying\Supplier',
+                'Shop'           => 'App\Models\Selling\Shop',
 
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
@@ -64,7 +65,6 @@ class AppServiceProvider extends ServiceProvider
                 'Invoice'                  => 'App\Models\Sales\Invoice',
                 'DeliveryNote'             => 'App\Models\Distribution\DeliveryNote',
                 'Stock'                    => 'App\Models\Distribution\Stock',
-                'Shop'                    => 'App\Models\Stores\Shop',
                 'Product'                  => 'App\Models\Stores\Product',
                 'ProductHistoricVariation' => 'App\Models\Stores\ProductHistoricVariation',
                 'EmailService'             => 'App\Models\Notifications\EmailService',

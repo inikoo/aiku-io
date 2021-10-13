@@ -8,8 +8,8 @@
 
 namespace App\Models\Account;
 
-use App\Models\Suppliers\Agent;
-use App\Models\Suppliers\Supplier;
+use App\Models\Buying\Agent;
+use App\Models\Buying\Supplier;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;

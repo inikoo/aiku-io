@@ -1,32 +1,33 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 29 Sep 2021 15:22:27 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Fri, 08 Oct 2021 17:52:06 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Selling;
+namespace App\Models\Buying;
 
-use App\Models\Traits\HasSlug;
+use App\Models\Helpers\Contact;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
-
-
 /**
- * @mixin IdeHelperProduct
+ * @mixin IdeHelperAgent
  */
-class Product extends Model
+class Agent extends Model implements Auditable
 {
-    use HasSlug;
-    use UsesTenantConnection;
-    use SoftDeletes;
     use HasFactory;
+    use UsesTenantConnection;
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
 
     protected $casts = [
         'data' => 'array',
@@ -38,21 +39,27 @@ class Product extends Model
         'settings' => '{}',
     ];
 
-    public function getSlugSourceAttribute(): string
-    {
-        return $this->code.'-'.$this->shop->code;
-    }
-
     protected $guarded = [];
 
-    public function shop(): BelongsTo
+
+    public function contact(): MorphOne
     {
-        return $this->belongsTo('App\Models\Selling\Shop');
+        return $this->morphOne(Contact::class, 'contactable');
+    }
+
+    public function addresses(): MorphToMany
+    {
+        return $this->morphToMany('App\Models\Helpers\Address', 'addressable')->withTimestamps();
     }
 
     public function images(): MorphMany
     {
         return $this->morphMany('App\Models\Helpers\ImageModel', 'image_models', 'imageable_type', 'imageable_id');
+    }
+
+    public function suppliers(): MorphMany
+    {
+        return $this->morphMany(Supplier::class, 'owner');
     }
 
 }

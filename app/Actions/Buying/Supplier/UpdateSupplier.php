@@ -6,9 +6,9 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Suppliers\Supplier;
+namespace App\Actions\Buying\Supplier;
 
-use App\Models\Suppliers\Supplier;
+use App\Models\Buying\Supplier;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateSupplier

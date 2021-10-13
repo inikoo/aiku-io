@@ -10,9 +10,9 @@ namespace App\Actions\Migrations;
 
 
 use App\Actions\Helpers\Address\UpdateAddress;
-use App\Actions\Suppliers\Agent\StoreAgent;
-use App\Actions\Suppliers\Agent\UpdateAgent;
-use App\Models\Suppliers\Agent;
+use App\Actions\Buying\Agent\StoreAgent;
+use App\Actions\Buying\Agent\UpdateAgent;
+use App\Models\Buying\Agent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;

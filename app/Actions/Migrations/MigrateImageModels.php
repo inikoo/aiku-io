@@ -3,7 +3,7 @@
 namespace App\Actions\Migrations;
 
 use App\Models\Helpers\ImageModel;
-use App\Models\Selling\Product;
+use App\Models\Helpers\Product;
 use App\Models\System\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;

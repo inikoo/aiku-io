@@ -8,9 +8,9 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Selling\Product\StoreProduct;
-use App\Actions\Selling\Product\UpdateProduct;
-use App\Models\Selling\Product;
+use App\Actions\Helpers\Product\StoreProduct;
+use App\Actions\Helpers\Product\UpdateProduct;
+use App\Models\Helpers\Product;
 use App\Models\Selling\Shop;
 use JetBrains\PhpStorm\Pure;
 
@@ -29,9 +29,9 @@ class MigrateProduct extends MigrateModel
         $data     = [];
         $settings = [];
 
-        $status = true;
+        $status = 1;
         if ($this->auModel->data->{'Product Status'} == 'Discontinued') {
-            $status = false;
+            $status = 0;
         }
 
         $state = match ($this->auModel->data->{'Product Status'}) {
@@ -59,8 +59,8 @@ class MigrateProduct extends MigrateModel
                 'code' => $this->auModel->data->{'Product Code'},
                 'name' => $this->auModel->data->{'Product Name'},
 
-                'unit_price' => $this->auModel->data->{'Product Price'} / $units,
-                'units'      => $units,
+                'price' => $this->auModel->data->{'Product Price'} / $units,
+                'outer' => $units,
 
                 'status' => $status,
                 'state'  => $state,
@@ -68,7 +68,7 @@ class MigrateProduct extends MigrateModel
                 'data'       => $data,
                 'settings'   => $settings,
                 'created_at' => $created_at,
-                'aurora_id'  => $this->auModel->data->{'Product ID'}
+                'aurora_product_id'  => $this->auModel->data->{'Product ID'}
             ]
         );
 

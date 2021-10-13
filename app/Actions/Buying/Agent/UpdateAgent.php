@@ -6,9 +6,9 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Suppliers\Agent;
+namespace App\Actions\Buying\Agent;
 
-use App\Models\Suppliers\Agent;
+use App\Models\Buying\Agent;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateAgent
