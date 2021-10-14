@@ -15,10 +15,10 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
+            $table->string('username')->unique()->nullable();
             $table->string('password');
             $table->morphs('userable');
-            $table->enum('status',['active','suspended'])->default('Active');
+            $table->boolean('status')->default(true)->index();
             $table->unsignedSmallInteger('language_id');
             $table->foreign('language_id')->references('id')->on('aiku.languages');
             $table->unsignedSmallInteger('timezone_id');
@@ -27,6 +27,9 @@ class CreateUsersTable extends Migration
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
+
+
+
             $table->unsignedBigInteger('aurora_id')->nullable()->index();
         });
     }

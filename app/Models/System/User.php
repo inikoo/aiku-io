@@ -9,6 +9,7 @@
 namespace App\Models\System;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -41,7 +42,8 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'data'   => 'array',
+        'status' => 'boolean'
     ];
 
 
@@ -53,6 +55,11 @@ class User extends Authenticatable
     public function images(): MorphMany
     {
         return $this->morphMany('App\Models\Helpers\ImageModel', 'image_models', 'imageable_type', 'imageable_id');
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(UserStats::class,'id','id');
     }
 
 }

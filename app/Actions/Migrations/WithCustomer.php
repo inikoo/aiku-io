@@ -69,13 +69,13 @@ trait WithCustomer
 
         $marketing_can_send = [];
         $subscriptions      = [];
-        if ($auData->{'Customer Send Newsletter'} == 'Yes') {
+        if ($auData->{'Customer Send Newsletter'}??null == 'Yes') {
             $subscriptions[] = 'newsletter';
         }
-        if ($auData->{'Customer Send Email Marketing'} == 'Yes') {
+        if ($auData->{'Customer Send Email Marketing'}??null == 'Yes') {
             $marketing_can_send[] = 'email_marketing';
         }
-        if ($auData->{'Customer Send Postal Marketing'} == 'Yes') {
+        if ($auData->{'Customer Send Postal Marketing'}??null == 'Yes') {
             $marketing_can_send[] = 'postal_marketing';
         }
         data_set($metadataCustomer, 'marketing.subscriptions', $subscriptions);

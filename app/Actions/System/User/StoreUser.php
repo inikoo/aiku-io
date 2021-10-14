@@ -20,15 +20,17 @@ class StoreUser
 {
     use AsAction;
 
-    public function handle(Employee|Tenant $userable, array $userData, array $roles=[]): User
+    public function handle(Employee|Tenant $userable, array $userData, array $roles = []): User
     {
         $userData['language_id'] = $userData['language_id'] ?? app('currentTenant')->language_id;
         $userData['timezone_id'] = $userData['timezone_id'] ?? app('currentTenant')->timezone_id;
-        /** @var \App\Models\System\User $user */
+        /** @var User $user */
         $user = $userable->user()->create($userData);
+        $user->stats()->create([]);
         foreach ($roles as $role) {
             $user->assignRole($role);
         }
+
         return $user;
     }
 
@@ -48,7 +50,7 @@ class StoreUser
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        if($request->exists('username')){
+        if ($request->exists('username')) {
             $request->merge(['username' => strtolower($request->get('username'))]);
         }
     }
@@ -56,7 +58,6 @@ class StoreUser
     public function asController(Employee|Tenant $userable, ActionRequest $request): User
     {
         $roles = [];
-
 
 
         return $this->handle(

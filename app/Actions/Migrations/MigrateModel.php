@@ -134,9 +134,17 @@ class MigrateModel
     protected function parseLanguageID($locale): int|null
     {
         if ($locale != '') {
-            $locale = substr($locale, 0, 2);
-
-            return Language::where('code', $locale)->first()->id;
+            try {
+                return Language::where('code',
+                    match ($locale){
+                        'zh_CN.UTF-8'=>'zh-CN',
+                        default=>substr($locale, 0, 2)
+                    }
+                )->first()->id;
+            }catch (Exception) {
+                print "Locale $locale not found\n";
+                return null;
+            }
         }
 
         return null;

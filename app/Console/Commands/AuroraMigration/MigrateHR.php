@@ -10,9 +10,11 @@ namespace App\Console\Commands\AuroraMigration;
 
 
 use App\Actions\Migrations\MigrateDeletedEmployee;
+use App\Actions\Migrations\MigrateDeletedUser;
 use App\Actions\Migrations\MigrateEmployee;
 use App\Actions\Migrations\MigrateUser;
 use App\Models\Account\Tenant;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 
@@ -43,7 +45,9 @@ class MigrateHR extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Staff Deleted Dimension')
             ->update(['aiku_id' => null]);
-        DB::connection('aurora')->table('User Dimension')->where('User Type', 'Staff')
+        DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Staff', 'Contractor'])
             ->update(['aiku_id' => null]);
     }
 
@@ -51,7 +55,9 @@ class MigrateHR extends MigrateAurora
     {
         $count = DB::connection('aurora')->table('Staff Dimension')->count();
         $count += DB::connection('aurora')->table('Staff Deleted Dimension')->count();
-        $count += DB::connection('aurora')->table('User Dimension')->where('User Type', 'Staff')->count();
+        $count += DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])->count();
+        $count += DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Staff', 'Contractor'])->count();
+
         return $count;
     }
 
@@ -72,11 +78,21 @@ class MigrateHR extends MigrateAurora
 
         foreach (
             DB::connection('aurora')->table('User Dimension')
-                ->where('User Type', 'Staff')
+                ->whereIn('User Type', ['Staff', 'Contractor'])
                 ->get() as $auroraUserData
         ) {
             $this->results[$tenant->slug]['models']++;
-            $result = MigrateUser::run($auroraUserData);
+             $result = MigrateUser::run($auroraUserData);
+             $this->recordAction($tenant, $result);
+        }
+
+        foreach (
+            DB::connection('aurora')->table('User Deleted Dimension')
+                ->whereIn('User Deleted Type', ['Staff', 'Contractor'])
+                ->get() as $auroraUserData
+        ) {
+            $this->results[$tenant->slug]['models']++;
+            $result = MigrateDeletedUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }
     }
