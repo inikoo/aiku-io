@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
+/**
+ * @mixin IdeHelperHistoricProduct
+ */
 class HistoricProduct extends Model implements Auditable
 {
     use HasFactory;

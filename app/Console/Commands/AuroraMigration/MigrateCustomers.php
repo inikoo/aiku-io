@@ -9,6 +9,7 @@
 namespace App\Console\Commands\AuroraMigration;
 
 use App\Actions\Migrations\MigrateCustomer;
+use App\Actions\Migrations\MigrateCustomerClient;
 use App\Actions\Migrations\MigrateDeletedCustomer;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,14 @@ class MigrateCustomers extends MigrateAurora
             foreach ($chunk as $auroraData) {
                 $result = MigrateCustomer::run($auroraData);
                 $this->recordAction($tenant, $result);
+
+                foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key','=',$auroraData->{'Customer Key'})->get() as $auroraCustomerClientData) {
+                    $result = MigrateCustomerClient::run($auroraCustomerClientData);
+                    $this->recordAction($tenant, $result);
+
+                }
+
+
             }
         });
 

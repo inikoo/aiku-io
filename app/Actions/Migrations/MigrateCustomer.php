@@ -8,7 +8,7 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\CRM\StoreCustomer;
+use App\Actions\CRM\Customer\StoreCustomer;
 
 use App\Models\CRM\Customer;
 use App\Models\Selling\Shop;
@@ -19,7 +19,7 @@ use JetBrains\PhpStorm\Pure;
 
 class MigrateCustomer extends MigrateModel
 {
-use WithCustomer;
+    use WithCustomer;
 
     #[Pure] public function __construct()
     {
@@ -43,37 +43,42 @@ use WithCustomer;
             $state = 'lost';
         }
 
-
-        $this->modelData['customer'] = $this->sanitizeData(
+        $this->modelData['contact'] = $this->sanitizeData(
             [
-                'name'                => $this->auModel->data->{'Customer Name'},
-                'company'             => $this->auModel->data->{'Customer Company Name'},
-                'contact_name'        => $this->auModel->data->{'Customer Main Contact Name'},
-                'website'             => $this->auModel->data->{'Customer Website'},
-                'email'               => $this->auModel->data->{'Customer Main Plain Email'},
-                'phone'               => $this->auModel->data->{'Customer Main Plain Mobile'},
-                'state'               => $state,
-                'status'              => $status,
-                'aurora_id'           => $this->auModel->data->{'Customer Key'},
-                'registration_number' => Str::limit($this->auModel->data->{'Customer Registration Number'}, 20),
-                'tax_number'          => $this->auModel->data->{'Customer Tax Number'},
-                'tax_number_status'   => $this->auModel->data->{'Customer Tax Number'} == ''
+                'name'                     => $this->auModel->data->{'Customer Main Contact Name'},
+                'company'                  => $this->auModel->data->{'Customer Company Name'},
+                'email'                    => $this->auModel->data->{'Customer Main Plain Email'},
+                'phone'                    => $this->auModel->data->{'Customer Main Plain Mobile'},
+                'identity_document_number' => Str::limit($this->auModel->data->{'Customer Registration Number'}),
+                'website'                  => $this->auModel->data->{'Customer Website'},
+                'tax_number'               => $this->auModel->data->{'Customer Tax Number'},
+                'tax_number_status'        => $this->auModel->data->{'Customer Tax Number'} == ''
                     ? 'na'
                     : match ($this->auModel->data->{'Customer Tax Number Valid'}) {
                         'Yes' => 'valid',
                         'No' => 'invalid',
                         default => 'unknown'
                     },
+                'created_at'         => $this->auModel->data->{'Customer First Contacted Date'}
 
-                'created_at' => $this->auModel->data->{'Customer First Contacted Date'}
+            ]
+        );
+
+        $this->modelData['customer'] = $this->sanitizeData(
+            [
+                'name'               => $this->auModel->data->{'Customer Name'},
+                'state'              => $state,
+                'status'             => $status,
+                'aurora_customer_id' => $this->auModel->data->{'Customer Key'},
+                'created_at'         => $this->auModel->data->{'Customer First Contacted Date'}
             ]
         );
 
 
         $addresses = [];
 
-        $billingAddress  = $this->parseAddress(prefix: 'Customer Invoice',auAddressData:$this->auModel->data);
-        $deliveryAddress = $this->parseAddress(prefix: 'Customer Delivery',auAddressData:$this->auModel->data);
+        $billingAddress  = $this->parseAddress(prefix: 'Customer Invoice', auAddressData: $this->auModel->data);
+        $deliveryAddress = $this->parseAddress(prefix: 'Customer Delivery', auAddressData: $this->auModel->data);
 
         $addresses['billing'] = [
             $billingAddress
@@ -88,10 +93,10 @@ use WithCustomer;
 
         $this->auModel->id = $this->auModel->data->{'Customer Key'};
     }
+
     public function getParent(): Model|Shop|Builder|\Illuminate\Database\Query\Builder|null
     {
-       return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Store Key'});
-
+        return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Store Key'});
     }
 
     public function setModel()
@@ -102,15 +107,24 @@ use WithCustomer;
     public function updateModel()
     {
         $this->updateCustomer($this->auModel->data);
-
-
-
     }
 
     public function storeModel(): ?int
     {
-        $this->modelData['customer']['data'] = $this->parseMetadata([],$this->auModel->data);
-        $customer    = StoreCustomer::run($this->parent, $this->modelData['customer'], $this->modelData['addresses']);
+        $this->modelData['customer']['data'] = $this->parseCustomerMetadata(
+            auData: $this->auModel->data,
+        );
+        $this->modelData['contact']['data']  = $this->parseContactMetadata(
+            auData: $this->auModel->data,
+        );
+
+
+        $customer    = StoreCustomer::run(
+            vendor:                $this->parent,
+            customerData:          $this->modelData['customer'],
+            contactData:           $this->modelData['contact'],
+            customerAddressesData: $this->modelData['addresses']
+        );
         $this->model = $customer;
 
         return $customer?->id;

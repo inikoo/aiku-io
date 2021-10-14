@@ -34,10 +34,7 @@ class MigrateHistoricProduct extends MigrateModel
         if (DB::connection('aurora')->table('Product Dimension')->where('Product Current Key', '=', $this->auModel->data->{'Product Key'})->exists()) {
             $status = 1;
             $deleted_at=null;
-        }else{
-
         }
-
 
 
         $units = $this->auModel->data->{'Product History Units Per Case'};

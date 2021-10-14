@@ -8,10 +8,13 @@
 
 namespace App\Models\CRM;
 
+use App\Models\Helpers\Contact;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -38,10 +41,10 @@ class Customer extends Model implements Auditable
 
     protected $guarded = [];
 
-    public function shop(): BelongsTo
-    {
-        return $this->belongsTo('App\Models\Selling\Shop');
-    }
+   // public function shop(): BelongsTo
+   // {
+   //     return $this->belongsTo('App\Models\Selling\Shop');
+   // }
 
     public function addresses(): MorphToMany
     {
@@ -61,6 +64,21 @@ class Customer extends Model implements Auditable
     public function images(): MorphMany
     {
         return $this->morphMany('App\Models\Helpers\ImageModel', 'image_models', 'imageable_type', 'imageable_id');
+    }
+
+    public function contact(): MorphOne
+    {
+        return $this->morphOne(Contact::class, 'contactable');
+    }
+
+    public function vendor(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function customers(): MorphMany
+    {
+        return $this->morphMany(Customer::class, 'vendor');
     }
 
 }

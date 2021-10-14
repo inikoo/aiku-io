@@ -83,11 +83,11 @@ class MigrateSupplier extends MigrateModel
 
         $this->modelData['contact'] = $this->sanitizeData(
             [
-                'company' => $this->auModel->data->{'Supplier Company Name'},
-                'name'    => $this->auModel->data->{'Supplier Main Contact Name'},
-                'email'   => $this->auModel->data->{'Supplier Main Plain Email'},
-                'phone'   => $phone,
-
+                'company'    => $this->auModel->data->{'Supplier Company Name'},
+                'name'       => $this->auModel->data->{'Supplier Main Contact Name'},
+                'email'      => $this->auModel->data->{'Supplier Main Plain Email'},
+                'phone'      => $phone,
+                'created_at' => $this->auModel->data->{'Supplier Valid From'}
             ]
         );
 
@@ -102,7 +102,8 @@ class MigrateSupplier extends MigrateModel
 
                 'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Supplier Default Currency Code'}),
                 'aurora_id'   => $this->auModel->data->{'Supplier Key'},
-                'deleted_at'  => $deleted_at
+                'created_at'  => $this->auModel->data->{'Supplier Valid From'},
+                'deleted_at'  => $deleted_at,
 
             ]
         );
@@ -142,8 +143,8 @@ class MigrateSupplier extends MigrateModel
         $this->modelData['supplier']['settings'] = $this->parseSettings([], $this->auModel->data);
 
         $supplier    = StoreSupplier::run(
-            parent: $this->parent,
-            data:   $this->modelData['supplier'],
+            parent:      $this->parent,
+            data:        $this->modelData['supplier'],
             contactData: $this->modelData['contact'],
             addressData: $this->modelData['address']
         );

@@ -27,7 +27,22 @@ class MigrateShop extends MigrateModel
 
     public function parseModelData()
     {
-        $this->modelData   = $this->sanitizeData(
+        $this->modelData['contact'] = $this->sanitizeData(
+            [
+                'website'                  => $this->auModel->data->{'Store URL'},
+                'company'                  => $this->auModel->data->{'Store Company Name'},
+                'name'                     => $this->auModel->data->{'Store Contact Name'},
+                'email'                    => $this->auModel->data->{'Store Email'},
+                'phone'                    => $this->auModel->data->{'Store Telephone'},
+                'tax_number'               => $this->auModel->data->{'Store VAT Number'},
+                'identity_document_number' => $this->auModel->data->{'Store Company Number'},
+                'tax_number_status'        => 'valid',
+                'created_at'               => $this->getDate($this->auModel->data->{'Store Valid From'}),
+
+            ]
+        );
+
+        $this->modelData['shop'] = $this->sanitizeData(
             [
                 'type'        => strtolower($this->auModel->data->{'Store Type'}),
                 'name'        => $this->auModel->data->{'Store Name'},
@@ -36,13 +51,14 @@ class MigrateShop extends MigrateModel
                 'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Store Currency Code'}),
                 'timezone_id' => $this->parseTimezoneID($this->auModel->data->{'Store Timezone'}),
                 'aurora_id'   => $this->auModel->data->{'Store Key'},
-                'url'         => $this->auModel->data->{'Store URL'},
                 'state'       => Str::snake($this->auModel->data->{'Store Status'} == 'Normal' ? 'Open' : $this->auModel->data->{'Store Status'}, '-'),
                 'open_at'     => $this->getDate($this->auModel->data->{'Store Valid From'}),
                 'closed_at'   => $this->getDate($this->auModel->data->{'Store Valid To'}),
+                'created_at'  => $this->getDate($this->auModel->data->{'Store Valid From'}),
+
             ]
         );
-        $this->auModel->id = $this->auModel->data->{'Store Key'};
+        $this->auModel->id       = $this->auModel->data->{'Store Key'};
     }
 
 
@@ -53,12 +69,12 @@ class MigrateShop extends MigrateModel
 
     public function updateModel()
     {
-        $this->model = UpdateShop::run($this->model, $this->modelData);
+        $this->model = UpdateShop::run(shop: $this->model, data: $this->modelData['shop'], contactData: $this->modelData['contact']);
     }
 
     public function storeModel(): ?int
     {
-        $shop        = StoreShop::run($this->modelData);
+        $shop        = StoreShop::run(data: $this->modelData['shop'], contactData: $this->modelData['contact']);
         $this->model = $shop;
 
         return $shop?->id;

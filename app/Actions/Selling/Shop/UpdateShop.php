@@ -15,10 +15,13 @@ class UpdateShop
 {
     use AsAction;
 
-    public function handle(Shop $shop, array $data): Shop
-    {
+    public function handle(
+        Shop $shop,
+        array $contactData,
+        array $data
+    ): Shop {
+        $shop->contact()->update($contactData);
         $shop->update($data);
-
         return $shop;
     }
 }

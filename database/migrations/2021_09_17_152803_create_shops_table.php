@@ -21,9 +21,6 @@ class CreateShopsTable extends Migration
             $table->string('name');
             $table->enum('state',['in-process','open','closing-down','closed'])->index();
             $table->enum('type',['b2b','b2c','fulfilment','dropshipping','external']);
-
-
-            $table->string('url')->nullable();
             $table->date('open_at')->nullable();
             $table->date('closed_at')->nullable();
             $table->unsignedSmallInteger('language_id');
@@ -35,12 +32,7 @@ class CreateShopsTable extends Migration
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
-
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-
-
-
-
         });
     }
 

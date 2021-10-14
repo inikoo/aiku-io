@@ -24,10 +24,7 @@ class AccountUser extends Authenticatable
     use HasApiTokens;
     use UsesLandlordConnection;
 
-    protected $fillable = [
-        'username',
-        'password',
-    ];
+    protected $guarded = [];
 
     protected $attributes = [
         'data' => '{}',

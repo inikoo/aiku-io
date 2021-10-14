@@ -27,9 +27,7 @@ class Patient extends Model implements Auditable
 
     protected $appends = [ 'formatted_id','formatted_dob','age'];
 
-    protected $fillable = [
-        'type'
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'data' => 'array'

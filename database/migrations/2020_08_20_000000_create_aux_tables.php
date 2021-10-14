@@ -177,6 +177,8 @@ class CreateAuxTables extends Migration
 
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
+            $table->morphs('contactable');
+
             $table->string('name',256)->nullable();
             $table->string('company',256)->nullable();
 
@@ -191,8 +193,9 @@ class CreateAuxTables extends Migration
 
             $table->string('identity_document_type')->nullable();
             $table->string('identity_document_number')->nullable();
-            $table->unique(['identity_document_type', 'identity_document_number']);
-            $table->morphs('contactable');
+            $table->string('tax_number')->nullable()->index();
+            $table->enum('tax_number_status', ['valid', 'invalid', 'na', 'unknown'])->nullable()->default('na');
+
             $table->jsonb('data')->nullable();
             $table->timestampsTz();
         });

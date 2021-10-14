@@ -10,6 +10,7 @@ namespace App\Models\Account;
 
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
+use App\Models\Helpers\Contact;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -46,7 +47,10 @@ class Tenant extends SpatieTenant
         return $this->belongsTo('App\Models\Account\BusinessType');
     }
 
-
+    public function contact(): MorphOne
+    {
+        return $this->morphOne(Contact::class, 'contactable');
+    }
 
     public function accountUser(): MorphOne
     {

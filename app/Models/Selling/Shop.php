@@ -8,11 +8,13 @@
 
 namespace App\Models\Selling;
 
+use App\Models\CRM\Customer;
+use App\Models\Helpers\Contact;
 use App\Models\Helpers\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -49,9 +51,14 @@ class Shop extends Model implements Auditable
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function customers(): HasMany
+    public function contact(): MorphOne
     {
-        return $this->hasMany('App\Models\CRM\Customer');
+        return $this->morphOne(Contact::class, 'contactable');
+    }
+
+    public function customers(): MorphMany
+    {
+        return $this->morphMany(Customer::class, 'vendor');
     }
 
     public function products(): MorphMany

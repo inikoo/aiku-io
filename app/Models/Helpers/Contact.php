@@ -10,15 +10,12 @@ namespace App\Models\Helpers;
 
 use App\Models\Health\Patient;
 
-use App\Models\HumanResources\Employee;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -35,6 +32,7 @@ class Contact extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     protected $appends = ['age', 'formatted_address', 'formatted_dob'];
+    protected $touches = ['contactable'];
 
     public function generateTags(): array
     {
@@ -45,15 +43,7 @@ class Contact extends Model implements Auditable
     }
 
 
-    protected $fillable = [
-        'name',
-        'date_of_birth',
-        'gender',
-        'email',
-        'phone',
-        'identity_document_type',
-        'identity_document_number'
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'data' => 'array'

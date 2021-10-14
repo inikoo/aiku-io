@@ -8,7 +8,7 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\CRM\StoreCustomer;
+use App\Actions\CRM\Customer\StoreCustomer;
 
 use App\Models\CRM\Customer;
 use App\Models\Selling\Shop;
@@ -37,27 +37,35 @@ class MigrateDeletedCustomer extends MigrateModel
         $state  = 'active';
         $this->modelData['deleted']=$auroraDeletedData;
 
-        $this->modelData['customer'] = $this->sanitizeData(
+
+        $this->modelData['contact'] = $this->sanitizeData(
             [
-                'name'                => $auroraDeletedData->{'Customer Name'},
-                'company'             => $auroraDeletedData->{'Customer Company Name'},
-                'contact_name'        => $auroraDeletedData->{'Customer Main Contact Name'},
-                'website'             => $auroraDeletedData->{'Customer Website'},
-                'email'               => $auroraDeletedData->{'Customer Main Plain Email'},
-                'phone'               => $auroraDeletedData->{'Customer Main Plain Mobile'},
-                'state'               => $state,
-                'status'              => $status,
-                'aurora_id'           => $auroraDeletedData->{'Customer Key'},
-                'registration_number' => Str::limit($auroraDeletedData->{'Customer Registration Number'}, 20),
-                'tax_number'          => $auroraDeletedData->{'Customer Tax Number'},
-                'tax_number_status'   => $auroraDeletedData->{'Customer Tax Number'} == ''
+                'name'                     => $this->auModel->data->{'Customer Main Contact Name'},
+                'company'                  => $this->auModel->data->{'Customer Company Name'},
+                'email'                    => $this->auModel->data->{'Customer Main Plain Email'},
+                'phone'                    => $this->auModel->data->{'Customer Main Plain Mobile'},
+                'identity_document_number' => Str::limit($this->auModel->data->{'Customer Registration Number'}),
+                'website'                  => $this->auModel->data->{'Customer Website'},
+                'tax_number'               => $this->auModel->data->{'Customer Tax Number'},
+                'tax_number_status'        => $this->auModel->data->{'Customer Tax Number'} == ''
                     ? 'na'
-                    : match ($auroraDeletedData->{'Customer Tax Number Valid'}) {
+                    : match ($this->auModel->data->{'Customer Tax Number Valid'}) {
                         'Yes' => 'valid',
                         'No' => 'invalid',
                         default => 'unknown'
                     },
+                'created_at'         => $this->auModel->data->{'Customer First Contacted Date'}
 
+            ]
+        );
+
+
+        $this->modelData['customer'] = $this->sanitizeData(
+            [
+                'name'                => $auroraDeletedData->{'Customer Name'},
+                'state'               => $state,
+                'status'              => $status,
+                'aurora_customer_id'           => $auroraDeletedData->{'Customer Key'},
                 'created_at' => $auroraDeletedData->{'Customer First Contacted Date'}
             ]
         );
@@ -99,105 +107,24 @@ class MigrateDeletedCustomer extends MigrateModel
 
     public function storeModel(): ?int
     {
-        $this->modelData['customer']['data'] = $this->parseMetadata([],$this->modelData['deleted']);
-        $customer                            = StoreCustomer::run($this->parent, $this->modelData['customer'], $this->modelData['addresses']);
+
+        $this->modelData['customer']['data'] = $this->parseCustomerMetadata(
+            auData: $this->modelData['deleted']
+        );
+        $this->modelData['contact']['data']  = $this->parseContactMetadata(
+            auData: $this->modelData['deleted']
+        );
+
+        $customer    = StoreCustomer::run(
+            vendor:                  $this->parent,
+            customerData:          $this->modelData['customer'],
+            contactData:           $this->modelData['contact'],
+            customerAddressesData: $this->modelData['addresses']
+        );
+
         $this->model                         = $customer;
 
         return $customer?->id;
     }
 
-
-
-
-    /*
-        public function handle_old($auroraData, array $deletedData = null): array
-        {
-            $table = 'Customer Dimension';
-
-            $result = [
-                'updated'  => 0,
-                'inserted' => 0,
-                'errors'   => 0
-            ];
-
-            $shop = Shop::withTrashed()->firstWhere('aurora_id', $auroraData->{'Customer Store Key'});
-            if (!$shop) {
-                $result['errors']++;
-
-                return $result;
-            }
-
-
-            $customerData   = $this->parseAuroraData($auroraData);
-            $addresseesData = $this->parseCustomerAddressees($auroraData);
-
-            if ($deletedData) {
-                $table                  = 'Customer Deleted Dimension';
-                $customerData['state']  = 'deleted';
-                $customerData['status'] = 'deleted';
-
-                $customerData = array_merge($customerData, $deletedData);
-            }
-
-            if ($auroraData->aiku_id) {
-                $customer = Customer::withTrashed()->find($auroraData->aiku_id);
-
-                if ($customer) {
-                    $customer['data'] = $this->parseMetadata(data: $customer->data, auroraData: $auroraData);
-                    $customer         = UpdateCustomer::run($customer, $customerData);
-                    $changes          = $customer->getChanges();
-                    if (count($changes) > 0) {
-                        $result['updated']++;
-                    }
-
-
-                    if (isset($addresseesData['billing']) and count($addresseesData['billing']) > 0) {
-                        UpdateAddress::run($customer->billingAddress, $addresseesData['billing'][0]);
-                    }
-
-                    if (isset($addresseesData['delivery']) and count($addresseesData['delivery']) > 0) {
-                        if ($customer->deliveryAddress) {
-                            UpdateAddress::run($customer->deliveryAddress, $addresseesData['delivery'][0]);
-                        } else {
-                            $address = StoreAddress::run($addresseesData['delivery'][0]);
-                            $customer->addresses()->associate(
-                                [
-                                    $address->id => ['scope' => 'delivery']
-                                ]
-                            );
-                            $customer->delivery_address_id = $address->id;
-                            $customer->save();
-                        }
-                    } elseif ($customer->deliveryAddress and $customer->deliveryAddress->id != $customer->billingAddress->id) {
-                        $customer->delivery_address_id = null;
-                        $customer->save();
-                        DeleteAddress::run($customer->deliveryAddress);
-                    }
-                } else {
-                    $result['errors']++;
-                    DB::connection('aurora')->table($table)
-                        ->where('Customer Key', $auroraData->{'Customer Key'})
-                        ->update(['aiku_id' => null]);
-
-                    return $result;
-                }
-            } else {
-                $customer['data'] = $this->parseMetadata(data: [], auroraData: $auroraData);
-
-                $customer = StoreCustomer::run($shop, $customerData, $addresseesData);
-                if (!$customer) {
-                    $result['errors']++;
-
-                    return $result;
-                }
-                DB::connection('aurora')->table($table)
-                    ->where('Customer Key', $auroraData->{'Customer Key'})
-                    ->update(['aiku_id' => $customer->id]);
-                $result['inserted']++;
-            }
-
-
-            return $result;
-        }
-    */
 }

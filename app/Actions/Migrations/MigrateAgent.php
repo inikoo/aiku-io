@@ -65,10 +65,11 @@ class MigrateAgent extends MigrateModel
 
         $this->modelData['contact'] = $this->sanitizeData(
             [
-                'company' => $this->auModel->data->{'Agent Company Name'},
-                'name'    => $this->auModel->data->{'Agent Main Contact Name'},
-                'email'   => $this->auModel->data->{'Agent Main Plain Email'},
-                'phone'   => $phone,
+                'company'    => $this->auModel->data->{'Agent Company Name'},
+                'name'       => $this->auModel->data->{'Agent Main Contact Name'},
+                'email'      => $this->auModel->data->{'Agent Main Plain Email'},
+                'phone'      => $phone,
+                'created_at' => $this->auModel->data->{'Agent Valid From'}
 
             ]
         );
@@ -86,6 +87,7 @@ class MigrateAgent extends MigrateModel
 
                 'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Agent Default Currency Code'}),
                 'aurora_id'   => $this->auModel->data->{'Agent Key'},
+                'created_at'  => $this->auModel->data->{'Agent Valid From'}
 
             ]
         );
@@ -110,8 +112,8 @@ class MigrateAgent extends MigrateModel
         $this->modelData['agent']['settings'] = $this->parseSettings($agent->settings, $this->auModel->data);
 
         $agent = UpdateAgent::run(
-            agent: $agent,
-            data:  $this->modelData['agent'],
+            agent:       $agent,
+            data:        $this->modelData['agent'],
             contactData: $this->modelData['contact']
         );
         UpdateAddress::run($agent->contact->address, $this->modelData['address']);
