@@ -9,7 +9,11 @@
 namespace App\Actions\Selling\Shop;
 
 use App\Models\Selling\Shop;
+use App\Models\System\Permission;
+use App\Models\System\Role;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Spatie\Multitenancy\Models\Tenant;
+use Spatie\Permission\PermissionRegistrar;
 
 class StoreShop
 {
@@ -17,8 +21,30 @@ class StoreShop
 
     public function handle(array $data, array $contactData): Shop
     {
+
         $shop = Shop::create($data);
         $shop->contact()->create($contactData);
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        /** @var \App\Models\Account\Tenant $tenant */
+        $tenant      = Tenant::current();
+        $permissions = collect(config("business_types.{$tenant->businessType->slug}.model_permissions.Shop"))->map(function ($name) use ($shop) {
+            return preg_replace('/#/',$shop->id,$name);
+        });
+        $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
+            Permission::create(['name' => $permission]);
+        });
+
+        $roles= collect(config("business_types.{$tenant->businessType->slug}.model_roles.Shop"))->map(function ($name) use ($shop){
+            return preg_replace('/#/',$shop->id,$name);
+        });
+
+        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) use ($shop){
+            Role::create(['name' => preg_replace('/#/',$shop->id,$role)]);
+        });
+        $roles->each(function ($permissions, $role_name) use ($shop) {
+            Role::where('name', preg_replace('/#/',$shop->id,$role_name))->first()->syncPermissions($permissions);
+        });
 
         return $shop;
     }

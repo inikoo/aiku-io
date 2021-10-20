@@ -96,7 +96,6 @@ class MigrateModel
 
             if (!$this->model) {
                 $this->result['errors']++;
-
                 return $this->result;
             }
             $this->updateAuroraModel($modelID);

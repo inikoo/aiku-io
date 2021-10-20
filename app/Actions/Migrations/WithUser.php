@@ -14,7 +14,8 @@ use App\Models\System\User;
 use Exception;
 use Illuminate\Support\Arr;
 
-trait WithUser{
+trait WithUser
+{
 
 
     public function setModel()
@@ -29,20 +30,23 @@ trait WithUser{
 
     public function storeModel(): ?int
     {
-
-
-
         try {
-            $user        = StoreUser::run($this->parent, $this->modelData['user']);
+            $user        = StoreUser::run(
+                userable: $this->parent,
+                userData: $this->modelData['user'],
+                roles:    $this->modelData['roles']
+            );
             $this->model = $user;
 
+
             return $user?->id;
-        }catch (Exception){
+        } catch (Exception $e) {
+            print $e->getMessage()."\n";
             print "Error cant not migrate user \n";
+
+
             return 0;
         }
-
-
     }
 
     protected function migrateImages()

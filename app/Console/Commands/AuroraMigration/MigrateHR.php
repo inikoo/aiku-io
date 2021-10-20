@@ -83,6 +83,9 @@ class MigrateHR extends MigrateAurora
         ) {
             $this->results[$tenant->slug]['models']++;
              $result = MigrateUser::run($auroraUserData);
+
+
+
              $this->recordAction($tenant, $result);
         }
 
@@ -92,7 +95,7 @@ class MigrateHR extends MigrateAurora
                 ->get() as $auroraUserData
         ) {
             $this->results[$tenant->slug]['models']++;
-            $result = MigrateDeletedUser::run($auroraUserData);
+            //$result = MigrateDeletedUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }
     }

@@ -27,9 +27,10 @@ class StoreUser
         /** @var User $user */
         $user = $userable->user()->create($userData);
         $user->stats()->create([]);
-        foreach ($roles as $role) {
-            $user->assignRole($role);
-        }
+
+        $user->syncRoles($roles);
+
+
 
         return $user;
     }
