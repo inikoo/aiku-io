@@ -18,6 +18,7 @@ use App\Models\Assets\Currency;
 use App\Models\Assets\Language;
 use App\Models\Assets\Timezone;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -105,6 +106,21 @@ class CreateTenant extends Command
         }
         $tenant = StoreTenant::run($businessType, $tenantData);
 
+        if(Arr::get($tenant->data,'aurora_db')){
+
+            $database_settings = data_get(config('database.connections'), 'aurora');
+            data_set($database_settings, 'database', $this->option('aurora_db'));
+
+            config(['database.connections.aurora' => $database_settings]);
+            DB::connection('aurora');
+            DB::purge('aurora');
+
+            DB::connection('aurora')->table('Account Dimension')
+                ->update(['aiku_id' => $tenant->id]);
+
+
+
+        }
 
         $username = $tenant->nickname;
         if ($this->argument('username')) {
@@ -126,8 +142,7 @@ class CreateTenant extends Command
 
         $userPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 
-
-         StoreUser::run($tenant,
+        StoreUser::run($tenant,
                                [
                                    'username' => 'admin',
                                    'password' => Hash::make($userPassword),
