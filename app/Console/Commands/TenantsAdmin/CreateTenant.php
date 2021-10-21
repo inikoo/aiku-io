@@ -26,7 +26,7 @@ use Illuminate\Support\Str;
 class CreateTenant extends Command
 {
 
-    protected $signature = 'tenant:new {domain} {name} {email} {slug?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en} {--aurora_db=} {--aurora_account_code=}  ';
+    protected $signature = 'tenant:new {domain} {name} {email} {nickname?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en} {--aurora_db=} {--aurora_account_code=}  ';
 
     protected $description = 'Create new tenant';
 
@@ -100,13 +100,13 @@ class CreateTenant extends Command
             'data'        => $data,
 
         ];
-        if ($this->argument('slug')) {
-            $tenantData['slug'] = $this->argument('slug');
+        if ($this->argument('nickname')) {
+            $tenantData['nickname'] = $this->argument('nickname');
         }
         $tenant = StoreTenant::run($businessType, $tenantData);
 
 
-        $username = $tenant->slug;
+        $username = $tenant->nickname;
         if ($this->argument('username')) {
             $username = $this->argument('username');
         }

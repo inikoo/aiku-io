@@ -38,7 +38,7 @@ class Tenant extends SpatieTenant
     {
         return SlugOptions::create()
             ->generateSlugsFrom('database')
-            ->saveSlugsTo('slug')
+            ->saveSlugsTo('nickname')
             ->doNotGenerateSlugsOnUpdate();
     }
 

@@ -15,7 +15,7 @@ use Illuminate\Console\Command;
 class CreateTenantAccessToken extends Command
 {
 
-    protected $signature = 'tenant:token {slug} {token_name} {scopes?*} ';
+    protected $signature = 'tenant:token {nickname} {token_name} {scopes?*} ';
 
     protected $description = 'Create new tenant access token';
 
@@ -26,12 +26,12 @@ class CreateTenantAccessToken extends Command
 
     public function handle(): int
     {
-        if ($tenant = Tenant::firstWhere('slug', $this->argument('slug'))) {
+        if ($tenant = Tenant::firstWhere('nickname', $this->argument('nickname'))) {
             $tenant->makeCurrent();
             $token= $tenant->user->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
             $this->line("Tenant access token: $token");
         } else {
-            $this->error("Tenant not found: {$this->argument('slug')}");
+            $this->error("Tenant not found: {$this->argument('nickname')}");
         }
 
         return 0;

@@ -141,7 +141,7 @@ class CreateTenantTables extends Migration
 
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique()->comment('public handle');
+            $table->string('nickname')->unique();
             $table->string('name')->comment('E.g. company name');
             $table->string('domain')->unique();
             $table->string('database')->unique();
