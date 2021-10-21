@@ -37,21 +37,32 @@ class MigrateEmployee extends MigrateModel
                 'date_of_birth'            => $this->auModel->data->{'Staff Birthday'}
             ]
         );
+
+        $data=[
+            'address' => $this->auModel->data->{'Staff Address'},
+
+        ];
+        if($this->getDate($this->auModel->data->{'Staff Valid From'})==''){
+            $data['errors']=[
+                'missing'=>['created_at','employment_start_at']
+            ];
+        }
+
         $this->modelData['employee'] = $this->sanitizeData(
             [
                 'nickname'            => strtolower($this->auModel->data->{'Staff Alias'}),
                 'worker_number'       => $this->auModel->data->{'Staff ID'},
                 'employment_start_at' => $this->getDate($this->auModel->data->{'Staff Valid From'}),
-                'employment_end_at'   => $this->getDate($this->auModel->data->{'Staff Valid To'}),
-                'type'                => Str::snake($this->auModel->data->{'Staff Type'}, '-'),
-                'aurora_id'           => $this->auModel->data->{'Staff Key'},
-                'state'               => match ($this->auModel->data->{'Staff Currently Working'}) {
+                'created_at'          => $this->auModel->data->{'Staff Valid From'},
+
+                'employment_end_at' => $this->getDate($this->auModel->data->{'Staff Valid To'}),
+                'type'              => Str::snake($this->auModel->data->{'Staff Type'}, '-'),
+                'aurora_id'         => $this->auModel->data->{'Staff Key'},
+                'state'             => match ($this->auModel->data->{'Staff Currently Working'}) {
                     'No' => 'left',
                     default => 'working'
                 },
-                'data'                => [
-                    'address' => $this->auModel->data->{'Staff Address'},
-                ]
+                'data'              => $data
             ]
         );
 

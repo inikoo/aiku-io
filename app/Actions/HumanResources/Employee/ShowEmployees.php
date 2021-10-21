@@ -11,7 +11,9 @@ namespace App\Actions\HumanResources\Employee;
 use App\Http\Resources\HumanResources\EmployeeResource;
 use App\Models\HumanResources\Employee;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ShowEmployees
 {
@@ -20,6 +22,12 @@ class ShowEmployees
     public function handle()
     {
         // ...
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->tokenCan('root');
+
     }
 
      public function jsonResponse():AnonymousResourceCollection
