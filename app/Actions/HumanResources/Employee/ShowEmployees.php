@@ -24,6 +24,9 @@ class ShowEmployees
 
      public function jsonResponse():AnonymousResourceCollection
     {
-        return  EmployeeResource::collection(Employee::paginate());
+        $employees = QueryBuilder::for(Employee::class)
+            ->allowedFilters(['nickname', 'worker_number','state'])
+            ->paginate();
+        return  EmployeeResource::collection($employees);
     }
 }
