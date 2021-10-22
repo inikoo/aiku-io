@@ -166,7 +166,7 @@ class CreateTenant extends Command
             [
                 [
                     'tenant',
-                    $tenant->slug,
+                    $tenant->nickname,
                     $tenant->user->username,
                     ($this->option('randomPassword') ? $password : '*****'),
                 ],

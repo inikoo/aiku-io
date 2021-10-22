@@ -1,4 +1,10 @@
 <?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Thu, 24 Sep 2021 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
 
 namespace App\Actions\System\User;
 
@@ -39,8 +45,6 @@ class UpdateUser
 
     public function asController(User $user, ActionRequest $request): User
     {
-
-
 
         return $this->handle(
             $user,

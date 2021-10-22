@@ -10,7 +10,10 @@ namespace App\Actions\Migrations;
 
 
 
+use App\Models\Buying\Agent;
+use App\Models\Buying\Supplier;
 use App\Models\HumanResources\Employee;
+use http\Message;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -27,13 +30,14 @@ class MigrateDeletedUser extends MigrateModel
         $this->auModel->id_field = 'User Deleted Key';
     }
 
-    public function getParent(): Employee|null
+    public function getParent(): Employee|Supplier|Agent|null
     {
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'User Deleted Metadata'}));
 
-
         return match ($this->auModel->data->{'User Deleted Type'}) {
             'Staff','Contractor' => Employee::withTrashed()->firstWhere('aurora_id', $auDeletedModel->data->{'User Parent Key'}),
+            'Supplier' => Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
+            'Agent' => Agent::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             default => null
         };
     }
@@ -57,6 +61,7 @@ class MigrateDeletedUser extends MigrateModel
                 ]
             ]
         );
+        $this->modelData['roles']=[];
 
         $this->auModel->id = $this->auModel->data->{'User Deleted Key'};
     }

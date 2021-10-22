@@ -70,6 +70,10 @@ class MigrateModel
         return null;
     }
 
+    protected  function postMigrateActions(){
+
+    }
+
     protected function handle($auModel): array
     {
         $this->auModel->data = $auModel;
@@ -103,6 +107,7 @@ class MigrateModel
         }
 
         $this->migrateImages();
+        $this->postMigrateActions();
 
         return $this->result;
     }

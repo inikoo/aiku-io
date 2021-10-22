@@ -117,7 +117,7 @@ class MigrateSupplier extends MigrateModel
 
     public function setModel()
     {
-        $this->model = Supplier::find($this->auModel->data->aiku_id);
+        $this->model = Supplier::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
     public function updateModel()

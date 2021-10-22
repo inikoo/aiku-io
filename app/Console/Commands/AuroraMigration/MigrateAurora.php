@@ -88,7 +88,7 @@ class MigrateAurora extends Command
         if ($this->option('all')) {
             $tenants = Tenant::whereNotNull('data->aurora_db')->get();
         } else {
-            $tenants = Tenant::whereIn('slug', $this->option('tenant'))->get();
+            $tenants = Tenant::whereIn('nickname', $this->option('tenant'))->get();
         }
 
         $this->startProgressBar($tenants);
@@ -97,8 +97,8 @@ class MigrateAurora extends Command
         $tenants->each(function ($tenant) {
             $tenant->makeCurrent();
             if (Arr::get($tenant->data, 'aurora_db')) {
-                $this->results[$tenant->slug] = [
-                    'tenant'   => $tenant->slug,
+                $this->results[$tenant->nickname] = [
+                    'tenant'   => $tenant->nickname,
                     'models'   => 0,
                     'inserted' => 0,
                     'updated'  => 0,
@@ -126,10 +126,10 @@ class MigrateAurora extends Command
 
     protected function recordAction(Tenant $tenant, $result)
     {
-        $this->results[$tenant->slug]['models']++;
-        $this->results[$tenant->slug]['updated']  += $result['updated'];
-        $this->results[$tenant->slug]['inserted'] += $result['inserted'];
-        $this->results[$tenant->slug]['errors']   += $result['errors'];
+        $this->results[$tenant->nickname]['models']++;
+        $this->results[$tenant->nickname]['updated']  += $result['updated'];
+        $this->results[$tenant->nickname]['inserted'] += $result['inserted'];
+        $this->results[$tenant->nickname]['errors']   += $result['errors'];
         $this->bar->advance();
     }
 

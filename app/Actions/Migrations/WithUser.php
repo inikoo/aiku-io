@@ -8,11 +8,14 @@
 
 namespace App\Actions\Migrations;
 
+use App\Actions\System\User\CreateUserToken;
 use App\Actions\System\User\StoreUser;
 use App\Actions\System\User\UpdateUser;
 use App\Models\System\User;
 use Exception;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+
 
 trait WithUser
 {
@@ -37,14 +40,10 @@ trait WithUser
                 roles:    $this->modelData['roles']
             );
             $this->model = $user;
-
-
             return $user?->id;
         } catch (Exception $e) {
             print $e->getMessage()."\n";
             print "Error cant not migrate user \n";
-
-
             return 0;
         }
     }

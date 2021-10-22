@@ -47,6 +47,8 @@ class MigrateHR extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])
+            ->update(['aiku_token' => null]);
         DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Staff', 'Contractor'])
             ->update(['aiku_id' => null]);
     }
@@ -64,13 +66,13 @@ class MigrateHR extends MigrateAurora
     protected function migrate(Tenant $tenant)
     {
         foreach (DB::connection('aurora')->table('Staff Dimension')->get() as $auroraData) {
-            $this->results[$tenant->slug]['models']++;
+            $this->results[$tenant->nickname]['models']++;
             $result = MigrateEmployee::run($auroraData);
             $this->recordAction($tenant, $result);
         }
 
         foreach (DB::connection('aurora')->table('Staff Deleted Dimension')->get() as $auroraData) {
-            $this->results[$tenant->slug]['models']++;
+            $this->results[$tenant->nickname]['models']++;
 
             $result = MigrateDeletedEmployee::run($auroraData);
             $this->recordAction($tenant, $result);
@@ -81,12 +83,9 @@ class MigrateHR extends MigrateAurora
                 ->whereIn('User Type', ['Staff', 'Contractor'])
                 ->get() as $auroraUserData
         ) {
-            $this->results[$tenant->slug]['models']++;
-             $result = MigrateUser::run($auroraUserData);
-
-
-
-             $this->recordAction($tenant, $result);
+            $this->results[$tenant->nickname]['models']++;
+            $result = MigrateUser::run($auroraUserData);
+            $this->recordAction($tenant, $result);
         }
 
         foreach (
@@ -94,8 +93,8 @@ class MigrateHR extends MigrateAurora
                 ->whereIn('User Deleted Type', ['Staff', 'Contractor'])
                 ->get() as $auroraUserData
         ) {
-            $this->results[$tenant->slug]['models']++;
-            //$result = MigrateDeletedUser::run($auroraUserData);
+            $this->results[$tenant->nickname]['models']++;
+            $result = MigrateDeletedUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }
     }

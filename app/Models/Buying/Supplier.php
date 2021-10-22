@@ -4,6 +4,7 @@ namespace App\Models\Buying;
 
 use App\Models\Helpers\Contact;
 use App\Models\Helpers\Product;
+use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -26,12 +27,12 @@ class Supplier extends Model implements Auditable
     use SoftDeletes;
 
     protected $casts = [
-        'data' => 'array',
+        'data'     => 'array',
         'settings' => 'array',
     ];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'     => '{}',
         'settings' => '{}',
     ];
 
@@ -60,5 +61,10 @@ class Supplier extends Model implements Auditable
     public function products(): MorphMany
     {
         return $this->morphMany(Product::class, 'vendor');
+    }
+
+    public function user(): MorphOne
+    {
+        return $this->morphOne(User::class, 'userable');
     }
 }

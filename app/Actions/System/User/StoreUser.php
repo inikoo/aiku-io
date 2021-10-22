@@ -10,6 +10,8 @@ namespace App\Actions\System\User;
 
 
 use App\Models\Account\Tenant;
+use App\Models\Buying\Agent;
+use App\Models\Buying\Supplier;
 use App\Models\HumanResources\Employee;
 use App\Models\System\User;
 use Illuminate\Validation\Rules\Password;
@@ -20,7 +22,7 @@ class StoreUser
 {
     use AsAction;
 
-    public function handle(Employee|Tenant $userable, array $userData, array $roles = []): User
+    public function handle(Employee|Tenant|Agent|Supplier $userable, array $userData, array $roles = []): User
     {
         $userData['language_id'] = $userData['language_id'] ?? app('currentTenant')->language_id;
         $userData['timezone_id'] = $userData['timezone_id'] ?? app('currentTenant')->timezone_id;
@@ -29,7 +31,6 @@ class StoreUser
         $user->stats()->create([]);
 
         $user->syncRoles($roles);
-
 
 
         return $user;
