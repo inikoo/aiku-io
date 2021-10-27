@@ -10,6 +10,7 @@ namespace App\Console\Commands\AuroraMigration;
 
 
 use App\Actions\Migrations\MigrateAgent;
+use App\Actions\Migrations\MigrateDeletedSupplier;
 use App\Actions\Migrations\MigrateDeletedUser;
 use App\Actions\Migrations\MigrateSupplier;
 use App\Actions\Migrations\MigrateUser;
@@ -35,6 +36,8 @@ class MigrateSuppliers extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Supplier Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Supplier Deleted Dimension')
+            ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Agent', 'Supplier'])
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Agent', 'Supplier'])
@@ -47,6 +50,8 @@ class MigrateSuppliers extends MigrateAurora
     {
         $count = DB::connection('aurora')->table('Agent Dimension')->count();
         $count += DB::connection('aurora')->table('Supplier Dimension')->count();
+        $count += DB::connection('aurora')->table('Supplier Deleted Dimension')->count();
+
         $count += DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Agent', 'Supplier'])->count();
         $count += DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Agent', 'Supplier'])->count();
 
@@ -62,6 +67,10 @@ class MigrateSuppliers extends MigrateAurora
 
         foreach (DB::connection('aurora')->table('Supplier Dimension')->get() as $auData) {
             $result = MigrateSupplier::run($auData);
+            $this->recordAction($tenant, $result);
+        }
+        foreach (DB::connection('aurora')->table('Supplier Deleted Dimension')->get() as $auData) {
+            $result = MigrateDeletedSupplier::run($auData);
             $this->recordAction($tenant, $result);
         }
 

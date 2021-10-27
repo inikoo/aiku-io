@@ -24,6 +24,7 @@ class UpdateAddress
         $res->model_id = $address->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';
 
+
         return $res;
     }
 }

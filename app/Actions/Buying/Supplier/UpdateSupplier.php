@@ -16,7 +16,7 @@ class UpdateSupplier
 {
     use AsAction;
 
-    public function handle(Supplier $supplier,array $data, array $contactData): MigrationResult
+    public function handle(Supplier $supplier, array $data, array $contactData): MigrationResult
     {
         $res = new MigrationResult();
         $supplier->contact()->update($contactData);
@@ -24,6 +24,8 @@ class UpdateSupplier
         $res->model    = $supplier;
         $res->model_id = $supplier->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+
 
         return $res;
     }

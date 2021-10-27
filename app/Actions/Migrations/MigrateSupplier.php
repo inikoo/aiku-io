@@ -9,10 +9,6 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Helpers\Address\UpdateAddress;
-
-use App\Actions\Buying\Supplier\StoreSupplier;
-use App\Actions\Buying\Supplier\UpdateSupplier;
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +18,8 @@ use Lorisleiva\Actions\ActionRequest;
 
 class MigrateSupplier extends MigrateModel
 {
+    use WithSupplier;
+
     #[Pure] public function __construct()
     {
         parent::__construct();
@@ -47,26 +45,9 @@ class MigrateSupplier extends MigrateModel
     }
 
 
-    public function parseSettings($settings, $auData)
-    {
-        data_set($settings, 'order.port_of_export', $auData->{'Supplier Default Port of Export'});
-        data_set($settings, 'order.port_of_import', $auData->{'Supplier Default Port of Import'});
-        data_set($settings, 'order.incoterm', $auData->{'Supplier Default Incoterm'});
-        data_set($settings, 'order.terms_and_conditions', $auData->{'Supplier Default PO Terms and Conditions'});
-        data_set($settings, 'order.id_format', $auData->{'Supplier Order Public ID Format'});
-
-        data_set($settings, 'products.origin', $this->parseCountryID($this->auModel->data->{'Supplier Products Origin Country Code'}));
-
-        return $settings;
-    }
-
-    public function parseMetadata($data, $auData)
-    {
-        data_set($data, 'order_id_counter', $auData->{'Supplier Order Last Order ID'});
 
 
-        return $data;
-    }
+
 
     public function parseModelData()
     {
@@ -120,39 +101,7 @@ class MigrateSupplier extends MigrateModel
         $this->model = Supplier::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
-    {
-        /**  @var Supplier $supplier */
-        $supplier                                = $this->model;
-        $this->modelData['supplier']['data']     = $this->parseMetadata($supplier->data, $this->auModel->data);
-        $this->modelData['supplier']['settings'] = $this->parseSettings($supplier->settings, $this->auModel->data);
 
-        $res           = UpdateSupplier::run(
-            supplier:    $supplier,
-            data:        $this->modelData['supplier'],
-            contactData: $this->modelData['contact']
-        );
-        $addressResult = UpdateAddress::run($res->model->contact->address, $this->modelData['address']);
-
-        $res->changes = array_merge($res->changes, $addressResult->changes);
-        $res->status  = $res->changes ? 'updated' : 'unchanged';
-
-
-        return $res;
-    }
-
-    public function storeModel(): MigrationResult
-    {
-        $this->modelData['supplier']['data']     = $this->parseMetadata([], $this->auModel->data);
-        $this->modelData['supplier']['settings'] = $this->parseSettings([], $this->auModel->data);
-
-        return StoreSupplier::run(
-            parent:      $this->parent,
-            data:        $this->modelData['supplier'],
-            contactData: $this->modelData['contact'],
-            addressData: $this->modelData['address']
-        );
-    }
 
     protected function migrateImages()
     {

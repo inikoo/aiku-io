@@ -22,6 +22,8 @@ use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\Concerns\AsAction;
 use stdClass;
 
+use function Symfony\Component\String\s;
+
 class MigrateModel
 {
 
@@ -37,9 +39,8 @@ class MigrateModel
 
     #[Pure] public function __construct()
     {
-        $this->auModel = new stdClass();
-        $this->aiku_id_field='aiku_id';
-
+        $this->auModel       = new stdClass();
+        $this->aiku_id_field = 'aiku_id';
     }
 
     public function getParent()
@@ -85,23 +86,21 @@ class MigrateModel
             $this->setModel();
 
             $res = $this->updateModel();
-            if($res->status=='error'){
+
+            if ($res->status == 'error') {
                 return $res;
             }
-
         } else {
             $res = $this->storeModel();
-            if($res->status=='error'){
+            if ($res->status == 'error') {
                 return $res;
             }
 
             $this->updateAuroraModel($res->model_id);
-
         }
 
 
         $this->model = $res->model;
-
 
 
         $this->migrateImages();
@@ -200,14 +199,14 @@ class MigrateModel
     protected function parseAddress($prefix, $auAddressData): array
     {
         $addressData                        = [];
-        $addressData['address_line_1']      = Str::of($auAddressData->{$prefix.' Address Line 1'})->limit(251);
-        $addressData['address_line_2']      = Str::of($auAddressData->{$prefix.' Address Line 2'})->limit(251);
-        $addressData['sorting_code']        = Str::of($auAddressData->{$prefix.' Address Sorting Code'})->limit(187);
-        $addressData['postal_code']         = Str::of($auAddressData->{$prefix.' Address Postal Code'})->limit(187);
-        $addressData['locality']            = Str::of($auAddressData->{$prefix.' Address Locality'})->limit(187);
-        $addressData['dependant_locality']  = Str::of($auAddressData->{$prefix.' Address Dependent Locality'})->limit(187);
-        $addressData['administrative_area'] = Str::of($auAddressData->{$prefix.' Address Administrative Area'})->limit(187);
-        $addressData['country_id']          = $this->parseCountryID($auAddressData->{$prefix.' Address Country 2 Alpha Code'});
+        $addressData['address_line_1']      = (string)Str::of($auAddressData->{$prefix.' Address Line 1'} ?? null)->limit(251);
+        $addressData['address_line_2']      = (string)Str::of($auAddressData->{$prefix.' Address Line 2'} ?? null)->limit(251);
+        $addressData['sorting_code']        = (string)Str::of($auAddressData->{$prefix.' Address Sorting Code'} ?? null)->limit(187);
+        $addressData['postal_code']         = (string)Str::of($auAddressData->{$prefix.' Address Postal Code'} ?? null)->limit(187);
+        $addressData['locality']            = (string)Str::of($auAddressData->{$prefix.' Address Locality'} ?? null)->limit(187);
+        $addressData['dependant_locality']  = (string)Str::of($auAddressData->{$prefix.' Address Dependent Locality'} ?? null)->limit(187);
+        $addressData['administrative_area'] = (string)Str::of($auAddressData->{$prefix.' Address Administrative Area'} ?? null)->limit(187);
+        $addressData['country_id']          = $this->parseCountryID($auAddressData->{$prefix.' Address Country 2 Alpha Code'} ?? null);
 
         return $addressData;
     }
