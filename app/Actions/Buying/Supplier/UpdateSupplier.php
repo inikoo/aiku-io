@@ -20,7 +20,13 @@ class UpdateSupplier
     {
         $res = new MigrationResult();
         $supplier->contact()->update($contactData);
+        $res->changes = array_merge($res->changes, $supplier->contact->getChanges());
+
+
         $supplier->update($data);
+        $res->changes = array_merge($res->changes, $supplier->getChanges());
+
+
         $res->model    = $supplier;
         $res->model_id = $supplier->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

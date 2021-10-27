@@ -67,4 +67,9 @@ class Supplier extends Model implements Auditable
     {
         return $this->morphOne(User::class, 'userable');
     }
+
+    public function purchaseOrders(): MorphMany
+    {
+        return $this->morphMany(PurchaseOrder::class, 'parent');
+    }
 }

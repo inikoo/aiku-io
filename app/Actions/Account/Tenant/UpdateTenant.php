@@ -16,6 +16,8 @@ class UpdateTenant
         $res = new MigrationResult();
 
         $tenant->update($data);
+        $res->changes = array_merge($res->changes, $tenant->getChanges());
+
         $res->model    = $tenant;
         $res->model_id = $tenant->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

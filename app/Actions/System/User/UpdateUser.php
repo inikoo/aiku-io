@@ -23,6 +23,8 @@ class UpdateUser
         $res = new MigrationResult();
 
         $user->update($data);
+        $res->changes = array_merge($res->changes, $user->getChanges());
+
         $res->model    = $user;
         $res->model_id = $user->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

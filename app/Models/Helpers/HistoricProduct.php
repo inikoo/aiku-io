@@ -24,6 +24,15 @@ class HistoricProduct extends Model implements Auditable
 
     protected $guarded = [];
 
+    public function setPriceAttribute($val)
+    {
+        $this->attributes['price'] = sprintf('%.4f', $val);
+    }
+
+    public function setCbmAttribute($val)
+    {
+        $this->attributes['cbm'] = sprintf('%.4f', $val);
+    }
 
     public function product(): BelongsTo
     {

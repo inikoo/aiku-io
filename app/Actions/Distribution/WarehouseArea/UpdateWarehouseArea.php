@@ -21,6 +21,8 @@ class UpdateWarehouseArea
         $res = new MigrationResult();
 
         $area->update($data);
+        $res->changes = array_merge($res->changes, $area->getChanges());
+
         $res->model    = $area;
         $res->model_id = $area->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

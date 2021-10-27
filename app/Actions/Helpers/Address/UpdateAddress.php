@@ -20,6 +20,8 @@ class UpdateAddress
     {
         $res = new MigrationResult();
         $address->update($data);
+        $res->changes = array_merge($res->changes, $address->getChanges());
+
         $res->model    = $address;
         $res->model_id = $address->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

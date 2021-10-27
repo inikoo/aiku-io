@@ -40,23 +40,31 @@ class MigrateDeletedCustomer extends MigrateModel
         $this->modelData['deleted'] = $auroraDeletedData;
 
 
+        $taxNumber          = $this->auModel->data->{'Customer Tax Number'} ?? null;
+        $registrationNumber = $this->auModel->data->{'Customer Registration Number'} ?? null;
+        if ($registrationNumber) {
+            $registrationNumber = Str::limit($registrationNumber);
+        }
+        $taxNumberValid=$this->auModel->data->{'Customer Tax Number Valid'}??'unknown';
+
+
         $this->modelData['contact'] = $this->sanitizeData(
             [
-                'name'                     => $this->auModel->data->{'Customer Main Contact Name'},
-                'company'                  => $this->auModel->data->{'Customer Company Name'},
-                'email'                    => $this->auModel->data->{'Customer Main Plain Email'},
-                'phone'                    => $this->auModel->data->{'Customer Main Plain Mobile'},
-                'identity_document_number' => Str::limit($this->auModel->data->{'Customer Registration Number'}),
-                'website'                  => $this->auModel->data->{'Customer Website'},
-                'tax_number'               => $this->auModel->data->{'Customer Tax Number'},
-                'tax_number_status'        => $this->auModel->data->{'Customer Tax Number'} == ''
+                'name'                     => $this->auModel->data->{'Customer Main Contact Name'} ?? null,
+                'company'                  => $this->auModel->data->{'Customer Company Name'} ?? null,
+                'email'                    => $this->auModel->data->{'Customer Main Plain Email'} ?? null,
+                'phone'                    => $this->auModel->data->{'Customer Main Plain Mobile'} ?? null,
+                'identity_document_number' => $registrationNumber,
+                'website'                  => $this->auModel->data->{'Customer Website'} ?? null,
+                'tax_number'               => $taxNumber,
+                'tax_number_status'        => $taxNumber
                     ? 'na'
-                    : match ($this->auModel->data->{'Customer Tax Number Valid'}) {
+                    : match ($taxNumberValid) {
                         'Yes' => 'valid',
                         'No' => 'invalid',
                         default => 'unknown'
                     },
-                'created_at'               => $this->auModel->data->{'Customer First Contacted Date'}
+                'created_at'               => $this->auModel->data->{'Customer First Contacted Date'} ?? null
 
             ]
         );
@@ -136,9 +144,10 @@ class MigrateDeletedCustomer extends MigrateModel
         if ($auroraData = DB::connection('aurora')->table('Customer Deleted Dimension')->where('Customer Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res  = new MigrationResult();
-        $res->errors[]='Aurora model not found';
-        $res->status='error';
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
         return $res;
     }
 

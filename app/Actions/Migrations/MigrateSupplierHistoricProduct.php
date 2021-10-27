@@ -37,10 +37,10 @@ class MigrateSupplierHistoricProduct extends MigrateModel
         $this->modelData = $this->sanitizeData(
             [
                 'code'                       => $this->auModel->data->{'Supplier Part Historic Reference'},
-                'price'                      => $this->auModel->data->{'Supplier Part Historic Unit Cost'} ?? 0,
+                'price'                      => round($this->auModel->data->{'Supplier Part Historic Unit Cost'} ?? 0,4),
                 'pack'                       => $this->auModel->data->{'Supplier Part Historic Units Per Package'},
                 'carton'                     => $this->auModel->data->{'Supplier Part Historic Units Per Package'} * $this->auModel->data->{'Supplier Part Historic Packages Per Carton'},
-                'cbm'                        => $this->auModel->data->{'Supplier Part Historic Carton CBM'},
+                'cbm'                        => round($this->auModel->data->{'Supplier Part Historic Carton CBM'},4),
                 'currency_id'                => $this->parseCurrencyID($this->auModel->data->{'Supplier Part Historic Currency Code'}),
                 'status'                     => $status,
                 'created_at'                 => null,

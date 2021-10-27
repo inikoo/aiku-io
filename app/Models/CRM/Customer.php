@@ -41,10 +41,7 @@ class Customer extends Model implements Auditable
 
     protected $guarded = [];
 
-   // public function shop(): BelongsTo
-   // {
-   //     return $this->belongsTo('App\Models\Selling\Shop');
-   // }
+
 
     public function addresses(): MorphToMany
     {

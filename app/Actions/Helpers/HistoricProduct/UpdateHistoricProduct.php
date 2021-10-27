@@ -20,8 +20,10 @@ class UpdateHistoricProduct
     {
         $res = new MigrationResult();
 
+
         $historicProduct->update($data);
         $res->changes = array_merge($res->changes, $historicProduct->getChanges());
+
 
         $res->model    = $historicProduct;
         $res->model_id = $historicProduct->id;

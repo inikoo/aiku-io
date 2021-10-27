@@ -15,6 +15,8 @@ class UpdateLocation
         $res = new MigrationResult();
 
         $location->update($data);
+        $res->changes = array_merge($res->changes, $location->getChanges());
+
         $res->model    = $location;
         $res->model_id = $location->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

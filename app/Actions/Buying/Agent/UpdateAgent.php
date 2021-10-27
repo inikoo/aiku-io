@@ -21,7 +21,10 @@ class UpdateAgent
         $res = new MigrationResult();
 
         $agent->contact()->update($contactData);
+        $res->changes = array_merge($res->changes, $agent->contact->getChanges());
+
         $agent->update($data);
+        $res->changes = array_merge($res->changes, $agent->getChanges());
         $res->model    = $agent;
         $res->model_id = $agent->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

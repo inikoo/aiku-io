@@ -21,6 +21,7 @@ class UpdateWarehouse
         $res = new MigrationResult();
 
         $warehouse->update($data);
+        $res->changes = array_merge($res->changes, $warehouse->getChanges());
 
         $res->model    = $warehouse;
         $res->model_id = $warehouse->id;
