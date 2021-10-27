@@ -93,7 +93,7 @@ class MigrateSupplierProduct extends MigrateModel
 
     public function setModel()
     {
-        return Product::withTrashed()->find($this->auModel->data->aiku_id);
+        $this->model = Product::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
     public function updateModel(): MigrationResult
