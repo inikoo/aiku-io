@@ -28,12 +28,7 @@ class MigrateDeletedEmployee extends MigrateModel
 
     public function parseModelData()
     {
-
-
-
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'Staff Deleted Metadata'}));
-
-
 
         $this->modelData['contact']  = $this->sanitizeData(
             [
@@ -68,22 +63,17 @@ class MigrateDeletedEmployee extends MigrateModel
 
     public function setModel()
     {
-
         $this->model = Employee::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
-        $this->model = UpdateEmployee::run($this->model, $this->modelData['contact'], $this->modelData['employee']);
+        return UpdateEmployee::run($this->model, $this->modelData['contact'], $this->modelData['employee']);
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
-
-        $employee    = StoreEmployee::run($this->modelData['contact'], $this->modelData['employee']);
-        $this->model = $employee;
-
-        return $employee?->id;
+        return StoreEmployee::run($this->modelData['contact'], $this->modelData['employee']);
     }
 
 
@@ -92,11 +82,16 @@ class MigrateDeletedEmployee extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraModelID): array
+    public function asController(int $auroraID): MigrationResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        $this->auModel->data = DB::connection('aurora')->table('Employee Dimension')->where('Employee Key', $auroraModelID)->get();
+        if ($auroraData = DB::connection('aurora')->table('Staff Deleted Dimension')->where('Staff Deleted Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
 
-        return $this->handle($this->auModel->data);
+        return $res;
     }
 }

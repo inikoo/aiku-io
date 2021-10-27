@@ -104,37 +104,38 @@ class MigrateAgent extends MigrateModel
         $this->model = Agent::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
         /**  @var Agent $agent */
         $agent                                = $this->model;
         $this->modelData['agent']['data']     = $this->parseMetadata($agent->data, $this->auModel->data);
         $this->modelData['agent']['settings'] = $this->parseSettings($agent->settings, $this->auModel->data);
 
-        $agent = UpdateAgent::run(
+        $result = UpdateAgent::run(
             agent:       $agent,
             data:        $this->modelData['agent'],
             contactData: $this->modelData['contact']
         );
-        UpdateAddress::run($agent->contact->address, $this->modelData['address']);
 
-        $this->model = $agent;
+        $resultAddress = UpdateAddress::run($agent->contact->address, $this->modelData['address']);
+
+        $result->changes = array_merge($result->changes, $resultAddress->changes);
+        $result->status  = $result->changes ? 'updated' : 'unchanged';
+
+        return $result;
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
         $this->modelData['agent']['data']     = $this->parseMetadata([], $this->auModel->data);
         $this->modelData['agent']['settings'] = $this->parseSettings([], $this->auModel->data);
 
-        $agent       = StoreAgent::run(
+        return StoreAgent::run(
             parent:      $this->parent,
             data:        $this->modelData['agent'],
             contactData: $this->modelData['contact'],
             addressData: $this->modelData['address']
         );
-        $this->model = $agent;
-
-        return $agent?->id;
     }
 
     protected function migrateImages()
@@ -159,12 +160,18 @@ class MigrateAgent extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraModelID): array
+    public function asController(int $auroraID): MigrationResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        $auroraData = DB::connection('aurora')->table('Agent Dimension')->where('Agent Key', $auroraModelID)->get();
 
-        return $this->handle($auroraData);
+        if ($auroraData = DB::connection('aurora')->table('Agent Dimension')->where('Agent Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
+        return $res;
     }
 
 

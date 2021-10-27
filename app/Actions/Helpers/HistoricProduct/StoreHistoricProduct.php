@@ -8,16 +8,25 @@
 
 namespace App\Actions\Helpers\HistoricProduct;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Helpers\Product;
-use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreHistoricProduct
 {
     use AsAction;
 
-    public function handle(Product $product, array $data): Model
+    public function handle(Product $product, array $data): MigrationResult
     {
-        return $product->historicRecords()->create($data);
+        $res = new MigrationResult();
+        /** @var \App\Models\Helpers\HistoricProduct $historicProduct */
+
+        $historicProduct = $product->historicRecords()->create($data);
+
+        $res->model    = $historicProduct;
+        $res->model_id = $historicProduct->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
     }
 }

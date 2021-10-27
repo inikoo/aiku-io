@@ -8,6 +8,7 @@
 
 namespace App\Actions\Distribution\Warehouse;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Distribution\Warehouse;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,10 +16,16 @@ class UpdateWarehouse
 {
     use AsAction;
 
-    public function handle(Warehouse $warehouse, array $data): Warehouse
+    public function handle(Warehouse $warehouse, array $data): MigrationResult
     {
+        $res = new MigrationResult();
+
         $warehouse->update($data);
 
-        return $warehouse;
+        $res->model    = $warehouse;
+        $res->model_id = $warehouse->id;
+        $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+        return $res;
     }
 }

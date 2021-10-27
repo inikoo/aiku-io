@@ -8,17 +8,24 @@
 
 namespace App\Actions\Distribution\WarehouseArea;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Distribution\Warehouse;
-use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreWarehouseArea
 {
     use AsAction;
 
-    public function handle(Warehouse $warehouse, array $data): Model
+    public function handle(Warehouse $warehouse, array $data): MigrationResult
     {
-        return $warehouse->areas()->create($data);
+        $res  = new MigrationResult();
 
+        /** @var \App\Models\Distribution\WarehouseArea $warehouseArea */
+        $warehouseArea= $warehouse->areas()->create($data);
+        $res->model    = $warehouseArea;
+        $res->model_id = $warehouseArea->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
     }
 }

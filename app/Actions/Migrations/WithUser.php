@@ -8,13 +8,11 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\System\User\CreateUserToken;
 use App\Actions\System\User\StoreUser;
 use App\Actions\System\User\UpdateUser;
 use App\Models\System\User;
 use Exception;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 
 trait WithUser
@@ -26,25 +24,25 @@ trait WithUser
         $this->model = User::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
-        $this->model = UpdateUser::run($this->model, Arr::except($this->modelData['user'], ['password']));
+        return UpdateUser::run($this->model, Arr::except($this->modelData['user'], ['password']));
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
         try {
-            $user        = StoreUser::run(
+            return StoreUser::run(
                 userable: $this->parent,
                 userData: $this->modelData['user'],
                 roles:    $this->modelData['roles']
             );
-            $this->model = $user;
-            return $user?->id;
         } catch (Exception $e) {
-            print $e->getMessage()."\n";
-            print "Error cant not migrate user \n";
-            return 0;
+            $res           = new MigrationResult();
+            $res->status   = 'error';
+            $res->errors[] = $e->getMessage();
+
+            return $res;
         }
     }
 

@@ -14,8 +14,10 @@ use App\Models\CRM\Customer;
 use App\Models\Selling\Shop;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
+use Lorisleiva\Actions\ActionRequest;
 
 class MigrateDeletedCustomer extends MigrateModel
 {
@@ -33,9 +35,9 @@ class MigrateDeletedCustomer extends MigrateModel
         $auroraDeletedData = json_decode(gzuncompress($this->auModel->data->{'Customer Deleted Metadata'}));
 
 
-        $status = 'approved';
-        $state  = 'active';
-        $this->modelData['deleted']=$auroraDeletedData;
+        $status                     = 'approved';
+        $state                      = 'active';
+        $this->modelData['deleted'] = $auroraDeletedData;
 
 
         $this->modelData['contact'] = $this->sanitizeData(
@@ -54,7 +56,7 @@ class MigrateDeletedCustomer extends MigrateModel
                         'No' => 'invalid',
                         default => 'unknown'
                     },
-                'created_at'         => $this->auModel->data->{'Customer First Contacted Date'}
+                'created_at'               => $this->auModel->data->{'Customer First Contacted Date'}
 
             ]
         );
@@ -62,11 +64,11 @@ class MigrateDeletedCustomer extends MigrateModel
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
-                'name'                => $auroraDeletedData->{'Customer Name'},
-                'state'               => $state,
-                'status'              => $status,
-                'aurora_customer_id'           => $auroraDeletedData->{'Customer Key'},
-                'created_at' => $auroraDeletedData->{'Customer First Contacted Date'}
+                'name'               => $auroraDeletedData->{'Customer Name'},
+                'state'              => $state,
+                'status'             => $status,
+                'aurora_customer_id' => $auroraDeletedData->{'Customer Key'},
+                'created_at'         => $auroraDeletedData->{'Customer First Contacted Date'}
             ]
         );
 
@@ -100,14 +102,13 @@ class MigrateDeletedCustomer extends MigrateModel
         $this->model = Customer::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
-        $this->updateCustomer($this->modelData['deleted']);
+        return $this->updateCustomer($this->modelData['deleted']);
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
-
         $this->modelData['customer']['data'] = $this->parseCustomerMetadata(
             auData: $this->modelData['deleted']
         );
@@ -115,16 +116,30 @@ class MigrateDeletedCustomer extends MigrateModel
             auData: $this->modelData['deleted']
         );
 
-        $customer    = StoreCustomer::run(
-            vendor:                  $this->parent,
+        return StoreCustomer::run(
+            vendor:                $this->parent,
             customerData:          $this->modelData['customer'],
             contactData:           $this->modelData['contact'],
             customerAddressesData: $this->modelData['addresses']
         );
+    }
 
-        $this->model                         = $customer;
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->tokenCan('root');
+    }
 
-        return $customer?->id;
+
+    public function asController(int $auroraID): MigrationResult
+    {
+        $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
+        if ($auroraData = DB::connection('aurora')->table('Customer Deleted Dimension')->where('Customer Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res  = new MigrationResult();
+        $res->errors[]='Aurora model not found';
+        $res->status='error';
+        return $res;
     }
 
 }

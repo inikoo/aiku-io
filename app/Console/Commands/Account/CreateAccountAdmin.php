@@ -58,7 +58,7 @@ class CreateAccountAdmin extends Command
         $admin->save();
 
 
-        $user = StoreAccountUser::run($admin,
+        $res = StoreAccountUser::run($admin,
                                       [
                                           'username' => $username,
                                           'password' => Hash::make($password)
@@ -73,9 +73,8 @@ class CreateAccountAdmin extends Command
             ['Code', 'Username', 'Password'],
             [
                 [
-
                     $admin->slug,
-                    $user->username,
+                    $res->model->username,
                     ($this->option('randomPassword') ? $password : '*****'),
                 ],
 

@@ -9,6 +9,7 @@
 namespace App\Actions\Buying\Supplier;
 
 use App\Actions\Helpers\Address\StoreAddress;
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\Aiku;
 use App\Models\Buying\Agent;
@@ -19,8 +20,10 @@ class StoreSupplier
 {
     use AsAction;
 
-    public function handle(Tenant|Aiku|Agent $parent, array $data, array $addressData, array $contactData): Supplier
+    public function handle(Tenant|Aiku|Agent $parent, array $data, array $addressData, array $contactData): MigrationResult
     {
+        $res  = new MigrationResult();
+
         /** @var Supplier $supplier */
         $supplier = $parent->suppliers()->create($data);
         $supplier->contact()->create($contactData);
@@ -32,6 +35,9 @@ class StoreSupplier
         $supplier->contact->save();
         $supplier->save();
 
-        return $supplier;
-    }
+        $res->model    = $supplier;
+        $res->model_id = $supplier->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;    }
 }

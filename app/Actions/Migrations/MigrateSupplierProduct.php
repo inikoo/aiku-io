@@ -12,7 +12,9 @@ use App\Actions\Helpers\Product\StoreProduct;
 use App\Actions\Helpers\Product\UpdateProduct;
 use App\Models\Helpers\Product;
 use App\Models\Buying\Supplier;
+use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
+use Lorisleiva\Actions\ActionRequest;
 
 class MigrateSupplierProduct extends MigrateModel
 {
@@ -91,25 +93,40 @@ class MigrateSupplierProduct extends MigrateModel
 
     public function setModel()
     {
-        $this->model = Product::withTrashed()->find($this->auModel->data->aiku_id);
+        return Product::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
-        $this->model = UpdateProduct::run($this->model, $this->modelData);
+        return UpdateProduct::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
-        $product     = StoreProduct::run(vendor: $this->parent, data: $this->modelData);
-        $this->model = $product;
+        return StoreProduct::run(vendor: $this->parent, data: $this->modelData);
 
-        return $product?->id;
     }
 
     public function getParent(): Supplier
     {
         return Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->tokenCan('root');
+    }
+
+    public function asController(int $auroraID): MigrationResult
+    {
+        $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
+        if ($auroraData = DB::connection('aurora')->table('Supplier Part Dimension')->where('Supplier Part Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res  = new MigrationResult();
+        $res->errors[]='Aurora model not found';
+        $res->status='error';
+        return $res;
     }
 
 }

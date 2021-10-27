@@ -32,12 +32,15 @@ class MigrateCustomers extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Customer Deleted Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Customer Client Dimension')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
         $count = DB::connection('aurora')->table('Customer Dimension')->count();
         $count += DB::connection('aurora')->table('Customer Deleted Dimension')->count();
+        $count += DB::connection('aurora')->table('Customer Client Dimension')->count();
 
         return $count;
     }
@@ -53,10 +56,7 @@ class MigrateCustomers extends MigrateAurora
                 foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key','=',$auroraData->{'Customer Key'})->get() as $auroraCustomerClientData) {
                     $result = MigrateCustomerClient::run($auroraCustomerClientData);
                     $this->recordAction($tenant, $result);
-
                 }
-
-
             }
         });
 
@@ -69,7 +69,6 @@ class MigrateCustomers extends MigrateAurora
                 if ($auroraData->{'Customer Deleted Metadata'} == '') {
                     continue;
                 }
-
 
                 $result = MigrateDeletedCustomer::run(
                     $auroraData

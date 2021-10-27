@@ -30,7 +30,7 @@ trait WithCustomer
             metadataContact:  $customer->contact->data,
         );
 
-        $customer = UpdateCustomer::run(
+        $result= UpdateCustomer::run(
             customer: $customer,
             customerData: $this->modelData['customer'],
             contactData: $this->modelData['contact'],
@@ -38,29 +38,33 @@ trait WithCustomer
         );
 
 
+
+
         if (isset($this->modelData['addresses']['billing']) and count($this->modelData['addresses']['billing']) > 0) {
-            UpdateAddress::run($customer->billingAddress, $this->modelData['addresses']['billing'][0]);
+            UpdateAddress::run($result->model->billingAddress, $this->modelData['addresses']['billing'][0]);
         }
 
         if (isset($this->modelData['addresses']['delivery']) and count($this->modelData['addresses']['delivery']) > 0) {
-            if ($customer->deliveryAddress) {
-                UpdateAddress::run($customer->deliveryAddress, $this->modelData['addresses']['delivery'][0]);
+            if ($result->model->deliveryAddress) {
+                UpdateAddress::run($result->model->deliveryAddress, $this->modelData['addresses']['delivery'][0]);
             } else {
                 $address = StoreAddress::run($this->modelData['addresses']['delivery'][0]);
-                $customer->addresses()->associate(
+                $result->model->addresses()->associate(
                     [
                         $address->id => ['scope' => 'delivery']
                     ]
                 );
-                $customer->delivery_address_id = $address->id;
-                $customer->save();
+                $result->model->delivery_address_id = $address->id;
+                $result->model->save();
             }
-        } elseif ($customer->deliveryAddress and $customer->deliveryAddress->id != $customer->billingAddress->id) {
-            $customer->delivery_address_id = null;
-            $customer->save();
-            DeleteAddress::run($customer->deliveryAddress);
+        } elseif ($result->model->deliveryAddress and $result->model->deliveryAddress->id != $result->model->billingAddress->id) {
+            $result->model->delivery_address_id = null;
+            $result->model->save();
+            DeleteAddress::run($result->model->deliveryAddress);
         }
-        $this->model = $customer;
+
+        return $result;
+
     }
 
     private function parseCustomerMetadata($auData, array $metadataCustomer = []): array

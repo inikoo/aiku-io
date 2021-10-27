@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
+use Lorisleiva\Actions\ActionRequest;
 
 
 class MigrateUser extends MigrateModel
@@ -116,6 +117,24 @@ class MigrateUser extends MigrateModel
         DB::connection('aurora')->table($this->auModel->table)
             ->where($this->auModel->id_field, $this->auModel->id)
             ->update(['aiku_token' => $token]);
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->tokenCan('root');
+    }
+
+
+    public function asController(int $auroraID): MigrationResult
+    {
+        $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
+        if ($auroraData = DB::connection('aurora')->table('User Dimension')->where('User Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res  = new MigrationResult();
+        $res->errors[]='Aurora model not found';
+        $res->status='error';
+        return $res;
     }
 
 }

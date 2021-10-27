@@ -8,6 +8,7 @@
 
 namespace App\Actions\Distribution\Warehouse;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Distribution\Warehouse;
 use App\Models\System\Permission;
 use App\Models\System\Role;
@@ -19,8 +20,10 @@ class StoreWarehouse
 {
     use AsAction;
 
-    public function handle($data): Warehouse
+    public function handle($data): MigrationResult
     {
+        $res  = new MigrationResult();
+
         $warehouse= Warehouse::create($data);
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
@@ -44,7 +47,10 @@ class StoreWarehouse
             Role::where('name', preg_replace('/#/',$warehouse->id,$role_name))->first()->syncPermissions($permissions);
         });
 
-        return $warehouse;
+        $res->model    = $warehouse;
+        $res->model_id = $warehouse->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
 
+        return $res;
     }
 }

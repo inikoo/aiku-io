@@ -27,20 +27,19 @@ class MigrateModel
 
     use AsAction;
 
-    private array $result = [
-        'updated'  => 0,
-        'inserted' => 0,
-        'errors'   => 0
-    ];
+
     protected object $auModel;
     protected ?object $parent;
     protected array $modelData;
     protected ?Model $model = null;
+    protected string $aiku_id_field;
 
 
     #[Pure] public function __construct()
     {
         $this->auModel = new stdClass();
+        $this->aiku_id_field='aiku_id';
+
     }
 
     public function getParent()
@@ -56,13 +55,14 @@ class MigrateModel
     {
     }
 
-    protected function updateModel()
+    #[Pure] protected function updateModel(): MigrationResult
     {
+        return new MigrationResult();
     }
 
-    protected function storeModel(): ?int
+    #[Pure] protected function storeModel(): MigrationResult
     {
-        return null;
+        return new MigrationResult();
     }
 
     protected function migrateImages()
@@ -70,46 +70,44 @@ class MigrateModel
         return null;
     }
 
-    protected  function postMigrateActions(){
-
+    protected function postMigrateActions()
+    {
     }
 
-    protected function handle($auModel): array
+    protected function handle($auModel): MigrationResult
     {
         $this->auModel->data = $auModel;
         $this->parent        = $this->getParent();
         $this->parseModelData();
 
+
         if ($this->auModel->data->aiku_id) {
             $this->setModel();
-            if ($this->model) {
-                $this->updateModel();
 
-                $changes = $this->model->getChanges();
-                if (count($changes) > 0) {
-                    $this->result['updated']++;
-                }
-            } else {
-                $this->result['errors']++;
-                $this->updateAuroraModel();
-
-                return $this->result;
+            $res = $this->updateModel();
+            if($res->status=='error'){
+                return $res;
             }
+
         } else {
-            $modelID = $this->storeModel();
-
-            if (!$this->model) {
-                $this->result['errors']++;
-                return $this->result;
+            $res = $this->storeModel();
+            if($res->status=='error'){
+                return $res;
             }
-            $this->updateAuroraModel($modelID);
-            $this->result['inserted']++;
+
+            $this->updateAuroraModel($res->model_id);
+
         }
+
+
+        $this->model = $res->model;
+
+
 
         $this->migrateImages();
         $this->postMigrateActions();
 
-        return $this->result;
+        return $res;
     }
 
     protected function setAuroraConnection($database_name)
@@ -139,14 +137,16 @@ class MigrateModel
     {
         if ($locale != '') {
             try {
-                return Language::where('code',
-                    match ($locale){
-                        'zh_CN.UTF-8'=>'zh-CN',
-                        default=>substr($locale, 0, 2)
+                return Language::where(
+                    'code',
+                    match ($locale) {
+                        'zh_CN.UTF-8' => 'zh-CN',
+                        default => substr($locale, 0, 2)
                     }
                 )->first()->id;
-            }catch (Exception) {
+            } catch (Exception) {
                 print "Locale $locale not found\n";
+
                 return null;
             }
         }
@@ -228,6 +228,6 @@ class MigrateModel
     {
         DB::connection('aurora')->table($this->auModel->table)
             ->where($this->auModel->id_field, $this->auModel->id)
-            ->update(['aiku_id' => $value]);
+            ->update([$this->aiku_id_field => $value]);
     }
 }

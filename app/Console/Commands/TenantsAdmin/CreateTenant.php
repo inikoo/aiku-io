@@ -104,10 +104,10 @@ class CreateTenant extends Command
         if ($this->argument('nickname')) {
             $tenantData['nickname'] = $this->argument('nickname');
         }
-        $tenant = StoreTenant::run($businessType, $tenantData);
+        $res    = StoreTenant::run($businessType, $tenantData);
+        $tenant = $res->model;
 
-        if(Arr::get($tenant->data,'aurora_db')){
-
+        if (Arr::get($tenant->data, 'aurora_db')) {
             $database_settings = data_get(config('database.connections'), 'aurora');
             data_set($database_settings, 'database', $this->option('aurora_db'));
 
@@ -117,9 +117,6 @@ class CreateTenant extends Command
 
             DB::connection('aurora')->table('Account Dimension')
                 ->update(['aiku_id' => $tenant->id]);
-
-
-
         }
 
         $username = $tenant->nickname;
@@ -143,17 +140,15 @@ class CreateTenant extends Command
         $userPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 
         StoreUser::run($tenant,
-                               [
-                                   'username' => 'admin',
-                                   'password' => Hash::make($userPassword),
-                               ],
-                               [
-                                   'super-admin'
-                               ]
+                       [
+                           'username' => 'admin',
+                           'password' => Hash::make($userPassword),
+                       ],
+                       [
+                           'super-admin'
+                       ]
 
         );
-
-
 
 
         $this->line("Tenant $tenant->domain created :)");

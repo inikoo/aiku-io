@@ -8,17 +8,24 @@
 
 namespace App\Actions\Account\Tenant;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Account\BusinessType;
-use App\Models\Account\Tenant;
-use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreTenant
 {
     use AsAction;
 
-    public function handle(BusinessType $businessType, array $tenantData): Tenant|Model
+    public function handle(BusinessType $businessType, array $tenantData): MigrationResult
     {
-        return $businessType->tenants()->create($tenantData);
+        $res = new MigrationResult();
+
+        /** @var \App\Models\Account\Tenant $tenant */
+        $tenant        = $businessType->tenants()->create($tenantData);
+        $res->model    = $tenant;
+        $res->model_id = $tenant->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
     }
 }

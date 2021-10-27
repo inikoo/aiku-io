@@ -9,6 +9,7 @@
 namespace App\Actions\Buying\Agent;
 
 use App\Actions\Helpers\Address\StoreAddress;
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\Aiku;
 use App\Models\Buying\Agent;
@@ -18,8 +19,10 @@ class StoreAgent
 {
     use AsAction;
 
-    public function handle(Tenant|Aiku $parent,  array $data, array $addressData, array $contactData): Agent
+    public function handle(Tenant|Aiku $parent,  array $data, array $addressData, array $contactData): MigrationResult
     {
+        $res  = new MigrationResult();
+
         /** @var Agent $agent */
         $agent                   = $parent->agents()->create($data);
         $agent->contact()->create($contactData);
@@ -32,6 +35,10 @@ class StoreAgent
         $agent->contact->save();
         $agent->save();
 
-        return $agent;
+        $res->model    = $agent;
+        $res->model_id = $agent->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
     }
 }

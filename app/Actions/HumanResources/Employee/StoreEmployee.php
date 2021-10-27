@@ -8,6 +8,7 @@
 
 namespace App\Actions\HumanResources\Employee;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
 use Illuminate\Validation\Rule;
@@ -19,21 +20,20 @@ class StoreEmployee
 {
     use AsAction;
 
-    /**
-     * @param  array  $contactData
-     * @param  array  $employeeData
-     *
-     * @return \App\Models\HumanResources\Employee
-     */
-    public function handle(array $contactData, array $employeeData): Employee
+
+    public function handle(array $contactData, array $employeeData): MigrationResult
     {
+        $res  = new MigrationResult();
 
         $employee = Employee::create($employeeData);
         $employee->contact()->create($contactData);
         $employee->save();
 
-        return $employee;
-    }
+        $res->model    = $employee;
+        $res->model_id = $employee->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;    }
 
     public function authorize(ActionRequest $request): bool
     {
@@ -53,7 +53,7 @@ class StoreEmployee
         ];
     }
 
-    public function asController(ActionRequest $request): Employee
+    public function asController(ActionRequest $request): MigrationResult
     {
         return $this->handle(
             $request->only('name', 'email', 'phone'),

@@ -16,6 +16,7 @@ use App\Models\Distribution\WarehouseArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class MigrateLocation extends MigrateModel
@@ -59,7 +60,7 @@ class MigrateLocation extends MigrateModel
         $this->model = Location::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
         if (class_basename($this->parent::class) == 'WarehouseArea') {
             $this->modelData['warehouse_id']      = $this->parent->warehouse_id;
@@ -68,16 +69,30 @@ class MigrateLocation extends MigrateModel
             $this->modelData['warehouse_id']      = $this->parent->id;
             $this->modelData['warehouse_area_id'] = null;
         }
-        $this->model = UpdateLocation::run($this->model, $this->modelData);
+
+        return UpdateLocation::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
-        $location    = StoreLocation::run($this->parent, $this->modelData);
-        $this->model = $location;
-
-        return $location?->id;
+        return StoreLocation::run($this->parent, $this->modelData);
     }
 
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->tokenCan('root');
+    }
 
+    public function asController(int $auroraID): MigrationResult
+    {
+        $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
+        if ($auroraData = DB::connection('aurora')->table('Location Dimension')->where('Location Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
+        return $res;
+    }
 }

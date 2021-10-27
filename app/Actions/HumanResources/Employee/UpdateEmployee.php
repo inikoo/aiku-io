@@ -2,6 +2,7 @@
 
 namespace App\Actions\HumanResources\Employee;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
 use Illuminate\Validation\Rule;
@@ -12,12 +13,20 @@ class UpdateEmployee
 {
     use AsAction;
 
-    public function handle(Employee $employee, array $contactData, array $employeeData): Employee
+    public function handle(Employee $employee, array $contactData, array $employeeData): MigrationResult
     {
-        $employee->contact()->update($contactData);
-        $employee->update($employeeData);
 
-        return $employee;
+        $res = new MigrationResult();
+
+        $employee->contact()->update($contactData);
+        $res->changes=array_merge($res->changes,$employee->contact->getChanges());
+
+        $employee->update($employeeData);
+        $res->changes=array_merge($res->changes,$employee->getChanges());
+
+        $res->model=$employee;
+
+        return $res;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -39,7 +48,7 @@ class UpdateEmployee
         ];
     }
 
-    public function asController(Employee $employee, ActionRequest $request): Employee
+    public function asController(Employee $employee, ActionRequest $request): MigrationResult
     {
         return $this->handle(
             $employee,

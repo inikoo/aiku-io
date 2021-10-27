@@ -120,37 +120,38 @@ class MigrateSupplier extends MigrateModel
         $this->model = Supplier::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
         /**  @var Supplier $supplier */
         $supplier                                = $this->model;
         $this->modelData['supplier']['data']     = $this->parseMetadata($supplier->data, $this->auModel->data);
         $this->modelData['supplier']['settings'] = $this->parseSettings($supplier->settings, $this->auModel->data);
 
-        $supplier = UpdateSupplier::run(
+        $res           = UpdateSupplier::run(
             supplier:    $supplier,
             data:        $this->modelData['supplier'],
             contactData: $this->modelData['contact']
         );
-        UpdateAddress::run($supplier->contact->address, $this->modelData['address']);
+        $addressResult = UpdateAddress::run($res->model->contact->address, $this->modelData['address']);
 
-        $this->model = $supplier;
+        $res->changes = array_merge($res->changes, $addressResult->changes);
+        $res->status  = $res->changes ? 'updated' : 'unchanged';
+
+
+        return $res;
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
         $this->modelData['supplier']['data']     = $this->parseMetadata([], $this->auModel->data);
         $this->modelData['supplier']['settings'] = $this->parseSettings([], $this->auModel->data);
 
-        $supplier    = StoreSupplier::run(
+        return StoreSupplier::run(
             parent:      $this->parent,
             data:        $this->modelData['supplier'],
             contactData: $this->modelData['contact'],
             addressData: $this->modelData['address']
         );
-        $this->model = $supplier;
-
-        return $supplier?->id;
     }
 
     protected function migrateImages()
@@ -175,12 +176,17 @@ class MigrateSupplier extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraModelID): array
+    public function asController(int $auroraID): MigrationResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        $auroraData = DB::connection('aurora')->table('Supplier Dimension')->where('Supplier Key', $auroraModelID)->get();
+        if ($auroraData = DB::connection('aurora')->table('Supplier Dimension')->where('Supplier Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
 
-        return $this->handle($auroraData);
+        return $res;
     }
 
 

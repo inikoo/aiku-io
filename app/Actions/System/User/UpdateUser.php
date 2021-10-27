@@ -8,6 +8,7 @@
 
 namespace App\Actions\System\User;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\System\User;
 use Illuminate\Validation\Rules\Password;
 use Lorisleiva\Actions\ActionRequest;
@@ -17,10 +18,16 @@ class UpdateUser
 {
     use AsAction;
 
-    public function handle(User $user,array $data): User
+    public function handle(User $user,array $data): MigrationResult
     {
-         $user->update($data);
-         return $user;
+        $res = new MigrationResult();
+
+        $user->update($data);
+        $res->model    = $user;
+        $res->model_id = $user->id;
+        $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+        return $res;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -43,7 +50,7 @@ class UpdateUser
         }
     }
 
-    public function asController(User $user, ActionRequest $request): User
+    public function asController(User $user, ActionRequest $request): MigrationResult
     {
 
         return $this->handle(

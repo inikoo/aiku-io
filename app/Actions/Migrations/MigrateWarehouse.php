@@ -11,10 +11,13 @@ namespace App\Actions\Migrations;
 use App\Actions\Distribution\Warehouse\StoreWarehouse;
 use App\Actions\Distribution\Warehouse\UpdateWarehouse;
 use App\Models\Distribution\Warehouse;
+use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
+use Lorisleiva\Actions\ActionRequest;
 
 class MigrateWarehouse extends MigrateModel
 {
+
 
     #[Pure] public function __construct()
     {
@@ -38,8 +41,10 @@ class MigrateWarehouse extends MigrateModel
             $this->auModel->id       = $this->auModel->data->{'Warehouse Area Key'};
             $this->auModel->table    = 'Warehouse Area Dimension';
             $this->auModel->id_field = 'Warehouse Area Key';
+          //  $this->aiku_id_field     = 'aiku_warehouse_area_id';
         } else {
-            $this->auModel->id = $this->auModel->data->{'Warehouse Key'};
+            $this->auModel->id   = $this->auModel->data->{'Warehouse Key'};
+          //  $this->aiku_id_field = 'aiku_warehouse_id';
         }
     }
 
@@ -48,17 +53,32 @@ class MigrateWarehouse extends MigrateModel
         $this->model = Warehouse::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
-        $this->model = UpdateWarehouse::run($this->model, $this->modelData);
+        return UpdateWarehouse::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
-        $warehouse   = StoreWarehouse::run($this->modelData);
-        $this->model = $warehouse;
+        return StoreWarehouse::run($this->modelData);
+    }
 
-        return $warehouse?->id;
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->tokenCan('root');
+    }
+
+    public function asController(int $auroraID): MigrationResult
+    {
+        $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
+        if ($auroraData = DB::connection('aurora')->table('Warehouse Dimension')->where('Warehouse Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
+        return $res;
     }
 
 

@@ -8,6 +8,7 @@
 
 namespace App\Actions\Helpers\HistoricProduct;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Helpers\HistoricProduct;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,9 +16,17 @@ class UpdateHistoricProduct
 {
     use AsAction;
 
-    public function handle(HistoricProduct $historicProduct, array $data): HistoricProduct
+    public function handle(HistoricProduct $historicProduct, array $data): MigrationResult
     {
+        $res = new MigrationResult();
+
         $historicProduct->update($data);
-        return $historicProduct;
+        $res->changes = array_merge($res->changes, $historicProduct->getChanges());
+
+        $res->model    = $historicProduct;
+        $res->model_id = $historicProduct->id;
+        $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+        return $res;
     }
 }

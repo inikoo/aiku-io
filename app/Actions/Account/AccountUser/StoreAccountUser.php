@@ -8,9 +8,9 @@
 
 namespace App\Actions\Account\AccountUser;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Account\AccountAdmin;
 use App\Models\Account\Tenant;
-use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreAccountUser
@@ -18,8 +18,16 @@ class StoreAccountUser
     use AsAction;
 
 
-    public function handle( Tenant|AccountAdmin $userable, array $userData): Model
+    public function handle( Tenant|AccountAdmin $userable, array $userData): MigrationResult
     {
-        return $userable->accountUser()->create($userData);
+        $res  = new MigrationResult();
+
+        /** @var \App\Models\Account\AccountUser $accountUser */
+        $accountUser= $userable->accountUser()->create($userData);
+        $res->model    = $accountUser;
+        $res->model_id = $accountUser->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
     }
 }

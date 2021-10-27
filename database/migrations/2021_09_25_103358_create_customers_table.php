@@ -22,7 +22,7 @@ class CreateCustomersTable extends Migration
 
             $table->string('name', 256)->nullable();
             $table->enum('status',['pending-approval','approved','rejected','banned'])->index();
-            $table->enum('state',['in-process','active','losing','lost'])->index()->nullable();
+            $table->enum('state',['in-process','active','losing','lost','registered'])->index()->nullable();
             $table->unsignedBigInteger('billing_address_id')->nullable()->index();
             $table->foreign('billing_address_id')->references('id')->on('addresses');
             $table->unsignedBigInteger('delivery_address_id')->nullable()->index();

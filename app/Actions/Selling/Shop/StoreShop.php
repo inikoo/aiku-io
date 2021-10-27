@@ -8,6 +8,7 @@
 
 namespace App\Actions\Selling\Shop;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Selling\Shop;
 use App\Models\System\Permission;
 use App\Models\System\Role;
@@ -19,9 +20,9 @@ class StoreShop
 {
     use AsAction;
 
-    public function handle(array $data, array $contactData): Shop
+    public function handle(array $data, array $contactData): MigrationResult
     {
-
+        $res  = new MigrationResult();
         $shop = Shop::create($data);
         $shop->contact()->create($contactData);
 
@@ -29,24 +30,29 @@ class StoreShop
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = Tenant::current();
         $permissions = collect(config("business_types.{$tenant->businessType->slug}.model_permissions.Shop"))->map(function ($name) use ($shop) {
-            return preg_replace('/#/',$shop->id,$name);
+            return preg_replace('/#/', $shop->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
             Permission::create(['name' => $permission]);
         });
 
-        $roles= collect(config("business_types.{$tenant->businessType->slug}.model_roles.Shop"))->map(function ($name) use ($shop){
-            return preg_replace('/#/',$shop->id,$name);
+        $roles = collect(config("business_types.{$tenant->businessType->slug}.model_roles.Shop"))->map(function ($name) use ($shop) {
+            return preg_replace('/#/', $shop->id, $name);
         });
 
-        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) use ($shop){
-            Role::create(['name' => preg_replace('/#/',$shop->id,$role)]);
+        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) use ($shop) {
+            Role::create(['name' => preg_replace('/#/', $shop->id, $role)]);
         });
         $roles->each(function ($permissions, $role_name) use ($shop) {
-            Role::where('name', preg_replace('/#/',$shop->id,$role_name))->first()->syncPermissions($permissions);
+            Role::where('name', preg_replace('/#/', $shop->id, $role_name))->first()->syncPermissions($permissions);
         });
 
-        return $shop;
+
+        $res->model    = $shop;
+        $res->model_id = $shop->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
     }
 
 

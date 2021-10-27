@@ -8,6 +8,7 @@
 
 namespace App\Actions\Helpers\Product;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Helpers\Product;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,10 +16,17 @@ class UpdateProduct
 {
     use AsAction;
 
-    public function handle(Product $product, array $data): Product
+    public function handle(Product $product, array $data): MigrationResult
     {
+        $res = new MigrationResult();
 
         $product->update($data);
-        return $product;
+        $res->changes = array_merge($res->changes, $product->getChanges());
+
+        $res->model    = $product;
+        $res->model_id = $product->id;
+        $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+        return $res;
     }
 }

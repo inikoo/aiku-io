@@ -8,17 +8,26 @@
 
 namespace App\Actions\Helpers\Product;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Buying\Supplier;
 use App\Models\Selling\Shop;
-use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreProduct
 {
     use AsAction;
 
-    public function handle(Shop|Supplier $vendor, array $data): Model
+    public function handle(Shop|Supplier $vendor, array $data): MigrationResult
     {
-        return $vendor->products()->create($data);
+        $res  = new MigrationResult();
+        /** @var \App\Models\Helpers\Product $product */
+
+        $product= $vendor->products()->create($data);
+
+        $res->model    = $product;
+        $res->model_id = $product->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+        return $res;
+
     }
 }

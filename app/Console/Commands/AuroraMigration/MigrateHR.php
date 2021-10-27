@@ -63,6 +63,7 @@ class MigrateHR extends MigrateAurora
         return $count;
     }
 
+
     protected function migrate(Tenant $tenant)
     {
         foreach (DB::connection('aurora')->table('Staff Dimension')->get() as $auroraData) {

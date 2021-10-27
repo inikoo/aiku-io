@@ -127,9 +127,18 @@ class MigrateAurora extends Command
     protected function recordAction(Tenant $tenant, $result)
     {
         $this->results[$tenant->nickname]['models']++;
-        $this->results[$tenant->nickname]['updated']  += $result['updated'];
-        $this->results[$tenant->nickname]['inserted'] += $result['inserted'];
-        $this->results[$tenant->nickname]['errors']   += $result['errors'];
+        switch ($result->status) {
+            case 'inserted':
+                $this->results[$tenant->nickname]['inserted'] += 1;
+                break;
+            case 'updated':
+                $this->results[$tenant->nickname]['updated'] += 1;
+                break;
+            case 'error':
+                $this->results[$tenant->nickname]['errors'] += 1;
+                break;
+        }
+
         $this->bar->advance();
     }
 

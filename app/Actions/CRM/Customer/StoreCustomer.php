@@ -9,6 +9,7 @@
 namespace App\Actions\CRM\Customer;
 
 use App\Actions\Helpers\Address\StoreAddress;
+use App\Actions\Migrations\MigrationResult;
 use App\Models\CRM\Customer;
 use App\Models\Selling\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,9 +23,11 @@ class StoreCustomer
         array $customerData,
         array $contactData,
         array $customerAddressesData = []
-    ): Customer {
-        /** @var Customer $customer */
+    ): MigrationResult {
 
+        $res  = new MigrationResult();
+
+        /** @var Customer $customer */
         $customer = $vendor->customers()->create($customerData);
         $customer->contact()->create($contactData);
         $addresses = [];
@@ -55,6 +58,11 @@ class StoreCustomer
         $customer->billing_address_id=$billing_address_id;
         $customer->delivery_address_id=$delivery_address_id;
         $customer->save();
-        return $customer;
+
+        $res->model    = $customer;
+        $res->model_id = $customer->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
     }
 }

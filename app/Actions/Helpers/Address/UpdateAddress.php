@@ -8,6 +8,7 @@
 
 namespace App\Actions\Helpers\Address;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Helpers\Address;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,9 +16,14 @@ class UpdateAddress
 {
     use AsAction;
 
-    public function handle(Address $address,array $data): Address
+    public function handle(Address $address,array $data): MigrationResult
     {
+        $res = new MigrationResult();
         $address->update($data);
-        return $address;
+        $res->model    = $address;
+        $res->model_id = $address->id;
+        $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+        return $res;
     }
 }

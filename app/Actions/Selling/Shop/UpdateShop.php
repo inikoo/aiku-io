@@ -8,6 +8,7 @@
 
 namespace App\Actions\Selling\Shop;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Selling\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -19,9 +20,19 @@ class UpdateShop
         Shop $shop,
         array $contactData,
         array $data
-    ): Shop {
+    ): MigrationResult {
+        $res = new MigrationResult();
+
         $shop->contact()->update($contactData);
+        $res->changes = array_merge($res->changes, $shop->contact->getChanges());
+
         $shop->update($data);
-        return $shop;
+        $res->changes = array_merge($res->changes, $shop->getChanges());
+
+        $res->model    = $shop;
+        $res->model_id = $shop->id;
+        $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+        return $res;
     }
 }

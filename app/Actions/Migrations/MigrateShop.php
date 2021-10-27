@@ -1,8 +1,8 @@
 <?php
 /*
- *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sat, 25 Sep 2021 16:48:42 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ 3*  Author: Raul Perusquia <raul@inikoo.com>
+ *4  Created: Sat, 25 Sep 2021 16:48:42 Malaysia Time, Kuala Lumpur, Malaysia
+ * 5 Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
@@ -67,31 +67,32 @@ class MigrateShop extends MigrateModel
         $this->model = Shop::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
-        $this->model = UpdateShop::run(shop: $this->model, data: $this->modelData['shop'], contactData: $this->modelData['contact']);
+        return UpdateShop::run(shop: $this->model, data: $this->modelData['shop'], contactData: $this->modelData['contact']);
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
-        $shop        = StoreShop::run(data: $this->modelData['shop'], contactData: $this->modelData['contact']);
-        $this->model = $shop;
-
-        return $shop?->id;
+        return StoreShop::run(data: $this->modelData['shop'], contactData: $this->modelData['contact']);
     }
-
 
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraModelID): array
+    public function asController(int $auroraID): MigrationResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        $auroraData = DB::connection('aurora')->table('Store Dimension')->where('Store Key', $auroraModelID)->get();
+        if ($auroraData = DB::connection('aurora')->table('Store Dimension')->where('Store Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
 
-        return $this->handle($auroraData);
+        return $res;
     }
 
 }

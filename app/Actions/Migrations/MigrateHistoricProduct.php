@@ -14,6 +14,7 @@ use App\Models\Helpers\HistoricProduct;
 use App\Models\Helpers\Product;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
+use Lorisleiva\Actions\ActionRequest;
 
 class MigrateHistoricProduct extends MigrateModel
 {
@@ -27,13 +28,12 @@ class MigrateHistoricProduct extends MigrateModel
 
     public function parseModelData()
     {
-
-        $deleted_at=$this->auModel->data->{'Product History Valid To'};
+        $deleted_at = $this->auModel->data->{'Product History Valid To'};
 
         $status = 0;
         if (DB::connection('aurora')->table('Product Dimension')->where('Product Current Key', '=', $this->auModel->data->{'Product Key'})->exists()) {
-            $status = 1;
-            $deleted_at=null;
+            $status     = 1;
+            $deleted_at = null;
         }
 
 
@@ -41,9 +41,6 @@ class MigrateHistoricProduct extends MigrateModel
         if ($units == 0) {
             $units = 1;
         }
-
-
-
 
         $this->modelData = $this->sanitizeData(
             [
@@ -55,9 +52,9 @@ class MigrateHistoricProduct extends MigrateModel
 
                 'status' => $status,
 
-                'created_at' => $this->auModel->data->{'Product History Valid From'},
-                'deleted_at'=>$deleted_at,
-                'aurora_product_id'  => $this->auModel->data->{'Product Key'}
+                'created_at'        => $this->auModel->data->{'Product History Valid From'},
+                'deleted_at'        => $deleted_at,
+                'aurora_product_id' => $this->auModel->data->{'Product Key'}
             ]
         );
 
@@ -66,28 +63,43 @@ class MigrateHistoricProduct extends MigrateModel
     }
 
 
-
     public function setModel()
     {
         $this->model = HistoricProduct::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel()
+    public function updateModel(): MigrationResult
     {
-        $this->model = UpdateHistoricProduct::run($this->model, $this->modelData);
+        return UpdateHistoricProduct::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): ?int
+    public function storeModel(): MigrationResult
     {
-        $product     = StoreHistoricProduct::run($this->parent, $this->modelData);
-        $this->model = $product;
-
-        return $product?->id;
+        return StoreHistoricProduct::run($this->parent, $this->modelData);
     }
 
     public function getParent(): Product
     {
         return Product::withTrashed()->firstWhere('aurora_product_id', $this->auModel->data->{'Product ID'});
+    }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->tokenCan('root');
+    }
+
+
+    public function asController(int $auroraID): MigrationResult
+    {
+        $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
+        if ($auroraData = DB::connection('aurora')->table('Product History Dimension')->where('Product Key', $auroraID)->first()) {
+            return $this->handle($auroraData);
+        }
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
+        return $res;
     }
 
 }

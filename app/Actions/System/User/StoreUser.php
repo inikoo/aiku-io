@@ -9,6 +9,7 @@
 namespace App\Actions\System\User;
 
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Account\Tenant;
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
@@ -22,8 +23,10 @@ class StoreUser
 {
     use AsAction;
 
-    public function handle(Employee|Tenant|Agent|Supplier $userable, array $userData, array $roles = []): User
+    public function handle(Employee|Tenant|Agent|Supplier $userable, array $userData, array $roles = []): MigrationResult
     {
+        $res  = new MigrationResult();
+
         $userData['language_id'] = $userData['language_id'] ?? app('currentTenant')->language_id;
         $userData['timezone_id'] = $userData['timezone_id'] ?? app('currentTenant')->timezone_id;
         /** @var User $user */
@@ -33,8 +36,11 @@ class StoreUser
         $user->syncRoles($roles);
 
 
-        return $user;
-    }
+        $res->model    = $user;
+        $res->model_id = $user->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;        }
 
     public function authorize(ActionRequest $request): bool
     {
@@ -57,7 +63,7 @@ class StoreUser
         }
     }
 
-    public function asController(Employee|Tenant $userable, ActionRequest $request): User
+    public function asController(Employee|Tenant $userable, ActionRequest $request): MigrationResult
     {
         $roles = [];
 
