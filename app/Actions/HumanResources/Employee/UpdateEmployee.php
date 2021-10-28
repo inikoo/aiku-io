@@ -3,8 +3,10 @@
 namespace App\Actions\HumanResources\Employee;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -12,19 +14,24 @@ use Lorisleiva\Actions\Concerns\AsAction;
 class UpdateEmployee
 {
     use AsAction;
+    use WithUpdate;
 
     public function handle(Employee $employee, array $contactData, array $employeeData): MigrationResult
     {
-
         $res = new MigrationResult();
 
         $employee->contact()->update($contactData);
-        $res->changes=array_merge($res->changes,$employee->contact->getChanges());
+
+        $res->changes = array_merge($res->changes, $employee->contact->getChanges());
 
         $employee->update($employeeData);
-        $res->changes=array_merge($res->changes,$employee->getChanges());
 
-        $res->model=$employee;
+        $employee->update(Arr::except($employeeData, ['data']));
+        $employee->update($this->extractJson($employeeData));
+
+        $res->changes = array_merge($res->changes, $employee->getChanges());
+
+        $res->model = $employee;
 
         return $res;
     }

@@ -25,6 +25,8 @@ class CreateUsersTable extends Migration
             $table->foreign('timezone_id')->references('id')->on('aiku.timezones');
 
             $table->jsonb('data');
+            $table->jsonb('settings');
+
             $table->timestampsTz();
             $table->softDeletesTz();
 

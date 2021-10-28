@@ -19,8 +19,8 @@ class CreateShopsTable extends Migration
             $table->mediumIncrements('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->enum('state',['in-process','open','closing-down','closed'])->index();
-            $table->enum('type',['b2b','b2c','fulfilment','dropshipping','external']);
+            $table->enum('state', ['in-process', 'open', 'closing-down', 'closed'])->index();
+            $table->enum('type', ['b2b', 'b2c', 'fulfilment', 'dropshipping', 'external']);
             $table->date('open_at')->nullable();
             $table->date('closed_at')->nullable();
             $table->unsignedSmallInteger('language_id');
@@ -30,6 +30,7 @@ class CreateShopsTable extends Migration
             $table->unsignedSmallInteger('timezone_id');
             $table->foreign('timezone_id')->references('id')->on('aiku.timezones');
             $table->jsonb('data');
+            $table->jsonb('settings');
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();

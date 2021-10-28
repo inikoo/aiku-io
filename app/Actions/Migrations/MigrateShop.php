@@ -69,7 +69,7 @@ class MigrateShop extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-        return UpdateShop::run(shop: $this->model, data: $this->modelData['shop'], contactData: $this->modelData['contact']);
+        return UpdateShop::run(shop: $this->model, modelData: $this->modelData['shop'], contactData: $this->modelData['contact']);
     }
 
     public function storeModel(): MigrationResult

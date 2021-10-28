@@ -33,11 +33,13 @@ class Shop extends Model implements Auditable
     use HasFactory;
 
     protected $casts = [
-        'data' => 'array'
+        'data'     => 'array',
+        'settings' => 'array'
     ];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'     => '{}',
+        'settings' => '{}',
     ];
 
     protected $guarded = [];

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class MigrateDistribution extends MigrateAurora
 {
 
-    protected $signature = 'au_migration:dist {--reset} {--all} {--t|tenant=* : Tenant slug} ';
+    protected $signature = 'au_migration:warehouses {--reset} {--all} {--t|tenant=* : Tenant slug} ';
     protected $description = 'Migrate aurora warehouses, warehouse areas and locations';
 
     public function handle(): int

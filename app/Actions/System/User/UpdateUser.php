@@ -9,7 +9,9 @@
 namespace App\Actions\System\User;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\System\User;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rules\Password;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -17,12 +19,14 @@ use Lorisleiva\Actions\Concerns\AsAction;
 class UpdateUser
 {
     use AsAction;
+    use WithUpdate;
 
-    public function handle(User $user,array $data): MigrationResult
+    public function handle(User $user,array $modelData): MigrationResult
     {
         $res = new MigrationResult();
 
-        $user->update($data);
+        $user->update(Arr::except($modelData, ['data', 'settings']));
+        $user->update($this->extractJson($modelData, ['data', 'settings']));
         $res->changes = array_merge($res->changes, $user->getChanges());
 
         $res->model    = $user;

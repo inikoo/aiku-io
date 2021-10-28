@@ -24,7 +24,7 @@ trait WithSupplier{
 
         $res           = UpdateSupplier::run(
             supplier:    $supplier,
-            data:        $this->modelData['supplier'],
+            modelData:        $this->modelData['supplier'],
             contactData: $this->modelData['contact']
         );
         $addressResult = UpdateAddress::run($res->model->contact->address, $this->modelData['address']);

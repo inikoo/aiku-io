@@ -113,7 +113,7 @@ class MigrateAgent extends MigrateModel
 
         $result = UpdateAgent::run(
             agent:       $agent,
-            data:        $this->modelData['agent'],
+            modelData:   $this->modelData['agent'],
             contactData: $this->modelData['contact']
         );
 

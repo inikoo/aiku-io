@@ -3,19 +3,24 @@
 namespace App\Actions\Account\Tenant;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\Account\Tenant;
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateTenant
 {
     use AsAction;
+    use WithUpdate;
 
-    public function handle(Tenant $tenant,array $data): MigrationResult
+    public function handle(Tenant $tenant,array $modelData): MigrationResult
     {
         $res = new MigrationResult();
 
-        $tenant->update($data);
+        $tenant->update( Arr::except($modelData, ['data']));
+        $tenant->update($this->extractJson($modelData));
+
         $res->changes = array_merge($res->changes, $tenant->getChanges());
 
         $res->model    = $tenant;

@@ -27,11 +27,13 @@ class AccountUser extends Authenticatable
     protected $guarded = [];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'     => '{}',
+        'settings' => '{}',
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'data'     => 'array',
+        'settings' => 'array'
     ];
 
 

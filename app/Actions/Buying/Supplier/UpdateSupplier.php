@@ -9,21 +9,26 @@
 namespace App\Actions\Buying\Supplier;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\Buying\Supplier;
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateSupplier
 {
     use AsAction;
+    use WithUpdate;
 
-    public function handle(Supplier $supplier, array $data, array $contactData): MigrationResult
+    public function handle(Supplier $supplier, array $modelData, array $contactData): MigrationResult
     {
         $res = new MigrationResult();
         $supplier->contact()->update($contactData);
         $res->changes = array_merge($res->changes, $supplier->contact->getChanges());
 
 
-        $supplier->update($data);
+        $supplier->update( Arr::except($modelData, ['data','settings']));
+        $supplier->update($this->extractJson($modelData,['data','settings']));
+
         $res->changes = array_merge($res->changes, $supplier->getChanges());
 
 

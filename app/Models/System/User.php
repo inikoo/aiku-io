@@ -34,7 +34,8 @@ class User extends Authenticatable
     protected $guarded = [];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'     => '{}',
+        'settings' => '{}',
     ];
 
     protected $hidden = [
@@ -42,8 +43,9 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'data'   => 'array',
-        'status' => 'boolean'
+        'data'     => 'array',
+        'settings' => 'array',
+        'status'   => 'boolean'
     ];
 
 
@@ -59,7 +61,7 @@ class User extends Authenticatable
 
     public function stats(): HasOne
     {
-        return $this->hasOne(UserStats::class,'id','id');
+        return $this->hasOne(UserStats::class, 'id', 'id');
     }
 
 }

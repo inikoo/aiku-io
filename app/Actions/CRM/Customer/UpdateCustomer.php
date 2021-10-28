@@ -9,12 +9,15 @@
 namespace App\Actions\CRM\Customer;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\CRM\Customer;
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateCustomer
 {
     use AsAction;
+    use WithUpdate;
 
     public function handle(
         Customer $customer,
@@ -26,7 +29,11 @@ class UpdateCustomer
         $customer->contact()->update($contactData);
         $res->changes = array_merge($res->changes, $customer->contact->getChanges());
 
-        $customer->update($customerData);
+
+        $customer->update( Arr::except($customerData, ['data']));
+        $customer->update($this->extractJson($customerData));
+
+
         $res->changes = array_merge($res->changes, $customer->getChanges());
 
         $res->model    = $customer;

@@ -25,6 +25,7 @@ class CreateAccountUsersTable extends Migration
             $table->morphs('userable');
             $table->string('password');
             $table->jsonb('data');
+            $table->jsonb('settings');
             $table->timestampsTz();
         });
     }

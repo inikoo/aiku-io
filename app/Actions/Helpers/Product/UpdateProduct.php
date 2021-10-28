@@ -9,18 +9,23 @@
 namespace App\Actions\Helpers\Product;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\Helpers\Product;
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateProduct
 {
     use AsAction;
+    use WithUpdate;
 
-    public function handle(Product $product, array $data): MigrationResult
+    public function handle(Product $product, array $modelData): MigrationResult
     {
         $res = new MigrationResult();
 
-        $product->update($data);
+        $product->update(Arr::except($modelData, ['data', 'settings']));
+        $product->update($this->extractJson($modelData, ['data', 'settings']));
+
         $res->changes = array_merge($res->changes, $product->getChanges());
 
         $res->model    = $product;

@@ -9,18 +9,24 @@
 namespace App\Actions\Distribution\Warehouse;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\Distribution\Warehouse;
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateWarehouse
 {
     use AsAction;
+    use WithUpdate;
 
-    public function handle(Warehouse $warehouse, array $data): MigrationResult
+    public function handle(Warehouse $warehouse, array $modelData): MigrationResult
     {
         $res = new MigrationResult();
 
-        $warehouse->update($data);
+
+        $warehouse->update(Arr::except($modelData, ['data', 'settings']));
+        $warehouse->update($this->extractJson($modelData, ['data', 'settings']));
+
         $res->changes = array_merge($res->changes, $warehouse->getChanges());
 
         $res->model    = $warehouse;

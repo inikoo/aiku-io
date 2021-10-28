@@ -9,24 +9,29 @@
 namespace App\Actions\Selling\Shop;
 
 use App\Actions\Migrations\MigrationResult;
+use App\Actions\WithUpdate;
 use App\Models\Selling\Shop;
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateShop
 {
     use AsAction;
+    use WithUpdate;
 
     public function handle(
         Shop $shop,
         array $contactData,
-        array $data
+        array $modelData
     ): MigrationResult {
         $res = new MigrationResult();
 
         $shop->contact()->update($contactData);
         $res->changes = array_merge($res->changes, $shop->contact->getChanges());
 
-        $shop->update($data);
+        $shop->update(Arr::except($modelData, ['data', 'settings']));
+        $shop->update($this->extractJson($modelData, ['data', 'settings']));
+
         $res->changes = array_merge($res->changes, $shop->getChanges());
 
         $res->model    = $shop;
