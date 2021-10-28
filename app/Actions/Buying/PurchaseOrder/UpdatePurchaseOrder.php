@@ -11,16 +11,26 @@ namespace App\Actions\Buying\PurchaseOrder;
 use App\Actions\Migrations\MigrationResult;
 use App\Models\Buying\PurchaseOrder;
 use App\Models\Buying\Supplier;
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdatePurchaseOrder
 {
     use AsAction;
 
-    public function handle(PurchaseOrder $purchaseOrder,array $data): MigrationResult
+    public function handle(PurchaseOrder $purchaseOrder,array $modelData): MigrationResult
     {
         $res = new MigrationResult();
+        $purchaseOrder->update( Arr::except($modelData, ['data']));
+
+
+        $data=[];
+        foreach(Arr::dot(Arr::only($modelData, ['data'])) as $key=>$value){
+            $data[preg_replace('/\./','->',$key)]=$value;
+        }
         $purchaseOrder->update($data);
+
+
         $res->changes = array_merge($res->changes, $purchaseOrder->getChanges());
 
         $res->model    = $purchaseOrder;

@@ -16,7 +16,7 @@ class CreatePurchaseOrdersTable extends Migration
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
             $table->string('number')->index()->nullable();
-            $table->morphs('parent');
+            $table->morphs('vendor');
 
             $table->enum('state',['in-process','submitted','no-received','confirmed','manufactured','qc-pass','inputted','dispatched','received','checked','placed','costing','invoice-checked','cancelled'])->index()->default('in-process');
 

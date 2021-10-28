@@ -22,7 +22,6 @@ use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\Concerns\AsAction;
 use stdClass;
 
-use function Symfony\Component\String\s;
 
 class MigrateModel
 {
@@ -86,6 +85,9 @@ class MigrateModel
             $this->setModel();
 
             $res = $this->updateModel();
+
+            //if($res->changes)
+            //print_r($res->changes);
 
             if ($res->status == 'error') {
                 return $res;

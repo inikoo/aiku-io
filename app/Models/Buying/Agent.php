@@ -69,7 +69,7 @@ class Agent extends Model implements Auditable
 
     public function purchaseOrders(): MorphMany
     {
-        return $this->morphMany(PurchaseOrder::class, 'parent');
+        return $this->morphMany(PurchaseOrder::class, 'vendor');
     }
 
 }

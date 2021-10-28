@@ -48,7 +48,7 @@ class MigrateEmployee extends MigrateModel
             ];
         }
 
-        krsort($data);
+        ksort($data);
 
         $this->modelData['employee'] = $this->sanitizeData(
             [

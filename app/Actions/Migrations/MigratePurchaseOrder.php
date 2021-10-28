@@ -35,7 +35,6 @@ class MigratePurchaseOrder extends MigrateModel
 
     public function getParent(): Supplier|Agent|null
     {
-
         if ($this->auModel->data->{'Purchase Order Parent'} == 'Agent') {
             return Agent::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Purchase Order Parent Key'});
         }
@@ -45,13 +44,26 @@ class MigratePurchaseOrder extends MigrateModel
 
     public function parseModelData()
     {
-
         $date = $this->getDate($this->auModel->data->{'Purchase Order Date'});
         if (!$date) {
             $date = $this->getDate($this->auModel->data->{'Purchase Order Last Updated Date'});
         }
 
-        $data              = [];
+        $data              = [
+            'vendor' => [
+                'code'    => $this->auModel->data->{'Purchase Order Parent Code'}.'-A',
+                'name'    => $this->auModel->data->{'Purchase Order Parent Name'},
+                'contact' => $this->auModel->data->{'Purchase Order Parent Contact Name'},
+                'email'   => $this->auModel->data->{'Purchase Order Parent Email'},
+                'phone'   => $this->auModel->data->{'Purchase Order Parent Telephone'},
+                'address'   => $this->auModel->data->{'Purchase Order Parent Address'},
+            ]
+        ];
+
+
+        ksort($data);
+
+
         $this->modelData   = [
             'number'       => $this->auModel->data->{'Purchase Order Public ID'},
             'state'        => match ($this->auModel->data->{'Purchase Order State'}) {
@@ -75,7 +87,7 @@ class MigratePurchaseOrder extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-        return UpdatePurchaseOrder::run($this->model, $this->modelData);
+        return UpdatePurchaseOrder::run(purchaseOrder:$this->model,modelData: $this->modelData);
     }
 
     public function storeModel(): MigrationResult

@@ -35,7 +35,7 @@ class PurchaseOrder extends Model implements Auditable
 
     protected $guarded = [];
 
-    public function parent(): MorphTo
+    public function vendor(): MorphTo
     {
         return $this->morphTo();
     }
