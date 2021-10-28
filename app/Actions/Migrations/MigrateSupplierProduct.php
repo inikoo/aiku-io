@@ -49,13 +49,14 @@ class MigrateSupplierProduct extends MigrateModel
             $created_at = $this->auModel->data->{'Supplier Part From'};
         }
 
+        $data['raw_price'] = $this->auModel->data->{'Supplier Part Unit Cost'} ?? 0;
 
         $this->modelData = $this->sanitizeData(
             [
                 'code' => $this->auModel->data->{'Supplier Part Reference'},
                 'name' => $this->auModel->data->{'Supplier Part Description'},
 
-                'price'  => $this->auModel->data->{'Supplier Part Unit Cost'} ?? 0,
+                'price'  => round($this->auModel->data->{'Supplier Part Unit Cost'} ?? 0, 2),
                 'pack'   => $this->auModel->data->{'Part Units Per Package'},
                 'carton' => $this->auModel->data->{'Supplier Part Packages Per Carton'} * $this->auModel->data->{'Part Units Per Package'},
 
@@ -104,7 +105,6 @@ class MigrateSupplierProduct extends MigrateModel
     public function storeModel(): MigrationResult
     {
         return StoreProduct::run(vendor: $this->parent, data: $this->modelData);
-
     }
 
     public function getParent(): Supplier
@@ -123,9 +123,10 @@ class MigrateSupplierProduct extends MigrateModel
         if ($auroraData = DB::connection('aurora')->table('Supplier Part Dimension')->where('Supplier Part Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res  = new MigrationResult();
-        $res->errors[]='Aurora model not found';
-        $res->status='error';
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
         return $res;
     }
 

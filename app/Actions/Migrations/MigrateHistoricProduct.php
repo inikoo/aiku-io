@@ -59,12 +59,13 @@ class MigrateHistoricProduct extends MigrateModel
         );
 
 
-        $this->auModel->id = $this->auModel->data->{'Product ID'};
+        $this->auModel->id = $this->auModel->data->{'Product Key'};
     }
 
 
     public function setModel()
     {
+        print $this->auModel->data->aiku_id."\n";
         $this->model = HistoricProduct::withTrashed()->find($this->auModel->data->aiku_id);
     }
 

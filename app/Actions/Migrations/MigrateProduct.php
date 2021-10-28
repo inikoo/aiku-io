@@ -55,13 +55,16 @@ class MigrateProduct extends MigrateModel
             $created_at = $this->auModel->data->{'Product Valid From'};
         }
 
+        $unit_price=$this->auModel->data->{'Product Price'} / $units;
+        $data['raw_price']=$unit_price;
+
 
         $this->modelData = $this->sanitizeData(
             [
                 'code' => $this->auModel->data->{'Product Code'},
                 'name' => $this->auModel->data->{'Product Name'},
 
-                'price' => $this->auModel->data->{'Product Price'} / $units,
+                'price' => round($unit_price,2),
                 'outer' => $units,
 
                 'status' => $status,
