@@ -20,7 +20,7 @@ class CreateHistoricProductsTable extends Migration
             $table->dateTimeTz('deleted_at')->nullable();
             $table->unsignedBigInteger('product_id')->nullable()->index();
             $table->foreign('product_id')->references('id')->on('products');
-            $table->unsignedDecimal('price',  18,4)->comment('unit price');
+            $table->unsignedDecimal('price',  18)->comment('unit price');
             $table->string('code')->nullable();
             $table->string('name',255)->nullable();
             $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');

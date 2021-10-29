@@ -76,4 +76,9 @@ class Product extends Model implements Auditable
         return $this->hasMany(HistoricProduct::class)->withTrashed();
     }
 
+    public function setPriceAttribute($val)
+    {
+        $this->attributes['price'] = sprintf('%.2f', $val);
+    }
+
 }

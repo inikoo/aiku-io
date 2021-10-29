@@ -24,10 +24,6 @@ class CreateProductsTable extends Migration
 
 
             $table->morphs('vendor');
-
-
-
-
             $table->enum('state',['creating','active','no-available','discontinuing','discontinued'])->nullable()->index();
             $table->boolean('status')->nullable()->index();
 
@@ -35,7 +31,7 @@ class CreateProductsTable extends Migration
             $table->string('name',255)->nullable();
             $table->text('description')->nullable();
 
-            $table->unsignedDecimal('price',  18,2)->comment('unit price');
+            $table->unsignedDecimal('price',  18)->comment('unit price');
             $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
             $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
             $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');

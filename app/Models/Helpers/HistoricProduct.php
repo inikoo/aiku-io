@@ -26,7 +26,7 @@ class HistoricProduct extends Model implements Auditable
 
     public function setPriceAttribute($val)
     {
-        $this->attributes['price'] = sprintf('%.4f', $val);
+        $this->attributes['price'] = sprintf('%.2f', $val);
     }
 
     public function setCbmAttribute($val)
