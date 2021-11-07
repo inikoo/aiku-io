@@ -11,7 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\CRM\Customer\StoreCustomer;
 
 use App\Models\CRM\Customer;
-use App\Models\Selling\Shop;
+use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;

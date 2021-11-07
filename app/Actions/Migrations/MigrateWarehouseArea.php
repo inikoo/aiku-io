@@ -8,10 +8,10 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Distribution\WarehouseArea\StoreWarehouseArea;
-use App\Actions\Distribution\WarehouseArea\UpdateWarehouseArea;
-use App\Models\Distribution\Warehouse;
-use App\Models\Distribution\WarehouseArea;
+use App\Actions\Inventory\WarehouseArea\StoreWarehouseArea;
+use App\Actions\Inventory\WarehouseArea\UpdateWarehouseArea;
+use App\Models\Inventory\Warehouse;
+use App\Models\Inventory\WarehouseArea;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;

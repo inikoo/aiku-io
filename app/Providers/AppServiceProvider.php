@@ -45,10 +45,10 @@ class AppServiceProvider extends ServiceProvider
                 'Customer'       => 'App\Models\CRM\Customer',
                 'RawImage'       => 'App\Models\Assets\RawImage',
                 'ProcessedImage' => 'App\Models\Assets\ProcessedImage',
-                'Product'        => 'App\Models\Helpers\Product',
+                'Product'        => 'App\Models\Trade\Product',
                 'Agent'          => 'App\Models\Buying\Agent',
                 'Supplier'       => 'App\Models\Buying\Supplier',
-                'Shop'           => 'App\Models\Selling\Shop',
+                'Shop'           => 'App\Models\Trade\Shop',
 
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
@@ -63,8 +63,8 @@ class AppServiceProvider extends ServiceProvider
                 'ShippingZone'             => 'App\Models\Sales\ShippingZone',
                 'Charge'                   => 'App\Models\Sales\Charge',
                 'Invoice'                  => 'App\Models\Sales\Invoice',
-                'DeliveryNote'             => 'App\Models\Distribution\DeliveryNote',
-                'Stock'                    => 'App\Models\Distribution\Stock',
+                'DeliveryNote'             => 'App\Models\Inventory\DeliveryNote',
+                'Stock'                    => 'App\Models\Inventory\Stock',
                 'Product'                  => 'App\Models\Stores\Product',
                 'ProductHistoricVariation' => 'App\Models\Stores\ProductHistoricVariation',
                 'EmailService'             => 'App\Models\Notifications\EmailService',

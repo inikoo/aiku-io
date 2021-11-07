@@ -8,10 +8,10 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Helpers\HistoricProduct\StoreHistoricProduct;
-use App\Actions\Helpers\HistoricProduct\UpdateHistoricProduct;
-use App\Models\Helpers\HistoricProduct;
-use App\Models\Helpers\Product;
+use App\Actions\Trade\HistoricProduct\StoreHistoricProduct;
+use App\Actions\Trade\HistoricProduct\UpdateHistoricProduct;
+use App\Models\Trade\HistoricProduct;
+use App\Models\Trade\Product;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;

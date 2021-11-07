@@ -8,10 +8,11 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Helpers\Product\StoreProduct;
-use App\Actions\Helpers\Product\UpdateProduct;
-use App\Models\Helpers\Product;
+use App\Actions\Trade\Product\StoreProduct;
+use App\Actions\Trade\Product\UpdateProduct;
+use App\Models\Trade\Product;
 use App\Models\Buying\Supplier;
+use App\Models\Trade\TradeUnit;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
@@ -28,6 +29,11 @@ class MigrateSupplierProduct extends MigrateModel
 
     public function parseModelData()
     {
+        $this->auModel->partData = DB::connection('aurora')
+            ->table('Part Dimension')
+            ->where('Part SKU', $this->auModel->data->{'Supplier Part Part SKU'})->first();
+
+
         $data     = [];
         $settings = [];
 
@@ -37,7 +43,6 @@ class MigrateSupplierProduct extends MigrateModel
         }
         $state = match ($this->auModel->data->{'Supplier Part Status'}) {
             'NoAvailable' => 'no-available',
-
             'Discontinued' => 'discontinued',
             default => 'active',
         };
@@ -57,8 +62,8 @@ class MigrateSupplierProduct extends MigrateModel
                 'name' => $this->auModel->data->{'Supplier Part Description'},
 
                 'price'  => round($this->auModel->data->{'Supplier Part Unit Cost'} ?? 0, 2),
-                'pack'   => $this->auModel->data->{'Part Units Per Package'},
-                'carton' => $this->auModel->data->{'Supplier Part Packages Per Carton'} * $this->auModel->data->{'Part Units Per Package'},
+                'pack'   => $this->auModel->partData->{'Part Units Per Package'},
+                'carton' => $this->auModel->data->{'Supplier Part Packages Per Carton'} * $this->auModel->partData->{'Part Units Per Package'},
 
 
                 'status' => $status,
@@ -74,6 +79,7 @@ class MigrateSupplierProduct extends MigrateModel
 
         $this->auModel->id = $this->auModel->data->{'Supplier Part Key'};
     }
+
 
     protected function migrateImages()
     {
@@ -91,6 +97,7 @@ class MigrateSupplierProduct extends MigrateModel
 
         MigrateImageModels::run($this->model, $images);
     }
+
 
     public function setModel()
     {
@@ -110,6 +117,27 @@ class MigrateSupplierProduct extends MigrateModel
     public function getParent(): Supplier
     {
         return Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+    }
+
+    public function postMigrateActions(MigrationResult $res): MigrationResult
+    {
+        $tradeResult = MigrateTradeUnit::run($this->auModel->partData);
+
+        $res->changes = array_merge($res->changes, $tradeResult->changes);
+
+
+        if ($res->status == 'unchanged') {
+            $res->status = $res->changes ? 'updated' : 'unchanged';
+        }
+        $tradeUnit = TradeUnit::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Part SKU'});
+
+        /** @var Product $product */
+        $product = $this->model;
+
+        $product->tradeUnits()->sync([$tradeUnit->id => ['quantity' => 1]]);
+
+
+        return $res;
     }
 
     public function authorize(ActionRequest $request): bool

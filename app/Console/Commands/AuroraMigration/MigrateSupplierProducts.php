@@ -33,6 +33,7 @@ class MigrateSupplierProducts extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Supplier Part Historic Dimension')
             ->update(['aiku_id' => null]);
+
     }
 
     protected function count(): int
@@ -45,7 +46,11 @@ class MigrateSupplierProducts extends MigrateAurora
 
     protected function migrate(Tenant $tenant)
     {
-        DB::connection('aurora')->table('Supplier Part Dimension')->leftJoin('Part Dimension', 'Supplier Part Part SKU', '=', 'Part SKU')->orderBy('Supplier Part Key')->chunk(100, function ($chunk) use ($tenant) {
+        DB::connection('aurora')
+            ->table('Supplier Part Dimension')
+          //  ->leftJoin('Part Dimension', 'Supplier Part Part SKU', '=', 'Part SKU')
+            ->orderBy('Supplier Part Key')
+            ->chunk(100, function ($chunk) use ($tenant) {
             foreach ($chunk as $auroraData) {
                 $result = MigrateSupplierProduct::run($auroraData);
                 $this->recordAction($tenant, $result);
@@ -57,8 +62,6 @@ class MigrateSupplierProducts extends MigrateAurora
                 }
             }
         });
-
-
     }
 
 

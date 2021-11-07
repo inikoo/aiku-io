@@ -11,7 +11,7 @@ namespace App\Actions\CRM\Customer;
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Actions\Migrations\MigrationResult;
 use App\Models\CRM\Customer;
-use App\Models\Selling\Shop;
+use App\Models\Trade\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreCustomer

@@ -8,11 +8,11 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Distribution\Location\StoreLocation;
-use App\Actions\Distribution\Location\UpdateLocation;
-use App\Models\Distribution\Location;
-use App\Models\Distribution\Warehouse;
-use App\Models\Distribution\WarehouseArea;
+use App\Actions\Inventory\Location\StoreLocation;
+use App\Actions\Inventory\Location\UpdateLocation;
+use App\Models\Inventory\Location;
+use App\Models\Inventory\Warehouse;
+use App\Models\Inventory\WarehouseArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;

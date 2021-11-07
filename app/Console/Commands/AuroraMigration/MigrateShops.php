@@ -29,14 +29,11 @@ class MigrateShops extends MigrateAurora
     {
         DB::connection('aurora')->table('Store Dimension')
             ->update(['aiku_id' => null]);
-
-
     }
 
     protected function count(): int
     {
-        return  DB::connection('aurora')->table('Store Dimension')->count();
-
+        return DB::connection('aurora')->table('Store Dimension')->count();
     }
 
     protected function migrate(Tenant $tenant)
@@ -44,7 +41,6 @@ class MigrateShops extends MigrateAurora
         foreach (DB::connection('aurora')->table('Store Dimension')->get() as $auroraStoreData) {
             $result = MigrateShop::run($auroraStoreData);
             $this->recordAction($tenant, $result);
-
         }
     }
 

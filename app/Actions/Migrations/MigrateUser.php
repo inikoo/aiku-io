@@ -13,7 +13,7 @@ use App\Actions\System\User\CreateUserToken;
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
 use App\Models\HumanResources\Employee;
-use App\Models\Selling\Shop;
+use App\Models\Trade\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -111,12 +111,14 @@ class MigrateUser extends MigrateModel
         }
     }
 
-    protected function postMigrateActions()
+    protected function postMigrateActions(MigrationResult $res): MigrationResult
     {
         $token = CreateUserToken::run($this->model);
         DB::connection('aurora')->table($this->auModel->table)
             ->where($this->auModel->id_field, $this->auModel->id)
             ->update(['aiku_token' => $token]);
+
+        return $res;
     }
 
     public function authorize(ActionRequest $request): bool

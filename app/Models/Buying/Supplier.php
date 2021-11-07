@@ -3,7 +3,7 @@
 namespace App\Models\Buying;
 
 use App\Models\Helpers\Contact;
-use App\Models\Helpers\Product;
+use App\Models\Trade\Product;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

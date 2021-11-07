@@ -70,8 +70,9 @@ class MigrateModel
         return null;
     }
 
-    protected function postMigrateActions()
+    protected function postMigrateActions(MigrationResult $res): MigrationResult
     {
+        return $res;
     }
 
     protected function handle($auModel): MigrationResult
@@ -81,7 +82,7 @@ class MigrateModel
         $this->parseModelData();
 
 
-        if ($this->auModel->data->aiku_id) {
+        if ($this->auModel->data->{$this->aiku_id_field}) {
             $this->setModel();
 
             $res = $this->updateModel();
@@ -106,9 +107,8 @@ class MigrateModel
 
 
         $this->migrateImages();
-        $this->postMigrateActions();
 
-        return $res;
+        return $this->postMigrateActions($res);
     }
 
     protected function setAuroraConnection($database_name)

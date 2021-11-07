@@ -33,6 +33,10 @@ class UpdateEmployee
 
         $res->model = $employee;
 
+        $res->model_id = $employee->id;
+        $res->status   = $res->changes ? 'updated' : 'unchanged';
+
+
         return $res;
     }
 

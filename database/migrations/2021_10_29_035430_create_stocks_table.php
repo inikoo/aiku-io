@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 29 Sep 2021 11:30:08 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Fri, 29 Oct 2021 11:56:25 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
@@ -10,55 +10,69 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductsTable extends Migration
+class CreateStocksTable extends Migration
 {
-
-
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
-        Schema::create(
-            'products', function (Blueprint $table) {
+        Schema::create('stocks', function (Blueprint $table) {
             $table->id();
+
             $table->enum('composition', ['unit', 'multiple', 'mix']);
 
-            $table->string('slug')->nullable()->index();
+            $table->string('state')->nullable()->index();
+            $table->string('quantity_status')->nullable()->index();
+
+            $table->boolean('sellable')->default(1)->index();
+            $table->boolean('raw_material')->default(0)->index();
 
 
-            $table->morphs('vendor');
-
-            $table->enum('state', ['creating', 'active', 'no-available', 'discontinuing', 'discontinued'])->nullable()->index();
-            $table->boolean('status')->nullable()->index();
+            $table->string('slug')->index();
 
             $table->string('code')->index();
-            $table->string('name', 255)->nullable();
+            $table->string('barcode')->index()->nullable();
+
+
             $table->text('description')->nullable();
 
-            $table->unsignedDecimal('price', 18)->comment('unit price');
+
             $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
             $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
             $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
 
-            $table->unsignedMediumInteger('available')->default(0)->nullable();
+
+            $table->decimal('quantity', 16, 3)->nullable()->comment('stock quantity in units');
+            $table->float('available_forecast')->nullable()->comment('days');
+
+
+            $table->decimal('value', 16)->nullable();
+
+
             $table->unsignedBigInteger('image_id')->nullable();
             $table->foreign('image_id')->references('id')->on('images');
+
+            $table->unsignedBigInteger('package_image_id')->nullable();
+            $table->foreign('package_image_id')->references('id')->on('images');
             $table->jsonb('settings');
             $table->jsonb('data');
-
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_product_id')->nullable()->unique();
-            $table->unsignedBigInteger('aurora_supplier_product_id')->nullable()->unique();
-        }
-        );
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+        });
 
         Schema::create(
-            'product_trade_unit',
+            'stock_trade_unit',
             function (Blueprint $table) {
-                $table->unsignedBigInteger('product_id')->nullable();
-                $table->foreign('product_id')->references('id')->on('products');
+                $table->unsignedBigInteger('stock_id')->nullable();
+                $table->foreign('stock_id')->references('id')->on('stocks');
                 $table->unsignedBigInteger('trade_unit_id')->nullable();
                 $table->foreign('trade_unit_id')->references('id')->on('trade_units');
                 $table->decimal('quantity', 12, 3);
+
                 $table->timestampsTz();
             }
         );
@@ -71,7 +85,7 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_trade_unit');
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('stock_trade_unit');
+        Schema::dropIfExists('stocks');
     }
 }
