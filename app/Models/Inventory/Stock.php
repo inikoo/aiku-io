@@ -8,6 +8,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Models\LocationStock;
 use App\Models\Trade\TradeUnit;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -64,7 +65,11 @@ class Stock extends Model implements Auditable
     public function tradeUnits(): BelongsToMany
     {
         return $this->belongsToMany(TradeUnit::class)->withPivot('quantity')->withTimestamps();
+    }
 
+    public function locations(): BelongsToMany
+    {
+        return $this->belongsToMany(Location::class)->using(LocationStock::class)->withTimestamps();
     }
 
 

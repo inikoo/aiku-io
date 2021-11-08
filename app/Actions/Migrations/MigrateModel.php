@@ -120,9 +120,9 @@ class MigrateModel
         DB::purge('aurora');
     }
 
-    protected function sanitizeData($date): array
+    protected function sanitizeData($data): array
     {
-        return array_filter($date, fn($value) => !is_null($value) && $value !== ''
+        return array_filter($data, fn($value) => !is_null($value) && $value !== ''
             && $value != '0000-00-00 00:00:00'
             && $value != '2018-00-00 00:00:00'
         );

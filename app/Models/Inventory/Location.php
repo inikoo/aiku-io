@@ -8,9 +8,11 @@
 
 namespace App\Models\Inventory;
 
+use App\Models\LocationStock;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -44,6 +46,11 @@ class Location extends Model implements Auditable
     public function warehouseArea(): BelongsTo
     {
         return $this->belongsTo('App\Models\Inventory\WarehouseArea');
+    }
+
+    public function stocks(): BelongsToMany
+    {
+        return $this->belongsToMany(Stock::class)->using(LocationStock::class);
     }
 
 

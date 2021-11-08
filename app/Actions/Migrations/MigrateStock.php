@@ -10,6 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\Stock\StoreStock;
 use App\Actions\Inventory\Stock\UpdateStock;
+use App\Models\Inventory\Location;
 use App\Models\Inventory\Stock;
 use App\Models\Trade\TradeUnit;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +78,45 @@ class MigrateStock extends MigrateModel
                                            'quantity' => $this->auModel->data->{'Part Units Per Package'}
                                        ]
                                    ]);
+
+
+        $locationsData = [];
+        foreach (DB::connection('aurora')->table('Part Location Dimension')->where('Part SKU', $stock->aurora_id)->get() as $auroraPartLocationData) {
+            $settings = [
+
+
+            ];
+
+            if( $auroraPartLocationData->{'Minimum Quantity'}){
+                $settings['min_stock'] =$auroraPartLocationData->{'Minimum Quantity'};
+            }
+            if( $auroraPartLocationData->{'Maximum Quantity'}){
+                $settings['max_stock'] =$auroraPartLocationData->{'Maximum Quantity'};
+            }
+            if( $auroraPartLocationData->{'Moving Quantity'}){
+                $settings['max_stock'] =$auroraPartLocationData->{'Moving Quantity'};
+            }
+
+
+            $locationStockData = $this->sanitizeData(
+                [
+                    'quantity'           => round($auroraPartLocationData->{'Quantity On Hand'}, 3),
+                    'audited_at'         => $auroraPartLocationData->{'Part Location Last Audit'},
+                    'notes'              => $auroraPartLocationData->{'Part Location Note'},
+                    'data'               => [],
+                    'settings'           => $settings,
+                    'aurora_part_id'     => $auroraPartLocationData->{'Part SKU'},
+                    'aurora_location_id' => $auroraPartLocationData->{'Location Key'}
+
+                ]
+            );
+
+            if ($location = Location::withTrashed()->firstWhere('aurora_id', $auroraPartLocationData->{'Location Key'})) {
+                $locationsData[$location->id] = $locationStockData;
+            }
+        }
+
+        $stock->locations()->sync($locationsData);
 
 
         return $res;
