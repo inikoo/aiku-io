@@ -59,6 +59,8 @@ class CreateProductsTable extends Migration
                 $table->unsignedBigInteger('trade_unit_id')->nullable();
                 $table->foreign('trade_unit_id')->references('id')->on('trade_units');
                 $table->decimal('quantity', 12, 3);
+                $table->string('notes')->nullable();
+
                 $table->timestampsTz();
             }
         );

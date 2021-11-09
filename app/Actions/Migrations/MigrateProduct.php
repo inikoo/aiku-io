@@ -10,6 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Trade\Product\StoreProduct;
 use App\Actions\Trade\Product\UpdateProduct;
+use App\Models\Inventory\Stock;
 use App\Models\Trade\Product;
 use App\Models\Trade\Shop;
 use Illuminate\Support\Facades\DB;
@@ -55,8 +56,8 @@ class MigrateProduct extends MigrateModel
             $created_at = $this->auModel->data->{'Product Valid From'};
         }
 
-        $unit_price=$this->auModel->data->{'Product Price'} / $units;
-        $data['raw_price']=$unit_price;
+        $unit_price        = $this->auModel->data->{'Product Price'} / $units;
+        $data['raw_price'] = $unit_price;
 
 
         $this->modelData = $this->sanitizeData(
@@ -64,16 +65,16 @@ class MigrateProduct extends MigrateModel
                 'code' => $this->auModel->data->{'Product Code'},
                 'name' => $this->auModel->data->{'Product Name'},
 
-                'price' => round($unit_price,2),
+                'price' => round($unit_price, 2),
                 'outer' => $units,
 
                 'status' => $status,
                 'state'  => $state,
 
-                'data'       => $data,
-                'settings'   => $settings,
-                'created_at' => $created_at,
-                'aurora_product_id'  => $this->auModel->data->{'Product ID'}
+                'data'              => $data,
+                'settings'          => $settings,
+                'created_at'        => $created_at,
+                'aurora_product_id' => $this->auModel->data->{'Product ID'}
             ]
         );
 
@@ -103,7 +104,7 @@ class MigrateProduct extends MigrateModel
         $this->model = Product::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel():MigrationResult
+    public function updateModel(): MigrationResult
     {
         return UpdateProduct::run($this->model, $this->modelData);
     }
@@ -111,13 +112,40 @@ class MigrateProduct extends MigrateModel
     public function storeModel(): MigrationResult
     {
         return StoreProduct::run($this->parent, $this->modelData);
-
     }
 
     public function getParent(): Shop|null
     {
         return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Product Store Key'});
     }
+
+    public function postMigrateActions(MigrationResult $res): MigrationResult
+    {
+        $tradeUnits = [];
+
+        foreach (
+            DB::connection('aurora')
+                ->table('Product Part Bridge')
+                ->where('Product Part Product ID', $this->auModel->data->{'Product ID'})->get() as $auroraProductPartBridge
+        ) {
+            if ($stock = Stock::withTrashed()->firstWhere('aurora_id', $auroraProductPartBridge->{'Product Part Part SKU'})) {
+                foreach ($stock->tradeUnits as $tradeUnit) {
+                    $tradeUnits[$tradeUnit->id] = [
+                        'quantity' => $tradeUnit->pivot->quantity,
+                        'notes'    => $auroraProductPartBridge->{'Product Part Note'} ?? null
+                    ];
+                }
+            }
+        }
+
+        /** @var Product $product */
+        $product = $this->model;
+        $product->tradeUnits()->sync($tradeUnits);
+
+
+        return $res;
+    }
+
 
     public function authorize(ActionRequest $request): bool
     {
@@ -130,9 +158,10 @@ class MigrateProduct extends MigrateModel
         if ($auroraData = DB::connection('aurora')->table('Product Dimension')->where('Product Id', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res  = new MigrationResult();
-        $res->errors[]='Aurora model not found';
-        $res->status='error';
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
         return $res;
     }
 
