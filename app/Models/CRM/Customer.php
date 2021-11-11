@@ -8,10 +8,13 @@
 
 namespace App\Models\CRM;
 
+use App\Models\CustomerProduct;
 use App\Models\Helpers\Contact;
+use App\Models\Trade\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -60,7 +63,7 @@ class Customer extends Model implements Auditable
 
     public function images(): MorphMany
     {
-        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_models', 'imageable_type', 'imageable_id');
+        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function contact(): MorphOne
@@ -76,6 +79,11 @@ class Customer extends Model implements Auditable
     public function customers(): MorphMany
     {
         return $this->morphMany(Customer::class, 'vendor');
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id','status', 'type','aurora_id');
     }
 
 }
