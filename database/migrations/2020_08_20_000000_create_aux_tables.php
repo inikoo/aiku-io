@@ -99,7 +99,7 @@ class CreateAuxTables extends Migration
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
 
-        Schema::create('image_models', function (Blueprint $table) {
+        Schema::create('image_model', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('image_id');
             $table->foreign('image_id')->references('id')->on('images');
@@ -131,7 +131,7 @@ class CreateAuxTables extends Migration
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
 
-        Schema::create('attachment_models', function (Blueprint $table) {
+        Schema::create('attachment_model', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('attachment_id');
             $table->foreign('attachment_id')->references('id')->on('attachments');
@@ -207,9 +207,9 @@ class CreateAuxTables extends Migration
         Schema::dropIfExists('contacts');
         Schema::dropIfExists('categoriables');
         Schema::dropIfExists('categories');
-        Schema::dropIfExists('attachment_models');
+        Schema::dropIfExists('attachment_model');
         Schema::dropIfExists('attachments');
-        Schema::dropIfExists('image_models');
+        Schema::dropIfExists('image_model');
         Schema::dropIfExists('images');
         Schema::dropIfExists('audits');
         Schema::dropIfExists('dates');

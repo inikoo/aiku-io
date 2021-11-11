@@ -20,7 +20,7 @@ class CreateCommunalImagesTable extends Migration
     public function up()
     {
 
-        Schema::create('communal_images', function (Blueprint $table) {
+        Schema::create('communal_image', function (Blueprint $table) {
             $table->id();
             $table->morphs('imageable');
             $table->timestampsTz();
@@ -36,6 +36,6 @@ class CreateCommunalImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('communal_images');
+        Schema::dropIfExists('communal_image');
     }
 }

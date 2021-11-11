@@ -79,6 +79,9 @@ class MigrateAurora extends Command
 
     protected function handleMigration()
     {
+
+        $this->info($this->description);
+
         $this->results = [];
 
         if (!$this->option('all') and count($this->option('tenant')) == 0) {

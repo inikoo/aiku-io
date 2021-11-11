@@ -20,7 +20,6 @@ use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 class ImageModel extends Pivot {
     use UsesTenantConnection;
 
-    protected $table = 'image_models';
 
 
 

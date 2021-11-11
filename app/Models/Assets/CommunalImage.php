@@ -20,7 +20,6 @@ use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 class CommunalImage extends Pivot {
     use UsesLandLordConnection;
 
-    protected $table = 'communal_images';
 
 
     protected $guarded =[];

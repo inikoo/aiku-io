@@ -56,7 +56,6 @@ class CreateMediaTables extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('communal_images');
         Schema::dropIfExists('processed_images');
         Schema::dropIfExists('raw_images');
     }
