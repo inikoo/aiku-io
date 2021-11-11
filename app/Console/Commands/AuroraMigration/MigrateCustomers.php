@@ -34,6 +34,13 @@ class MigrateCustomers extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Customer Client Dimension')
             ->update(['aiku_id' => null]);
+
+        DB::connection('aurora')->table('Customer Favourite Product Fact')
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Back in Stock Reminder Fact')
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Customer Portfolio Fact')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
@@ -53,7 +60,7 @@ class MigrateCustomers extends MigrateAurora
                 $result = MigrateCustomer::run($auroraData);
                 $this->recordAction($tenant, $result);
 
-                foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key','=',$auroraData->{'Customer Key'})->get() as $auroraCustomerClientData) {
+                foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key', '=', $auroraData->{'Customer Key'})->get() as $auroraCustomerClientData) {
                     $result = MigrateCustomerClient::run($auroraCustomerClientData);
                     $this->recordAction($tenant, $result);
                 }
