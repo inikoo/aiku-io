@@ -22,7 +22,7 @@ class MigrateAurora extends Command
     protected $signature = 'au_migration:base';
     protected $description = 'Migrate aurora';
     protected int $total = 0;
-    private ProgressBar $bar;
+    protected ProgressBar $bar;
 
 
     public function __construct()
@@ -44,6 +44,10 @@ class MigrateAurora extends Command
     }
 
     protected function migrate(Tenant $tenant)
+    {
+    }
+
+    protected function migrateLandlord()
     {
     }
 
@@ -79,7 +83,6 @@ class MigrateAurora extends Command
 
     protected function handleMigration()
     {
-
         $this->info($this->description);
 
         $this->results = [];
@@ -143,6 +146,77 @@ class MigrateAurora extends Command
         }
 
         $this->bar->advance();
+    }
+
+    protected function handleLandlordMigration()
+    {
+        $this->info($this->description);
+
+        $this->results = [];
+
+        $database_settings = data_get(config('database.connections'), 'aurora');
+        data_set($database_settings, 'database', 'kbase');
+        config(['database.connections.aurora' => $database_settings]);
+        DB::connection('aurora');
+        DB::purge('aurora');
+
+
+        $this->total = $this->count();
+
+
+        $this->bar = $this->output->createProgressBar($this->total);
+        $this->bar->setFormat('debug');
+        $this->bar->start();
+
+        $this->results = [
+            'models'   => 0,
+            'inserted' => 0,
+            'updated'  => 0,
+            'errors'   => 0
+        ];
+
+        if ($this->option('reset')) {
+            if (config('app.env') == 'production') {
+                if ($this->confirm('Do you really want to reset?')) {
+                    $this->reset();
+                }
+            } else {
+                $this->reset();
+            }
+        }
+
+
+        $this->migrateLandlord();
+
+        $this->showLandlordResults();
+    }
+
+    protected function recordLandlordAction($result)
+    {
+        $this->results['models']++;
+        switch ($result->status) {
+            case 'inserted':
+                $this->results['inserted'] += 1;
+                break;
+            case 'updated':
+                $this->results['updated'] += 1;
+                break;
+            case 'error':
+                $this->results['errors'] += 1;
+                break;
+        }
+
+        $this->bar->advance();
+    }
+
+    protected function showLandlordResults()
+    {
+        $this->bar->finish();
+        $this->info('');
+        $this->table(
+            ['Models', 'Inserted', 'Updated', 'Errors'],
+            [$this->results]
+        );
     }
 
 
