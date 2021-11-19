@@ -10,9 +10,10 @@ namespace App\Models\Trade;
 
 use App\Models\CRM\Customer;
 use App\Models\Helpers\Contact;
-use App\Models\Trade\Product;
+use App\Models\Sales\ShippingSchema;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -68,5 +69,9 @@ class Shop extends Model implements Auditable
         return $this->morphMany(Product::class, 'vendor');
     }
 
+    public function shippingSchema(): HasMany
+    {
+        return $this->hasMany(ShippingSchema::class);
+    }
 
 }
