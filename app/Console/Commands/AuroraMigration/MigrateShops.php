@@ -8,6 +8,7 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
+use App\Actions\Migrations\MigrateCharge;
 use App\Actions\Migrations\MigrateShippingSchema;
 use App\Actions\Migrations\MigrateShop;
 use App\Models\Account\Tenant;
@@ -32,12 +33,19 @@ class MigrateShops extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Shipping Zone Schema Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Shipping Zone Dimension')
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Charge Dimension')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
-        return DB::connection('aurora')->table('Store Dimension')->count();
+        $count = DB::connection('aurora')->table('Store Dimension')->count();
+        $count += DB::connection('aurora')->table('Shipping Zone Schema Dimension')->count();
+        $count += DB::connection('aurora')->table('Charge Dimension')->count();
 
+        return $count;
     }
 
     protected function migrate(Tenant $tenant)
@@ -46,13 +54,23 @@ class MigrateShops extends MigrateAurora
             $result = MigrateShop::run($auroraStoreData);
             $this->recordAction($tenant, $result);
 
-            foreach (DB::connection('aurora')->table('Shipping Zone Schema Dimension')
-                ->where('Shipping Zone Schema Store Key',$auroraStoreData->{'Store Key'})
-                ->get() as $auroraShippingSchemaData) {
+            foreach (
+                DB::connection('aurora')->table('Shipping Zone Schema Dimension')
+                    ->where('Shipping Zone Schema Store Key', $auroraStoreData->{'Store Key'})
+                    ->get() as $auroraShippingSchemaData
+            ) {
                 $result = MigrateShippingSchema::run($auroraShippingSchemaData);
                 $this->recordAction($tenant, $result);
             }
 
+            foreach (
+                DB::connection('aurora')->table('Charge Dimension')
+                    ->where('Charge Store Key', $auroraStoreData->{'Store Key'})
+                    ->get() as $auroraChargeData
+            ) {
+                $result = MigrateCharge::run($auroraChargeData);
+                $this->recordAction($tenant, $result);
+            }
 
         }
     }
