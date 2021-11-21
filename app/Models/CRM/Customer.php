@@ -10,11 +10,13 @@ namespace App\Models\CRM;
 
 use App\Models\CustomerProduct;
 use App\Models\Helpers\Contact;
+use App\Models\Sales\Basket;
 use App\Models\Trade\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -84,6 +86,11 @@ class Customer extends Model implements Auditable
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id','status', 'type','aurora_id');
+    }
+
+    public function basket(): HasOne
+    {
+        return $this->hasOne(Basket::class);
     }
 
 }

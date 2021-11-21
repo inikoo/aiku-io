@@ -23,8 +23,8 @@ class UpdateShippingZone
     {
         $res = new MigrationResult();
 
-        $shippingZone->update(Arr::except($modelData, ['price', 'territories']));
-        $shippingZone->update($this->extractJson($modelData, ['price', 'territories']));
+        $shippingZone->update(Arr::except($modelData,['data']));
+        $shippingZone->update($this->extractJson($modelData));
 
         $res->changes = array_merge($res->changes, $shippingZone->getChanges());
 

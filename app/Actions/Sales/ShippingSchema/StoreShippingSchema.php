@@ -22,7 +22,7 @@ class StoreShippingSchema
 
 
         /** @var \App\Models\Sales\ShippingSchema $shippingShema */
-        $shippingSchema = $shop->shippingSchema()->create($data);
+        $shippingSchema = $shop->shippingSchemaa()->create($data);
 
 
 

@@ -8,8 +8,9 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Account\TaxBand\StoreTaxBand;
-use App\Actions\Account\TaxBand\UpdateTaxBand;
+
+use App\Actions\Sales\TaxBand\StoreTaxBand;
+use App\Actions\Sales\TaxBand\UpdateTaxBand;
 use App\Models\Sales\TaxBand;
 use Illuminate\Support\Facades\DB;
 

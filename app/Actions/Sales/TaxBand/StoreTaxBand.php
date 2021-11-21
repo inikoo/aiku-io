@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Account\TaxBand;
+namespace App\Actions\Sales\TaxBand;
 
 use App\Actions\Migrations\MigrationResult;
 use App\Models\Sales\TaxBand;

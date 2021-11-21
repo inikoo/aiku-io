@@ -37,8 +37,7 @@ class MigrateShippingZone extends MigrateModel
 
     public function parseModelData()
     {
-        $settings = [];
-        $price    = [];
+        $price = [];
 
         $price_data = json_decode($this->auModel->data->{'Shipping Zone Price'}, true);
 
@@ -52,7 +51,7 @@ class MigrateShippingZone extends MigrateModel
         if (in_array($price['method'], ['items-net', 'weight'])) {
             $price['steps'] = $price_data['steps'];
         }
-        $territories_data = json_decode(preg_replace('/country_code/','country',$this->auModel->data->{'Shipping Zone Territories'}), true);
+        $territories_data = json_decode(preg_replace('/country_code/', 'country', $this->auModel->data->{'Shipping Zone Territories'}), true);
 
 
         $settings = [
@@ -60,7 +59,6 @@ class MigrateShippingZone extends MigrateModel
             'territories' => $territories_data,
 
         ];
-
 
 
         $this->modelData   = [

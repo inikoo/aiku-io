@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
                 'Agent'          => 'App\Models\Buying\Agent',
                 'Supplier'       => 'App\Models\Buying\Supplier',
                 'Shop'           => 'App\Models\Trade\Shop',
-
+                'Basket'         => 'App\Models\Sales\Basket',
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
                 'Guest'                    => 'App\Models\System\Guest',
@@ -59,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
                 'Prospect'                 => 'App\Models\CRM\Prospect',
                 'WebBlock'                 => 'App\Models\ECommerce\WebBlock',
                 'Order'                    => 'App\Models\Sales\Order',
-                'Basket'                   => 'App\Models\Sales\Basket',
+
                 'ShippingZone'             => 'App\Models\Sales\ShippingZone',
                 'Charge'                   => 'App\Models\Sales\Charge',
                 'Invoice'                  => 'App\Models\Sales\Invoice',
