@@ -13,6 +13,7 @@ use App\Actions\Sales\BasketTransaction\StoreBasketTransaction;
 use App\Actions\Sales\BasketTransaction\UpdateBasketTransaction;
 use App\Models\Sales\Basket;
 use App\Models\Sales\BasketTransaction;
+use App\Models\Sales\TaxBand;
 use App\Models\Trade\Product;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
@@ -29,6 +30,8 @@ class MigrateBasketProductTransaction extends MigrateModel
         parent::__construct();
         $this->auModel->table    = 'Order Transaction Fact';
         $this->auModel->id_field = 'Order Transaction Fact Key';
+        $this->aiku_id_field     = 'aiku_basket_id';
+
     }
 
     public function getParent(): Basket|null
@@ -38,11 +41,15 @@ class MigrateBasketProductTransaction extends MigrateModel
 
     public function parseModelData()
     {
+        $taxBand = (new TaxBand())->firstWhere('aurora_id', $this->auModel->data->{'Order Transaction Tax Category Key'});
+
         $product = (new Product())->firstWhere('aurora_product_id', $this->auModel->data->{'Product ID'});
 
         $this->modelData   = [
             'item_type' => 'Product',
             'item_id'   => $product->id,
+            'tax_band_id' => $taxBand->id ?? null,
+
             'quantity'  => $this->auModel->data->{'Order Quantity'},
             'discounts' => $this->auModel->data->{'Order Transaction Total Discount Amount'},
             'net'       => $this->auModel->data->{'Order Transaction Amount'},
@@ -55,12 +62,12 @@ class MigrateBasketProductTransaction extends MigrateModel
 
     public function setModel()
     {
-        $this->model = BasketTransaction::find($this->auModel->data->aiku_id);
+        $this->model = BasketTransaction::find($this->auModel->data->aiku_basket_id);
     }
 
     public function updateModel(): MigrationResult
     {
-        return UpdateBasketTransaction::run($this->model, $this->modelData['basket'], $this->modelData['delivery_address']);
+        return UpdateBasketTransaction::run($this->model, $this->modelData);
     }
 
     public function storeModel(): MigrationResult

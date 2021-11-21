@@ -20,7 +20,7 @@ class CreateBasketTransactionsTable extends Migration
             $table->unsignedBigInteger('basket_id')->index();
             $table->foreign('basket_id')->references('id')->on('baskets');
 
-            $table->morphs('item');
+            $table->nullableMorphs('item');
 
 
 

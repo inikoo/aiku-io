@@ -26,8 +26,14 @@ class MigrateBaskets extends MigrateAurora
 
     protected function reset()
     {
-        DB::connection('aurora')->table('Order Dimension')->where('Order State', 'InBasket')
-            ->update(['aiku_basket_id' => null]);
+        DB::connection('aurora')->table('Order Dimension')->update(['aiku_basket_id' => null]);
+        DB::connection('aurora')->table('Order Transaction Fact')->update(['aiku_basket_id' => null]);
+        DB::connection('aurora')->table('Order No Product Transaction Fact')->update(['aiku_basket_id' => null]);
+
+        DB::connection('aurora')->table('Order Dimension')->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Order Transaction Fact')->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Order No Product Transaction Fact')->update(['aiku_id' => null]);
+
     }
 
     protected function count(): int

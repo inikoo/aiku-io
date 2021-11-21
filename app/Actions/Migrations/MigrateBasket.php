@@ -65,7 +65,7 @@ class MigrateBasket extends MigrateModel
 
     public function setModel()
     {
-        $this->model = Basket::find($this->auModel->data->aiku_id);
+        $this->model = Basket::find($this->auModel->data->aiku_basket_id);
     }
 
     public function updateModel(): MigrationResult
