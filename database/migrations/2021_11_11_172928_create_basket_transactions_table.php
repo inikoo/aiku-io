@@ -36,7 +36,7 @@ class CreateBasketTransactionsTable extends Migration
             $table->jsonb('data');
 
             $table->timestampsTz();
-            $table->unsignedMediumInteger('aurora_id')->nullable()->index();
+            $table->unsignedBigInteger('aurora_id')->nullable()->index();
         });
     }
 

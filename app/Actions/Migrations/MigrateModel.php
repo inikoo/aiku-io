@@ -92,7 +92,11 @@ class MigrateModel
             //if($res->changes)
             //print_r($res->changes);
 
-            if ($res->status == 'error') {
+            if ($res->status == 'deleted') {
+                $this->updateAuroraModel();
+
+                return $res;
+            } elseif ($res->status == 'error') {
                 return $res;
             }
         } else {

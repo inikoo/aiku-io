@@ -29,8 +29,11 @@ class MigrateBaskets extends MigrateAurora
         DB::connection('aurora')->table('Order Dimension')->update(['aiku_basket_id' => null]);
         DB::connection('aurora')->table('Order Transaction Fact')->update(['aiku_basket_id' => null]);
         DB::connection('aurora')->table('Order No Product Transaction Fact')->update(['aiku_basket_id' => null]);
+        DB::connection('aurora')->table('Order Dimension')->update(['aiku_note' => null]);
+
 
         DB::connection('aurora')->table('Order Dimension')->update(['aiku_id' => null]);
+
         DB::connection('aurora')->table('Order Transaction Fact')->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Order No Product Transaction Fact')->update(['aiku_id' => null]);
 

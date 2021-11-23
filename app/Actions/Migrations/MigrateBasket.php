@@ -35,14 +35,31 @@ class MigrateBasket extends MigrateModel
 
     }
 
-    public function getParent(): Customer|null
+    public function getParent(): Customer
     {
         if ($this->auModel->data->{'Order Customer Client Key'} != '') {
-            return (new Customer())->firstWhere('aurora_customer_client_id', $this->auModel->data->{'Order Customer Client Key'});
+
+            $parent = Customer::withTrashed()->firstWhere('aurora_customer_client_id', $this->auModel->data->{'Order Customer Client Key'});
         } else {
-            return (new Customer())->firstWhere('aurora_customer_id', $this->auModel->data->{'Order Customer Key'});
+
+            $parent = Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Order Customer Key'});
         }
+
+
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+        if ($parent->trashed() or  ($parent->shop->type=='dropshipping' and !$this->auModel->data->{'Order Customer Client Key'} ) ) {
+
+            $this->ignore=true;
+            DB::connection('aurora')->table($this->auModel->table)
+                ->where($this->auModel->id_field, $this->auModel->data->{'Order Key'})
+                ->update(['aiku_note' => 'ignore']);
+
+        }
+
+
+        return $parent;
     }
+
 
     public function parseModelData()
     {
@@ -81,7 +98,7 @@ class MigrateBasket extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-        if ($this->auModel->data->{'Order State'} == 'InBasket') {
+        if ($this->auModel->data->{'Order State'} == 'InBasket' and !$this->ignore) {
             return UpdateBasket::run($this->model, $this->modelData['basket'], $this->modelData['delivery_address']);
         } else {
             return DeleteBasket::run($this->model);
@@ -90,7 +107,7 @@ class MigrateBasket extends MigrateModel
 
     public function storeModel(): MigrationResult
     {
-        if ($this->auModel->data->{'Order State'} == 'InBasket') {
+        if ($this->auModel->data->{'Order State'} == 'InBasket' and !$this->ignore) {
             return StoreBasket::run($this->parent, $this->modelData['basket'], $this->modelData['delivery_address']);
         }
 
@@ -99,14 +116,24 @@ class MigrateBasket extends MigrateModel
 
     protected function postMigrateActions(MigrationResult $res): MigrationResult
     {
-        foreach (DB::connection('aurora')->table('Order Transaction Fact')
-            ->where('Order Key',$this->auModel->data->{'Order Key'})
-            ->get() as $auroraTransaction) {
+        if($this->ignore){
+            $res = new MigrationResult();
+            $res->status   = 'error';
+            return $res;
+        }
+
+        foreach (
+            DB::connection('aurora')->table('Order Transaction Fact')
+                ->where('Order Key', $this->auModel->data->{'Order Key'})
+                ->get() as $auroraTransaction
+        ) {
             MigrateBasketProductTransaction::run($auroraTransaction);
         }
-        foreach (DB::connection('aurora')->table('Order No Product Transaction Fact')
-            ->where('Order Key',$this->auModel->data->{'Order Key'})
-            ->get() as $auroraTransaction) {
+        foreach (
+            DB::connection('aurora')->table('Order No Product Transaction Fact')
+                ->where('Order Key', $this->auModel->data->{'Order Key'})
+                ->get() as $auroraTransaction
+        ) {
             MigrateBasketNoProductTransaction::run($auroraTransaction);
         }
 

@@ -8,6 +8,7 @@
 
 namespace App\Actions\Sales\Basket;
 
+use App\Actions\Migrations\MigrationResult;
 use App\Models\Sales\Basket;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,8 +16,17 @@ class DeleteBasket
 {
     use AsAction;
 
-    public function handle(Basket $basket): ?bool
+    public function handle(Basket $basket): MigrationResult
     {
-        return $basket->delete();
+        $res = new MigrationResult();
+        $res->model_id = $basket->id;
+        if ($basket->delete()) {
+            $res->status  ='deleted';
+        }else{
+            $res->status  ='error';
+
+        }
+        return $res;
+
     }
 }
