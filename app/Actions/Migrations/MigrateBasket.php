@@ -25,6 +25,7 @@ class MigrateBasket extends MigrateModel
     use AsAction;
 
 
+
     #[Pure] public function __construct()
     {
         parent::__construct();
@@ -45,6 +46,13 @@ class MigrateBasket extends MigrateModel
 
     public function parseModelData()
     {
+
+
+        if($this->ignore){
+            return;
+        }
+
+
         $this->modelData['basket'] = [
             'nickname'  => $this->auModel->data->{'Order Public ID'},
             'aurora_id' => $this->auModel->data->{'Order Key'},
@@ -55,6 +63,9 @@ class MigrateBasket extends MigrateModel
         $deliveryAddressData = $this->parseAddress(prefix: 'Order Delivery', auAddressData: $this->auModel->data);
 
         $deliveryAddress = new Address($deliveryAddressData);
+
+
+
 
         $this->modelData['delivery_address'] = null;
         if ($deliveryAddress->getChecksum() != $this->parent->deliveryAddress->getChecksum()) {

@@ -34,12 +34,14 @@ class MigrateModel
     protected array $modelData;
     protected ?Model $model = null;
     protected string $aiku_id_field;
+    protected bool $ignore;
 
 
     #[Pure] public function __construct()
     {
         $this->auModel       = new stdClass();
         $this->aiku_id_field = 'aiku_id';
+        $this->ignore        = false;
     }
 
     public function getParent()
@@ -227,6 +229,9 @@ class MigrateModel
 
     private function updateAuroraModel($value = null)
     {
+        if($this->ignore){
+            return;
+        }
         DB::connection('aurora')->table($this->auModel->table)
             ->where($this->auModel->id_field, $this->auModel->id)
             ->update([$this->aiku_id_field => $value]);

@@ -93,4 +93,18 @@ class Customer extends Model implements Auditable
         return $this->hasOne(Basket::class);
     }
 
+
+    public function shop(): MorphTo
+    {
+       if($this->vendor_type=='Shop'){
+           return $this->vendor();
+       }else{
+           /** @var \App\Models\CRM\Customer $customer */
+           $customer=$this->vendor;
+           return $customer->shop();
+
+       }
+    }
+
+
 }

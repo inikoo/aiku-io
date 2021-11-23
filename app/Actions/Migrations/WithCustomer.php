@@ -25,23 +25,23 @@ trait WithCustomer
             auData:           $auData,
             metadataCustomer: $customer->data,
         );
-        $this->modelData['contact']['data'] = $this->parseContactMetadata(
-            auData:           $auData,
-            metadataContact:  $customer->contact->data,
+        $this->modelData['contact']['data']  = $this->parseContactMetadata(
+            auData:          $auData,
+            metadataContact: $customer->contact->data,
         );
 
-        $result= UpdateCustomer::run(
-            customer: $customer,
+        $result = UpdateCustomer::run(
+            customer:     $customer,
             customerData: $this->modelData['customer'],
-            contactData: $this->modelData['contact'],
+            contactData:  $this->modelData['contact'],
 
         );
-
-
 
 
         if (isset($this->modelData['addresses']['billing']) and count($this->modelData['addresses']['billing']) > 0) {
             UpdateAddress::run($result->model->billingAddress, $this->modelData['addresses']['billing'][0]);
+            $result->model->billing_address_id = $result->model->billingAddress->id;
+            $result->model->save();
         }
 
         if (isset($this->modelData['addresses']['delivery']) and count($this->modelData['addresses']['delivery']) > 0) {
@@ -57,29 +57,33 @@ trait WithCustomer
                 $result->model->delivery_address_id = $address->id;
                 $result->model->save();
             }
-        } elseif ($result->model->deliveryAddress and $result->model->deliveryAddress->id != $result->model->billingAddress->id) {
+        } else {
+            if ($result->model->deliveryAddress and $result->model->deliveryAddress->id != $result->model->billingAddress->id) {
+                DeleteAddress::run($result->model->deliveryAddress);
+            }
+
             $result->model->delivery_address_id = null;
+            if ($result->model->vendor_type == 'Shop' and $result->model->vendor->type != 'dropshipping') {
+                $result->model->delivery_address_id = $result->model->billing_address_id;
+            }
             $result->model->save();
-            DeleteAddress::run($result->model->deliveryAddress);
         }
 
-        return $result;
 
+        return $result;
     }
 
     private function parseCustomerMetadata($auData, array $metadataCustomer = []): array
     {
-
-
         $marketing_can_send = [];
         $subscriptions      = [];
-        if ($auData->{'Customer Send Newsletter'}??null == 'Yes') {
+        if ($auData->{'Customer Send Newsletter'} ?? null == 'Yes') {
             $subscriptions[] = 'newsletter';
         }
-        if ($auData->{'Customer Send Email Marketing'}??null == 'Yes') {
+        if ($auData->{'Customer Send Email Marketing'} ?? null == 'Yes') {
             $marketing_can_send[] = 'email_marketing';
         }
-        if ($auData->{'Customer Send Postal Marketing'}??null == 'Yes') {
+        if ($auData->{'Customer Send Postal Marketing'} ?? null == 'Yes') {
             $marketing_can_send[] = 'postal_marketing';
         }
         data_set($metadataCustomer, 'marketing.subscriptions', $subscriptions);
@@ -88,7 +92,7 @@ trait WithCustomer
         return $metadataCustomer;
     }
 
-    private function parseContactMetadata($auData,  array $metadataContact = []): array
+    private function parseContactMetadata($auData, array $metadataContact = []): array
     {
         if ($auData->{'Customer Tax Number'} != '') {
             if ($auData->{'Customer Tax Number Registered Name'}) {
