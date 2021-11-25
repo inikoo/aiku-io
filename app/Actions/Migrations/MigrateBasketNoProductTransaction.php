@@ -54,7 +54,15 @@ class MigrateBasketNoProductTransaction extends MigrateModel
                 $item_type='Charges';
 
                 break;
+            case 'Insurance':
+                $item = (new Charge())->where('type', 'insurance')->where('store_id',$this->parent->store_id)->first() ;
+                $item_type='Charges';
+
+                print_r($this->auModel->data);
+
+                break;
             default:
+                print "===== MigrateBasketNoProductTransaction.php\n";
                 dd($this->auModel->data);
         }
 

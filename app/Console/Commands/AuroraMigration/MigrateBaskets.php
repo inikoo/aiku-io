@@ -42,10 +42,14 @@ class MigrateBaskets extends MigrateAurora
     protected function count(): int
     {
         $count = DB::connection('aurora')->table('Order Dimension')
-            ->where('Order State', 'InBasket')
+            ->whereNotIn('Order State',['Dispatched','Approved'])
+            ->whereNull('aiku_note')
+
             ->count();
         $count += DB::connection('aurora')->table('Order Dimension')
-            ->where('Order State', '!=','InBasket')
+            ->whereIn('Order State',['Dispatched','Approved'])
+            ->whereNull('aiku_note')
+
             ->whereNotNull('aiku_basket_id')
             ->count();
 
@@ -56,8 +60,9 @@ class MigrateBaskets extends MigrateAurora
     protected function migrate(Tenant $tenant)
     {
         DB::connection('aurora')->table('Order Dimension')
-            ->where('Order State', '!=','InBasket')
+            ->whereIn('Order State',['Dispatched','Approved'])
             ->whereNotNull('aiku_basket_id')
+            ->whereNull('aiku_note')
             ->orderByDesc('Order Key')->chunk(1000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
                     $result = MigrateBasket::run($auroraData);
@@ -66,7 +71,8 @@ class MigrateBaskets extends MigrateAurora
             });
 
         DB::connection('aurora')->table('Order Dimension')
-            ->where('Order State','InBasket')
+            ->whereNotIn('Order State',['Dispatched','Approved'])
+            ->whereNull('aiku_note')
             ->orderByDesc('Order Key')->chunk(1000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
                     $result = MigrateBasket::run($auroraData);

@@ -24,13 +24,14 @@ class CreateBasketsTable extends Migration
 
             $table->id();
 
+            $table->unsignedMediumInteger('shop_id')->nullable()->index();
+            $table->foreign('shop_id')->references('id')->on('shops');
 
             $table->unsignedBigInteger('customer_id')->index();
             $table->foreign('customer_id')->references('id')->on('customers');
 
             $table->string('nickname')->nullable()->index();
-
-            $table->boolean('status')->default(false)->index();
+            $table->enum('state',['in-basket','in-process','in-warehouse','packed','packed-done','cancelled'])->default('in-basket')->index();
 
             //$table->unsignedBigInteger('alt_delivery_address_id')->nullable()->index();
             //$table->foreign('alt_delivery_address_id')->references('id')->on('addresses');

@@ -16,6 +16,7 @@ use App\Models\CRM\Customer;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Basket;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -25,35 +26,33 @@ class MigrateBasket extends MigrateModel
     use AsAction;
 
 
-
     #[Pure] public function __construct()
     {
         parent::__construct();
         $this->auModel->table    = 'Order Dimension';
         $this->auModel->id_field = 'Order Key';
         $this->aiku_id_field     = 'aiku_basket_id';
-
     }
 
     public function getParent(): Customer
     {
         if ($this->auModel->data->{'Order Customer Client Key'} != '') {
-
             $parent = Customer::withTrashed()->firstWhere('aurora_customer_client_id', $this->auModel->data->{'Order Customer Client Key'});
         } else {
-
             $parent = Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Order Customer Key'});
         }
 
+        if (!$parent) {
+            print "Migrate basket no parent";
+            dd($this->auModel->data);
+        }
 
         /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-        if ($parent->trashed() or  ($parent->shop->type=='dropshipping' and !$this->auModel->data->{'Order Customer Client Key'} ) ) {
-
-            $this->ignore=true;
+        if ($parent->trashed() or ($parent->shop->type == 'dropshipping' and !$this->auModel->data->{'Order Customer Client Key'})) {
+            $this->ignore = true;
             DB::connection('aurora')->table($this->auModel->table)
                 ->where($this->auModel->id_field, $this->auModel->data->{'Order Key'})
                 ->update(['aiku_note' => 'ignore']);
-
         }
 
 
@@ -63,16 +62,16 @@ class MigrateBasket extends MigrateModel
 
     public function parseModelData()
     {
-
-
-        if($this->ignore){
+        if ($this->ignore) {
             return;
         }
 
 
         $this->modelData['basket'] = [
             'nickname'  => $this->auModel->data->{'Order Public ID'},
+            'shop_id'   => $this->parent->shop->id,
             'aurora_id' => $this->auModel->data->{'Order Key'},
+            'state'     => Str::snake($this->auModel->data->{'Order State'}, '-')
 
         ];
         $this->auModel->id         = $this->auModel->data->{'Order Key'};
@@ -80,8 +79,6 @@ class MigrateBasket extends MigrateModel
         $deliveryAddressData = $this->parseAddress(prefix: 'Order Delivery', auAddressData: $this->auModel->data);
 
         $deliveryAddress = new Address($deliveryAddressData);
-
-
 
 
         $this->modelData['delivery_address'] = null;
@@ -98,7 +95,8 @@ class MigrateBasket extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-        if ($this->auModel->data->{'Order State'} == 'InBasket' and !$this->ignore) {
+
+        if (!in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
             return UpdateBasket::run($this->model, $this->modelData['basket'], $this->modelData['delivery_address']);
         } else {
             return DeleteBasket::run($this->model);
@@ -107,7 +105,7 @@ class MigrateBasket extends MigrateModel
 
     public function storeModel(): MigrationResult
     {
-        if ($this->auModel->data->{'Order State'} == 'InBasket' and !$this->ignore) {
+        if (!in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
             return StoreBasket::run($this->parent, $this->modelData['basket'], $this->modelData['delivery_address']);
         }
 
@@ -116,9 +114,10 @@ class MigrateBasket extends MigrateModel
 
     protected function postMigrateActions(MigrationResult $res): MigrationResult
     {
-        if($this->ignore){
-            $res = new MigrationResult();
-            $res->status   = 'error';
+        if ($this->ignore) {
+            $res         = new MigrationResult();
+            $res->status = 'error';
+
             return $res;
         }
 

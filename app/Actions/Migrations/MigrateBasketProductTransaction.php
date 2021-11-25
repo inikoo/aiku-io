@@ -34,7 +34,7 @@ class MigrateBasketProductTransaction extends MigrateModel
 
     }
 
-    public function getParent(): Basket|null
+    public function getParent(): Basket
     {
         return (new Basket())->firstWhere('aurora_id', $this->auModel->data->{'Order Key'});
     }

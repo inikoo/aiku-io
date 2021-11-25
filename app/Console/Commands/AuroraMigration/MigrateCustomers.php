@@ -55,10 +55,16 @@ class MigrateCustomers extends MigrateAurora
 
     protected function migrate(Tenant $tenant)
     {
+
         DB::connection('aurora')->table('Customer Dimension')->orderBy('Customer Key')->chunk(1000, function ($chunk) use ($tenant) {
             foreach ($chunk as $auroraData) {
                 $result = MigrateCustomer::run($auroraData);
                 $this->recordAction($tenant, $result);
+
+                foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key', '=', $auroraData->{'Customer Key'})->get() as $auroraCustomerClientData) {
+                    $result = MigrateCustomerClient::run($auroraCustomerClientData);
+                    $this->recordAction($tenant, $result);
+                }
 
                 foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key', '=', $auroraData->{'Customer Key'})->get() as $auroraCustomerClientData) {
                     $result = MigrateCustomerClient::run($auroraCustomerClientData);
@@ -83,6 +89,9 @@ class MigrateCustomers extends MigrateAurora
                 $this->recordAction($tenant, $result);
             }
         });
+
+
+
     }
 
 

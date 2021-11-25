@@ -20,6 +20,10 @@ class DeleteBasket
     {
         $res = new MigrationResult();
         $res->model_id = $basket->id;
+
+        $basket->transactions()->delete();
+
+
         if ($basket->delete()) {
             $res->status  ='deleted';
         }else{

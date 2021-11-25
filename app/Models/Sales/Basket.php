@@ -9,7 +9,7 @@
 namespace App\Models\Sales;
 
 use App\Models\CRM\Customer;
-use App\Models\Helpers\Address;
+use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,6 +38,10 @@ class Basket extends Model
 
     protected $guarded = [];
 
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
+    }
 
     public function customer(): BelongsTo
     {
@@ -49,20 +53,7 @@ class Basket extends Model
         return $this->hasMany('App\Models\Sales\BasketTransaction');
     }
 
-    /*
-    public function altDeliveryAddress(): BelongsTo
-    {
-        return $this->belongsTo(Address::class, 'alt_delivery_address_id');
-    }
 
-    public function DeliveryAddress(): BelongsTo
-    {
-        if($this->alt_delivery_address_id){
-            return $this->altDeliveryAddress();
-        }
-        return $this->customer->deliveryAddress();
-    }
-    */
 
     public function deliveryAddress(): MorphToMany
     {
