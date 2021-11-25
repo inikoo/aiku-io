@@ -52,7 +52,7 @@ class MigrateBasket extends MigrateModel
             $this->ignore = true;
             DB::connection('aurora')->table($this->auModel->table)
                 ->where($this->auModel->id_field, $this->auModel->data->{'Order Key'})
-                ->update(['aiku_note' => 'ignore']);
+                ->update(['aiku_note' => 'ignore-basket']);
         }
 
 
