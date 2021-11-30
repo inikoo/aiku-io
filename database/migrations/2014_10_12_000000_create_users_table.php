@@ -20,9 +20,9 @@ class CreateUsersTable extends Migration
             $table->morphs('userable');
             $table->boolean('status')->default(true)->index();
             $table->unsignedSmallInteger('language_id');
-            $table->foreign('language_id')->references('id')->on('aiku.languages');
+            //$table->foreign('language_id')->references('id')->on('aiku.languages');
             $table->unsignedSmallInteger('timezone_id');
-            $table->foreign('timezone_id')->references('id')->on('aiku.timezones');
+            //$table->foreign('timezone_id')->references('id')->on('aiku.timezones');
 
             $table->jsonb('data');
             $table->jsonb('settings');

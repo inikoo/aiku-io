@@ -12,8 +12,6 @@ use App\Actions\CRM\Customer\StoreCustomer;
 
 use App\Models\CRM\Customer;
 use App\Models\Trade\Shop;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -45,7 +43,7 @@ class MigrateDeletedCustomer extends MigrateModel
         if ($registrationNumber) {
             $registrationNumber = Str::limit($registrationNumber);
         }
-        $taxNumberValid=$this->auModel->data->{'Customer Tax Number Valid'}??'unknown';
+        $taxNumberValid = $this->auModel->data->{'Customer Tax Number Valid'} ?? 'unknown';
 
 
         $this->modelData['contact'] = $this->sanitizeData(
@@ -64,7 +62,7 @@ class MigrateDeletedCustomer extends MigrateModel
                         'No' => 'invalid',
                         default => 'unknown'
                     },
-                'created_at'               => $this->auModel->data->{'Customer First Contacted Date'} ?? null
+                'created_at'               => $this->auModel->data->{'Customer First Contacted Date'} ?? null,
 
             ]
         );
@@ -72,11 +70,14 @@ class MigrateDeletedCustomer extends MigrateModel
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
+                'shop_id'            => $this->parent->id,
                 'name'               => $auroraDeletedData->{'Customer Name'},
                 'state'              => $state,
                 'status'             => $status,
                 'aurora_customer_id' => $auroraDeletedData->{'Customer Key'},
-                'created_at'         => $auroraDeletedData->{'Customer First Contacted Date'}
+                'created_at'         => $auroraDeletedData->{'Customer First Contacted Date'},
+                'deleted_at'         => $this->auModel->data->{'Customer Deleted Date'}
+
             ]
         );
 
@@ -100,7 +101,7 @@ class MigrateDeletedCustomer extends MigrateModel
         $this->auModel->id = $auroraDeletedData->{'Customer Key'};
     }
 
-    public function getParent(): Model|Shop|Builder|\Illuminate\Database\Query\Builder|null
+    public function getParent(): Shop
     {
         return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Store Key'});
     }

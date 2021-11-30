@@ -24,12 +24,14 @@ class CreateMediaTables extends Migration
             $table->unsignedBigInteger('filesize')->index();
             $table->double('megapixels')->index();
             $table->string('mime');
+            $table->binary('image_data');
             $table->timestampsTz();
             $table->softDeletesTz();
         });
-        /** @noinspection SqlNoDataSourceInspection */
-        /** @noinspection SqlResolve */
-        DB::statement('ALTER TABLE raw_images ADD image_data  LONGBLOB');
+
+
+
+        //DB::statement('ALTER TABLE raw_images ADD image_data  LONGBLOB');
 
 
         Schema::create('processed_images', function (Blueprint $table) {
@@ -44,12 +46,14 @@ class CreateMediaTables extends Migration
             $table->string('mime');
 
             $table->jsonb('data');
+            $table->binary('image_data');
+
             $table->timestampsTz();
             $table->softDeletesTz();
         });
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
-        DB::statement('ALTER TABLE processed_images ADD image_data  LONGBLOB');
+        //DB::statement('ALTER TABLE processed_images ADD image_data  LONGBLOB');
 
     }
 

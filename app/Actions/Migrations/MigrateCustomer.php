@@ -11,11 +11,8 @@ namespace App\Actions\Migrations;
 use App\Actions\CRM\Customer\StoreCustomer;
 
 use App\Models\CRM\Customer;
-use App\Models\Inventory\Stock;
 use App\Models\Trade\Product;
 use App\Models\Trade\Shop;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -70,6 +67,7 @@ class MigrateCustomer extends MigrateModel
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
+                'shop_id'            => $this->parent->id,
                 'name'               => $this->auModel->data->{'Customer Name'},
                 'state'              => $state,
                 'status'             => $status,
@@ -98,7 +96,7 @@ class MigrateCustomer extends MigrateModel
         $this->auModel->id = $this->auModel->data->{'Customer Key'};
     }
 
-    public function getParent(): Model|Shop|Builder|\Illuminate\Database\Query\Builder|null
+    public function getParent(): Shop
     {
         return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Store Key'});
     }
@@ -148,11 +146,11 @@ class MigrateCustomer extends MigrateModel
                 if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraFavourites->{'Customer Favourite Product Product ID'})) {
                     $products[$product->id] =
                         [
-                            'type'                => 'favourite',
-                            'created_at'          => $auroraFavourites->{'Customer Favourite Product Creation Date'},
-                            'data'                => [],
-                            'settings'            => [],
-                            'aurora_id' => $auroraFavourites->{'Customer Favourite Product Key'},
+                            'type'       => 'favourite',
+                            'created_at' => $auroraFavourites->{'Customer Favourite Product Creation Date'},
+                            'data'       => [],
+                            'settings'   => [],
+                            'aurora_id'  => $auroraFavourites->{'Customer Favourite Product Key'},
 
                         ];
                 }
@@ -166,11 +164,11 @@ class MigrateCustomer extends MigrateModel
                 if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Back in Stock Reminder Product ID'})) {
                     $products[$product->id] =
                         [
-                            'type'                    => 'notify-stock',
-                            'created_at'              => $auroraReminders->{'Back in Stock Reminder Creation Date'},
-                            'data'                    => [],
-                            'settings'                => [],
-                            'aurora_id' => $auroraReminders->{'Back in Stock Reminder Key'},
+                            'type'       => 'notify-stock',
+                            'created_at' => $auroraReminders->{'Back in Stock Reminder Creation Date'},
+                            'data'       => [],
+                            'settings'   => [],
+                            'aurora_id'  => $auroraReminders->{'Back in Stock Reminder Key'},
                         ];
                 }
             }
@@ -183,20 +181,20 @@ class MigrateCustomer extends MigrateModel
                 if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Customer Portfolio Product ID'})) {
                     $products[$product->id] =
                         [
-                            'type'                => 'portfolio',
-                            'status'              => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
+                            'type'       => 'portfolio',
+                            'status'     => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
                                 'Active' => true,
                                 default => false
                             },
-                            'created_at'          => $auroraReminders->{'Customer Portfolio Creation Date'},
-                            'deleted_at'          => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
+                            'created_at' => $auroraReminders->{'Customer Portfolio Creation Date'},
+                            'deleted_at' => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
                                 'Removed' => $auroraReminders->{'Customer Portfolio Removed Date'},
                                 default => null
                             },
-                            'nickname'            => $auroraReminders->{'Customer Portfolio Reference'},
-                            'data'                => [],
-                            'settings'            => [],
-                            'aurora_id' => $auroraReminders->{'Customer Portfolio Key'},
+                            'nickname'   => $auroraReminders->{'Customer Portfolio Reference'},
+                            'data'       => [],
+                            'settings'   => [],
+                            'aurora_id'  => $auroraReminders->{'Customer Portfolio Key'},
                         ];
                 }
             }
@@ -205,7 +203,7 @@ class MigrateCustomer extends MigrateModel
         $customer->products()->sync($products);
 
         foreach ($customer->products as $customerProduct) {
-            switch ($customerProduct->pivot->type){
+            switch ($customerProduct->pivot->type) {
                 case 'favourite':
                     DB::connection('aurora')->table('Customer Favourite Product Fact')
                         ->where('Customer Favourite Product Key', $customerProduct->pivot->aurora_id)

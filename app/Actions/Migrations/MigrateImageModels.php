@@ -5,8 +5,8 @@ namespace App\Actions\Migrations;
 use App\Models\Helpers\ImageModel;
 use App\Models\Trade\Product;
 use App\Models\System\User;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -30,6 +30,38 @@ class MigrateImageModels
             if ($imageModelData->{'image_id'}) {
                 $scope = strtolower($imageModelData->{'Image Subject Object Image Scope'});
 
+
+                ImageModel::upsert([
+                                       [
+                                           'imageable_type' => $model->getMorphClass(),
+                                           'imageable_id'   => $model->id,
+                                           'scope'          => $scope,
+                                           'filename'       => Str::of($imageModelData->{'Image Filename'})->limit(255),
+                                           'image_id'       => $imageModelData->{'image_id'},
+                                           'aurora_id'      => $imageModelData->{'Image Subject Key'},
+                                           'rank'           => $rank
+                                       ],
+                                   ],
+                                   ['image_id', 'imageable_id', 'imageable_type', 'scope'],
+                                   ['filename']
+                );
+
+
+
+
+                $imageModel=ImageModel::where('imageable_type',$model->getMorphClass())
+                    ->where('imageable_id',$model->id)
+                    ->where('image_id', $imageModelData->{'image_id'})
+                    ->where('scope',$scope)
+                    ->first();
+
+
+
+                $new[] =$imageModel->id;
+                $model->images()->save($imageModel);
+                $rank--;
+
+                /*
                 try {
                     $imageModel = (new ImageModel())->updateOrCreate(
                         [
@@ -51,6 +83,7 @@ class MigrateImageModels
                 } catch (Exception) {
                     //print "Skipping duplicated image\n";
                 }
+                */
             }
         }
 

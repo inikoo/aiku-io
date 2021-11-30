@@ -1,5 +1,10 @@
 <?php
-
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Sat, 20 Nov 2021 00:10:14 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
 namespace App\Models\Sales;
 
 use App\Models\Trade\Shop;
@@ -21,7 +26,6 @@ class Charge extends Model implements Auditable
     use UsesTenantConnection;
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
-    use HasFactory;
 
 
     protected $casts = [
@@ -40,7 +44,6 @@ class Charge extends Model implements Auditable
     {
         return $this->shop->code.'_'.$this->type;
     }
-
 
     public function shop(): BelongsTo
     {

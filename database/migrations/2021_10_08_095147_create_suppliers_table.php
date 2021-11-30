@@ -19,7 +19,7 @@ class CreateSuppliersTable extends Migration
             $table->morphs('owner');
             $table->string('name');
             $table->unsignedSmallInteger('currency_id');
-            $table->foreign('currency_id')->references('id')->on('aiku.currencies');
+            //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
             $table->jsonb('settings');
             $table->jsonb('data');
             $table->timestampsTz();

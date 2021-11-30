@@ -84,6 +84,8 @@ class MigrateModel
         $this->parseModelData();
 
 
+
+
         if ($this->auModel->data->{$this->aiku_id_field}) {
             $this->setModel();
 

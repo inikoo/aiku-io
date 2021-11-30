@@ -47,7 +47,7 @@ class CreateAuxTables extends Migration
                 $table->foreignId('owner_id')->nullable()->index();
                 $table->string('owner_type')->nullable()->index();
                 $table->unsignedSmallInteger('country_id')->nullable()->index();
-                $table->foreign('country_id')->references('id')->on('aiku.countries');
+                //$table->foreign('country_id')->references('id')->on('aiku.countries');
                 $table->index(['checksum', 'owner_id', 'owner_type']);
 
                 $table->timestampsTz();

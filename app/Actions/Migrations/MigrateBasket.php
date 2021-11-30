@@ -47,8 +47,13 @@ class MigrateBasket extends MigrateModel
             dd($this->auModel->data);
         }
 
-        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-        if ($parent->trashed() or ($parent->shop->type == 'dropshipping' and !$this->auModel->data->{'Order Customer Client Key'})) {
+
+        if (
+            $parent->trashed() or
+            (
+                $parent->shop->type == 'dropshipping' and
+                !$this->auModel->data->{'Order Customer Client Key'})
+        ) {
             $this->ignore = true;
             DB::connection('aurora')->table($this->auModel->table)
                 ->where($this->auModel->id_field, $this->auModel->data->{'Order Key'})
@@ -95,7 +100,6 @@ class MigrateBasket extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-
         if (!in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
             return UpdateBasket::run($this->model, $this->modelData['basket'], $this->modelData['delivery_address']);
         } else {

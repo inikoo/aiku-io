@@ -9,9 +9,12 @@
 namespace App\Models\CRM;
 
 use App\Models\CustomerProduct;
+use App\Models\Helpers\Address;
 use App\Models\Helpers\Contact;
+use App\Models\Helpers\ImageModel;
 use App\Models\Sales\Basket;
 use App\Models\Trade\Product;
+use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,22 +53,22 @@ class Customer extends Model implements Auditable
 
     public function addresses(): MorphToMany
     {
-        return $this->morphToMany('App\Models\Helpers\Address', 'addressable')->withTimestamps();
+        return $this->morphToMany(Address::class, 'addressable')->withTimestamps();
     }
 
     public function billingAddress(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Helpers\Address');
+        return $this->belongsTo(Address::class);
     }
 
     public function deliveryAddress(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Helpers\Address');
+        return $this->belongsTo(Address::class);
     }
 
     public function images(): MorphMany
     {
-        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_model', 'imageable_type', 'imageable_id');
+        return $this->morphMany(ImageModel::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function contact(): MorphOne
@@ -94,16 +97,9 @@ class Customer extends Model implements Auditable
     }
 
 
-    public function shop(): MorphTo
+    public function shop(): BelongsTo
     {
-       if($this->vendor_type=='Shop'){
-           return $this->vendor();
-       }else{
-           /** @var \App\Models\CRM\Customer $customer */
-           $customer=$this->vendor;
-           return $customer->shop();
-
-       }
+        return $this->belongsTo(Shop::class);
     }
 
 

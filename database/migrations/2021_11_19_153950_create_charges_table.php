@@ -20,35 +20,23 @@ class CreateChargesTable extends Migration
     public function up()
     {
         Schema::create('charges', function (Blueprint $table) {
-
-
             $table->mediumIncrements('id');
-
-
             $table->unsignedMediumInteger('shop_id')->nullable()->index();
             $table->foreign('shop_id')->references('id')->on('shops');
-
             $table->boolean('status')->default(true)->index();
-
             $table->enum('type',['hanging','premium','insurance','tracking'])->index();
             $table->string('slug')->index();
-
             $table->string('name')->index();
-
             $table->jsonb('settings');
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-
-
             $table->index(
                 [
                     'shop_id',
                     'type'
                 ]
             );
-
-
         });
     }
 

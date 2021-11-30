@@ -173,15 +173,19 @@ class CreateTenantTables extends Migration
         Schema::dropIfExists('tenants');
         Schema::dropIfExists('business_types');
         Schema::dropIfExists('user_agents');
-
         Schema::dropIfExists('ip_geolocations');
         Schema::table('countries', function (Blueprint $table) {
             $table->dropColumn('timezone_id');
+            $table->dropColumn('currency_id');
+
         });
+        Schema::dropIfExists('country_timezone');
         Schema::dropIfExists('country_language');
+        Schema::dropIfExists('currencies');
         Schema::dropIfExists('languages');
         Schema::dropIfExists('timezones');
         Schema::dropIfExists('countries');
+        Schema::dropIfExists('aiku');
 
     }
 }

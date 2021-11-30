@@ -5,7 +5,6 @@ namespace App\Providers;
 use Closure;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -30,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(191);
+        //Schema::defaultStringLength(191); for Mysql only
 
         Relation::morphMap(
             [
@@ -50,6 +49,9 @@ class AppServiceProvider extends ServiceProvider
                 'Supplier'       => 'App\Models\Buying\Supplier',
                 'Shop'           => 'App\Models\Trade\Shop',
                 'Basket'         => 'App\Models\Sales\Basket',
+                'Adjust'         => 'App\Models\Sales\Adjust',
+
+
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
                 'Guest'                    => 'App\Models\System\Guest',

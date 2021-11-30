@@ -22,7 +22,7 @@ class CreateStocksTable extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
 
-            $table->enum('composition', ['unit', 'multiple', 'mix']);
+            $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
 
             $table->string('state')->nullable()->index();
             $table->string('quantity_status')->nullable()->index();

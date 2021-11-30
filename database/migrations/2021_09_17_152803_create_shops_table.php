@@ -24,11 +24,11 @@ class CreateShopsTable extends Migration
             $table->date('open_at')->nullable();
             $table->date('closed_at')->nullable();
             $table->unsignedSmallInteger('language_id');
-            $table->foreign('language_id')->references('id')->on('aiku.languages');
+            //$table->foreign('language_id')->references('id')->on('aiku.languages');
             $table->unsignedSmallInteger('currency_id');
-            $table->foreign('currency_id')->references('id')->on('aiku.currencies');
+            //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
             $table->unsignedSmallInteger('timezone_id');
-            $table->foreign('timezone_id')->references('id')->on('aiku.timezones');
+            //$table->foreign('timezone_id')->references('id')->on('aiku.timezones');
             $table->jsonb('data');
             $table->jsonb('settings');
             $table->timestampsTz();

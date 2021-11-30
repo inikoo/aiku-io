@@ -17,13 +17,13 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @mixin IdeHelperRawImage
  */
 class RawImage extends Model {
-    protected $connection= 'media';
 
+    protected $connection= 'media';
 
     protected $guarded =[];
 
     public function communalImage(): MorphOne {
-        return $this->morphOne('App\Models\Assets\CommunalImage', 'imageable');
+        return $this->morphOne(CommunalImage::class, 'imageable');
     }
 
 

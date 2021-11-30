@@ -11,9 +11,6 @@ namespace App\Actions\Migrations;
 use App\Actions\CRM\Customer\StoreCustomer;
 
 use App\Models\CRM\Customer;
-use App\Models\Trade\Shop;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
@@ -61,12 +58,13 @@ class MigrateCustomerClient extends MigrateModel
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
+                'shop_id'                   => $this->parent->shop_id,
                 'name'                      => $this->auModel->data->{'Customer Client Code'},
                 'state'                     => $state,
                 'status'                    => $status,
                 'aurora_customer_client_id' => $this->auModel->data->{'Customer Client Key'},
-                'created_at' => $this->auModel->data->{'Customer Client Creation Date'},
-                'deleted_at' => $deleted_at,
+                'created_at'                => $this->auModel->data->{'Customer Client Creation Date'},
+                'deleted_at'                => $deleted_at,
             ]
         );
 
@@ -85,7 +83,7 @@ class MigrateCustomerClient extends MigrateModel
         $this->auModel->id = $this->auModel->data->{'Customer Client Key'};
     }
 
-    public function getParent(): Model|Shop|Builder|\Illuminate\Database\Query\Builder|null
+    public function getParent(): Customer
     {
         return Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Customer Client Customer Key'});
     }
@@ -95,9 +93,9 @@ class MigrateCustomerClient extends MigrateModel
         $this->model = Customer::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel():MigrationResult
+    public function updateModel(): MigrationResult
     {
-       return  $this->updateCustomer($this->auModel->data);
+        return $this->updateCustomer($this->auModel->data);
     }
 
     public function storeModel(): MigrationResult
@@ -108,7 +106,6 @@ class MigrateCustomerClient extends MigrateModel
             contactData:           $this->modelData['contact'],
             customerAddressesData: $this->modelData['addresses']
         );
-
     }
 
     public function authorize(ActionRequest $request): bool
@@ -123,9 +120,10 @@ class MigrateCustomerClient extends MigrateModel
         if ($auroraData = DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res  = new MigrationResult();
-        $res->errors[]='Aurora model not found';
-        $res->status='error';
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
         return $res;
     }
 

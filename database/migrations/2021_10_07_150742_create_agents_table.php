@@ -31,7 +31,7 @@ class CreateAgentsTable extends Migration
 
 
             $table->unsignedSmallInteger('currency_id');
-            $table->foreign('currency_id')->references('id')->on('aiku.currencies');
+            //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
 
 
 

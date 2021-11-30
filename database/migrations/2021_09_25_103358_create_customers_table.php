@@ -15,8 +15,8 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            //$table->unsignedMediumInteger('shop_id')->index()->nullable();
-            //$table->foreign('shop_id')->references('id')->on('shops');
+            $table->unsignedMediumInteger('shop_id')->index()->nullable();
+            $table->foreign('shop_id')->references('id')->on('shops');
 
             $table->morphs('vendor');
 

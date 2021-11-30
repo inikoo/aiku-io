@@ -17,14 +17,21 @@ class BusinessTypeSeeder extends Seeder
     public function run()
     {
         foreach (config('business_types') as $slug => $data) {
-            (new BusinessType())->updateOrCreate(
-                [
-                    'slug' => $slug
-                ],
-                [
-                    'name' => $data['name'],
-                ]
+
+
+
+            BusinessType::upsert([
+                                     [
+                                         'slug' => $slug,
+                                         'name' => $data['name'],
+                                         'data' => json_encode([])
+                                     ],
+                                 ],
+                                 ['slug'],
+                                 ['name']
             );
+
         }
+
     }
 }

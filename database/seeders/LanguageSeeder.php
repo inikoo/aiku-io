@@ -33,10 +33,19 @@ class LanguageSeeder extends Seeder
 
 
         foreach ($response->result->languages as $language) {
-            Language::UpdateOrCreate(
-                ['code' => $language->code],
-                ['name' => $language->name]
+
+            Language::upsert([
+                                     [
+                                         'code' => $language->code,
+                                         'name' => $language->name,
+                                         'data' => json_encode([])
+                                     ],
+                                 ],
+                                 ['code'],
+                                 ['name']
             );
+
+
         }
     }
 

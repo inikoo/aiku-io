@@ -9,12 +9,10 @@
 namespace App\Models\Helpers;
 
 
-use App\Models\Assets\CommunalImage;
 use App\Models\Assets\RawImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Arr;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
@@ -35,12 +33,12 @@ class Image extends Model {
     protected $guarded = [];
 
     public function models(): HasMany {
-        return $this->hasMany('App\Models\Helpers\ImageModel');
+        return $this->hasMany(ImageModel::class);
     }
 
     public function rawImage(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Assets\RawImage');
+        return $this->belongsTo(RawImage::class);
 
     }
 

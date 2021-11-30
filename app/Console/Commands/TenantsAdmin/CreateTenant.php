@@ -40,11 +40,11 @@ class CreateTenant extends Command
     {
         $database = strtolower(preg_replace('/\..*/i', '', $this->argument('domain'))).'_aiku';
 
-        if (DB::connection('scaffolding')->table('INFORMATION_SCHEMA.SCHEMATA')->select('SCHEMA_NAME')->where('SCHEMA_NAME', $database)->first()) {
+        if (DB::connection('scaffolding')->table('pg_catalog.pg_database')->select('datname')->where('datname', $database)->first()) {
             $this->error("Database $database already exists");
             //return 0;
         } else {
-            DB::connection('scaffolding')->statement("CREATE DATABASE $database CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci");
+            DB::connection('scaffolding')->statement("CREATE DATABASE $database ENCODING 'UTF8' LC_COLLATE = 'en_GB.UTF-8' LC_CTYPE = 'en_GB.UTF-8' TEMPLATE template0");
         }
 
 

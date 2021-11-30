@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
         Schema::create(
             'products', function (Blueprint $table) {
             $table->id();
-            $table->enum('composition', ['unit', 'multiple', 'mix']);
+            $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
 
             $table->string('slug')->nullable()->index();
 

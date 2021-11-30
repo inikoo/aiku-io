@@ -58,7 +58,7 @@ class CreateDeploymentsTable extends Migration
     {
         Schema::dropIfExists('deployments');
         Schema::dropIfExists('personal_access_tokens');
-        Schema::dropIfExists('admins');
+        Schema::dropIfExists('account_admins');
 
     }
 }

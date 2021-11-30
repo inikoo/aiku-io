@@ -66,10 +66,6 @@ class MigrateCustomers extends MigrateAurora
                     $this->recordAction($tenant, $result);
                 }
 
-                foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key', '=', $auroraData->{'Customer Key'})->get() as $auroraCustomerClientData) {
-                    $result = MigrateCustomerClient::run($auroraCustomerClientData);
-                    $this->recordAction($tenant, $result);
-                }
             }
         });
 
