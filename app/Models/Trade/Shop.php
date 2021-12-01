@@ -10,7 +10,9 @@ namespace App\Models\Trade;
 
 use App\Models\CRM\Customer;
 use App\Models\Helpers\Contact;
+use App\Models\Sales\Adjust;
 use App\Models\Sales\Charge;
+use App\Models\Sales\Order;
 use App\Models\Sales\ShippingSchema;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -70,7 +72,7 @@ class Shop extends Model implements Auditable
         return $this->morphMany(Product::class, 'vendor');
     }
 
-    public function shippingSchemaa(): HasMany
+    public function shippingSchema(): HasMany
     {
         return $this->hasMany(ShippingSchema::class);
     }
@@ -78,6 +80,16 @@ class Shop extends Model implements Auditable
     public function charges(): HasMany
     {
         return $this->hasMany(Charge::class);
+    }
+
+    public function adjusts(): HasMany
+    {
+        return $this->hasMany(Adjust::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
 }

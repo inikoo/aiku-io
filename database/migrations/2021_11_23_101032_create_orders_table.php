@@ -1,16 +1,10 @@
 <?php
-/*
- *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Fri, 12 Nov 2021 01:37:01 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
- *  Version 4.0
- */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBasketsTable extends Migration
+class CreateOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -19,19 +13,22 @@ class CreateBasketsTable extends Migration
      */
     public function up()
     {
-        Schema::create('baskets', function (Blueprint $table) {
-
-
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedMediumInteger('shop_id')->nullable()->index();
+            $table->unsignedMediumInteger('shop_id')->index();
             $table->foreign('shop_id')->references('id')->on('shops');
 
             $table->unsignedBigInteger('customer_id')->index();
             $table->foreign('customer_id')->references('id')->on('customers');
 
-            $table->string('nickname')->nullable()->index();
-            $table->enum('state',['in-basket','in-process','in-warehouse','packed','packed-done','cancelled'])->default('in-basket')->index();
+            $table->unsignedBigInteger('customer_client_id')->nullable()->index();
+            $table->foreign('customer_client_id')->references('id')->on('customers');
+
+            $table->string('number')->nullable()->index();
+
+            $table->enum('state',['in-warehouse','dispatched','returned'])->default('in-warehouse')->index();
+
 
             $table->unsignedBigInteger('items')->default(0)->comment('number of items');
 
@@ -46,11 +43,8 @@ class CreateBasketsTable extends Migration
             $table->jsonb('data');
 
             $table->timestampsTz();
+            $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable();
-
-
-
-
         });
     }
 
@@ -61,6 +55,6 @@ class CreateBasketsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('baskets');
+        Schema::dropIfExists('orders');
     }
 }

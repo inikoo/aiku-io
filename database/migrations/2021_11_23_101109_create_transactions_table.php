@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBasketTransactionsTable extends Migration
+class CreateTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateBasketTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('basket_transactions', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('basket_id')->index();
-            $table->foreign('basket_id')->references('id')->on('baskets');
+            $table->unsignedBigInteger('order_id')->index();
+            $table->foreign('order_id')->references('id')->on('orders');
             $table->nullableMorphs('item');
             $table->decimal('quantity', 16, 3);
             $table->decimal('discounts', 16)->default(0);
@@ -25,6 +25,7 @@ class CreateBasketTransactionsTable extends Migration
             //$table->foreign('tax_band_id')->references('id')->on('aiku.tax_bands');
             $table->jsonb('data');
             $table->timestampsTz();
+            $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->index();
         });
     }
@@ -36,6 +37,6 @@ class CreateBasketTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('basket_transactions');
+        Schema::dropIfExists('transactions');
     }
 }

@@ -13,9 +13,6 @@ use App\Actions\Sales\BasketTransaction\StoreBasketTransaction;
 use App\Actions\Sales\BasketTransaction\UpdateBasketTransaction;
 use App\Models\Sales\Basket;
 use App\Models\Sales\BasketTransaction;
-use App\Models\Sales\Charge;
-use App\Models\Sales\ShippingZone;
-use App\Models\Sales\TaxBand;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
@@ -24,6 +21,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 class MigrateBasketNoProductTransaction extends MigrateModel
 {
     use AsAction;
+    use WithTransaction;
 
 
     #[Pure] public function __construct()
@@ -41,46 +39,8 @@ class MigrateBasketNoProductTransaction extends MigrateModel
 
     public function parseModelData()
     {
-        $taxBand = (new TaxBand())->firstWhere('aurora_id', $this->auModel->data->{'Order No Product Transaction Tax Category Key'});
+        $this->parseNoProductTransactionData();
 
-
-        switch ($this->auModel->data->{'Transaction Type'}) {
-            case 'Shipping':
-                $item = (new ShippingZone())->firstWhere('aurora_id', $this->auModel->data->{'Transaction Type Key'});
-                $item_type='ShippingZone';
-                break;
-            case 'Charges':
-                $item = (new Charge())->firstWhere('aurora_id', $this->auModel->data->{'Transaction Type Key'});
-                $item_type='Charges';
-
-                break;
-            case 'Insurance':
-                $item = (new Charge())->where('type', 'insurance')->where('store_id',$this->parent->store_id)->first() ;
-                $item_type='Charges';
-
-                print_r($this->auModel->data);
-
-                break;
-            default:
-                print "===== MigrateBasketNoProductTransaction.php\n";
-                dd($this->auModel->data);
-        }
-
-        //if(!$item){
-        //    dd($this->auModel->data);
-        //}
-
-        $this->modelData   = [
-            'item_type'   => $item_type,
-            'tax_band_id' => $taxBand->id ?? null,
-            'item_id'     => $item->id??null,
-            'quantity'    => 1,
-            'discounts'   => $this->auModel->data->{'Transaction Total Discount Amount'},
-            'net'         => $this->auModel->data->{'Transaction Net Amount'},
-            'aurora_id'   => $this->auModel->data->{'Order No Product Transaction Fact Key'},
-
-        ];
-        $this->auModel->id = $this->auModel->data->{'Order No Product Transaction Fact Key'};
     }
 
 

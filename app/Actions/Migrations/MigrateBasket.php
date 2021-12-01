@@ -9,7 +9,7 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Sales\Basket\DeleteBasket;
+use App\Actions\Sales\Basket\DestroyBasket;
 use App\Actions\Sales\Basket\StoreBasket;
 use App\Actions\Sales\Basket\UpdateBasket;
 use App\Models\CRM\Customer;
@@ -103,7 +103,7 @@ class MigrateBasket extends MigrateModel
         if (!in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
             return UpdateBasket::run($this->model, $this->modelData['basket'], $this->modelData['delivery_address']);
         } else {
-            return DeleteBasket::run($this->model);
+            return DestroyBasket::run($this->model);
         }
     }
 

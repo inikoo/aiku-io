@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 17 Nov 2021 15:02:59 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Thu, 25 Nov 2021 21:54:06 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
@@ -9,16 +9,17 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Sales\BasketTransaction\StoreBasketTransaction;
-use App\Actions\Sales\BasketTransaction\UpdateBasketTransaction;
-use App\Models\Sales\Basket;
-use App\Models\Sales\BasketTransaction;
+
+use App\Actions\Sales\Transaction\StoreTransaction;
+use App\Actions\Sales\Transaction\UpdateTransaction;
+use App\Models\Sales\Order;
+use App\Models\Sales\Transaction;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class MigrateBasketProductTransaction extends MigrateModel
+class MigrateNoProductTransaction extends MigrateModel
 {
     use AsAction;
     use WithTransaction;
@@ -27,35 +28,36 @@ class MigrateBasketProductTransaction extends MigrateModel
     #[Pure] public function __construct()
     {
         parent::__construct();
-        $this->auModel->table    = 'Order Transaction Fact';
-        $this->auModel->id_field = 'Order Transaction Fact Key';
-        $this->aiku_id_field     = 'aiku_basket_id';
+        $this->auModel->table    = 'Order No Product Transaction Fact';
+        $this->auModel->id_field = 'Order No Product Transaction Fact Key';
+        $this->aiku_id_field     = 'aiku_id';
     }
 
-    public function getParent(): Basket
+    public function getParent(): Order
     {
-        return (new Basket())->firstWhere('aurora_id', $this->auModel->data->{'Order Key'});
+        return (new Order())->firstWhere('aurora_id', $this->auModel->data->{'Order Key'});
     }
 
     public function parseModelData()
     {
-        $this->parseProductTransactionData();
+        $this->parseNoProductTransactionData();
+
     }
 
 
     public function setModel()
     {
-        $this->model = BasketTransaction::find($this->auModel->data->aiku_basket_id);
+        $this->model = Transaction::find($this->auModel->data->aiku_id);
     }
 
     public function updateModel(): MigrationResult
     {
-        return UpdateBasketTransaction::run($this->model, $this->modelData);
+        return UpdateTransaction::run($this->model, $this->modelData);
     }
 
     public function storeModel(): MigrationResult
     {
-        return StoreBasketTransaction::run($this->parent, $this->modelData);
+        return StoreTransaction::run($this->parent, $this->modelData);
     }
 
 
@@ -67,7 +69,9 @@ class MigrateBasketProductTransaction extends MigrateModel
     public function asController(int $auroraID): MigrationResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        if ($auroraData = DB::connection('aurora')->table('Order Transaction Fact')->where('Order Transaction Fact Key', $auroraID)->first()) {
+        if ($auroraData = DB::connection('aurora')
+            ->table('Order No Product Transaction Fac')
+            ->where('Order No Product Transaction Fact Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
         $res           = new MigrationResult();
