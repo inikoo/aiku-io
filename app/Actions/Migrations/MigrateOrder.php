@@ -9,7 +9,6 @@
 namespace App\Actions\Migrations;
 
 
-
 use App\Actions\Sales\Order\DestroyOrder;
 use App\Actions\Sales\Order\StoreOrder;
 use App\Actions\Sales\Order\UpdateOrder;
@@ -60,17 +59,16 @@ class MigrateOrder extends MigrateModel
             'customer_client_id' => $customer_client_id ?? null,
             'state'              => $state,
             'aurora_id'          => $this->auModel->data->{'Order Key'},
+            'exchange'           => $this->auModel->data->{'Order Currency Exchange'}
 
         ];
         $this->auModel->id        = $this->auModel->data->{'Order Key'};
 
-        $deliveryAddressData = $this->parseAddress(prefix: 'Order Delivery', auAddressData: $this->auModel->data);
+        $deliveryAddressData                 = $this->parseAddress(prefix: 'Order Delivery', auAddressData: $this->auModel->data);
         $this->modelData['delivery_address'] = new Address($deliveryAddressData);
 
-        $invoiceAddressData = $this->parseAddress(prefix: 'Order Invoice', auAddressData: $this->auModel->data);
+        $invoiceAddressData                 = $this->parseAddress(prefix: 'Order Invoice', auAddressData: $this->auModel->data);
         $this->modelData['invoice_address'] = new Address($invoiceAddressData);
-
-
     }
 
 
@@ -83,10 +81,11 @@ class MigrateOrder extends MigrateModel
     {
         if (in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
             return UpdateOrder::run(
-                order: $this->model,
-                modelData: $this->modelData['order'],
-                invoiceAddress: $this->modelData['invoice_address'],
-                deliveryAddress: $this->modelData['delivery_address']);
+                order:           $this->model,
+                modelData:       $this->modelData['order'],
+                invoiceAddress:  $this->modelData['invoice_address'],
+                deliveryAddress: $this->modelData['delivery_address']
+            );
         } else {
             return DestroyOrder::run($this->model);
         }
@@ -96,10 +95,11 @@ class MigrateOrder extends MigrateModel
     {
         if (in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
             return StoreOrder::run(
-                shop: $this->parent,
-                modelData: $this->modelData['order'],
-                invoiceAddress: $this->modelData['invoice_address'],
-                deliveryAddress: $this->modelData['delivery_address']);
+                shop:            $this->parent,
+                modelData:       $this->modelData['order'],
+                invoiceAddress:  $this->modelData['invoice_address'],
+                deliveryAddress: $this->modelData['delivery_address']
+            );
         }
 
         return new MigrationResult();
@@ -113,10 +113,10 @@ class MigrateOrder extends MigrateModel
 
             return $res;
         }
-
         foreach (
             DB::connection('aurora')->table('Order Transaction Fact')
                 ->where('Order Key', $this->auModel->data->{'Order Key'})
+                ->where('Order Transaction Type', '!=', 'Refund')
                 ->get() as $auroraTransaction
         ) {
             MigrateProductTransaction::run($auroraTransaction);
@@ -124,6 +124,7 @@ class MigrateOrder extends MigrateModel
         foreach (
             DB::connection('aurora')->table('Order No Product Transaction Fact')
                 ->where('Order Key', $this->auModel->data->{'Order Key'})
+                ->where('Type', '!=', 'Refund')
                 ->get() as $auroraTransaction
         ) {
             MigrateNoProductTransaction::run($auroraTransaction);

@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection DuplicatedCode */
+
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
  *  Created: Thu, 25 Nov 2021 15:24:09 Malaysia Time, Kuala Lumpur, Malaysia
@@ -8,6 +9,8 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
+use App\Actions\Migrations\MigrateDeletedInvoice;
+use App\Actions\Migrations\MigrateInvoice;
 use App\Actions\Migrations\MigrateOrder;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
@@ -30,21 +33,36 @@ class MigrateOrders extends MigrateAurora
         DB::connection('aurora')->table('Order Transaction Fact')->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Order No Product Transaction Fact')->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Order Dimension')->update(['aiku_id' => null]);
-        DB::connection('aurora')->table('Order Transaction Fact')->update(['aiku_id' => null]);
-        DB::connection('aurora')->table('Order No Product Transaction Fact')->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Order Transaction Fact')->update(
+            [
+                'aiku_id'         => null,
+                'aiku_invoice_id' => null,
+            ]
+        );
+        DB::connection('aurora')->table('Order No Product Transaction Fact')->update(
+            [
+                'aiku_id'         => null,
+                'aiku_invoice_id' => null,
+            ]
+        );
 
+        DB::connection('aurora')->table('Invoice Dimension')->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Invoice Deleted Dimension')->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
         $count = DB::connection('aurora')->table('Order Dimension')
-            ->whereNotIn('Order State',['Dispatched','Approved'])
+            ->whereNotIn('Order State', ['Dispatched', 'Approved'])
             ->whereNull('aiku_note')
             ->whereNotNull('aiku_id')
             ->count();
         $count += DB::connection('aurora')->table('Order Dimension')
-            ->whereIn('Order State',['Dispatched','Approved'])
+            ->whereIn('Order State', ['Dispatched', 'Approved'])
             ->whereNull('aiku_note')
+            ->count();
+
+        $count += DB::connection('aurora')->table('Invoice Dimension')
             ->count();
 
 
@@ -55,26 +73,68 @@ class MigrateOrders extends MigrateAurora
     protected function migrate(Tenant $tenant)
     {
         DB::connection('aurora')->table('Order Dimension')
-            ->whereNotIn('Order State',['Dispatched','Approved'])
+            ->whereNotIn('Order State', ['Dispatched', 'Approved'])
             ->whereNull('aiku_note')
             ->whereNotNull('aiku_id')
+           // ->where('Order Key',1232917)
             ->orderBy('Order Key')->chunk(1000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
                     $result = MigrateOrder::run($auroraData);
                     $this->recordAction($tenant, $result);
+
+
+
+                    DB::connection('aurora')->table('Invoice Dimension')
+                        ->where('Invoice Order Key', $auroraData->{'Order Key'})
+                        ->orderBy('Invoice Key')->chunk(1000, function ($chunk) use ($tenant) {
+                            foreach ($chunk as $auroraInvoiceData) {
+                                $result = MigrateInvoice::run($auroraInvoiceData);
+                                $this->recordAction($tenant, $result);
+                            }
+                        });
+                    DB::connection('aurora')->table('Invoice Deleted Dimension')
+                        ->where('Invoice Deleted Order Key', $auroraData->{'Order Key'})
+                        ->orderBy('Invoice Deleted Key')->chunk(1000, function ($chunk) use ($tenant) {
+                            foreach ($chunk as $auroraInvoiceData) {
+                                $result = MigrateDeletedInvoice::run($auroraInvoiceData);
+                                $this->recordAction($tenant, $result);
+                            }
+                        });
+
+
                 }
             });
 
         DB::connection('aurora')->table('Order Dimension')
-            ->whereIn('Order State',['Dispatched','Approved'])
+            ->whereIn('Order State', ['Dispatched', 'Approved'])
             ->whereNull('aiku_note')
+          //  ->where('Order Key',1232917)
             ->orderBy('Order Key')->chunk(1000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
                     $result = MigrateOrder::run($auroraData);
                     $this->recordAction($tenant, $result);
+
+                    DB::connection('aurora')->table('Invoice Dimension')
+                        ->where('Invoice Order Key', $auroraData->{'Order Key'})
+                        ->orderBy('Invoice Key')->chunk(1000, function ($chunk) use ($tenant) {
+                            foreach ($chunk as $auroraInvoiceData) {
+                                $result = MigrateInvoice::run($auroraInvoiceData);
+                                $this->recordAction($tenant, $result);
+                            }
+                        });
+
+                    DB::connection('aurora')->table('Invoice Deleted Dimension')
+                        ->where('Invoice Deleted Order Key', $auroraData->{'Order Key'})
+                        ->orderBy('Invoice Deleted Key')->chunk(1000, function ($chunk) use ($tenant) {
+                            foreach ($chunk as $auroraInvoiceData) {
+                                $result = MigrateDeletedInvoice::run($auroraInvoiceData);
+                                $this->recordAction($tenant, $result);
+                            }
+                        });
+
+
                 }
             });
-
     }
 
 

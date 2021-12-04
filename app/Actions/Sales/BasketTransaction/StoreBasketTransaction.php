@@ -20,6 +20,11 @@ class StoreBasketTransaction
     {
         $res = new MigrationResult();
 
+
+        $data['shop_id']=$basket->shop_id;
+        $data['customer_id']=$basket->customer_id;
+
+
         /** @var \App\Models\Sales\BasketTransaction $transaction */
         $transaction = $basket->transactions()->create($data);
 

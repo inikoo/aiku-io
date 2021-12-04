@@ -1,16 +1,15 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 25 Nov 2021 16:28:05 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Wed, 01 Dec 2021 15:26:21 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Sales;
+namespace App\Models\Accounting;
 
-use App\Models\Accounting\Invoice;
-use App\Models\Accounting\InvoiceTransaction;
 use App\Models\CRM\Customer;
+use App\Models\Sales\Order;
 use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,9 +21,9 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
- * @mixin IdeHelperOrder
+ * @mixin IdeHelperInvoice
  */
-class Order extends Model implements Auditable
+class Invoice extends Model implements Auditable
 {
     use HasFactory;
     use UsesTenantConnection;
@@ -41,16 +40,7 @@ class Order extends Model implements Auditable
 
     protected $guarded = [];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     * DS: This return the customer not the customerClient
-     */
     public function customer(): BelongsTo
-    {
-        return $this->belongsTo(Customer::class);
-    }
-
-    public function customerClient(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
@@ -59,19 +49,25 @@ class Order extends Model implements Auditable
     {
         return $this->belongsTo(Shop::class);
     }
-    public function transactions(): HasMany
+
+    public function orders(): BelongsToMany
     {
-        return $this->hasMany(Transaction::class);
+        return $this->belongsToMany(Order::class);
+    }
+
+    /**
+     * Relation to main order, usually the only one, used no avoid looping over orders
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     *
+     */
+    public function order(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class);
     }
 
     public function invoiceTransactions(): HasMany
     {
         return $this->hasMany(InvoiceTransaction::class);
-    }
-
-    public function invoices(): BelongsToMany
-    {
-        return $this->belongsToMany(Invoice::class);
     }
 
 
@@ -80,4 +76,5 @@ class Order extends Model implements Auditable
     {
         $this->attributes['exchange'] = sprintf('%.6f', $val);
     }
+
 }

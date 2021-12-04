@@ -27,6 +27,10 @@ class StoreOrder
     {
         $res = new MigrationResult();
 
+
+        $modelData['currency_id']=$shop->currency_id;
+
+
         /** @var \App\Models\Sales\Order $order */
         $order = $shop->orders()->create($modelData);
 

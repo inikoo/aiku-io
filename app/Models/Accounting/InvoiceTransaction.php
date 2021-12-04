@@ -1,34 +1,31 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 25 Nov 2021 22:20:50 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Wed, 01 Dec 2021 15:32:03 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Sales;
+namespace App\Models\Accounting;
 
-use App\Models\Accounting\InvoiceTransaction;
-use App\Models\CRM\Customer;
-use App\Models\Trade\Shop;
+use App\Models\Sales\Transaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
- * @mixin IdeHelperTransaction
+ * @mixin IdeHelperInvoiceTransaction
  */
-class Transaction extends Model
+class InvoiceTransaction extends Model
 {
     use HasFactory;
     use UsesTenantConnection;
     use SoftDeletes;
 
-    protected $table = 'transactions';
+    protected $table = 'invoice_transactions';
 
     protected $casts = [
         'data' => 'array'
@@ -40,38 +37,20 @@ class Transaction extends Model
 
     protected $guarded = [];
 
-
     public function item(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function invoiceTransactions(): HasMany
+    public function transaction(): BelongsTo
     {
-        return $this->hasMany(InvoiceTransaction::class);
+        return $this->belongsTo(Transaction::class);
     }
-
-    public function order(): BelongsTo
-    {
-        return $this->belongsTo(Order::class);
-    }
-
-    public function shop(): BelongsTo
-    {
-        return $this->belongsTo(Shop::class);
-    }
-
-    public function customer(): BelongsTo
-    {
-        return $this->belongsTo(Customer::class);
-    }
-
 
     /** @noinspection PhpUnused */
     public function setQuantityAttribute($val)
     {
         $this->attributes['quantity'] = sprintf('%.3f', $val);
     }
-
 
 }

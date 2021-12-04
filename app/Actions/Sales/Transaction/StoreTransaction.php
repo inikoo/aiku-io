@@ -20,6 +20,10 @@ class StoreTransaction
     {
         $res = new MigrationResult();
 
+        $data['shop_id']=$order->shop_id;
+        $data['customer_id']=$order->customer_id;
+
+
         /** @var \App\Models\Sales\Transaction $transaction */
         $transaction = $order->transactions()->create($data);
 

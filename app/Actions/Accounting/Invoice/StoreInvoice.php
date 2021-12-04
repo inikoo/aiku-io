@@ -1,0 +1,43 @@
+<?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Wed, 01 Dec 2021 16:27:29 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
+
+namespace App\Actions\Accounting\Invoice;
+
+use App\Actions\Migrations\MigrationResult;
+use App\Models\Sales\Order;
+use Lorisleiva\Actions\Concerns\AsAction;
+
+class StoreInvoice
+{
+    use AsAction;
+
+    public function handle(
+        Order $order,
+        array $modelData
+
+    ): MigrationResult
+    {
+        $res = new MigrationResult();
+
+        $modelData['shop_id']=$order->shop_id;
+        $modelData['customer_id']=$order->customer_id;
+        $modelData['order_id']=$order->id;
+        $modelData['currency_id']=$order->currency_id;
+
+        /** @var \App\Models\Accounting\Invoice $invoice */
+        $invoice = $order->invoices()->create($modelData);
+
+
+
+        $res->model    = $invoice;
+        $res->model_id = $invoice->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+        return $res;
+    }
+}

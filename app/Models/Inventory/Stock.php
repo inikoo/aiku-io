@@ -53,12 +53,12 @@ class Stock extends Model implements Auditable
     /** @noinspection PhpUnused */
     public function setQuantityAttribute($val)
     {
-        $this->attributes['price'] = sprintf('%.3f', $val);
+        $this->attributes['quantity'] = sprintf('%.3f', $val);
     }
 
     public function setValueAttribute($val)
     {
-        $this->attributes['price'] = sprintf('%.2f', $val);
+        $this->attributes['quantity'] = sprintf('%.3f', $val);
     }
 
 

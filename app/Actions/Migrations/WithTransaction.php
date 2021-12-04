@@ -26,37 +26,47 @@ trait WithTransaction
 
         switch ($this->auModel->data->{'Transaction Type'}) {
             case 'Shipping':
-                $item = (new ShippingZone())->firstWhere('aurora_id', $this->auModel->data->{'Transaction Type Key'});
-                $item_type='ShippingZone';
+                $item      = (new ShippingZone())->firstWhere('aurora_id', $this->auModel->data->{'Transaction Type Key'});
+                $item_type = 'ShippingZone';
                 break;
             case 'Charges':
-                $item = (new Charge())->firstWhere('aurora_id', $this->auModel->data->{'Transaction Type Key'});
-                $item_type='Charges';
+                $item      = (new Charge())->firstWhere('aurora_id', $this->auModel->data->{'Transaction Type Key'});
+                $item_type = 'Charges';
 
                 break;
             case 'Insurance':
-                $item = (new Charge())->where('type', 'insurance')->where('shop_id',$this->parent->shop_id)->first() ;
-                $item_type='Charges';
+                $item      = (new Charge())->where('type', 'insurance')->where('shop_id', $this->parent->shop_id)->first();
+                $item_type = 'Charges';
                 break;
             case 'Premium':
-                $item = (new Charge())->where('type', 'premium')->where('shop_id',$this->parent->shop_id)->first() ;
-                $item_type='Charges';
+                $item      = (new Charge())->where('type', 'premium')->where('shop_id', $this->parent->shop_id)->first();
+                $item_type = 'Charges';
                 break;
             case 'Refund':
             case 'Credit':
-                $item = (new Adjust())->where('type', 'refund')->where('shop_id',$this->parent->shop_id)->first() ;
-                $shop=Shop::withTrashed()->find($this->parent->shop_id);
-                if(!$item){
-                    $res=StoreAdjust::run($shop,
-                                          [
-                                            'type'=>strtolower($this->auModel->data->{'Transaction Type'}),
+            case 'Adjust':
 
-                                          ]
+
+                $item = (new Adjust())->where('type', 'refund')->where('shop_id', $this->parent->shop_id)->first();
+                $shop = Shop::withTrashed()->find($this->parent->shop_id);
+
+
+
+                if (!$item) {
+                    $res  = StoreAdjust::run($shop,
+                                             [
+                                                 'type' =>
+                                                     match ($this->auModel->data->{'Transaction Type'}) {
+                                                         'Adjust' => 'other',
+                                                         default => strtolower($this->auModel->data->{'Transaction Type'})
+                                                     },
+
+                                             ]
                     );
-                    $item=$res->model;
+                    $item = $res->model;
                 }
 
-                $item_type='Adjust';
+                $item_type = 'Adjust';
 
 
                 break;
@@ -70,13 +80,13 @@ trait WithTransaction
         //}
 
         $this->modelData   = [
-            'item_type'   => $item_type,
-            'tax_band_id' => $taxBand->id ?? null,
-            'item_id'     => $item->id??null,
-            'quantity'    => 1,
-            'discounts'   => $this->auModel->data->{'Transaction Total Discount Amount'},
-            'net'         => $this->auModel->data->{'Transaction Net Amount'},
-            'aurora_id'   => $this->auModel->data->{'Order No Product Transaction Fact Key'},
+            'item_type'            => $item_type,
+            'tax_band_id'          => $taxBand->id ?? null,
+            'item_id'              => $item->id ?? null,
+            'quantity'             => 1,
+            'discounts'            => $this->auModel->data->{'Transaction Total Discount Amount'},
+            'net'                  => $this->auModel->data->{'Transaction Net Amount'},
+            'aurora_no_product_id' => $this->auModel->data->{'Order No Product Transaction Fact Key'},
 
         ];
         $this->auModel->id = $this->auModel->data->{'Order No Product Transaction Fact Key'};
@@ -89,8 +99,8 @@ trait WithTransaction
         $product = (new Product())->firstWhere('aurora_product_id', $this->auModel->data->{'Product ID'});
 
         $this->modelData   = [
-            'item_type' => 'Product',
-            'item_id'   => $product->id,
+            'item_type'   => 'Product',
+            'item_id'     => $product->id,
             'tax_band_id' => $taxBand->id ?? null,
 
             'quantity'  => $this->auModel->data->{'Order Quantity'},

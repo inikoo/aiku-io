@@ -38,6 +38,8 @@ class CreateBasketsTable extends Migration
             $table->decimal('items_discounts', 16)->default(0);
             $table->decimal('items_net', 16)->default(0);
 
+            $table->unsignedSmallInteger('currency_id');
+
             $table->decimal('charges', 16)->default(0);
             $table->decimal('shipping', 16)->default(null)->nullable();
             $table->decimal('net', 16)->default(0);

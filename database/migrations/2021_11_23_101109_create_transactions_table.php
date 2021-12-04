@@ -15,6 +15,10 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('shop_id')->index();
+            $table->foreign('shop_id')->references('id')->on('shops');
+            $table->unsignedBigInteger('customer_id')->index();
+            $table->foreign('customer_id')->references('id')->on('customers');
             $table->unsignedBigInteger('order_id')->index();
             $table->foreign('order_id')->references('id')->on('orders');
             $table->nullableMorphs('item');
@@ -22,11 +26,12 @@ class CreateTransactionsTable extends Migration
             $table->decimal('discounts', 16)->default(0);
             $table->decimal('net', 16)->default(0);
             $table->unsignedBigInteger('tax_band_id')->nullable()->index();
-            //$table->foreign('tax_band_id')->references('id')->on('aiku.tax_bands');
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->index();
+            $table->unsignedBigInteger('aurora_no_product_id')->nullable()->index();
+
         });
     }
 

@@ -22,6 +22,7 @@ class StoreBasket
         $res = new MigrationResult();
 
 
+        $data['currency_id']=$customer->shop->currency_id;
 
         /** @var \App\Models\Sales\Basket $basket */
         $basket = $customer->basket()->create($data);

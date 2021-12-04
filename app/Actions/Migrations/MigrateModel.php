@@ -84,15 +84,14 @@ class MigrateModel
         $this->parseModelData();
 
 
-
-
         if ($this->auModel->data->{$this->aiku_id_field}) {
             $this->setModel();
 
             $res = $this->updateModel();
 
-            //if($res->changes)
-            //print_r($res->changes);
+            if ($res->changes) {
+                print_r($res->changes);
+            }
 
             if ($res->status == 'deleted') {
                 $this->updateAuroraModel();
@@ -235,7 +234,7 @@ class MigrateModel
 
     private function updateAuroraModel($value = null)
     {
-        if($this->ignore){
+        if ($this->ignore) {
             return;
         }
         DB::connection('aurora')->table($this->auModel->table)
