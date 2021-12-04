@@ -211,7 +211,10 @@ namespace App\Models\Accounting{
  *
  * @mixin IdeHelperInvoiceTransaction
  * @property int $id
+ * @property int $shop_id
+ * @property int $customer_id
  * @property int $invoice_id
+ * @property int|null $order_id
  * @property int|null $transaction_id
  * @property string|null $item_type
  * @property int|null $item_id
@@ -223,28 +226,36 @@ namespace App\Models\Accounting{
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int|null $aurora_id
  * @property int|null $aurora_no_product_id
  * @property-read Model|\Eloquent $item
  * @property-read Transaction|null $transaction
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction newQuery()
+ * @method static \Illuminate\Database\Query\Builder|InvoiceTransaction onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction query()
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereAuroraId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereAuroraNoProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereDiscounts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereInvoiceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereItemId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereItemType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereNet($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereTaxBandId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InvoiceTransaction whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|InvoiceTransaction withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|InvoiceTransaction withoutTrashed()
  */
 	class IdeHelperInvoiceTransaction extends \Eloquent {}
 }
@@ -728,6 +739,44 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|CustomerProduct query()
  */
 	class IdeHelperCustomerProduct extends \Eloquent {}
+}
+
+namespace App\Models\Delivery{
+/**
+ * App\Models\Delivery\Shipper
+ *
+ * @property int $id
+ * @property int|null $api_shipper_id
+ * @property bool $status
+ * @property string $code
+ * @property string $tracking_url
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int|null $aurora_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read Contact|null $contact
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Shipper onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereApiShipperId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereAuroraId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereTrackingUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Shipper withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Shipper withoutTrashed()
+ * @mixin \Eloquent
+ */
+	class IdeHelperShipper extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable {}
 }
 
 namespace App\Models\Health{
@@ -1543,6 +1592,8 @@ namespace App\Models\Sales{
  *
  * @mixin IdeHelperTransaction
  * @property int $id
+ * @property int $shop_id
+ * @property int $customer_id
  * @property int $order_id
  * @property string|null $item_type
  * @property int|null $item_id
@@ -1556,9 +1607,12 @@ namespace App\Models\Sales{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int|null $aurora_id
  * @property int|null $aurora_no_product_id
+ * @property-read Customer $customer
  * @property-read \Illuminate\Database\Eloquent\Collection|InvoiceTransaction[] $invoiceTransactions
  * @property-read int|null $invoice_transactions_count
  * @property-read Model|\Eloquent $item
+ * @property-read \App\Models\Sales\Order $order
+ * @property-read Shop $shop
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
  * @method static \Illuminate\Database\Query\Builder|Transaction onlyTrashed()
@@ -1566,6 +1620,7 @@ namespace App\Models\Sales{
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereAuroraId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereAuroraNoProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereDiscounts($value)
@@ -1575,6 +1630,7 @@ namespace App\Models\Sales{
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereNet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereTaxBandId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Transaction withTrashed()

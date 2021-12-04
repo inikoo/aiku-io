@@ -50,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
                 'Shop'           => 'App\Models\Trade\Shop',
                 'Basket'         => 'App\Models\Sales\Basket',
                 'Adjust'         => 'App\Models\Sales\Adjust',
+                'Shipper'        => 'App\Models\Delivery\Shipper',
 
 
                 /*
