@@ -39,4 +39,10 @@ class BasketTransaction extends Model
     {
         return $this->morphTo();
     }
+
+    /** @noinspection PhpUnused */
+    public function setQuantityAttribute($val)
+    {
+        $this->attributes['quantity'] = sprintf('%.3f', $val);
+    }
 }

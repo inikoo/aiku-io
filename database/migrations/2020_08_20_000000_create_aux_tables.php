@@ -116,7 +116,7 @@ class CreateAuxTables extends Migration
             $table->timestampsTz();
             $table->index(['imageable_id', 'imageable_type', 'scope']);
             $table->unique(['image_id', 'imageable_id', 'imageable_type', 'scope']);
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_id')->nullable();
 
         });
 

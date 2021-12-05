@@ -35,6 +35,10 @@ class CreateBasketTransactionsTable extends Migration
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->index();
+            $table->unsignedBigInteger('aurora_no_product_id')->nullable()->index();
+
+
+
         });
     }
 
