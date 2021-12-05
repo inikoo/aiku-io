@@ -743,13 +743,96 @@ namespace App\Models{
 
 namespace App\Models\Delivery{
 /**
+ * App\Models\Delivery\DeliveryNote
+ *
+ * @property int $id
+ * @property int $shop_id
+ * @property int $customer_id
+ * @property int $order_id Main order, usually the only one (used for performance)
+ * @property string $number
+ * @property string $type
+ * @property string|null $state
+ * @property string|null $status
+ * @property int|null $delivery_address_id
+ * @property int|null $shipper_id
+ * @property string|null $weight
+ * @property int $number_stocks
+ * @property int $number_picks
+ * @property int|null $picker_id Main picker
+ * @property int|null $packer_id Main packer
+ * @property string $date
+ * @property string|null $order_submitted_at
+ * @property string|null $assigned_at
+ * @property string|null $picking_at
+ * @property string|null $picked_at
+ * @property string|null $packing_at
+ * @property string|null $packed_at
+ * @property string|null $dispatched_at
+ * @property string|null $cancelled_at
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int|null $aurora_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read Customer $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|Order[] $order
+ * @property-read int|null $order_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Order[] $orders
+ * @property-read int|null $orders_count
+ * @property-read Shop $shop
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote newQuery()
+ * @method static \Illuminate\Database\Query\Builder|DeliveryNote onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereAssignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereAuroraId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereCancelledAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereDeliveryAddressId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereDispatchedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereNumberPicks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereNumberStocks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereOrderSubmittedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote wherePackedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote wherePackerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote wherePackingAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote wherePickedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote wherePickerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote wherePickingAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereShipperId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereShopId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote whereWeight($value)
+ * @method static \Illuminate\Database\Query\Builder|DeliveryNote withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|DeliveryNote withoutTrashed()
+ * @mixin \Eloquent
+ */
+	class IdeHelperDeliveryNote extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable {}
+}
+
+namespace App\Models\Delivery{
+/**
  * App\Models\Delivery\Shipper
  *
+ * @mixin IdeHelperShipper
  * @property int $id
  * @property int|null $api_shipper_id
  * @property bool $status
  * @property string $code
- * @property string $tracking_url
+ * @property string $name
+ * @property string|null $tracking_url
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -769,12 +852,12 @@ namespace App\Models\Delivery{
  * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereTrackingUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Shipper whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Shipper withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Shipper withoutTrashed()
- * @mixin \Eloquent
  */
 	class IdeHelperShipper extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable {}
 }
@@ -1281,6 +1364,7 @@ namespace App\Models\Sales{
  * @property int $items number of items
  * @property string $items_discounts
  * @property string $items_net
+ * @property int $currency_id
  * @property string $charges
  * @property string|null $shipping
  * @property string $net
@@ -1300,6 +1384,7 @@ namespace App\Models\Sales{
  * @method static \Illuminate\Database\Eloquent\Builder|Basket whereAuroraId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Basket whereCharges($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Basket whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Basket whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Basket whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Basket whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Basket whereId($value)
@@ -1323,6 +1408,8 @@ namespace App\Models\Sales{
  *
  * @mixin IdeHelperBasketTransaction
  * @property int $id
+ * @property int $shop_id
+ * @property int $customer_id
  * @property int $basket_id
  * @property string|null $item_type
  * @property int|null $item_id
@@ -1333,21 +1420,27 @@ namespace App\Models\Sales{
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $deleted_at
  * @property int|null $aurora_id
+ * @property int|null $aurora_no_product_id
  * @property-read Model|\Eloquent $item
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction query()
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereAuroraId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereAuroraNoProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereBasketId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereDiscounts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereItemId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereItemType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereNet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereTaxBandId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BasketTransaction whereUpdatedAt($value)
  */
@@ -1424,6 +1517,8 @@ namespace App\Models\Sales{
  * @property-read int|null $audits_count
  * @property-read Customer $customer
  * @property-read Customer|null $customerClient
+ * @property-read \Illuminate\Database\Eloquent\Collection|DeliveryNote[] $deliveryNotes
+ * @property-read int|null $delivery_notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|InvoiceTransaction[] $invoiceTransactions
  * @property-read int|null $invoice_transactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Invoice[] $invoices
