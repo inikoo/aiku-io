@@ -29,8 +29,10 @@ class Location extends Model implements Auditable
     use SoftDeletes;
     use HasFactory;
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'audited_at' => 'array'
     ];
+
 
     protected $attributes = [
         'data' => '{}',

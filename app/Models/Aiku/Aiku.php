@@ -19,7 +19,7 @@ class Aiku extends Model
 {
     use UsesLandlordConnection;
 
-    protected $table='aiku';
+    protected $table = 'aiku';
 
     protected $guarded = [];
     protected $attributes = [
@@ -27,10 +27,9 @@ class Aiku extends Model
         'settings' => '{}',
     ];
     protected $casts = [
-        'data'     => 'array',
-        'settings' => 'array'
+        'data'        => 'array',
+        'settings'    => 'array',
+        'deployed_at' => 'datetime',
     ];
-
-
 
 }

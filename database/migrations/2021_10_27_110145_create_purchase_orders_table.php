@@ -17,12 +17,9 @@ class CreatePurchaseOrdersTable extends Migration
             $table->id();
             $table->string('number')->index()->nullable();
             $table->morphs('vendor');
-
             $table->enum('state',['in-process','submitted','no-received','confirmed','manufactured','qc-pass','inputted','dispatched','received','checked','placed','costing','invoice-checked','cancelled'])->index()->default('in-process');
-
             $table->json('data')->nullable();
             $table->date('date')->index();
-
             $table->timestampsTz();
             $table->dateTimeTz('submitted_at')->nullable();
             $table->softDeletesTz();

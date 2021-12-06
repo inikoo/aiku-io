@@ -26,7 +26,8 @@ class PurchaseOrder extends Model implements Auditable
     use HasFactory;
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'submitted_at' => 'array'
     ];
 
     protected $attributes = [

@@ -19,6 +19,12 @@ class UserStats extends Model
 {
     use HasFactory;
 
+
+    protected $casts = [
+        'last_login_at'               => 'datetime',
+        'last_fail_login_at'               => 'datetime',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class,'id','id');

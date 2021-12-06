@@ -31,7 +31,8 @@ class Invoice extends Model implements Auditable
     use SoftDeletes;
 
     protected $casts = [
-        'data' => 'array'
+        'data'    => 'array',
+        'paid_at' => 'array'
     ];
 
     protected $attributes = [
@@ -57,6 +58,7 @@ class Invoice extends Model implements Auditable
 
     /**
      * Relation to main order, usually the only one, used no avoid looping over orders
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      *
      */
