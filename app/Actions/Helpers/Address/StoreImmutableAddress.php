@@ -18,13 +18,14 @@ class StoreImmutableAddress
     public function handle(Address $address): Address
     {
 
-
-        if($foundAddress=Address::where('checksum',$address->checksum)->where('immutable',true)->first()) {
+        if ($foundAddress = Address::where('checksum', $address->getChecksum())->where('immutable', true)->first()) {
             return $foundAddress;
         }
-        $address->immutable=true;
+        $address->immutable = true;
         $address->save();
-        return $address;
 
+      //  exit;
+
+        return $address;
     }
 }

@@ -108,8 +108,8 @@ class MigrateOrders extends MigrateAurora
                     DB::connection('aurora')->table('Delivery Note Dimension')
                         ->where('Delivery Note Order Key', $auroraData->{'Order Key'})
                         ->orderBy('Delivery Note Key')->chunk(1000, function ($chunk) use ($tenant) {
-                            foreach ($chunk as $auroraInvoiceData) {
-                                $result = MigrateDeliveryNote::run($auroraInvoiceData);
+                            foreach ($chunk as $auroraDeliveryNoteData) {
+                                $result = MigrateDeliveryNote::run($auroraDeliveryNoteData);
                                 $this->recordAction($tenant, $result);
                             }
                         });

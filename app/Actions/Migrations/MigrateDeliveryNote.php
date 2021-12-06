@@ -8,10 +8,10 @@
 
 namespace App\Actions\Migrations;
 
-
-use App\Actions\Accounting\Invoice\StoreInvoice;
-use App\Actions\Accounting\Invoice\UpdateInvoice;
+use App\Actions\Delivery\DeliveryNote\StoreDeliveryNote;
+use App\Actions\Delivery\DeliveryNote\UpdateDeliveryNote;
 use App\Models\Delivery\DeliveryNote;
+use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -46,13 +46,21 @@ class MigrateDeliveryNote extends MigrateModel
                 'Replacement & Shortages', 'Replacement', 'Shortages' => 'replacement',
                 default => 'order'
             },
+            'date'       => $this->auModel->data->{'Delivery Note Date'},
+            'picking_at' => $this->auModel->data->{'Delivery Note Date Start Picking'},
+            'picked_at' => $this->auModel->data->{'Delivery Note Date Finish Picking'},
+            'packing_at' => $this->auModel->data->{'Delivery Note Date Start Packing'},
+            'packed_at' => $this->auModel->data->{'Delivery Note Date Finish Packing'},
             'created_at' => $this->auModel->data->{'Delivery Note Date Created'},
-
-
-            'aurora_id' => $this->auModel->data->{'Delivery Note Key'},
+            'aurora_id'  => $this->auModel->data->{'Delivery Note Key'},
 
         ];
-        $this->auModel->id                = $this->auModel->data->{'Delivery Note Key'};
+
+        $deliveryAddressData                 = $this->parseAddress(prefix: 'Delivery Note', auAddressData: $this->auModel->data);
+        $this->modelData['delivery_address'] = new Address($deliveryAddressData);
+
+
+        $this->auModel->id = $this->auModel->data->{'Delivery Note Key'};
     }
 
 
@@ -63,21 +71,19 @@ class MigrateDeliveryNote extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-        return UpdateInvoice::run(
-            delivery_note: $this->model,
-            modelData:     $this->modelData['invoice'],
-        // invoiceAddress:  $this->modelData['invoice_address'],
-        // deliveryAddress: $this->modelData['delivery_address']
+        return UpdateDeliveryNote::run(
+            deliveryNote:    $this->model,
+            modelData:       $this->modelData['delivery_note'],
+            deliveryAddress: $this->modelData['delivery_address']
         );
     }
 
     public function storeModel(): MigrationResult
     {
-        return StoreInvoice::run(
-            order:     $this->parent,
-            modelData: $this->modelData['invoice'],
-        // invoiceAddress:  $this->modelData['invoice_address'],
-        // deliveryAddress: $this->modelData['delivery_address']
+        return StoreDeliveryNote::run(
+            order:           $this->parent,
+            modelData:       $this->modelData['delivery_note'],
+            deliveryAddress: $this->modelData['delivery_address']
         );
     }
 

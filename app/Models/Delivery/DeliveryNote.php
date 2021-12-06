@@ -30,7 +30,17 @@ class DeliveryNote extends Model implements Auditable
     use SoftDeletes;
 
     protected $casts = [
-        'data' => 'array'
+        'data'               => 'array',
+        'date'               => 'datetime',
+        'order_submitted_at' => 'datetime',
+        'assigned_at'        => 'datetime',
+        'picking_at'         => 'datetime',
+        'picked_at'          => 'datetime',
+        'packing_at'         => 'datetime',
+        'packed_at'          => 'datetime',
+        'dispatched_at'      => 'datetime',
+        'cancelled_at'       => 'datetime',
+
     ];
 
     protected $attributes = [
@@ -56,6 +66,7 @@ class DeliveryNote extends Model implements Auditable
 
     /**
      * Relation to main order, usually the only one, used no avoid looping over orders
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      *
      */

@@ -42,7 +42,8 @@ class Address extends Model implements Auditable
             function (Address $address) {
                 if ($country = (new Country())->firstWhere('id', $address->country_id)) {
                     $address->country_code = $country->code;
-                    $address->checksum     = $address->getChecksum();
+
+                    $address->checksum = $address->getChecksum();
                     $address->save();
                 }
             }
@@ -82,26 +83,31 @@ class Address extends Model implements Auditable
 
     public function getChecksum(): string
     {
+
+
         return md5(
             json_encode(
-                array_map(
-                    'strtolower',
-                    array_diff_key(
-                        $this->toArray(),
-                        array_flip(
-                            [
-                                'id',
-                                'data',
-                                'settings',
-                                'contact',
-                                'organization',
-                                'country_code',
-                                'checksum',
-                                'created_at',
-                                'updated_at',
-                                'owner_id',
-                                'owner_type'
-                            ]
+                array_filter(
+                    array_map(
+                        'strtolower',
+                        array_diff_key(
+                            $this->toArray(),
+                            array_flip(
+                                [
+                                    'id',
+                                    'data',
+                                    'settings',
+                                    'contact',
+                                    'organization',
+                                    'country_code',
+                                    'checksum',
+                                    'created_at',
+                                    'updated_at',
+                                    'owner_id',
+                                    'owner_type',
+                                    'immutable'
+                                ]
+                            )
                         )
                     )
                 )
@@ -113,7 +119,6 @@ class Address extends Model implements Auditable
     {
         return $this->morphedByMany(Customer::class, 'addressable');
     }
-
 
 
     public function owner(): MorphTo
