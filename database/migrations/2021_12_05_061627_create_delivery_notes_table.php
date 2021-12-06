@@ -32,7 +32,7 @@ class CreateDeliveryNotesTable extends Migration
 
 
             $table->string('number')->index();
-            $table->enum('type',['order,replacement'])->default('order')->index();
+            $table->enum('type',['order','replacement'])->default('order')->index();
 
             $table->enum('state',
                          [

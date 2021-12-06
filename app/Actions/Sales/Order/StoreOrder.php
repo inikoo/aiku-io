@@ -8,9 +8,10 @@
 
 namespace App\Actions\Sales\Order;
 
+use App\Actions\Helpers\Address\StoreImmutableAddress;
 use App\Actions\Migrations\MigrationResult;
+use App\Models\CRM\Customer;
 use App\Models\Helpers\Address;
-use App\Models\Trade\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreOrder
@@ -18,9 +19,9 @@ class StoreOrder
     use AsAction;
 
     public function handle(
-        Shop $shop,
+        Customer $customer,
         array $modelData,
-        Address $invoiceAddress,
+        Address $billingAddress,
         Address $deliveryAddress
 
     ): MigrationResult
@@ -28,12 +29,28 @@ class StoreOrder
         $res = new MigrationResult();
 
 
-        $modelData['currency_id']=$shop->currency_id;
+
+        if($customer->vendor_type=='Customer'){
+            $modelData['customer_id']=$customer->vendor_id;
+            $modelData['customer_client_id']=$customer->id;
+
+        }else{
+            $modelData['customer_id']=$customer->id;
+
+        }
+
+        $modelData['currency_id']=$customer->shop->currency_id;
+        $modelData['shop_id']=$customer->shop_id;
+
+        $billingAddress=StoreImmutableAddress::run($billingAddress);
+        $deliveryAddress=StoreImmutableAddress::run($deliveryAddress);
+
+        $modelData['delivery_address_id']=$deliveryAddress->id;
+        $modelData['billing_address_id']=$billingAddress->id;
 
 
         /** @var \App\Models\Sales\Order $order */
-        $order = $shop->orders()->create($modelData);
-
+        $order = $customer->shop->orders()->create($modelData);
 
 
         $res->model    = $order;

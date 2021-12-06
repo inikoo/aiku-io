@@ -26,8 +26,14 @@ class CreateOrdersTable extends Migration
 
             $table->string('number')->nullable()->index();
 
-            $table->enum('state',['in-warehouse','dispatched','returned'])->default('in-warehouse')->index();
+            $table->enum('state',['in-basket','in-process','in-warehouse','packed','packed-done','dispatched','returned','cancelled'])->default('in-basket')->index();
 
+
+            $table->unsignedMediumInteger('billing_address_id')->nullable()->index();
+            $table->foreign('billing_address_id')->references('id')->on('addresses');
+
+            $table->unsignedMediumInteger('delivery_address_id')->nullable()->index();
+            $table->foreign('delivery_address_id')->references('id')->on('addresses');
 
             $table->unsignedBigInteger('items')->default(0)->comment('number of items');
 

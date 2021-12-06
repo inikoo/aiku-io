@@ -35,6 +35,7 @@ class CreateAuxTables extends Migration
             'addresses',
             function (Blueprint $table) {
                 $table->id();
+                $table->boolean('immutable')->default(false)->index();
                 $table->string('address_line_1',255)->nullable();
                 $table->string('address_line_2',255)->nullable();
                 $table->string('sorting_code')->nullable();
@@ -46,6 +47,7 @@ class CreateAuxTables extends Migration
                 $table->string('checksum')->index()->nullable();
                 $table->foreignId('owner_id')->nullable()->index();
                 $table->string('owner_type')->nullable()->index();
+                $table->string('owner_scope')->nullable();
                 $table->unsignedSmallInteger('country_id')->nullable()->index();
                 //$table->foreign('country_id')->references('id')->on('aiku.countries');
                 $table->index(['checksum', 'owner_id', 'owner_type']);
@@ -60,8 +62,10 @@ class CreateAuxTables extends Migration
             $table->foreignId('addressable_id')->index();
             $table->string('addressable_type')->index();
             $table->string('scope')->nullable()->index();
+            $table->string('status_info')->nullable();
             $table->timestampsTz();
         });
+
 
 
         Schema::create('dates', function (Blueprint $table) {

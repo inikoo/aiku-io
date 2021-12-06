@@ -33,6 +33,10 @@ class CreateInvoicesTable extends Migration
             $table->string('number')->index();
             $table->enum('type',['invoice','refund'])->index();
 
+            $table->unsignedMediumInteger('billing_address_id')->nullable()->index();
+            $table->foreign('billing_address_id')->references('id')->on('addresses');
+
+
             $table->unsignedSmallInteger('currency_id');
             $table->decimal('exchange', 16, 6)->default(1);
 

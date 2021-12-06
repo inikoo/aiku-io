@@ -71,7 +71,7 @@ trait WithTransaction
 
                 break;
             default:
-                print "===== MigrateBasketNoProductTransaction.php\n";
+                print "===== MigrateNoProductTransaction.php\n";
                 dd($this->auModel->data);
         }
 

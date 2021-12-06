@@ -48,9 +48,10 @@ class AppServiceProvider extends ServiceProvider
                 'Agent'          => 'App\Models\Buying\Agent',
                 'Supplier'       => 'App\Models\Buying\Supplier',
                 'Shop'           => 'App\Models\Trade\Shop',
-                'Basket'         => 'App\Models\Sales\Basket',
                 'Adjust'         => 'App\Models\Sales\Adjust',
                 'Shipper'        => 'App\Models\Delivery\Shipper',
+                'DeliveryNote'   => 'App\Models\Delivery\DeliveryNote',
+                'Invoice'        => 'App\Models\Accounting\Invoice',
 
 
                 /*
@@ -65,8 +66,6 @@ class AppServiceProvider extends ServiceProvider
 
                 'ShippingZone'             => 'App\Models\Sales\ShippingZone',
                 'Charge'                   => 'App\Models\Sales\Charge',
-                'Invoice'                  => 'App\Models\Sales\Invoice',
-                'DeliveryNote'             => 'App\Models\Inventory\DeliveryNote',
                 'Stock'                    => 'App\Models\Inventory\Stock',
                 'Product'                  => 'App\Models\Stores\Product',
                 'ProductHistoricVariation' => 'App\Models\Stores\ProductHistoricVariation',

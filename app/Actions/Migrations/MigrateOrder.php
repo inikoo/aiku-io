@@ -15,8 +15,8 @@ use App\Actions\Sales\Order\UpdateOrder;
 use App\Models\CRM\Customer;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
-use App\Models\Trade\Shop;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -34,29 +34,55 @@ class MigrateOrder extends MigrateModel
         $this->aiku_id_field     = 'aiku_id';
     }
 
-    public function getParent(): Shop
+    public function getParent(): Customer
     {
-        return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Store Key'});
+        //return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Store Key'});
+        if ($this->auModel->data->{'Order Customer Client Key'} != '') {
+            $parent = Customer::withTrashed()->firstWhere('aurora_customer_client_id', $this->auModel->data->{'Order Customer Client Key'});
+        } else {
+            $parent = Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Order Customer Key'});
+        }
+
+        if (!$parent) {
+            print "Migrate order no parent";
+            dd($this->auModel->data);
+        }
+
+        /*
+        if (
+            $parent->trashed() or
+            (
+                $parent->shop->type == 'dropshipping' and
+                !$this->auModel->data->{'Order Customer Client Key'})
+        ) {
+            $this->ignore = true;
+            DB::connection('aurora')->table($this->auModel->table)
+                ->where($this->auModel->id_field, $this->auModel->data->{'Order Key'})
+                ->update(['aiku_note' => 'ignore-basket']);
+        }
+*/
+
+        return $parent;
+
+
+
     }
 
 
     public function parseModelData()
     {
-        $customer = Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Order Customer Key'});
-        if ($this->auModel->data->{'Order Customer Client Key'} != '') {
-            $customerClient     = Customer::withTrashed()->firstWhere('aurora_customer_client_id', $this->auModel->data->{'Order Customer Client Key'});
-            $customer_client_id = $customerClient->id;
+        if ($this->ignore) {
+            return;
         }
 
-        $state = 'dispatched';
-        if ($this->auModel->data->{'Order State'} == 'Approved') {
+        $state=Str::snake($this->auModel->data->{'Order State'},'-');
+
+        if ($state == 'approved') {
             $state = 'in-warehouse';
         }
 
         $this->modelData['order'] = [
             'number'             => $this->auModel->data->{'Order Public ID'},
-            'customer_id'        => $customer->id,
-            'customer_client_id' => $customer_client_id ?? null,
             'state'              => $state,
             'aurora_id'          => $this->auModel->data->{'Order Key'},
             'exchange'           => $this->auModel->data->{'Order Currency Exchange'}
@@ -67,8 +93,10 @@ class MigrateOrder extends MigrateModel
         $deliveryAddressData                 = $this->parseAddress(prefix: 'Order Delivery', auAddressData: $this->auModel->data);
         $this->modelData['delivery_address'] = new Address($deliveryAddressData);
 
-        $invoiceAddressData                 = $this->parseAddress(prefix: 'Order Invoice', auAddressData: $this->auModel->data);
-        $this->modelData['invoice_address'] = new Address($invoiceAddressData);
+        $billingAddressData                 = $this->parseAddress(prefix: 'Order Invoice', auAddressData: $this->auModel->data);
+        $this->modelData['billing_address'] = new Address($billingAddressData);
+
+
     }
 
 
@@ -79,25 +107,26 @@ class MigrateOrder extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-        if (in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
+        if ( !$this->ignore) {
             return UpdateOrder::run(
                 order:           $this->model,
                 modelData:       $this->modelData['order'],
-                invoiceAddress:  $this->modelData['invoice_address'],
+                billingAddress:  $this->modelData['billing_address'],
                 deliveryAddress: $this->modelData['delivery_address']
             );
-        } else {
-            return DestroyOrder::run($this->model);
         }
+
+        return new MigrationResult();
+
     }
 
     public function storeModel(): MigrationResult
     {
-        if (in_array($this->auModel->data->{'Order State'}, ['Dispatched', 'Approved']) and !$this->ignore) {
+        if ( !$this->ignore) {
             return StoreOrder::run(
-                shop:            $this->parent,
+                customer:            $this->parent,
                 modelData:       $this->modelData['order'],
-                invoiceAddress:  $this->modelData['invoice_address'],
+                billingAddress:  $this->modelData['billing_address'],
                 deliveryAddress: $this->modelData['delivery_address']
             );
         }
@@ -107,6 +136,7 @@ class MigrateOrder extends MigrateModel
 
     protected function postMigrateActions(MigrationResult $res): MigrationResult
     {
+
         if ($this->ignore) {
             $res         = new MigrationResult();
             $res->status = 'error';
@@ -129,6 +159,7 @@ class MigrateOrder extends MigrateModel
         ) {
             MigrateNoProductTransaction::run($auroraTransaction);
         }
+
 
         return $res;
     }

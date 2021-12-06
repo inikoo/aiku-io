@@ -8,6 +8,7 @@
 
 namespace App\Actions\Sales\Order;
 
+use App\Actions\Helpers\Address\StoreImmutableAddress;
 use App\Actions\Migrations\MigrationResult;
 use App\Actions\WithUpdate;
 use App\Models\Helpers\Address;
@@ -23,14 +24,18 @@ class UpdateOrder
     public function handle(
         Order $order,
         array $modelData,
-        Address $invoiceAddress,
+        Address $billingAddress,
         Address $deliveryAddress
     ): MigrationResult
     {
         $res = new MigrationResult();
 
 
+        $billingAddress=StoreImmutableAddress::run($billingAddress);
+        $deliveryAddress=StoreImmutableAddress::run($deliveryAddress);
 
+        $modelData['delivery_address_id']=$deliveryAddress->id;
+        $modelData['billing_address_id']=$billingAddress->id;
 
         $order->update( Arr::except($modelData, ['data']));
         $order->update($this->extractJson($modelData));

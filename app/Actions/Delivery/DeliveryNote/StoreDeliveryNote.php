@@ -8,7 +8,9 @@
 
 namespace App\Actions\Delivery\DeliveryNote;
 
+use App\Actions\Helpers\Address\StoreImmutableAddress;
 use App\Actions\Migrations\MigrationResult;
+use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -18,6 +20,7 @@ class StoreDeliveryNote
 
     public function handle(
         Order $order,
+        Address $deliveryAddress,
         array $modelData
 
     ): MigrationResult
@@ -27,6 +30,9 @@ class StoreDeliveryNote
         $modelData['shop_id']=$order->shop_id;
         $modelData['customer_id']=$order->customer_id;
         $modelData['order_id']=$order->id;
+
+        $deliveryAddress=StoreImmutableAddress::run($deliveryAddress);
+        $modelData['delivery_address_id']=$deliveryAddress->id;
 
         /** @var \App\Models\Delivery\DeliveryNote $deliveryNote */
         $deliveryNote = $order->deliveryNotes()->create($modelData);

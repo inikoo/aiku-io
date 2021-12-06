@@ -11,8 +11,8 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Accounting\Invoice\StoreInvoice;
 use App\Actions\Accounting\Invoice\UpdateInvoice;
-use App\Actions\Sales\Order\StoreOrder;
 use App\Models\Accounting\Invoice;
+use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
@@ -34,7 +34,12 @@ class MigrateInvoice extends MigrateModel
 
     public function getParent(): Order
     {
-        return Order::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Invoice Order Key'});
+        $order = Order::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Invoice Order Key'});
+        if (!$order) {
+            dd($this->auModel->data);
+        }
+
+        return $order;
     }
 
 
@@ -45,11 +50,13 @@ class MigrateInvoice extends MigrateModel
             'type'       => strtolower($this->auModel->data->{'Invoice Type'}),
             'created_at' => $this->auModel->data->{'Invoice Date'},
             'exchange'   => $this->auModel->data->{'Invoice Currency Exchange'},
-
-            'aurora_id' => $this->auModel->data->{'Invoice Key'},
-
+            'aurora_id'  => $this->auModel->data->{'Invoice Key'},
         ];
-        $this->auModel->id          = $this->auModel->data->{'Invoice Key'};
+
+        $billingAddressData                 = $this->parseAddress(prefix: 'Invoice', auAddressData: $this->auModel->data);
+        $this->modelData['billing_address'] = new Address($billingAddressData);
+
+        $this->auModel->id = $this->auModel->data->{'Invoice Key'};
     }
 
 
@@ -61,20 +68,18 @@ class MigrateInvoice extends MigrateModel
     public function updateModel(): MigrationResult
     {
         return UpdateInvoice::run(
-            invoice:   $this->model,
-            modelData: $this->modelData['invoice'],
-        // invoiceAddress:  $this->modelData['invoice_address'],
-        // deliveryAddress: $this->modelData['delivery_address']
+            invoice:        $this->model,
+            modelData:      $this->modelData['invoice'],
+            billingAddress: $this->modelData['billing_address'],
         );
     }
 
     public function storeModel(): MigrationResult
     {
         return StoreInvoice::run(
-            order:     $this->parent,
-            modelData: $this->modelData['invoice'],
-        // invoiceAddress:  $this->modelData['invoice_address'],
-        // deliveryAddress: $this->modelData['delivery_address']
+            order:          $this->parent,
+            modelData:      $this->modelData['invoice'],
+            billingAddress: $this->modelData['billing_address'],
         );
     }
 

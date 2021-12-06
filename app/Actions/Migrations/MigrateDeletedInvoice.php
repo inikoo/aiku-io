@@ -13,6 +13,7 @@ use App\Actions\Accounting\Invoice\StoreInvoice;
 use App\Actions\Accounting\Invoice\UpdateInvoice;
 use App\Actions\Accounting\InvoiceTransaction\StoreInvoiceTransaction;
 use App\Models\Accounting\Invoice;
+use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use App\Models\Sales\Transaction;
 use App\Models\Trade\Product;
@@ -61,6 +62,10 @@ class MigrateDeletedInvoice extends MigrateModel
 
         $this->modelData['items'] = $data->items;
 
+        $billingAddressData                 = $this->parseAddress(prefix: 'Invoice', auAddressData: $data);
+        $this->modelData['billing_address'] = new Address($billingAddressData);
+
+
         $this->auModel->id = $this->auModel->data->{'Invoice Deleted Key'};
     }
 
@@ -73,20 +78,18 @@ class MigrateDeletedInvoice extends MigrateModel
     public function updateModel(): MigrationResult
     {
         return UpdateInvoice::run(
-            invoice:   $this->model,
-            modelData: $this->modelData['invoice'],
-        // invoiceAddress:  $this->modelData['invoice_address'],
-        // deliveryAddress: $this->modelData['delivery_address']
+            invoice:        $this->model,
+            modelData:      $this->modelData['invoice'],
+            billingAddress: $this->modelData['billing_address'],
         );
     }
 
     public function storeModel(): MigrationResult
     {
         return StoreInvoice::run(
-            order:     $this->parent,
-            modelData: $this->modelData['invoice'],
-        // invoiceAddress:  $this->modelData['invoice_address'],
-        // deliveryAddress: $this->modelData['delivery_address']
+            order:          $this->parent,
+            modelData:      $this->modelData['invoice'],
+            billingAddress: $this->modelData['billing_address'],
         );
     }
 

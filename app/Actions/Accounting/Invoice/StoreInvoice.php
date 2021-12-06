@@ -8,7 +8,9 @@
 
 namespace App\Actions\Accounting\Invoice;
 
+use App\Actions\Helpers\Address\StoreImmutableAddress;
 use App\Actions\Migrations\MigrationResult;
+use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -18,6 +20,7 @@ class StoreInvoice
 
     public function handle(
         Order $order,
+        Address $billingAddress,
         array $modelData
 
     ): MigrationResult
@@ -29,9 +32,12 @@ class StoreInvoice
         $modelData['order_id']=$order->id;
         $modelData['currency_id']=$order->currency_id;
 
-        /** @var \App\Models\Accounting\Invoice $invoice */
-        $invoice = $order->invoices()->create($modelData);
+        $billingAddress=StoreImmutableAddress::run($billingAddress);
+        $modelData['billing_address_id']=$billingAddress->id;
 
+        /** @var \App\Models\Accounting\Invoice $invoice */
+
+        $invoice = $order->invoices()->create($modelData);
 
 
         $res->model    = $invoice;

@@ -8,11 +8,11 @@
 
 namespace App\Actions\Accounting\Invoice;
 
+use App\Actions\Helpers\Address\StoreImmutableAddress;
 use App\Actions\Migrations\MigrationResult;
 use App\Actions\WithUpdate;
 use App\Models\Accounting\Invoice;
 use App\Models\Helpers\Address;
-use App\Models\Sales\Order;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -23,10 +23,15 @@ class UpdateInvoice
 
     public function handle(
         Invoice $invoice,
+        Address $billingAddress,
         array $modelData,
     ): MigrationResult
     {
         $res = new MigrationResult();
+
+        $billingAddress=StoreImmutableAddress::run($billingAddress);
+
+        $modelData['billing_address_id']=$billingAddress->id;
 
         $invoice->update( Arr::except($modelData, ['data']));
         $invoice->update($this->extractJson($modelData));
