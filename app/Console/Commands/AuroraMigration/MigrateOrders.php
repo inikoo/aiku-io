@@ -68,6 +68,8 @@ class MigrateOrders extends MigrateAurora
 
         $count += DB::connection('aurora')->table('Invoice Dimension')
             ->count();
+        $count += DB::connection('aurora')->table('Invoice Deleted Dimension')
+            ->count();
         $count += DB::connection('aurora')->table('Delivery Note Dimension')
             ->count();
 
