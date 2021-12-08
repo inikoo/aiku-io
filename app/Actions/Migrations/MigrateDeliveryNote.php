@@ -89,27 +89,22 @@ class MigrateDeliveryNote extends MigrateModel
 
 
     protected function postMigrateActions(MigrationResult $res): MigrationResult
-    {/*
-        foreach (
-            DB::connection('aurora')->table('Order Transaction Fact')
-                ->where('Invoice Key', $this->auModel->data->{'Invoice Key'})
-                ->get() as $auroraTransaction
-        ) {
-            $auroraTransaction->{'invoice_id'} = $res->model_id;
-            $auroraTransaction->{'order_id'}   = $this->parent->id;
-            MigrateProductInvoiceTransaction::run($auroraTransaction);
-        }
-        foreach (
-            DB::connection('aurora')->table('Order No Product Transaction Fact')
-                ->where('Invoice Key', $this->auModel->data->{'Invoice Key'})
-                ->get() as $auroraTransaction
-        ) {
-            $auroraTransaction->{'invoice_id'} = $res->model_id;
-            $auroraTransaction->{'order_id'}   = $this->parent->id;
+    {
 
-            MigrateNoProductInvoiceTransaction::run($auroraTransaction);
+        foreach (
+            DB::connection('aurora')->table('Inventory Transaction Fact')
+                ->where('Delivery Note Key', $this->auModel->data->{'Delivery Note Key'})
+                ->get() as $auroraTransaction
+        ) {
+            $auroraTransaction->{'delivery_note_id'} = $res->model_id;
+            $auroraTransaction->{'order_id'}   = $this->parent->id;
+            $auroraTransaction->{'aurora_order_id'}   = $this->parent->aurora_di;
+
+            MigratePicking::run($auroraTransaction);
+            //MigrateDeliveryNoteItem::run($auroraTransaction);
         }
-*/
+
+
         return $res;
     }
 
