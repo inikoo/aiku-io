@@ -36,7 +36,7 @@ class MigrateStock extends MigrateModel
                 'description' => $this->auModel->data->{'Part Recommended Product Unit Name'},
                 'code'        => strtolower($this->auModel->data->{'Part Reference'}),
                 'aurora_id'   => $this->auModel->data->{'Part SKU'},
-                'created_at'  => $this->getDate($this->auModel->data->{'Part Valid From'} ?? null),
+                'created_at'  => $this->auModel->data->{'Part Valid From'} ?? null,
             ]
         );
 

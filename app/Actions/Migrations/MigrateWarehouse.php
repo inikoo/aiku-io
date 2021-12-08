@@ -34,7 +34,7 @@ class MigrateWarehouse extends MigrateModel
                 'name'       => $this->auModel->data->{'Warehouse Name'},
                 'code'       => strtolower($this->auModel->data->{'Warehouse Code'}),
                 'aurora_id'  => $this->auModel->data->{'Warehouse Key'},
-                'created_at' => $this->getDate($this->auModel->data->{'Warehouse Valid From'} ?? null),
+                'created_at' => $this->auModel->data->{'Warehouse Valid From'} ?? null,
             ]
         );
         if (isset($this->auModel->data->{'Warehouse Area Key'})) {

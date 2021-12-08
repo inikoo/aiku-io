@@ -27,7 +27,6 @@ class CreateLocationsTable extends Migration
             $table->unsignedSmallInteger('warehouse_area_id')->nullable()->index();
             $table->foreign('warehouse_area_id')->references('id')->on('warehouse_areas');
 
-            $table->boolean('status')->default(true);
             $table->enum('state', ['operational', 'broken', 'deleted'])->index()->default('operational');
             $table->string('code', 64)->index();
 
@@ -35,7 +34,6 @@ class CreateLocationsTable extends Migration
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-            $table->unique(['status', 'code']);
         });
     }
 

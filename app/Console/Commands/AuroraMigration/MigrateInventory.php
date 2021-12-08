@@ -8,6 +8,7 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
+use App\Actions\Migrations\MigrateDeletedStock;
 use App\Actions\Migrations\MigrateStock;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
@@ -30,19 +31,32 @@ class MigrateInventory extends MigrateAurora
         DB::connection('aurora')->table('Part Dimension')
             ->update(['aiku_id' => null]);
 
+        DB::connection('aurora')->table('Part Deleted Dimension')
+            ->update(['aiku_id' => null]);
+
     }
 
     protected function count(): int
     {
-        return DB::connection('aurora')->table('Part Dimension')->count();
+        $count= DB::connection('aurora')->table('Part Dimension')->count();
+        $count+= DB::connection('aurora')->table('Part Deleted Dimension')->count();
+        return $count;
+
     }
 
     protected function migrate(Tenant $tenant)
     {
+
         foreach (DB::connection('aurora')->table('Part Dimension')->get() as $auroraPartData) {
             $result = MigrateStock::run($auroraPartData);
             $this->recordAction($tenant, $result);
+        }
 
+        foreach (DB::connection('aurora')->table('Part Deleted Dimension')
+            ->where('Part Deleted Key','>',0)
+            ->get() as $auroraPartData) {
+            $result = MigrateDeletedStock::run($auroraPartData);
+            $this->recordAction($tenant, $result);
         }
     }
 

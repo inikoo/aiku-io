@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Tue, 05 Oct 2021 00:56:43 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 07 Dec 2021 18:35:46 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
@@ -18,7 +18,7 @@ use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class MigrateLocation extends MigrateModel
+class MigrateDeletedLocation extends MigrateModel
 {
     use AsAction;
 
@@ -26,31 +26,36 @@ class MigrateLocation extends MigrateModel
     #[Pure] public function __construct()
     {
         parent::__construct();
-        $this->auModel->table    = 'Location Dimension';
-        $this->auModel->id_field = 'Location Key';
+        $this->auModel->table    = 'Location Deleted Dimension';
+        $this->auModel->id_field = 'Location Deleted Key';
     }
 
     public function getParent(): Warehouse|WarehouseArea
     {
-        if ($this->auModel->data->{'Location Warehouse Area Key'}) {
-            $auroraWarehouseArea = DB::connection('aurora')->table('Warehouse Area Dimension')->where('Warehouse Area Key', $this->auModel->data->{'Location Warehouse Area Key'})->first();
+        if ($this->auModel->data->{'Location Deleted Warehouse Area Key'}) {
+            $auroraWarehouseArea = DB::connection('aurora')->table('Warehouse Area Dimension')->where('Warehouse Area Key', $this->auModel->data->{'Location Deleted Warehouse Area Key'})->first();
 
             if ($auroraWarehouseArea and $auroraWarehouseArea->{'Warehouse Area Place'} == 'Local') {
-                return (new WarehouseArea())->firstWhere('aurora_id', $this->auModel->data->{'Location Warehouse Area Key'});
+                return (new WarehouseArea())->firstWhere('aurora_id', $this->auModel->data->{'Location Deleted Warehouse Area Key'});
             }
         }
 
-        return (new Warehouse())->firstWhere('aurora_id', $this->auModel->data->{'Location Warehouse Key'});
+        return (new Warehouse())->firstWhere('aurora_id', $this->auModel->data->{'Location Deleted Warehouse Key'});
     }
 
     public function parseModelData()
     {
-        $this->modelData   = [
-            'code'      => $this->auModel->data->{'Location Code'},
-            'aurora_id' => $this->auModel->data->{'Location Key'},
+        $this->modelData = [
+            'code'       => $this->auModel->data->{'Location Deleted Code'}.'@'.'deleted',
+            'aurora_id'  => $this->auModel->data->{'Location Deleted Key'},
+            'deleted_at' => $this->auModel->data->{'Location Deleted Date'},
+            'state'      => 'deleted'
 
         ];
-        $this->auModel->id = $this->auModel->data->{'Location Key'};
+        if (!$this->modelData['deleted_at']) {
+            dd($this->auModel->data);
+        }
+        $this->auModel->id = $this->auModel->data->{'Location Deleted Key'};
     }
 
 
@@ -85,7 +90,7 @@ class MigrateLocation extends MigrateModel
     public function asController(int $auroraID): MigrationResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        if ($auroraData = DB::connection('aurora')->table('Location Dimension')->where('Location Key', $auroraID)->first()) {
+        if ($auroraData = DB::connection('aurora')->table('Location Deleted Dimension')->where('Location Deleted Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
         $res           = new MigrationResult();

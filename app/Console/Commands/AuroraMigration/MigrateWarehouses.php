@@ -9,6 +9,7 @@
 namespace App\Console\Commands\AuroraMigration;
 
 
+use App\Actions\Migrations\MigrateDeletedLocation;
 use App\Actions\Migrations\MigrateLocation;
 use App\Actions\Migrations\MigrateWarehouse;
 use App\Actions\Migrations\MigrateWarehouseArea;
@@ -36,6 +37,8 @@ class MigrateWarehouses extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Location Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Location Deleted Dimension')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
@@ -43,6 +46,7 @@ class MigrateWarehouses extends MigrateAurora
         $count = DB::connection('aurora')->table('Warehouse Dimension')->count();
         $count += DB::connection('aurora')->table('Warehouse Area Dimension')->count();
         $count += DB::connection('aurora')->table('Location Dimension')->count();
+        $count += DB::connection('aurora')->table('Location Deleted Dimension')->count();
 
         return $count;
     }
@@ -77,6 +81,15 @@ class MigrateWarehouses extends MigrateAurora
                         $this->recordAction($tenant, $result);
                     }
                 });
+
+            DB::connection('aurora')->table('Location Deleted Dimension')
+                ->orderBy('Location Deleted Key')->chunk(100, function ($chunk) use ($tenant) {
+                    foreach ($chunk as $auroraData) {
+                        $result = MigrateDeletedLocation::run($auroraData);
+                        $this->recordAction($tenant, $result);
+                    }
+                });
+
         }
     }
 

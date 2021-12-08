@@ -37,7 +37,7 @@ class MigrateShop extends MigrateModel
                 'tax_number'               => $this->auModel->data->{'Store VAT Number'},
                 'identity_document_number' => $this->auModel->data->{'Store Company Number'},
                 'tax_number_status'        => 'valid',
-                'created_at'               => $this->getDate($this->auModel->data->{'Store Valid From'}),
+                'created_at'               => $this->auModel->data->{'Store Valid From'},
 
             ]
         );
