@@ -28,31 +28,36 @@ class CreatePickingsTable extends Migration
             $table->enum('status',['processing','packed','partially_packed','out_of_stock','cancelled'])->index()->default('processing');
 
 
-            $table->unsignedBigInteger('delivery_note_id')->nullable()->index();
+            $table->unsignedBigInteger('delivery_note_id')->index();
             $table->foreign('delivery_note_id')->references('id')->on('delivery_notes');
 
 
-            $table->unsignedBigInteger('stock_id')->nullable()->index();
+            $table->unsignedBigInteger('stock_movement_id')->nullable()->index();
+            $table->foreign('stock_movement_id')->references('id')->on('stock_movements');
+
+
+            $table->unsignedBigInteger('stock_id')->index();
             $table->foreign('stock_id')->references('id')->on('stocks');
 
-            $table->unsignedBigInteger('picked_by')->nullable()->index();
-            $table->foreign('picked_by')->references('id')->on('employees');
+            $table->unsignedBigInteger('picker_id')->nullable()->index();
+            $table->foreign('picker_id')->references('id')->on('employees');
 
-            $table->unsignedBigInteger('packed_by')->nullable()->index();
-            $table->foreign('packed_by')->references('id')->on('employees');
+            $table->unsignedBigInteger('packer_id')->nullable()->index();
+            $table->foreign('packer_id')->references('id')->on('employees');
 
             $table->decimal('required', 16, 3);
             $table->decimal('picked', 16, 3)->nullable();
+
             $table->decimal('weight', 16, 3)->nullable();
 
             $table->jsonb('data');
 
 
-            $table->dateTimeTz('assigned_at', 0)->nullable();
-            $table->dateTimeTz('picking_at', 0)->nullable();
-            $table->dateTimeTz('picked_at', 0)->nullable();
-            $table->dateTimeTz('packing_at', 0)->nullable();
-            $table->dateTimeTz('packed_at', 0)->nullable();
+            $table->dateTimeTz('assigned_at')->nullable();
+            $table->dateTimeTz('picking_at')->nullable();
+            $table->dateTimeTz('picked_at')->nullable();
+            $table->dateTimeTz('packing_at')->nullable();
+            $table->dateTimeTz('packed_at')->nullable();
 
 
             $table->timestampsTz();

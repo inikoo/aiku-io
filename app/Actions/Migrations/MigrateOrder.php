@@ -63,9 +63,6 @@ class MigrateOrder extends MigrateModel
 */
 
         return $parent;
-
-
-
     }
 
 
@@ -75,17 +72,18 @@ class MigrateOrder extends MigrateModel
             return;
         }
 
-        $state=Str::snake($this->auModel->data->{'Order State'},'-');
+        $state = Str::snake($this->auModel->data->{'Order State'}, '-');
 
         if ($state == 'approved') {
             $state = 'in-warehouse';
         }
 
         $this->modelData['order'] = [
-            'number'             => $this->auModel->data->{'Order Public ID'},
-            'state'              => $state,
-            'aurora_id'          => $this->auModel->data->{'Order Key'},
-            'exchange'           => $this->auModel->data->{'Order Currency Exchange'}
+            'number'     => $this->auModel->data->{'Order Public ID'},
+            'state'      => $state,
+            'aurora_id'  => $this->auModel->data->{'Order Key'},
+            'exchange'   => $this->auModel->data->{'Order Currency Exchange'},
+            'created_at' => $this->auModel->data->{'Order Created Date'},
 
         ];
         $this->auModel->id        = $this->auModel->data->{'Order Key'};
@@ -95,8 +93,6 @@ class MigrateOrder extends MigrateModel
 
         $billingAddressData                 = $this->parseAddress(prefix: 'Order Invoice', auAddressData: $this->auModel->data);
         $this->modelData['billing_address'] = new Address($billingAddressData);
-
-
     }
 
 
@@ -107,7 +103,7 @@ class MigrateOrder extends MigrateModel
 
     public function updateModel(): MigrationResult
     {
-        if ( !$this->ignore) {
+        if (!$this->ignore) {
             return UpdateOrder::run(
                 order:           $this->model,
                 modelData:       $this->modelData['order'],
@@ -117,14 +113,13 @@ class MigrateOrder extends MigrateModel
         }
 
         return new MigrationResult();
-
     }
 
     public function storeModel(): MigrationResult
     {
-        if ( !$this->ignore) {
+        if (!$this->ignore) {
             return StoreOrder::run(
-                customer:            $this->parent,
+                customer:        $this->parent,
                 modelData:       $this->modelData['order'],
                 billingAddress:  $this->modelData['billing_address'],
                 deliveryAddress: $this->modelData['delivery_address']
@@ -136,7 +131,6 @@ class MigrateOrder extends MigrateModel
 
     protected function postMigrateActions(MigrationResult $res): MigrationResult
     {
-
         if ($this->ignore) {
             $res         = new MigrationResult();
             $res->status = 'error';

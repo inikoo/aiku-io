@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -73,6 +74,11 @@ class DeliveryNote extends Model implements Auditable
     public function order(): BelongsToMany
     {
         return $this->belongsToMany(Order::class);
+    }
+
+    public function pickings(): HasMany
+    {
+        return $this->hasMany(Picking::class);
     }
 
 }

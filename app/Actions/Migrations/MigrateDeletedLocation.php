@@ -46,13 +46,14 @@ class MigrateDeletedLocation extends MigrateModel
     public function parseModelData()
     {
         $this->modelData = [
-            'code'       => $this->auModel->data->{'Location Deleted Code'}.'@'.'deleted',
+            'code'       => $this->auModel->data->{'Location Deleted Code'},
             'aurora_id'  => $this->auModel->data->{'Location Deleted Key'},
             'deleted_at' => $this->auModel->data->{'Location Deleted Date'},
             'state'      => 'deleted'
 
         ];
         if (!$this->modelData['deleted_at']) {
+            print "Deleted Loccation not date";
             dd($this->auModel->data);
         }
         $this->auModel->id = $this->auModel->data->{'Location Deleted Key'};

@@ -36,6 +36,7 @@ class MigrateInvoice extends MigrateModel
     {
         $order = Order::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Invoice Order Key'});
         if (!$order) {
+            print "Migrate invoice no parent order";
             dd($this->auModel->data);
         }
 

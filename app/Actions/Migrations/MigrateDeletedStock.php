@@ -52,6 +52,7 @@ class  MigrateDeletedStock extends MigrateModel
             ]
         );
         if (!$this->modelData['deleted_at']) {
+            print "Deleted stock no date";
             dd($this->auModel->data);
         }
 

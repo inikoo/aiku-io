@@ -8,7 +8,6 @@
 
 namespace App\Console\Commands\AuroraMigration;
 
-use App\Actions\Migrations\MigrateStock;
 use App\Actions\Migrations\MigrateStockMovement;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +29,7 @@ class MigrateStockMovements extends MigrateAurora
     {
         DB::connection('aurora')->table('Inventory Transaction Fact')
             ->where('Inventory Transaction Record Type','Movement')
-            ->whereNotIn('Inventory Transaction Type',['FailSale','Adjust'])
+            ->whereNotIn('Inventory Transaction Type',['Adjust'])
 
             ->update(['aiku_id' => null]);
 
@@ -40,7 +39,7 @@ class MigrateStockMovements extends MigrateAurora
     {
         return DB::connection('aurora')->table('Inventory Transaction Fact')
             ->where('Inventory Transaction Record Type','Movement')
-            ->whereNotIn('Inventory Transaction Type',['FailSale','Adjust'])
+            ->whereNotIn('Inventory Transaction Type',['Adjust'])
 
             ->count();
     }
@@ -51,9 +50,8 @@ class MigrateStockMovements extends MigrateAurora
 
         DB::connection('aurora')->table('Inventory Transaction Fact')
             ->where('Inventory Transaction Record Type','Movement')
-            ->whereNotIn('Inventory Transaction Type',['FailSale','Adjust'])
-
-            ->orderBy('Date')->chunk(1000, function ($chunk) use ($tenant) {
+            ->whereNotIn('Inventory Transaction Type',['Adjust'])
+            ->orderBy('Date')->chunk(50000, function ($chunk) use ($tenant) {
             foreach ($chunk as $auroraData) {
                 $result = MigrateStockMovement::run(
                     $auroraData
