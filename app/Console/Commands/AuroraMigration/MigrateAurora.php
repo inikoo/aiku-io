@@ -113,13 +113,14 @@ class MigrateAurora extends Command
 
                 $this->setAuroraConnection($tenant->data['aurora_db']);
                 if ($this->option('reset')) {
-                    if (config('app.env') == 'production') {
-                        if ($this->confirm('Do you really want to reset?')) {
-                            $this->reset();
-                        }
-                    } else {
+
+                    //if (config('app.env') == 'production') {
+                    //    if ($this->confirm('Do you really want to reset?')) {
+                    //        $this->reset();
+                    //    }
+                    //} else {
                         $this->reset();
-                    }
+                    //}
                 }
 
 

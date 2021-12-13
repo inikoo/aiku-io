@@ -49,7 +49,7 @@ $new_release_dir = $releases_dir . '/' . $date;
 
 
 // Command or path to invoke PHP
-$php = empty($php) ? 'php8.0' : $php;
+$php = empty($php) ? 'php8.1' : $php;
 $branch = empty($branch) ? 'master' : $branch;
 
 $deployment_key=null;
@@ -70,13 +70,13 @@ setup_first_time_DANGER_FINAL_WARNING
 
 
 
-@task('confirm_reset_DANGER', ['on' => 'production','confirm' => true])
+@task('confirm_reset_DANGER', ['on' => 'production','confirm' => false])
 echo "* This will DELETE aiku database are you sure!!!!*"
 @endtask
-@task('confirm_reset_DANGER_2', ['on' => 'production','confirm' => true])
+@task('confirm_reset_DANGER_2', ['on' => 'production','confirm' => false])
 echo "* DANGER AHEAD*"
 @endtask
-@task('setup_first_time_DANGER_FINAL_WARNING', ['on' => 'production','confirm' => true])
+@task('setup_first_time_DANGER_FINAL_WARNING', ['on' => 'production','confirm' => false])
 echo "* Setting up first time *"
 
 mkdir -p {{ $new_release_dir }}
@@ -100,6 +100,7 @@ cd {{$staging_dir}}
 rsync -auz --exclude 'node_modules' {{ $staging_dir }}/ {{ $new_release_dir }}
 
 cd {{ $new_release_dir }}
+
 {{ $php }} artisan --version
 
 ln -nsf {{ $new_release_dir }} {{ $current_release_dir }}
@@ -110,6 +111,7 @@ cd {{$new_release_dir}}
 {{$php}} artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
 {{$php}} artisan migrate:fresh --force --path=database/migrations/media --database=media
 {{$php}} artisan db:seed --force --database=landlord
+{{$php}} artisan admin:install
 {{$php}} artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}
 {{$php}} artisan admin:token {{$adminSlug}} admin root
 @endtask
