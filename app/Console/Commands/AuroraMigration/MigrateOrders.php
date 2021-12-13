@@ -57,15 +57,8 @@ class MigrateOrders extends MigrateAurora
     protected function count(): int
     {
         $count = DB::connection('aurora')->table('Order Dimension')
-            ->whereNotIn('Order State', ['Dispatched', 'Approved'])
-            ->whereNull('aiku_note')
-            ->whereNotNull('aiku_id')
-            ->count();
-        $count += DB::connection('aurora')->table('Order Dimension')
-            ->whereIn('Order State', ['Dispatched', 'Approved'])
             ->whereNull('aiku_note')
             ->count();
-
         $count += DB::connection('aurora')->table('Invoice Dimension')
             ->count();
         $count += DB::connection('aurora')->table('Invoice Deleted Dimension')
@@ -81,7 +74,7 @@ class MigrateOrders extends MigrateAurora
     {
         DB::connection('aurora')->table('Order Dimension')
             ->whereNull('aiku_note')
-            ->orderBy('Order Key')->chunk(1000, function ($chunk) use ($tenant) {
+            ->orderBy('Order Created Date')->chunk(10000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
 
                     $result = MigrateOrder::run($auroraData);

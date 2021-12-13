@@ -47,15 +47,18 @@ class MigrateStockMovement extends MigrateModel
             dd("Location not found: ".$this->auModel->data->{'Location Key'});
         }
 
+
         $type = match ($this->auModel->data->{'Inventory Transaction Type'}) {
             'Move In', 'Move Out' => 'location-transfer',
             'Found' => 'found',
             'Sale' => 'delivery',
+            'FailSale' => 'cancelled-restocked',
             'In' => 'purchase',
             'Broken','Lost' => 'lost',
             'Restock' => 'return',
             'Adjust','Other Out' => 'amendment',
             'Production'=>'consumption',
+
             default => null
         };
 

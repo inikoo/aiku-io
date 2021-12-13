@@ -10,6 +10,7 @@ namespace App\Models\Sales;
 
 use App\Models\Accounting\InvoiceTransaction;
 use App\Models\CRM\Customer;
+use App\Models\Delivery\DeliveryNoteItem;
 use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +50,11 @@ class Transaction extends Model
     public function invoiceTransactions(): HasMany
     {
         return $this->hasMany(InvoiceTransaction::class);
+    }
+
+    public function deliveryNoteItems(): HasMany
+    {
+        return $this->hasMany(DeliveryNoteItem::class);
     }
 
     public function order(): BelongsTo

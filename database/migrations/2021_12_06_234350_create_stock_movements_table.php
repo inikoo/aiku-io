@@ -22,7 +22,7 @@ class CreateStockMovementsTable extends Migration
         Schema::create('stock_movements', function (Blueprint $table) {
             $table->id();
 
-            $table->enum('type',['purchase','return','delivery','lost','found','location-transfer','amendment','consumption'])->index();
+            $table->enum('type',['purchase','return','delivery','lost','found','location-transfer','cancelled-to-restock','cancelled-restocked','amendment','consumption'])->index();
             $table->unsignedBigInteger('stock_id')->nullable()->index();
             $table->foreign('stock_id')->references('id')->on('stocks');
 

@@ -10,7 +10,8 @@ namespace App\Models\Delivery;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
@@ -20,5 +21,26 @@ class Picking extends Model
 {
     use HasFactory;
     use UsesTenantConnection;
-    use SoftDeletes;
+
+
+    protected $casts = [
+        'data' => 'array'
+    ];
+
+    protected $attributes = [
+        'data' => '{}',
+    ];
+
+    protected $guarded = [];
+
+    public function deliveryNote(): BelongsTo
+    {
+        return $this->belongsTo(DeliveryNote::class);
+    }
+
+    public function deliveryNoteItems(): BelongsToMany
+    {
+        return $this->belongsToMany(deliveryNoteItem::class)->withTimestamps();
+    }
+
 }

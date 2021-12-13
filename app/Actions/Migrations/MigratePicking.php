@@ -9,10 +9,13 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Sales\Transaction\StoreTransaction;
-use App\Actions\Sales\Transaction\UpdateTransaction;
-use App\Models\Sales\Order;
-use App\Models\Sales\Transaction;
+use App\Actions\Delivery\Picking\StorePicking;
+use App\Actions\Delivery\Picking\UpdatePicking;
+use App\Models\Delivery\DeliveryNote;
+use App\Models\Delivery\Picking;
+use App\Models\HumanResources\Employee;
+use App\Models\Inventory\Stock;
+use App\Models\Inventory\StockMovement;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
@@ -28,36 +31,64 @@ class MigratePicking extends MigrateModel
     {
         parent::__construct();
         $this->auModel->table    = 'Inventory Transaction Fact';
-        $this->auModel->id_field = 'Inventory Transaction Fact Key';
+        $this->auModel->id_field = 'Inventory Transaction Key';
         $this->aiku_id_field     = 'aiku_picking_id';
-
     }
 
-    public function getParent(): Order
+    public function getParent(): DeliveryNote
     {
-        return (new Order())->firstWhere('aurora_id', $this->auModel->aurora_irder);
+        return DeliveryNote::find($this->auModel->data->delivery_note_id);
     }
 
     public function parseModelData()
     {
-        $this->parseProductTransactionData();
+        $stock  = Stock::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Part SKU'});
+        $picker = Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Picker Key'});
+        $packer = Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Picker Key'});
 
+
+        if (
+            $this->auModel->data->{'Inventory Transaction Record Type'} == 'Info'
+            and (in_array($this->auModel->data->{'Inventory Transaction Type'},['No Dispatched','FailSale','Order In Process']))
+        ) {
+            $stock_movement_id = null;
+        } else {
+            $stockMovement = StockMovement::firstWhere('aurora_id', $this->auModel->data->{'Inventory Transaction Key'});
+            if (!$stockMovement) {
+                print "Migrate picking no stock movement";
+                dd($this->auModel->data);
+            }
+            $stock_movement_id = $stockMovement->id;
+        }
+
+
+        $this->modelData   = [
+            'stock_id'          => $stock->id,
+            'required'          => $this->auModel->data->{'Required'},
+            'picked'            => $this->auModel->data->{'Picked'},
+            'picker_id'         => $picker?->id,
+            'packer_id'         => $packer?->id,
+            'stock_movement_id' => $stock_movement_id,
+            'aurora_id'         => $this->auModel->data->{'Inventory Transaction Key'},
+
+        ];
+        $this->auModel->id = $this->auModel->data->{'Inventory Transaction Key'};
     }
 
 
     public function setModel()
     {
-        $this->model = Transaction::find($this->auModel->data->aiku_id);
+        $this->model = Picking::find($this->auModel->data->aiku_picking_id);
     }
 
     public function updateModel(): MigrationResult
     {
-        return UpdateTransaction::run($this->model, $this->modelData);
+        return UpdatePicking::run($this->model, $this->modelData);
     }
 
     public function storeModel(): MigrationResult
     {
-        return StoreTransaction::run($this->parent, $this->modelData);
+        return StorePicking::run($this->parent, $this->modelData);
     }
 
 
@@ -69,7 +100,7 @@ class MigratePicking extends MigrateModel
     public function asController(int $auroraID): MigrationResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        if ($auroraData = DB::connection('aurora')->table('Order Transaction Fact')->where('Order Transaction Fact Key', $auroraID)->first()) {
+        if ($auroraData = DB::connection('aurora')->table('Inventory Transaction Fact')->where('Inventory Transaction Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
         $res           = new MigrationResult();

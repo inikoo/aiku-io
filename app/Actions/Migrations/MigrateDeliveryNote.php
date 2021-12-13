@@ -39,6 +39,8 @@ class MigrateDeliveryNote extends MigrateModel
 
     public function parseModelData()
     {
+
+
         $this->modelData['delivery_note'] = [
             'number'     => $this->auModel->data->{'Delivery Note ID'},
             'state'      => Str::snake($this->auModel->data->{'Delivery Note State'}, '-'),
@@ -97,11 +99,13 @@ class MigrateDeliveryNote extends MigrateModel
                 ->get() as $auroraTransaction
         ) {
             $auroraTransaction->{'delivery_note_id'} = $res->model_id;
-            $auroraTransaction->{'order_id'}   = $this->parent->id;
-            $auroraTransaction->{'aurora_order_id'}   = $this->parent->aurora_di;
+            $resPicking=MigratePicking::run($auroraTransaction);
+            $resDeliveryNoteItem=MigrateDeliveryNoteItem::run($auroraTransaction);
 
-            MigratePicking::run($auroraTransaction);
-            //MigrateDeliveryNoteItem::run($auroraTransaction);
+            $resPicking->model->deliveryNoteItems()->sync(
+                $resDeliveryNoteItem->model->id,);
+
+
         }
 
 
