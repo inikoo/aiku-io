@@ -49,7 +49,7 @@ $new_release_dir = $releases_dir . '/' . $date;
 
 
 // Command or path to invoke PHP
-$php = empty($php) ? 'php8.1' : $php;
+$php = empty($php) ? 'php8.0' : $php;
 $branch = empty($branch) ? 'master' : $branch;
 
 $deployment_key=null;
@@ -70,13 +70,13 @@ setup_first_time_DANGER_FINAL_WARNING
 
 
 
-@task('confirm_reset_DANGER', ['on' => 'production','confirm' => false])
+@task('confirm_reset_DANGER', ['on' => 'production','confirm' => true])
 echo "* This will DELETE aiku database are you sure!!!!*"
 @endtask
-@task('confirm_reset_DANGER_2', ['on' => 'production','confirm' => false])
+@task('confirm_reset_DANGER_2', ['on' => 'production','confirm' => true])
 echo "* DANGER AHEAD*"
 @endtask
-@task('setup_first_time_DANGER_FINAL_WARNING', ['on' => 'production','confirm' => false])
+@task('setup_first_time_DANGER_FINAL_WARNING', ['on' => 'production','confirm' => true])
 echo "* Setting up first time *"
 
 mkdir -p {{ $new_release_dir }}
@@ -108,8 +108,8 @@ ln -nsf {{ $new_release_dir }} {{ $current_release_dir }}
 
 cd {{$new_release_dir}}
 {{$php}}  /usr/local/bin/composer dump-autoload -o
-{{$php}} artisan migrate:fresh --force --path=database/migrations/landlord --database=landlord
-{{$php}} artisan migrate:fresh --force --path=database/migrations/media --database=media
+{{$php}} artisan migrate:refresh --force --path=database/migrations/landlord --database=landlord
+{{$php}} artisan migrate:refresh --force --path=database/migrations/media --database=media
 {{$php}} artisan db:seed --force --database=landlord
 {{$php}} artisan admin:install
 {{$php}} artisan admin:new --randomPassword '{{$adminName}}' {{$adminEmail}} {{$adminSlug}}

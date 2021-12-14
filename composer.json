@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.0",
         "ext-curl": "*",
         "ext-intl": "*",
         "ext-pdo": "*",
@@ -37,8 +37,7 @@
         "tightenco/ziggy": "^1.0",
         "twilio/sdk": "^6.28",
         "vemcogroup/laravel-translation": "^3.0",
-        "ext-pgsql": "*",
-        "ext-mysql": "*"
+        "ext-pgsql": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
