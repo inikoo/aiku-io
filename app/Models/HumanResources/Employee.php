@@ -29,15 +29,17 @@ class Employee extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     protected $casts = [
-        'data' => 'array'
+        'data'   => 'array',
+        'errors' => 'array',
+
     ];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'   => '{}',
+        'errors' => '{}',
     ];
 
-    protected $guarded =[];
-
+    protected $guarded = [];
 
 
     public function getNameAttribute()

@@ -10,11 +10,12 @@ namespace App\Console\Commands\AuroraMigration;
 
 
 use App\Actions\Migrations\MigrateDeletedEmployee;
+use App\Actions\Migrations\MigrateDeletedGuest;
 use App\Actions\Migrations\MigrateDeletedUser;
 use App\Actions\Migrations\MigrateEmployee;
+use App\Actions\Migrations\MigrateGuest;
 use App\Actions\Migrations\MigrateUser;
 use App\Models\Account\Tenant;
-use Exception;
 use Illuminate\Support\Facades\DB;
 
 
@@ -42,9 +43,9 @@ class MigrateHR extends MigrateAurora
     protected function reset()
     {
         DB::connection('aurora')->table('Staff Dimension')
-            ->update(['aiku_id' => null]);
+            ->update(['aiku_id' => null, 'aiku_guest_id' => null]);
         DB::connection('aurora')->table('Staff Deleted Dimension')
-            ->update(['aiku_id' => null]);
+            ->update(['aiku_id' => null, 'aiku_guest_id' => null]);
         DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])
@@ -68,14 +69,21 @@ class MigrateHR extends MigrateAurora
     {
         foreach (DB::connection('aurora')->table('Staff Dimension')->get() as $auroraData) {
             $this->results[$tenant->nickname]['models']++;
-            $result = MigrateEmployee::run($auroraData);
+            if ($auroraData->{'Staff Type'} == 'Contractor') {
+                $result = MigrateGuest::run($auroraData);
+            } else {
+                $result = MigrateEmployee::run($auroraData);
+            }
             $this->recordAction($tenant, $result);
         }
 
         foreach (DB::connection('aurora')->table('Staff Deleted Dimension')->get() as $auroraData) {
             $this->results[$tenant->nickname]['models']++;
-
-            $result = MigrateDeletedEmployee::run($auroraData);
+            if ($auroraData->{'Staff Deleted Type'} == 'Contractor') {
+                $result = MigrateDeletedGuest::run($auroraData);
+            } else {
+                $result = MigrateDeletedEmployee::run($auroraData);
+            }
             $this->recordAction($tenant, $result);
         }
 

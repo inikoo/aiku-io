@@ -13,6 +13,7 @@ use App\Actions\System\User\CreateUserToken;
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
 use App\Models\HumanResources\Employee;
+use App\Models\System\Guest;
 use App\Models\Trade\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -32,11 +33,12 @@ class MigrateUser extends MigrateModel
         $this->auModel->id_field = 'User Key';
     }
 
-    public function getParent(): Employee|Supplier|Agent|null
+    public function getParent(): Employee|Supplier|Agent|Guest
     {
 
         return match ($this->auModel->data->{'User Type'}) {
-            'Staff', 'Contractor' => Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
+            'Staff' => Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
+            'Contractor' => Guest::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Supplier' => Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Agent' => Agent::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
 
@@ -133,9 +135,10 @@ class MigrateUser extends MigrateModel
         if ($auroraData = DB::connection('aurora')->table('User Dimension')->where('User Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res  = new MigrationResult();
-        $res->errors[]='Aurora model not found';
-        $res->status='error';
+        $res           = new MigrationResult();
+        $res->errors[] = 'Aurora model not found';
+        $res->status   = 'error';
+
         return $res;
     }
 

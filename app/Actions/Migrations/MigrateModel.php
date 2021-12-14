@@ -90,7 +90,7 @@ class MigrateModel
             $res = $this->updateModel();
 
             if ($res->changes) {
-             //   print_r($res->changes);
+                print_r($res->changes);
             }
 
             if ($res->status == 'deleted') {

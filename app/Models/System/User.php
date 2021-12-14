@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -30,12 +31,14 @@ class User extends Authenticatable
     use Notifiable;
     use UsesTenantConnection;
     use HasRoles;
+    use SoftDeletes;
 
     protected $guarded = [];
 
     protected $attributes = [
         'data'     => '{}',
         'settings' => '{}',
+        'errors'   => '{}',
     ];
 
     protected $hidden = [
@@ -45,6 +48,7 @@ class User extends Authenticatable
     protected $casts = [
         'data'     => 'array',
         'settings' => 'array',
+        'errors'   => 'array',
         'status'   => 'boolean'
     ];
 

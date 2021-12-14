@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
 
             $table->jsonb('data');
             $table->jsonb('settings');
-
+            $table->jsonb('errors');
             $table->timestampsTz();
             $table->softDeletesTz();
 

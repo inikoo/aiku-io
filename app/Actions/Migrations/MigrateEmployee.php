@@ -42,8 +42,9 @@ class MigrateEmployee extends MigrateModel
             'address' => $this->auModel->data->{'Staff Address'},
         ];
 
+        $errors = [];
         if ($this->getDate($this->auModel->data->{'Staff Valid From'}) == '') {
-            $data['errors'] = [
+            $errors = [
                 'missing' => ['created_at', 'employment_start_at']
             ];
         }
@@ -64,7 +65,8 @@ class MigrateEmployee extends MigrateModel
                     'No' => 'left',
                     default => 'working'
                 },
-                'data'              => $data
+                'data'              => $data,
+                'errors'            => $errors
             ]
         );
 

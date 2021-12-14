@@ -21,7 +21,7 @@ trait WithUser
 
     public function setModel()
     {
-        $this->model = User::find($this->auModel->data->aiku_id);
+        $this->model = User::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
     public function updateModel(): MigrationResult

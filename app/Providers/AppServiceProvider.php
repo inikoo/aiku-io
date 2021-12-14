@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
                 'User'           => 'App\Models\System\User',
                 'Patient'        => 'App\Models\Health\Patient',
                 'Employee'       => 'App\Models\HumanResources\Employee',
+                'Guest'          => 'App\Models\System\Guest',
                 'Customer'       => 'App\Models\CRM\Customer',
                 'RawImage'       => 'App\Models\Assets\RawImage',
                 'ProcessedImage' => 'App\Models\Assets\ProcessedImage',
@@ -56,7 +57,6 @@ class AppServiceProvider extends ServiceProvider
 
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
-                'Guest'                    => 'App\Models\System\Guest',
 
                 'Customer'                 => 'App\Models\CRM\Customer',
                 'CustomerClient'           => 'App\Models\CRM\CustomerClient',

@@ -9,10 +9,10 @@
 namespace App\Actions\Migrations;
 
 
-
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
 use App\Models\HumanResources\Employee;
+use App\Models\System\Guest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -29,12 +29,13 @@ class MigrateDeletedUser extends MigrateModel
         $this->auModel->id_field = 'User Deleted Key';
     }
 
-    public function getParent(): Employee|Supplier|Agent|null
+    public function getParent(): Employee|Supplier|Agent|Guest
     {
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'User Deleted Metadata'}));
 
         return match ($this->auModel->data->{'User Deleted Type'}) {
-            'Staff','Contractor' => Employee::withTrashed()->firstWhere('aurora_id', $auDeletedModel->data->{'User Parent Key'}),
+            'Staff' => Employee::withTrashed()->firstWhere('aurora_id', $auDeletedModel->data->{'User Parent Key'}),
+            'Contractor' => Guest::withTrashed()->firstWhere('aurora_id', $auDeletedModel->data->{'User Parent Key'}),
             'Supplier' => Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Agent' => Agent::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             default => null
@@ -43,28 +44,26 @@ class MigrateDeletedUser extends MigrateModel
 
     public function parseModelData()
     {
-
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'User Deleted Metadata'}));
 
-        $this->modelData['user'] = $this->sanitizeData(
+        $this->modelData['user']  = $this->sanitizeData(
             [
                 'username'    => null,
                 'password'    => Hash::make(config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(), 4, '-', true)),
                 'aurora_id'   => $this->auModel->data->{'User Deleted Key'},
                 'language_id' => $this->parseLanguageID($auDeletedModel->data->{'User Preferred Locale'}),
                 'status'      => 0,
-                'created_at'=>$auDeletedModel->data->{'User Created'},
-                'deleted_at'=>$this->auModel->data->{'User Deleted Date'},
-                'data'=>[
-                    'username'=>strtolower($this->auModel->data->{'User Deleted Handle'})
+                'created_at'  => $auDeletedModel->data->{'User Created'},
+                'deleted_at'  => $this->auModel->data->{'User Deleted Date'},
+                'data'        => [
+                    'username' => strtolower($this->auModel->data->{'User Deleted Handle'})
                 ]
             ]
         );
-        $this->modelData['roles']=[];
+        $this->modelData['roles'] = [];
 
         $this->auModel->id = $this->auModel->data->{'User Deleted Key'};
     }
-
 
 
 }
