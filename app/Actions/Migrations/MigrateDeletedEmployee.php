@@ -30,6 +30,7 @@ class MigrateDeletedEmployee extends MigrateModel
     {
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'Staff Deleted Metadata'}));
 
+
         $this->modelData['contact']  = $this->sanitizeData(
             [
                 'name'                     => $auDeletedModel->data->{'Staff Name'},

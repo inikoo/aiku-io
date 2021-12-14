@@ -14,6 +14,7 @@ use App\Models\Account\Tenant;
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
 use App\Models\HumanResources\Employee;
+use App\Models\System\Guest;
 use App\Models\System\User;
 use Illuminate\Validation\Rules\Password;
 use Lorisleiva\Actions\ActionRequest;
@@ -23,7 +24,7 @@ class StoreUser
 {
     use AsAction;
 
-    public function handle(Employee|Tenant|Agent|Supplier $userable, array $userData, array $roles = []): MigrationResult
+    public function handle(Employee|Tenant|Agent|Supplier|Guest $userable, array $userData, array $roles = []): MigrationResult
     {
         $res  = new MigrationResult();
 

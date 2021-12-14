@@ -1,4 +1,10 @@
 <?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Wed, 24 Sep 2021 12:00:00 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
 
 namespace App\Actions\HumanResources\Employee;
 
@@ -64,7 +70,7 @@ class UpdateEmployee
         return $this->handle(
             $employee,
             $request->only('name', 'email', 'phone'),
-            $request->only('status')
+            $request->only('nickname')
         );
     }
 

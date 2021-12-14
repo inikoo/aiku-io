@@ -782,6 +782,8 @@ namespace App\Models\Delivery{
  * @property-read int|null $order_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Order[] $orders
  * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Delivery\Picking[] $pickings
+ * @property-read int|null $pickings_count
  * @property-read Shop $shop
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNote newQuery()
@@ -825,30 +827,32 @@ namespace App\Models\Delivery{
 /**
  * App\Models\Delivery\DeliveryNoteItem
  *
+ * @mixin IdeHelperDeliveryNoteItem
  * @property int $id
- * @property int $shop_id
- * @property int $customer_id
+ * @property int|null $transaction_id
  * @property int $delivery_note_id
  * @property int|null $order_id
- * @property int|null $transaction_id
  * @property int|null $product_id
  * @property string $quantity
  * @property array $data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property int|null $aurora_id
+ * @property int|null $aurora_otf_id
+ * @property int|null $aurora_itf_id
  * @property-read Customer $customer
  * @property-read Order|null $order
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Delivery\Picking[] $pickings
+ * @property-read int|null $pickings_count
  * @property-read Product|null $product
  * @property-read Shop $shop
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem newQuery()
  * @method static \Illuminate\Database\Query\Builder|DeliveryNoteItem onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem query()
- * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereAuroraId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereAuroraItfId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereAuroraOtfId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereDeliveryNoteId($value)
@@ -856,12 +860,10 @@ namespace App\Models\Delivery{
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|DeliveryNoteItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|DeliveryNoteItem withTrashed()
  * @method static \Illuminate\Database\Query\Builder|DeliveryNoteItem withoutTrashed()
- * @mixin \Eloquent
  */
 	class IdeHelperDeliveryNoteItem extends \Eloquent {}
 }
@@ -870,18 +872,20 @@ namespace App\Models\Delivery{
 /**
  * App\Models\Delivery\Picking
  *
+ * @mixin IdeHelperPicking
  * @property int $id
  * @property bool $fulfilled
  * @property string $state
  * @property string $status
- * @property int|null $delivery_note_id
- * @property int|null $stock_id
- * @property int|null $picked_by
- * @property int|null $packed_by
+ * @property int $delivery_note_id
+ * @property int|null $stock_movement_id
+ * @property int $stock_id
+ * @property int|null $picker_id
+ * @property int|null $packer_id
  * @property string $required
  * @property string|null $picked
  * @property string|null $weight
- * @property mixed $data
+ * @property array $data
  * @property string|null $assigned_at
  * @property string|null $picking_at
  * @property string|null $picked_at
@@ -890,9 +894,11 @@ namespace App\Models\Delivery{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $aurora_id
+ * @property-read \App\Models\Delivery\DeliveryNote $deliveryNote
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Delivery\DeliveryNoteItem[] $deliveryNoteItems
+ * @property-read int|null $delivery_note_items_count
  * @method static \Illuminate\Database\Eloquent\Builder|Picking newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Picking newQuery()
- * @method static \Illuminate\Database\Query\Builder|Picking onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Picking query()
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereAssignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereAuroraId($value)
@@ -902,21 +908,19 @@ namespace App\Models\Delivery{
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereFulfilled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePackedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePackedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePackerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePackingAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePicked($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePickedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePickedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePickerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking wherePickingAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereRequired($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereStockId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Picking whereStockMovementId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Picking whereWeight($value)
- * @method static \Illuminate\Database\Query\Builder|Picking withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Picking withoutTrashed()
- * @mixin \Eloquent
  */
 	class IdeHelperPicking extends \Eloquent {}
 }
@@ -1183,7 +1187,6 @@ namespace App\Models\HumanResources{
  * @property int $id
  * @property string $nickname
  * @property string|null $worker_number
- * @property int|null $user_id
  * @property string $type
  * @property string $state
  * @property string|null $employment_start_at
@@ -1213,7 +1216,6 @@ namespace App\Models\HumanResources{
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Employee whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereWorkerNumber($value)
  * @method static \Illuminate\Database\Query\Builder|Employee withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Employee withoutTrashed()
@@ -1229,7 +1231,6 @@ namespace App\Models\Inventory{
  * @property int $id
  * @property int $warehouse_id
  * @property int|null $warehouse_area_id
- * @property bool $status
  * @property string $state
  * @property string $code
  * @property array $data
@@ -1254,7 +1255,6 @@ namespace App\Models\Inventory{
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereState($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Location whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereWarehouseAreaId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Location whereWarehouseId($value)
@@ -1337,7 +1337,9 @@ namespace App\Models\Inventory{
 /**
  * App\Models\Inventory\StockMovement
  *
+ * @mixin IdeHelperStockMovement
  * @property int $id
+ * @property string $type
  * @property int|null $stock_id
  * @property int|null $location_id
  * @property string $quantity
@@ -1357,8 +1359,8 @@ namespace App\Models\Inventory{
  * @method static \Illuminate\Database\Eloquent\Builder|StockMovement whereLocationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|StockMovement whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|StockMovement whereStockId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|StockMovement whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|StockMovement whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 	class IdeHelperStockMovement extends \Eloquent {}
 }
@@ -1740,6 +1742,8 @@ namespace App\Models\Sales{
  * @property int|null $aurora_id
  * @property int|null $aurora_no_product_id
  * @property-read Customer $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|DeliveryNoteItem[] $deliveryNoteItems
+ * @property-read int|null $delivery_note_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection|InvoiceTransaction[] $invoiceTransactions
  * @property-read int|null $invoice_transactions_count
  * @property-read Model|\Eloquent $item
@@ -1769,6 +1773,40 @@ namespace App\Models\Sales{
  * @method static \Illuminate\Database\Query\Builder|Transaction withoutTrashed()
  */
 	class IdeHelperTransaction extends \Eloquent {}
+}
+
+namespace App\Models\System{
+/**
+ * App\Models\System\Guest
+ *
+ * @property int $id
+ * @property string $nickname
+ * @property array $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int|null $aurora_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read Contact|null $contact
+ * @property-read mixed $name
+ * @property-read \App\Models\System\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Guest onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest whereAuroraId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest whereNickname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Guest whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Guest withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Guest withoutTrashed()
+ * @mixin \Eloquent
+ */
+	class IdeHelperGuest extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable {}
 }
 
 namespace App\Models\System{
