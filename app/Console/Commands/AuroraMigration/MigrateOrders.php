@@ -1,4 +1,5 @@
-<?php /** @noinspection DuplicatedCode */
+<?php
+/** @noinspection DuplicatedCode */
 
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
@@ -51,7 +52,12 @@ class MigrateOrders extends MigrateAurora
         DB::connection('aurora')->table('Invoice Deleted Dimension')->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Delivery Note Dimension')->update(['aiku_id' => null]);
 
-
+        DB::connection('aurora')->table('Inventory Transaction Fact')->update(
+            [
+                'aiku_dn_item_id' => null,
+                'aiku_invoice_id' => null,
+            ]
+        );
     }
 
     protected function count(): int
@@ -76,10 +82,8 @@ class MigrateOrders extends MigrateAurora
             ->whereNull('aiku_note')
             ->orderBy('Order Created Date')->chunk(10000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
-
                     $result = MigrateOrder::run($auroraData);
                     $this->recordAction($tenant, $result);
-
 
 
                     DB::connection('aurora')->table('Invoice Dimension')
@@ -108,12 +112,8 @@ class MigrateOrders extends MigrateAurora
                                 $this->recordAction($tenant, $result);
                             }
                         });
-
-
                 }
             });
-
-
     }
 
 
