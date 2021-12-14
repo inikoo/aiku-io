@@ -55,7 +55,7 @@ class MigrateOrders extends MigrateAurora
         DB::connection('aurora')->table('Inventory Transaction Fact')->update(
             [
                 'aiku_dn_item_id' => null,
-                'aiku_invoice_id' => null,
+                'aiku_picking_id' => null,
             ]
         );
     }
