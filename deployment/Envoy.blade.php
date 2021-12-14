@@ -39,7 +39,7 @@ $path=$_ENV['DEPLOYMENT_PATH'];
 
 
 
-$date = ( new DateTime )->format('Y-m-d_H:i:s');
+$date = ( new DateTime )->format('Y-m-d_H_i_s');
 
 $current_release_dir = $path . '/current';
 $releases_dir = $path . '/releases';
