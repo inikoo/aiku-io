@@ -9,7 +9,7 @@
 namespace App\Actions\Buying\Agent;
 
 use App\Actions\Helpers\Address\StoreAddress;
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\Aiku;
 use App\Models\Buying\Agent;
@@ -19,9 +19,9 @@ class StoreAgent
 {
     use AsAction;
 
-    public function handle(Tenant|Aiku $parent,  array $data, array $addressData, array $contactData): MigrationResult
+    public function handle(Tenant|Aiku $parent,  array $data, array $addressData, array $contactData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         /** @var Agent $agent */
         $agent                   = $parent->agents()->create($data);

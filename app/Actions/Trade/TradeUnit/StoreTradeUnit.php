@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\TradeUnit;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Trade\TradeUnit;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,9 +17,9 @@ class StoreTradeUnit
 {
     use AsAction;
 
-    public function handle($modelData): MigrationResult
+    public function handle($modelData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         $unit= TradeUnit::create($modelData);
 

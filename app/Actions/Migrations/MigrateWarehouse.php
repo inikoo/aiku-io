@@ -14,6 +14,7 @@ use App\Models\Inventory\Warehouse;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
 
 class MigrateWarehouse extends MigrateModel
 {
@@ -53,12 +54,12 @@ class MigrateWarehouse extends MigrateModel
         $this->model = Warehouse::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateWarehouse::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreWarehouse::run($this->modelData);
     }
@@ -68,13 +69,13 @@ class MigrateWarehouse extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Warehouse Dimension')->where('Warehouse Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

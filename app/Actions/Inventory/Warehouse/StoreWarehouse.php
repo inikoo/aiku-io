@@ -8,7 +8,7 @@
 
 namespace App\Actions\Inventory\Warehouse;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Inventory\Warehouse;
 use App\Models\System\Permission;
 use App\Models\System\Role;
@@ -21,9 +21,9 @@ class StoreWarehouse
 {
     use AsAction;
 
-    public function handle($data): MigrationResult
+    public function handle($data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $warehouse = Warehouse::create($data);
 

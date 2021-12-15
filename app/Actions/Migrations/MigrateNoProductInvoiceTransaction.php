@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Models\Utils\ActionResult;
 
 class MigrateNoProductInvoiceTransaction extends MigrateModel
 {
@@ -89,22 +90,22 @@ class MigrateNoProductInvoiceTransaction extends MigrateModel
         $this->model = InvoiceTransaction::find($this->auModel->data->aiku_invoice_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         if (!$this->ignore) {
             return UpdateInvoiceTransaction::run($this->model, $this->modelData);
         }
 
-        return new MigrationResult();
+        return new ActionResult();
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         if (!$this->ignore) {
             return StoreInvoiceTransaction::run($this->parent, $this->modelData);
         }
 
-        return new MigrationResult();
+        return new ActionResult();
     }
 
 
@@ -113,7 +114,7 @@ class MigrateNoProductInvoiceTransaction extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')
@@ -121,7 +122,7 @@ class MigrateNoProductInvoiceTransaction extends MigrateModel
             ->where('Order No Product Transaction Fact Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

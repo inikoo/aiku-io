@@ -8,7 +8,7 @@
 
 namespace App\Actions\Buying\PurchaseOrder;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Buying\PurchaseOrder;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdatePurchaseOrder
     use AsAction;
     use WithUpdate;
 
-    public function handle(PurchaseOrder $purchaseOrder,array $modelData): MigrationResult
+    public function handle(PurchaseOrder $purchaseOrder,array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
         $purchaseOrder->update( Arr::except($modelData, ['data']));
         $purchaseOrder->update($this->extractJson($modelData));
 

@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Models\Utils\ActionResult;
 
 class MigrateOrder extends MigrateModel
 {
@@ -101,7 +102,7 @@ class MigrateOrder extends MigrateModel
         $this->model = Order::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         if (!$this->ignore) {
             return UpdateOrder::run(
@@ -112,10 +113,10 @@ class MigrateOrder extends MigrateModel
             );
         }
 
-        return new MigrationResult();
+        return new ActionResult();
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         if (!$this->ignore) {
             return StoreOrder::run(
@@ -126,13 +127,13 @@ class MigrateOrder extends MigrateModel
             );
         }
 
-        return new MigrationResult();
+        return new ActionResult();
     }
 
-    protected function postMigrateActions(MigrationResult $res): MigrationResult
+    protected function postMigrateActions(ActionResult $res): ActionResult
     {
         if ($this->ignore) {
-            $res         = new MigrationResult();
+            $res         = new ActionResult();
             $res->status = 'error';
 
             return $res;
@@ -163,13 +164,13 @@ class MigrateOrder extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Order Dimension')->where('Order Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

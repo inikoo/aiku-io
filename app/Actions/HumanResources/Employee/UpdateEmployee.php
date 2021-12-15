@@ -8,7 +8,8 @@
 
 namespace App\Actions\HumanResources\Employee;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Http\Resources\Utils\ActionResultResource;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
@@ -22,9 +23,9 @@ class UpdateEmployee
     use AsAction;
     use WithUpdate;
 
-    public function handle(Employee $employee, array $contactData, array $employeeData): MigrationResult
+    public function handle(Employee $employee, array $contactData, array $employeeData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $employee->contact()->update($contactData);
 
@@ -65,12 +66,14 @@ class UpdateEmployee
         ];
     }
 
-    public function asController(Employee $employee, ActionRequest $request): MigrationResult
+    public function asController(Employee $employee, ActionRequest $request): ActionResultResource
     {
-        return $this->handle(
-            $employee,
-            $request->only('name', 'email', 'phone'),
-            $request->only('nickname')
+        return new ActionResultResource(
+            $this->handle(
+                $employee,
+                $request->only('name', 'email', 'phone'),
+                $request->only('nickname')
+            )
         );
     }
 

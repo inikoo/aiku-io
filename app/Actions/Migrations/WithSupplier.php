@@ -13,9 +13,10 @@ use App\Actions\Buying\Supplier\StoreSupplier;
 use App\Actions\Buying\Supplier\UpdateSupplier;
 use App\Actions\Helpers\Address\UpdateAddress;
 use App\Models\Buying\Supplier;
+use App\Models\Utils\ActionResult;
 
 trait WithSupplier{
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         /**  @var Supplier $supplier */
         $supplier                                = $this->model;
@@ -36,7 +37,7 @@ trait WithSupplier{
         return $res;
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         $this->modelData['supplier']['data']     = $this->parseMetadata([], $this->auModel->data);
         $this->modelData['supplier']['settings'] = $this->parseSettings([], $this->auModel->data);

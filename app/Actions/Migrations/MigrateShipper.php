@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
 
 class MigrateShipper extends MigrateModel
 {
@@ -58,12 +59,12 @@ class MigrateShipper extends MigrateModel
         $this->model = Shipper::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateShipper::run(shipper: $this->model, modelData: $this->modelData['shipper'], contactData: $this->modelData['contact']);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreShipper::run(data: $this->modelData['shipper'], contactData: $this->modelData['contact']);
     }
@@ -73,13 +74,13 @@ class MigrateShipper extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Shipper Dimension')->where('Shipper Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

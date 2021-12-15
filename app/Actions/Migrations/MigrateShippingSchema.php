@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Models\Utils\ActionResult;
+
 
 class MigrateShippingSchema extends MigrateModel
 {
@@ -54,17 +56,17 @@ class MigrateShippingSchema extends MigrateModel
         $this->model = ShippingSchema::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateShippingSchema::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreShippingSchema::run($this->parent, $this->modelData);
     }
 
-    protected function postMigrateActions(MigrationResult $res): MigrationResult
+    protected function postMigrateActions(ActionResult $res): ActionResult
     {
         foreach (
             DB::connection('aurora')->table('Shipping Zone Dimension')
@@ -82,13 +84,13 @@ class MigrateShippingSchema extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Shipping Zone Schema Dimension')->where('Shipping Zone Schema Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

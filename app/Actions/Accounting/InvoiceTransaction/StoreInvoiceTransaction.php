@@ -8,7 +8,7 @@
 
 namespace App\Actions\Accounting\InvoiceTransaction;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Sales\Order;
 use App\Models\Sales\Transaction;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -17,9 +17,9 @@ class StoreInvoiceTransaction
 {
     use AsAction;
 
-    public function handle(Transaction|Order $parent, array $data): MigrationResult
+    public function handle(Transaction|Order $parent, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $data['shop_id']=$parent->shop_id;
         $data['customer_id']=$parent->customer_id;

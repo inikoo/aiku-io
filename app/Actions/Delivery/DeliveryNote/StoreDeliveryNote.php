@@ -9,7 +9,7 @@
 namespace App\Actions\Delivery\DeliveryNote;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,9 +23,9 @@ class StoreDeliveryNote
         Address $deliveryAddress,
         array $modelData
 
-    ): MigrationResult
+    ): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $modelData['shop_id']=$order->shop_id;
         $modelData['customer_id']=$order->customer_id;

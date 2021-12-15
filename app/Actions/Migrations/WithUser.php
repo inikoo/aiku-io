@@ -13,6 +13,7 @@ use App\Actions\System\User\UpdateUser;
 use App\Models\System\User;
 use Exception;
 use Illuminate\Support\Arr;
+use App\Models\Utils\ActionResult;
 
 
 trait WithUser
@@ -24,12 +25,12 @@ trait WithUser
         $this->model = User::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateUser::run($this->model, Arr::except($this->modelData['user'], ['password']));
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         try {
             return StoreUser::run(
@@ -38,7 +39,7 @@ trait WithUser
                 roles:    $this->modelData['roles']
             );
         } catch (Exception $e) {
-            $res           = new MigrationResult();
+            $res           = new ActionResult();
             $res->status   = 'error';
             $res->errors[] = $e->getMessage();
 

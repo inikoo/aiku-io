@@ -12,6 +12,7 @@ use App\Models\Assets\Country;
 use App\Models\Assets\Currency;
 use App\Models\Assets\Language;
 use App\Models\Assets\Timezone;
+use App\Models\Utils\ActionResult;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -57,14 +58,14 @@ class MigrateModel
     {
     }
 
-    #[Pure] protected function updateModel(): MigrationResult
+    #[Pure] protected function updateModel(): ActionResult
     {
-        return new MigrationResult();
+        return new ActionResult();
     }
 
-    #[Pure] protected function storeModel(): MigrationResult
+    #[Pure] protected function storeModel(): ActionResult
     {
-        return new MigrationResult();
+        return new ActionResult();
     }
 
     protected function migrateImages()
@@ -72,12 +73,12 @@ class MigrateModel
         return null;
     }
 
-    protected function postMigrateActions(MigrationResult $res): MigrationResult
+    protected function postMigrateActions(ActionResult $res): ActionResult
     {
         return $res;
     }
 
-    protected function handle($auModel): MigrationResult
+    protected function handle($auModel): ActionResult
     {
         $this->auModel->data = $auModel;
         $this->parent        = $this->getParent();

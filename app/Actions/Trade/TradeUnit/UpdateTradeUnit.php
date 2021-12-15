@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\TradeUnit;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Trade\TradeUnit;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateTradeUnit
     use AsAction;
     use WithUpdate;
 
-    public function handle(TradeUnit $unit, array $modelData): MigrationResult
+    public function handle(TradeUnit $unit, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         $unit->update(Arr::except($modelData, ['data', 'dimensions']));

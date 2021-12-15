@@ -8,7 +8,7 @@
 
 namespace App\Actions\System\Guest;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\System\Guest;
 use App\Rules\Phone;
@@ -21,9 +21,9 @@ class UpdateGuest
     use AsAction;
     use WithUpdate;
 
-    public function handle(Guest $guest, array $contactData, array $modelData): MigrationResult
+    public function handle(Guest $guest, array $contactData, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $guest->contact()->update($contactData);
 
@@ -61,7 +61,7 @@ class UpdateGuest
         ];
     }
 
-    public function asController(Guest $guest, ActionRequest $request): MigrationResult
+    public function asController(Guest $guest, ActionRequest $request): ActionResult
     {
         return $this->handle(
             $guest,

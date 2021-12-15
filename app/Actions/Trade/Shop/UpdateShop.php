@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\Shop;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Trade\Shop;
 use Illuminate\Support\Arr;
@@ -23,8 +23,8 @@ class UpdateShop
         Shop $shop,
         array $contactData,
         array $modelData
-    ): MigrationResult {
-        $res = new MigrationResult();
+    ): ActionResult {
+        $res = new ActionResult();
 
         $shop->contact()->update($contactData);
         $res->changes = array_merge($res->changes, $shop->contact->getChanges());

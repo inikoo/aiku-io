@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\Product;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Trade\Product;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateProduct
     use AsAction;
     use WithUpdate;
 
-    public function handle(Product $product, array $modelData): MigrationResult
+    public function handle(Product $product, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $product->update(Arr::except($modelData, ['data', 'settings']));
         $product->update($this->extractJson($modelData, ['data', 'settings']));

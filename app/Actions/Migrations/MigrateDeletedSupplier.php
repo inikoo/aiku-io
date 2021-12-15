@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
 
 class MigrateDeletedSupplier extends MigrateModel
 {
@@ -89,13 +90,13 @@ class MigrateDeletedSupplier extends MigrateModel
     }
 
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Supplier Deleted Dimension')->where('Supplier Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

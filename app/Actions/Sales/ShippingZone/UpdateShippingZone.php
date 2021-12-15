@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\ShippingZone;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Sales\ShippingZone;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateShippingZone
     use AsAction;
     use WithUpdate;
 
-    public function handle(ShippingZone $shippingZone, array $modelData): MigrationResult
+    public function handle(ShippingZone $shippingZone, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $shippingZone->update(Arr::except($modelData,['data']));
         $shippingZone->update($this->extractJson($modelData));

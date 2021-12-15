@@ -8,7 +8,7 @@
 
 namespace App\Actions\Delivery\Shipper;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Delivery\Shipper;
 use Illuminate\Support\Arr;
@@ -23,8 +23,8 @@ class UpdateShipper
         Shipper $shipper,
         array $contactData,
         array $modelData
-    ): MigrationResult {
-        $res = new MigrationResult();
+    ): ActionResult {
+        $res = new ActionResult();
 
         $shipper->contact()->update($contactData);
         $res->changes = array_merge($res->changes, $shipper->contact->getChanges());

@@ -8,7 +8,7 @@
 
 namespace App\Actions\Helpers\Address;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Helpers\Address;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class UpdateAddress
 {
     use AsAction;
 
-    public function handle(Address $address,array $data): MigrationResult
+    public function handle(Address $address,array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
         $address->update($data);
         $res->changes = array_merge($res->changes, $address->getChanges());
 

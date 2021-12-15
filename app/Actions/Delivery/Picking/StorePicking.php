@@ -8,7 +8,7 @@
 
 namespace App\Actions\Delivery\Picking;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Delivery\DeliveryNote;
 use App\Models\Sales\Order;
 use App\Models\Sales\Transaction;
@@ -18,9 +18,9 @@ class StorePicking
 {
     use AsAction;
 
-    public function handle(DeliveryNote $deliveryNote, array $modelData): MigrationResult
+    public function handle(DeliveryNote $deliveryNote, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
 

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Models\Utils\ActionResult;
 
 class MigrateDeletedInvoice extends MigrateModel
 {
@@ -75,7 +76,7 @@ class MigrateDeletedInvoice extends MigrateModel
         $this->model = Invoice::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateInvoice::run(
             invoice:        $this->model,
@@ -84,7 +85,7 @@ class MigrateDeletedInvoice extends MigrateModel
         );
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreInvoice::run(
             order:          $this->parent,
@@ -94,7 +95,7 @@ class MigrateDeletedInvoice extends MigrateModel
     }
 
 
-    protected function postMigrateActions(MigrationResult $res): MigrationResult
+    protected function postMigrateActions(ActionResult $res): ActionResult
     {
         if ($res->status == 'inserted') {
             /** @var Invoice $invoice */
@@ -149,13 +150,13 @@ class MigrateDeletedInvoice extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Invoice Dimension')->where('Invoice Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

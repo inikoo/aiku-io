@@ -9,7 +9,7 @@
 namespace App\Actions\Buying\PurchaseOrder;
 
 use App\Actions\Helpers\Address\StoreAddress;
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\Aiku;
 use App\Models\Buying\Agent;
@@ -20,9 +20,9 @@ class StorePurchaseOrder
 {
     use AsAction;
 
-    public function handle(Agent|Supplier $parent, array $data): MigrationResult
+    public function handle(Agent|Supplier $parent, array $data): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         /** @var \App\Models\Buying\PurchaseOrder $purchaseOrder */
         $purchaseOrder = $parent->purchaseOrders()->create($data);

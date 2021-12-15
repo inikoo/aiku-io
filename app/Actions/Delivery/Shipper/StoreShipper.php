@@ -8,7 +8,7 @@
 
 namespace App\Actions\Delivery\Shipper;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Delivery\Shipper;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,9 +17,9 @@ class StoreShipper
 {
     use AsAction;
 
-    public function handle(array $data, array $contactData): MigrationResult
+    public function handle(array $data, array $contactData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
         $shipper = Shipper::create($data);
         $shipper->contact()->create($contactData);
 

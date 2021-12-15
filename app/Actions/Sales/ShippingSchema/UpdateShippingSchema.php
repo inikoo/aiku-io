@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\ShippingSchema;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 
 use App\Models\Sales\ShippingSchema;
@@ -19,9 +19,9 @@ class UpdateShippingSchema
     use AsAction;
     use WithUpdate;
 
-    public function handle(ShippingSchema $shippingSchema, array $modelData): MigrationResult
+    public function handle(ShippingSchema $shippingSchema, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         $shippingSchema->update($modelData);

@@ -8,7 +8,7 @@
 
 namespace App\Actions\System\User;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\System\User;
 use Illuminate\Support\Arr;
@@ -21,9 +21,9 @@ class UpdateUser
     use AsAction;
     use WithUpdate;
 
-    public function handle(User $user,array $modelData): MigrationResult
+    public function handle(User $user,array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $user->update(Arr::except($modelData, ['data', 'settings']));
         $user->update($this->extractJson($modelData, ['data', 'settings']));
@@ -56,7 +56,7 @@ class UpdateUser
         }
     }
 
-    public function asController(User $user, ActionRequest $request): MigrationResult
+    public function asController(User $user, ActionRequest $request): ActionResult
     {
 
         return $this->handle(

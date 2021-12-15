@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\TaxBand;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Sales\TaxBand;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateTaxBand
     use AsAction;
     use WithUpdate;
 
-    public function handle(TaxBand $taxBand, array $modelData): MigrationResult
+    public function handle(TaxBand $taxBand, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $taxBand->update( Arr::except($modelData, ['data']));
         $taxBand->update($this->extractJson($modelData));

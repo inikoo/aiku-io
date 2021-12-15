@@ -8,7 +8,7 @@
 
 namespace App\Actions\Inventory\StockMovement;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Inventory\StockMovement;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,9 +17,9 @@ class StoreStockMovement
 {
     use AsAction;
 
-    public function handle(array $modelData): MigrationResult
+    public function handle(array $modelData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         $stockMovement = StockMovement::create($modelData);
         $res->model    = $stockMovement;

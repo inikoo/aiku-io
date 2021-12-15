@@ -9,7 +9,7 @@
 namespace App\Actions\Accounting\Invoice;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Accounting\Invoice;
 use App\Models\Helpers\Address;
@@ -25,9 +25,9 @@ class UpdateInvoice
         Invoice $invoice,
         Address $billingAddress,
         array $modelData,
-    ): MigrationResult
+    ): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $billingAddress=StoreImmutableAddress::run($billingAddress);
 

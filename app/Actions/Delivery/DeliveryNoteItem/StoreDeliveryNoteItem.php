@@ -8,7 +8,7 @@
 
 namespace App\Actions\Delivery\DeliveryNoteItem;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Sales\Transaction;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreDeliveryNoteItem
 {
     use AsAction;
 
-    public function handle(Transaction $transaction, array $modelData): MigrationResult
+    public function handle(Transaction $transaction, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         /** @var \App\Models\Delivery\DeliveryNoteItem $deliveryNoteItem */

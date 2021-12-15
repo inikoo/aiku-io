@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\Charge;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Trade\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreCharge
 {
     use AsAction;
 
-    public function handle(Shop $shop, array $data): MigrationResult
+    public function handle(Shop $shop, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
 

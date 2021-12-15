@@ -16,6 +16,7 @@ use App\Models\Trade\TradeUnit;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
 
 class MigrateStock extends MigrateModel
 {
@@ -48,17 +49,17 @@ class MigrateStock extends MigrateModel
         $this->model = Stock::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateStock::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreStock::run($this->modelData);
     }
 
-    public function postMigrateActions(MigrationResult $res): MigrationResult
+    public function postMigrateActions(ActionResult $res): ActionResult
     {
         $tradeResult = MigrateTradeUnit::run($this->auModel->data);
 
@@ -127,13 +128,13 @@ class MigrateStock extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Part Dimension')->where('Part SKU', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

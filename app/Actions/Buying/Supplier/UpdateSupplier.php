@@ -8,7 +8,7 @@
 
 namespace App\Actions\Buying\Supplier;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Buying\Supplier;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateSupplier
     use AsAction;
     use WithUpdate;
 
-    public function handle(Supplier $supplier, array $modelData, array $contactData): MigrationResult
+    public function handle(Supplier $supplier, array $modelData, array $contactData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
         $supplier->contact()->update($contactData);
         $res->changes = array_merge($res->changes, $supplier->contact->getChanges());
 

@@ -2,7 +2,7 @@
 
 namespace App\Actions\Inventory\Location;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Inventory\Location;
 use Illuminate\Support\Arr;
@@ -13,9 +13,9 @@ class UpdateLocation
     use AsAction;
     use WithUpdate;
 
-    public function handle(Location $location, array $modelData): MigrationResult
+    public function handle(Location $location, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $location->update( Arr::except($modelData, ['data']));
         $location->update($this->extractJson($modelData));

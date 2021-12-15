@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\Charge;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Sales\Charge;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateCharge
     use AsAction;
     use WithUpdate;
 
-    public function handle(Charge $charge, array $modelData): MigrationResult
+    public function handle(Charge $charge, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $charge->update(Arr::except($modelData, ['data']));
         $charge->update($this->extractJson($modelData, ['data']));

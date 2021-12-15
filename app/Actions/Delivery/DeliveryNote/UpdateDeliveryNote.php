@@ -9,7 +9,7 @@
 namespace App\Actions\Delivery\DeliveryNote;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Delivery\DeliveryNote;
 use App\Models\Helpers\Address;
@@ -25,9 +25,9 @@ class UpdateDeliveryNote
         DeliveryNote $deliveryNote,
         Address $deliveryAddress,
         array $modelData,
-    ): MigrationResult
+    ): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $deliveryAddress=StoreImmutableAddress::run($deliveryAddress);
 

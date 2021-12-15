@@ -2,7 +2,7 @@
 
 namespace App\Actions\Account\Tenant;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Arr;
@@ -14,9 +14,9 @@ class UpdateTenant
     use AsAction;
     use WithUpdate;
 
-    public function handle(Tenant $tenant,array $modelData): MigrationResult
+    public function handle(Tenant $tenant,array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $tenant->update( Arr::except($modelData, ['data']));
         $tenant->update($this->extractJson($modelData));
@@ -45,7 +45,7 @@ class UpdateTenant
     }
 
 
-    public function asController(Tenant $tenant, ActionRequest $request): MigrationResult
+    public function asController(Tenant $tenant, ActionRequest $request): ActionResult
     {
 
         return $this->handle(

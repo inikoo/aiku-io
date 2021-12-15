@@ -10,16 +10,15 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Buying\PurchaseOrder\StorePurchaseOrder;
 use App\Actions\Buying\PurchaseOrder\UpdatePurchaseOrder;
-
 use App\Models\Buying\Agent;
 use App\Models\Buying\PurchaseOrder;
 use App\Models\Buying\Supplier;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Models\Utils\ActionResult;
 
 class MigratePurchaseOrder extends MigrateModel
 {
@@ -85,12 +84,12 @@ class MigratePurchaseOrder extends MigrateModel
         $this->model = PurchaseOrder::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdatePurchaseOrder::run(purchaseOrder:$this->model,modelData: $this->modelData);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StorePurchaseOrder::run($this->parent, $this->modelData);
     }
@@ -100,13 +99,13 @@ class MigratePurchaseOrder extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Purchase Order Dimension')->where('Purchase Order Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

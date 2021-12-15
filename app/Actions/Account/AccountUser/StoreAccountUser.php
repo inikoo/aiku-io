@@ -8,7 +8,7 @@
 
 namespace App\Actions\Account\AccountUser;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Account\AccountAdmin;
 use App\Models\Account\Tenant;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -18,9 +18,9 @@ class StoreAccountUser
     use AsAction;
 
 
-    public function handle( Tenant|AccountAdmin $userable, array $userData): MigrationResult
+    public function handle( Tenant|AccountAdmin $userable, array $userData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         /** @var \App\Models\Account\AccountUser $accountUser */
         $accountUser= $userable->accountUser()->create($userData);

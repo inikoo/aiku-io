@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\Transaction;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Sales\Transaction;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateTransaction
     use AsAction;
     use WithUpdate;
 
-    public function handle(Transaction $transaction, array $modelData): MigrationResult
+    public function handle(Transaction $transaction, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $transaction->update( Arr::except($modelData, ['data']));
         $transaction->update($this->extractJson($modelData));

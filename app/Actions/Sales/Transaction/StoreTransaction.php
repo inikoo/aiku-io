@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\Transaction;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Sales\Order;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreTransaction
 {
     use AsAction;
 
-    public function handle(Order $order, array $data): MigrationResult
+    public function handle(Order $order, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $data['shop_id']=$order->shop_id;
         $data['customer_id']=$order->customer_id;

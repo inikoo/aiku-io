@@ -1,16 +1,16 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sat, 23 Oct 2021 18:52:22 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Wed, 15 Dec 2021 19:54:54 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Migrations;
+namespace App\Models\Utils;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MigrationResult
+class ActionResult
 {
     public array $changes;
     public array $errors;
@@ -21,13 +21,12 @@ class MigrationResult
 
     public function __construct()
     {
-        $this->changes=[];
-        $this->errors=[];
+        $this->changes = [];
+        $this->errors  = [];
 
-        $this->status='unchanged';
+        $this->status = 'unchanged';
 
-        $this->model=null;
-        $this->model_id=null;
-
+        $this->model    = null;
+        $this->model_id = null;
     }
 }

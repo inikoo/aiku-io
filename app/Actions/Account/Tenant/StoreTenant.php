@@ -8,7 +8,7 @@
 
 namespace App\Actions\Account\Tenant;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Account\BusinessType;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreTenant
 {
     use AsAction;
 
-    public function handle(BusinessType $businessType, array $tenantData): MigrationResult
+    public function handle(BusinessType $businessType, array $tenantData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant        = $businessType->tenants()->create($tenantData);

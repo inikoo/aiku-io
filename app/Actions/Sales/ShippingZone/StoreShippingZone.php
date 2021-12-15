@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\ShippingZone;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Sales\ShippingSchema;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreShippingZone
 {
     use AsAction;
 
-    public function handle(ShippingSchema $shippingSchema, array $data): MigrationResult
+    public function handle(ShippingSchema $shippingSchema, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
 

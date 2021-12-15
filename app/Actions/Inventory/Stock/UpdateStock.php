@@ -8,7 +8,7 @@
 
 namespace App\Actions\Inventory\Stock;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Inventory\Stock;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateStock
     use AsAction;
     use WithUpdate;
 
-    public function handle(Stock $stock, array $modelData): MigrationResult
+    public function handle(Stock $stock, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         $stock->update(Arr::except($modelData, ['data', 'settings']));

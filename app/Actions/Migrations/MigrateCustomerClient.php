@@ -14,6 +14,8 @@ use App\Models\CRM\Customer;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
+
 
 class MigrateCustomerClient extends MigrateModel
 {
@@ -93,12 +95,12 @@ class MigrateCustomerClient extends MigrateModel
         $this->model = Customer::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return $this->updateCustomer($this->auModel->data);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreCustomer::run(
             vendor:                $this->parent,
@@ -114,13 +116,13 @@ class MigrateCustomerClient extends MigrateModel
     }
 
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

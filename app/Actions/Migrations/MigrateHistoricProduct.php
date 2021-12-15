@@ -15,6 +15,7 @@ use App\Models\Trade\Product;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
 
 class MigrateHistoricProduct extends MigrateModel
 {
@@ -68,12 +69,12 @@ class MigrateHistoricProduct extends MigrateModel
         $this->model = HistoricProduct::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateHistoricProduct::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreHistoricProduct::run($this->parent, $this->modelData);
     }
@@ -89,13 +90,13 @@ class MigrateHistoricProduct extends MigrateModel
     }
 
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Product History Dimension')->where('Product Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

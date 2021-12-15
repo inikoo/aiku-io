@@ -9,7 +9,7 @@
 namespace App\Actions\Sales\Order;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
@@ -26,9 +26,9 @@ class UpdateOrder
         array $modelData,
         Address $billingAddress,
         Address $deliveryAddress
-    ): MigrationResult
+    ): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         $billingAddress=StoreImmutableAddress::run($billingAddress);

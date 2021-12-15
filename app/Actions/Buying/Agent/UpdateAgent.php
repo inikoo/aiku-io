@@ -8,7 +8,7 @@
 
 namespace App\Actions\Buying\Agent;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Buying\Agent;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateAgent
     use AsAction;
     use WithUpdate;
 
-    public function handle(Agent $agent,array $modelData, array $contactData): MigrationResult
+    public function handle(Agent $agent,array $modelData, array $contactData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $agent->contact()->update($contactData);
 

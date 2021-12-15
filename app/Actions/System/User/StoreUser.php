@@ -9,7 +9,7 @@
 namespace App\Actions\System\User;
 
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
@@ -24,9 +24,9 @@ class StoreUser
 {
     use AsAction;
 
-    public function handle(Employee|Tenant|Agent|Supplier|Guest $userable, array $userData, array $roles = []): MigrationResult
+    public function handle(Employee|Tenant|Agent|Supplier|Guest $userable, array $userData, array $roles = []): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         $userData['language_id'] = $userData['language_id'] ?? app('currentTenant')->language_id;
         $userData['timezone_id'] = $userData['timezone_id'] ?? app('currentTenant')->timezone_id;
@@ -64,7 +64,7 @@ class StoreUser
         }
     }
 
-    public function asController(Employee|Tenant $userable, ActionRequest $request): MigrationResult
+    public function asController(Employee|Tenant $userable, ActionRequest $request): ActionResult
     {
         $roles = [];
 

@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\HistoricProduct;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Trade\HistoricProduct;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class UpdateHistoricProduct
 {
     use AsAction;
 
-    public function handle(HistoricProduct $historicProduct, array $data): MigrationResult
+    public function handle(HistoricProduct $historicProduct, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         $historicProduct->update($data);

@@ -8,7 +8,7 @@
 
 namespace App\Actions\Inventory\WarehouseArea;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Inventory\WarehouseArea;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateWarehouseArea
     use AsAction;
     use WithUpdate;
 
-    public function handle(WarehouseArea $area, array $modelData): MigrationResult
+    public function handle(WarehouseArea $area, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $area->update(Arr::except($modelData, ['data']));
         $area->update($this->extractJson($modelData));

@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
 
 
 class MigrateUser extends MigrateModel
@@ -113,7 +114,7 @@ class MigrateUser extends MigrateModel
         }
     }
 
-    protected function postMigrateActions(MigrationResult $res): MigrationResult
+    protected function postMigrateActions(ActionResult $res): ActionResult
     {
         $token = CreateUserToken::run($this->model);
         DB::connection('aurora')->table($this->auModel->table)
@@ -129,13 +130,13 @@ class MigrateUser extends MigrateModel
     }
 
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('User Dimension')->where('User Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

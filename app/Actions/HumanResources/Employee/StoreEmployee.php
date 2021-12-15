@@ -8,7 +8,7 @@
 
 namespace App\Actions\HumanResources\Employee;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
 use Illuminate\Validation\Rule;
@@ -21,9 +21,9 @@ class StoreEmployee
     use AsAction;
 
 
-    public function handle(array $contactData, array $employeeData): MigrationResult
+    public function handle(array $contactData, array $employeeData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         $employee = Employee::create($employeeData);
         $employee->contact()->create($contactData);
@@ -53,7 +53,7 @@ class StoreEmployee
         ];
     }
 
-    public function asController(ActionRequest $request): MigrationResult
+    public function asController(ActionRequest $request): ActionResult
     {
         return $this->handle(
             $request->only('name', 'email', 'phone'),

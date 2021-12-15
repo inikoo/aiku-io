@@ -16,6 +16,7 @@ use App\Models\Trade\Shop;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
+use App\Models\Utils\ActionResult;
 
 class MigrateProduct extends MigrateModel
 {
@@ -104,12 +105,12 @@ class MigrateProduct extends MigrateModel
         $this->model = Product::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateProduct::run($this->model, $this->modelData);
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreProduct::run($this->parent, $this->modelData);
     }
@@ -119,7 +120,7 @@ class MigrateProduct extends MigrateModel
         return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Product Store Key'});
     }
 
-    public function postMigrateActions(MigrationResult $res): MigrationResult
+    public function postMigrateActions(ActionResult $res): ActionResult
     {
         $tradeUnits = [];
 
@@ -152,13 +153,13 @@ class MigrateProduct extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Product Dimension')->where('Product Id', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

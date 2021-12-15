@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\Product;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Buying\Supplier;
 use App\Models\Trade\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -17,9 +17,9 @@ class StoreProduct
 {
     use AsAction;
 
-    public function handle(Shop|Supplier $vendor, array $data): MigrationResult
+    public function handle(Shop|Supplier $vendor, array $data): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
         /** @var \App\Models\Trade\Product $product */
 
         $product= $vendor->products()->create($data);

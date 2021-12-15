@@ -8,7 +8,7 @@
 
 namespace App\Actions\Delivery\Picking;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Accounting\InvoiceTransaction;
 use App\Models\Delivery\Picking;
@@ -20,9 +20,9 @@ class UpdatePicking
     use AsAction;
     use WithUpdate;
 
-    public function handle(Picking $picking, array $modelData): MigrationResult
+    public function handle(Picking $picking, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $picking->update( Arr::except($modelData, ['data']));
         $picking->update($this->extractJson($modelData));

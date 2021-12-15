@@ -8,7 +8,7 @@
 
 namespace App\Actions\Inventory\Warehouse;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Inventory\Warehouse;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateWarehouse
     use AsAction;
     use WithUpdate;
 
-    public function handle(Warehouse $warehouse, array $modelData): MigrationResult
+    public function handle(Warehouse $warehouse, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         $warehouse->update(Arr::except($modelData, ['data', 'settings']));

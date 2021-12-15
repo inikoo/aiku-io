@@ -8,7 +8,7 @@
 
 namespace App\Actions\Accounting\InvoiceTransaction;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Accounting\InvoiceTransaction;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateInvoiceTransaction
     use AsAction;
     use WithUpdate;
 
-    public function handle(InvoiceTransaction $invoiceTransaction, array $modelData): MigrationResult
+    public function handle(InvoiceTransaction $invoiceTransaction, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $invoiceTransaction->update( Arr::except($modelData, ['data']));
         $invoiceTransaction->update($this->extractJson($modelData));

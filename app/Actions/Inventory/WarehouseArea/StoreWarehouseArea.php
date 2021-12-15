@@ -8,7 +8,7 @@
 
 namespace App\Actions\Inventory\WarehouseArea;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Inventory\Warehouse;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreWarehouseArea
 {
     use AsAction;
 
-    public function handle(Warehouse $warehouse, array $data): MigrationResult
+    public function handle(Warehouse $warehouse, array $data): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         /** @var \App\Models\Inventory\WarehouseArea $warehouseArea */
         $warehouseArea= $warehouse->areas()->create($data);

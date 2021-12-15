@@ -8,7 +8,7 @@
 
 namespace App\Actions\CRM\Customer;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\CRM\Customer;
 use Illuminate\Support\Arr;
@@ -23,8 +23,8 @@ class UpdateCustomer
         Customer $customer,
         array $contactData,
         array $customerData,
-    ): MigrationResult {
-        $res = new MigrationResult();
+    ): ActionResult {
+        $res = new ActionResult();
 
         $customer->contact()->update($contactData);
         $res->changes = array_merge($res->changes, $customer->contact->getChanges());

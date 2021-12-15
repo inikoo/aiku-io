@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\Adjust;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Trade\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreAdjust
 {
     use AsAction;
 
-    public function handle(Shop $shop, array $data): MigrationResult
+    public function handle(Shop $shop, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         /** @var \App\Models\Sales\Adjust $adjust */
         $adjust = $shop->adjusts()->create($data);

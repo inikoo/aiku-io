@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\TaxBand;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Sales\TaxBand;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,9 +17,9 @@ class StoreTaxBand
     use AsAction;
 
 
-    public function handle( array $taxBandData): MigrationResult
+    public function handle( array $taxBandData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         /** @var \App\Models\Sales\TaxBand $taxband */
         $taxBand= TaxBand::create($taxBandData);

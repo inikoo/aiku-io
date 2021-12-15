@@ -8,7 +8,7 @@
 
 namespace App\Actions\Sales\Order;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Sales\Order;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class DestroyOrder
 {
     use AsAction;
 
-    public function handle(Order $order): MigrationResult
+    public function handle(Order $order): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
         $res->model_id = $order->id;
 
         $order->transactions()->forceDelete();

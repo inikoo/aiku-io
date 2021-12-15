@@ -8,7 +8,7 @@
 
 namespace App\Actions\System\Guest;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\System\Guest;
 use App\Rules\Phone;
 use Lorisleiva\Actions\ActionRequest;
@@ -20,9 +20,9 @@ class StoreGuest
     use AsAction;
 
 
-    public function handle(array $contactData, array $modelData): MigrationResult
+    public function handle(array $contactData, array $modelData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
 
         $guest = Guest::create($modelData);
         $guest->contact()->create($contactData);
@@ -50,7 +50,7 @@ class StoreGuest
         ];
     }
 
-    public function asController(ActionRequest $request): MigrationResult
+    public function asController(ActionRequest $request): ActionResult
     {
         return $this->handle(
             $request->only('name', 'email', 'phone'),

@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\Shop;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Trade\Shop;
 use App\Models\System\Permission;
 use App\Models\System\Role;
@@ -20,9 +20,9 @@ class StoreShop
 {
     use AsAction;
 
-    public function handle(array $data, array $contactData): MigrationResult
+    public function handle(array $data, array $contactData): ActionResult
     {
-        $res  = new MigrationResult();
+        $res  = new ActionResult();
         $shop = Shop::create($data);
         $shop->contact()->create($contactData);
 

@@ -2,7 +2,7 @@
 
 namespace App\Actions\Inventory\Location;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Inventory\Warehouse;
 use App\Models\Inventory\WarehouseArea;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -11,9 +11,9 @@ class StoreLocation
 {
     use AsAction;
 
-    public function handle(WarehouseArea|Warehouse $parent, array $data): MigrationResult
+    public function handle(WarehouseArea|Warehouse $parent, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
         if (class_basename($parent::class) == 'WarehouseArea') {

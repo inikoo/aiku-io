@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Models\Utils\ActionResult;
 
 class MigrateDeliveryNote extends MigrateModel
 {
@@ -71,7 +72,7 @@ class MigrateDeliveryNote extends MigrateModel
         $this->model = DeliveryNote::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         return UpdateDeliveryNote::run(
             deliveryNote:    $this->model,
@@ -80,7 +81,7 @@ class MigrateDeliveryNote extends MigrateModel
         );
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         return StoreDeliveryNote::run(
             order:           $this->parent,
@@ -90,7 +91,7 @@ class MigrateDeliveryNote extends MigrateModel
     }
 
 
-    protected function postMigrateActions(MigrationResult $res): MigrationResult
+    protected function postMigrateActions(ActionResult $res): ActionResult
     {
 
         foreach (
@@ -118,13 +119,13 @@ class MigrateDeliveryNote extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
         if ($auroraData = DB::connection('aurora')->table('Delivery Note Dimension')->where('Delivery Not Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 

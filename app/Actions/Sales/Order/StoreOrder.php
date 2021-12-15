@@ -9,7 +9,7 @@
 namespace App\Actions\Sales\Order;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\CRM\Customer;
 use App\Models\Helpers\Address;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -24,9 +24,9 @@ class StoreOrder
         Address $billingAddress,
         Address $deliveryAddress
 
-    ): MigrationResult
+    ): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
 
 

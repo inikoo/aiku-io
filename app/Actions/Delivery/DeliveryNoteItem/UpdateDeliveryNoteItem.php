@@ -8,7 +8,7 @@
 
 namespace App\Actions\Delivery\DeliveryNoteItem;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\Delivery\DeliveryNoteItem;
 use Illuminate\Support\Arr;
@@ -19,9 +19,9 @@ class UpdateDeliveryNoteItem
     use AsAction;
     use WithUpdate;
 
-    public function handle(DeliveryNoteItem $deliveryNoteItem, array $modelData): MigrationResult
+    public function handle(DeliveryNoteItem $deliveryNoteItem, array $modelData): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
 
         $deliveryNoteItem->update( Arr::except($modelData, ['data']));
         $deliveryNoteItem->update($this->extractJson($modelData));

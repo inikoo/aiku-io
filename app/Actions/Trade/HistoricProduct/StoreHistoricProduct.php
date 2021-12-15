@@ -8,7 +8,7 @@
 
 namespace App\Actions\Trade\HistoricProduct;
 
-use App\Actions\Migrations\MigrationResult;
+use App\Models\Utils\ActionResult;
 use App\Models\Trade\Product;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -16,9 +16,9 @@ class StoreHistoricProduct
 {
     use AsAction;
 
-    public function handle(Product $product, array $data): MigrationResult
+    public function handle(Product $product, array $data): ActionResult
     {
-        $res = new MigrationResult();
+        $res = new ActionResult();
         /** @var \App\Models\Trade\HistoricProduct $historicProduct */
 
         $historicProduct = $product->historicRecords()->create($data);

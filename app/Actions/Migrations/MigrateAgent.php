@@ -13,6 +13,7 @@ use App\Actions\Helpers\Address\UpdateAddress;
 use App\Actions\Buying\Agent\StoreAgent;
 use App\Actions\Buying\Agent\UpdateAgent;
 use App\Models\Buying\Agent;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -104,7 +105,7 @@ class MigrateAgent extends MigrateModel
         $this->model = Agent::find($this->auModel->data->aiku_id);
     }
 
-    public function updateModel(): MigrationResult
+    public function updateModel(): ActionResult
     {
         /**  @var Agent $agent */
         $agent                                = $this->model;
@@ -125,7 +126,7 @@ class MigrateAgent extends MigrateModel
         return $result;
     }
 
-    public function storeModel(): MigrationResult
+    public function storeModel(): ActionResult
     {
         $this->modelData['agent']['data']     = $this->parseMetadata([], $this->auModel->data);
         $this->modelData['agent']['settings'] = $this->parseSettings([], $this->auModel->data);
@@ -160,14 +161,14 @@ class MigrateAgent extends MigrateModel
         return $request->user()->tokenCan('root');
     }
 
-    public function asController(int $auroraID): MigrationResult
+    public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
 
         if ($auroraData = DB::connection('aurora')->table('Agent Dimension')->where('Agent Key', $auroraID)->first()) {
             return $this->handle($auroraData);
         }
-        $res           = new MigrationResult();
+        $res           = new ActionResult();
         $res->errors[] = 'Aurora model not found';
         $res->status   = 'error';
 
