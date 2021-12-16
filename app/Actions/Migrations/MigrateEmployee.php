@@ -29,20 +29,22 @@ class MigrateEmployee extends MigrateModel
 
     public function parseModelData()
     {
+        $dataContact = [];
+        if ($this->auModel->data->{'Staff Address'}) {
+            $dataContact['address'] = $this->auModel->data->{'Staff Address'};
+        }
         $this->modelData['contact'] = $this->sanitizeData(
             [
                 'name'                     => $this->auModel->data->{'Staff Name'},
                 'email'                    => $this->auModel->data->{'Staff Email'},
                 'phone'                    => $this->auModel->data->{'Staff Telephone'},
                 'identity_document_number' => $this->auModel->data->{'Staff Official ID'},
-                'date_of_birth'            => $this->auModel->data->{'Staff Birthday'}
+                'date_of_birth'            => $this->auModel->data->{'Staff Birthday'},
+                'data'                     => $dataContact
             ]
         );
 
-        $data = [
-            'address' => $this->auModel->data->{'Staff Address'},
-        ];
-
+        $data   = [];
         $errors = [];
         if ($this->getDate($this->auModel->data->{'Staff Valid From'}) == '') {
             $errors = [
@@ -50,14 +52,42 @@ class MigrateEmployee extends MigrateModel
             ];
         }
 
-        ksort($data);
+
+        $working_hours = json_decode($this->auModel->data->{'Staff Working Hours'}, true);
+        if ($working_hours) {
+            $working_hours['week_distribution'] = array_change_key_case(
+                json_decode($this->auModel->data->{'Staff Working Hours Per Week Metadata'}, true)
+                , CASE_LOWER
+            );
+        }
+
+
+        $workingHours = json_decode($this->auModel->data->{'Staff Working Hours'}, true);
+        $weekDistribution= json_decode($this->auModel->data->{'Staff Working Hours Per Week Metadata'}, true);
+
+        if ($workingHours and $weekDistribution) {
+            $workingHours['week_distribution'] = array_change_key_case($weekDistribution, CASE_LOWER);
+        }
+
+
+
+
+        $salary=json_decode($this->auModel->data->{'Staff Salary'}, true);
+        if($salary){
+            $salary=array_change_key_case($salary,CASE_LOWER);
+        }
+
 
         $this->modelData['employee'] = $this->sanitizeData(
             [
-                'nickname'            => strtolower($this->auModel->data->{'Staff Alias'}),
                 'worker_number'       => $this->auModel->data->{'Staff ID'},
+                'nickname'            => strtolower($this->auModel->data->{'Staff Alias'}),
                 'employment_start_at' => $this->getDate($this->auModel->data->{'Staff Valid From'}),
                 'created_at'          => $this->auModel->data->{'Staff Valid From'},
+                'emergency_contact'   => $this->auModel->data->{'Staff Next of Kind'},
+                'job_title'           => $this->auModel->data->{'Staff Job Title'},
+                'salary'              => $salary,
+                'working_hours'       => $workingHours,
 
                 'employment_end_at' => $this->getDate($this->auModel->data->{'Staff Valid To'}),
                 'type'              => Str::snake($this->auModel->data->{'Staff Type'}, '-'),

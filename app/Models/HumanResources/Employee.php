@@ -28,15 +28,20 @@ class Employee extends Model implements Auditable
     use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
 
+
     protected $casts = [
-        'data'   => 'array',
-        'errors' => 'array',
+        'data'          => 'array',
+        'errors'        => 'array',
+        'salary'        => 'array',
+        'working_hours' => 'array',
 
     ];
 
     protected $attributes = [
-        'data'   => '{}',
-        'errors' => '{}',
+        'data'          => '{}',
+        'errors'        => '{}',
+        'salary'        => '{}',
+        'working_hours' => '{}',
     ];
 
     protected $guarded = [];

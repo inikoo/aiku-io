@@ -43,9 +43,19 @@ class MigrateHR extends MigrateAurora
     protected function reset()
     {
         DB::connection('aurora')->table('Staff Dimension')
-            ->update(['aiku_id' => null, 'aiku_guest_id' => null]);
+            ->update(
+                [
+                    'aiku_id'       => null,
+                    'aiku_guest_id' => null
+                ]
+            );
         DB::connection('aurora')->table('Staff Deleted Dimension')
-            ->update(['aiku_id' => null, 'aiku_guest_id' => null]);
+            ->update(
+                [
+                    'aiku_id'       => null,
+                    'aiku_guest_id' => null
+                ]
+            );
         DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])
@@ -67,7 +77,9 @@ class MigrateHR extends MigrateAurora
 
     protected function migrate(Tenant $tenant)
     {
-        foreach (DB::connection('aurora')->table('Staff Dimension')->get() as $auroraData) {
+        foreach (DB::connection('aurora')
+            ->table('Staff Dimension')
+            ->get() as $auroraData) {
             $this->results[$tenant->nickname]['models']++;
             if ($auroraData->{'Staff Type'} == 'Contractor') {
                 $result = MigrateGuest::run($auroraData);

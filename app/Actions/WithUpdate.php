@@ -16,7 +16,17 @@ trait WithUpdate{
     {
         $data=[];
         foreach(Arr::dot(Arr::only($modelData, $field)) as $key=>$value){
-            $data[preg_replace('/\./','->',$key)]=$value;
+            if(is_array($value)){
+                if(count($value)==0){
+                    $value=null;
+                }else{
+                    $value=json_encode($value);
+
+                }
+            }
+            if($value){
+                $data[preg_replace('/\./','->',$key)]=$value;
+            }
         }
         return $data;
     }

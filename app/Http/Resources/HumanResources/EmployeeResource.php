@@ -20,14 +20,20 @@ class EmployeeResource extends JsonResource
     {
         /** @var \App\Models\HumanResources\Employee $employee */
         $employee = $this;
+
+        $contact            = $employee->contact->only('name', 'email', 'phone', 'date_of_birth');
+        $contact['address'] = $employee->contact->data['address'] ?? null;
+
+
         return [
             'id'                  => $employee->id,
-            'contact'             => $employee->contact->only('name', 'email', 'phone'),
+            'contact'             => $contact,
             'nickname'            => $employee->nickname,
             'worker_number'       => $employee->worker_number,
             'state'               => $employee->state,
             'employment_start_at' => $employee->employment_start_at,
             'employment_end_at'   => $employee->employment_end_at,
+            'salary'              => $employee->salary,
             'user'                => $employee->user?->only('username', 'status'),
 
             'created_at' => $employee->created_at,

@@ -27,14 +27,15 @@ class UpdateEmployee
     {
         $res = new ActionResult();
 
-        $employee->contact()->update($contactData);
 
-        $res->changes = array_merge($res->changes, $employee->contact->getChanges());
+        $contact = $employee->contact;
 
-        $employee->update($employeeData);
+        $contact->update(Arr::except($contactData, ['data']));
+        $contact->update($this->extractJson($contactData));
 
-        $employee->update(Arr::except($employeeData, ['data']));
-        $employee->update($this->extractJson($employeeData));
+        $res->changes = array_merge($res->changes, $contact->getChanges());
+        $employee->update(Arr::except($employeeData, ['data', 'salary', 'working_hours']));
+        $employee->update($this->extractJson($employeeData, ['data', 'salary', 'working_hours']));
 
         $res->changes = array_merge($res->changes, $employee->getChanges());
 
@@ -55,9 +56,18 @@ class UpdateEmployee
     public function rules(): array
     {
         return [
-            'name'   => 'sometimes|required|string',
-            'email'  => 'sometimes|email',
-            'phone'  => ['string', new Phone()],
+            'name'                     => 'sometimes|required|string',
+            'email'                    => 'sometimes|email',
+            'phone'                    => ['string', new Phone()],
+            'identity_document_number' => 'sometimes|required|string',
+            'date_of_birth'            => 'sometimes|nullable|date|before_or_equal:today',
+            'address'                  => 'sometimes|nullable|string',
+            'emergency_contact'        => 'sometimes|nullable|string',
+            'nickname'                 => 'sometimes|required|string',
+            'worker_number'            => 'sometimes|required|string',
+            'salary'                   => 'sometimes|required|array',
+            'working_hours'            => 'sometimes|required|array',
+
             'status' => [
                 'sometimes',
                 'required',
@@ -66,13 +76,48 @@ class UpdateEmployee
         ];
     }
 
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        if ($request->exists('salary')) {
+            $request->merge(
+                [
+                    'salary' => json_decode($request->get('salary'), true),
+
+                ]
+
+            );
+        }
+        if ($request->exists('working_hours')) {
+            $request->merge(
+                [
+                    'working_hours' => json_decode($request->get('working_hours'), true)
+
+                ]
+
+            );
+        }
+    }
+
     public function asController(Employee $employee, ActionRequest $request): ActionResultResource
     {
+        $contact = $request->only('name', 'email', 'phone', 'identity_document_number', 'date_of_birth');
+        if ($contactData = $request->only('address')) {
+            $contact['data'] = $contactData;
+        }
+
+
         return new ActionResultResource(
             $this->handle(
                 $employee,
-                $request->only('name', 'email', 'phone'),
-                $request->only('nickname')
+                $contact,
+                $request->only(
+                    'nickname',
+                    'worker_number',
+                    'emergency_contact',
+                    'salary',
+                    'job_title',
+                    'working_hours'
+                )
             )
         );
     }

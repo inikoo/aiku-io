@@ -31,16 +31,21 @@ class CreateEmployeesTable extends Migration
             $table->id();
             $table->string('nickname')->index();
             $table->string('worker_number')->nullable();
-            $table->enum('type', ['employee', 'volunteer','temporal-worker', 'work-experience'])->default('employee');
+            $table->string('job_title')->nullable();
+
+            $table->enum('type', ['employee', 'volunteer', 'temporal-worker', 'work-experience'])->default('employee');
             $table->enum('state', ['hired', 'working', 'left'])->default('working');
             $table->date('employment_start_at')->nullable();
             $table->date('employment_end_at')->nullable();
+            $table->string('emergency_contact', 1024)->nullable();
+            $table->jsonb('salary')->nullable();
+            $table->jsonb('working_hours')->nullable();
+
             $table->jsonb('data');
             $table->jsonb('errors');
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-
         });
     }
 

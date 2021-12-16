@@ -46,7 +46,8 @@ class Contact extends Model implements Auditable
     protected $guarded = [];
 
     protected $casts = [
-        'data' => 'array'
+        'data'          => 'array',
+        'date_of_birth' => 'datetime:Y-m-d',
     ];
 
     protected $attributes = [
@@ -59,12 +60,10 @@ class Contact extends Model implements Auditable
     }
 
 
-
     public function contactable(): MorphTo
     {
         return $this->morphTo();
     }
-
 
 
     public function dependants(): BelongsToMany

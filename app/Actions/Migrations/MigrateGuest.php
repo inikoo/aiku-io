@@ -40,9 +40,12 @@ class MigrateGuest extends MigrateModel
             ]
         );
 
-        $data = [
-            'address' => $this->auModel->data->{'Staff Address'},
-        ];
+        $data=[];
+        if($this->auModel->data->{'Staff Address'}){
+            $data['address']=$this->auModel->data->{'Staff Address'};
+        }
+
+
 
         if ($this->getDate($this->auModel->data->{'Staff Valid From'}) == '') {
             $data['errors'] = [
