@@ -8,6 +8,7 @@
 
 namespace App\Actions\Migrations;
 
+use App\Http\Resources\Utils\ActionResultResource;
 use App\Models\Assets\Country;
 use App\Models\Assets\Currency;
 use App\Models\Assets\Language;
@@ -91,7 +92,7 @@ class MigrateModel
             $res = $this->updateModel();
 
             if ($res->changes) {
-                print_r($res);
+                print_r(new  ActionResultResource($res));
             }
 
             if ($res->status == 'deleted') {
