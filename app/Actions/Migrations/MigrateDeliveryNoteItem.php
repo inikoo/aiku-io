@@ -35,7 +35,12 @@ class MigrateDeliveryNoteItem extends MigrateModel
 
     public function getParent(): Transaction
     {
-        return Transaction::firstWhere('aurora_id', $this->auModel->data->{'Map To Order Transaction Fact Key'});
+        $transaction=Transaction::firstWhere('aurora_id', $this->auModel->data->{'Map To Order Transaction Fact Key'});
+        if(!$transaction){
+            print_r($this->auModel->data);
+        }
+
+        return $transaction;
     }
 
     public function parseModelData()
