@@ -92,7 +92,8 @@ class MigrateModel
             $res = $this->updateModel();
 
             if ($res->changes) {
-                print_r(new  ActionResultResource($res));
+                $resource=new  ActionResultResource($res);
+                print_r($resource->resolve());
             }
 
             if ($res->status == 'deleted') {

@@ -64,4 +64,11 @@ class DeliveryNoteItem extends Model
     {
         return $this->belongsToMany(Picking::class)->withTimestamps();
     }
+
+    /** @noinspection PhpUnused */
+    public function setQuantityAttribute($val)
+    {
+        $this->attributes['quantity'] = sprintf('%.3f', $val);
+    }
+
 }
