@@ -81,4 +81,9 @@ class DeliveryNote extends Model implements Auditable
         return $this->hasMany(Picking::class);
     }
 
+    public function deliveryNoteItems(): HasMany
+    {
+        return $this->hasMany(DeliveryNoteItem::class);
+    }
+
 }

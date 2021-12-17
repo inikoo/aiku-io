@@ -8,21 +8,21 @@
 
 namespace App\Actions\Delivery\DeliveryNoteItem;
 
+use App\Models\Delivery\DeliveryNote;
 use App\Models\Utils\ActionResult;
-use App\Models\Sales\Transaction;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreDeliveryNoteItem
 {
     use AsAction;
 
-    public function handle(Transaction $transaction, array $modelData): ActionResult
+    public function handle(DeliveryNote $deliveryNote, array $modelData): ActionResult
     {
         $res = new ActionResult();
 
 
         /** @var \App\Models\Delivery\DeliveryNoteItem $deliveryNoteItem */
-        $deliveryNoteItem = $transaction->deliveryNoteItems()->create($modelData);
+        $deliveryNoteItem = $deliveryNote->deliveryNoteItems()->create($modelData);
 
         $res->model    = $deliveryNoteItem;
         $res->model_id = $deliveryNoteItem->id;

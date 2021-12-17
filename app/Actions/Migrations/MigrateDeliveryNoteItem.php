@@ -11,6 +11,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Delivery\DeliveryNoteItem\StoreDeliveryNoteItem;
 use App\Actions\Delivery\DeliveryNoteItem\UpdateDeliveryNoteItem;
+use App\Models\Delivery\DeliveryNote;
 use App\Models\Delivery\DeliveryNoteItem;
 use App\Models\Sales\Transaction;
 use Illuminate\Support\Facades\DB;
@@ -33,18 +34,16 @@ class MigrateDeliveryNoteItem extends MigrateModel
         $this->aiku_id_field     = 'aiku_dn_item_id';
     }
 
-    public function getParent(): Transaction
+    public function getParent(): DeliveryNote
     {
-        $transaction=Transaction::firstWhere('aurora_id', $this->auModel->data->{'Map To Order Transaction Fact Key'});
-        if(!$transaction){
-            print_r($this->auModel->data);
-        }
-
-        return $transaction;
+        return DeliveryNote::find($this->auModel->data->delivery_note_id);
     }
 
     public function parseModelData()
     {
+
+        $transaction=Transaction::firstWhere('aurora_id', $this->auModel->data->{'Map To Order Transaction Fact Key'});
+        $transaction_id = $transaction?->id;
 
         $auroraOTF=DB::connection('aurora')->table('Order Transaction Fact')
             ->select('Delivery Note Quantity')
@@ -52,8 +51,7 @@ class MigrateDeliveryNoteItem extends MigrateModel
             ->first();
 
         $this->modelData   = [
-            'delivery_note_id' => $this->auModel->data->delivery_note_id,
-
+            'transaction_id' => $transaction_id,
             'quantity'      => $auroraOTF->{'Delivery Note Quantity'},
             'created_at'    => $this->auModel->data->{'Date Created'},
             'aurora_itf_id' => $this->auModel->data->{'Inventory Transaction Key'},
