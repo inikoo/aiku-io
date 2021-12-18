@@ -778,6 +778,8 @@ namespace App\Models\Delivery{
  * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
  * @property-read int|null $audits_count
  * @property-read Customer $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Delivery\DeliveryNoteItem[] $deliveryNoteItems
+ * @property-read int|null $delivery_note_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Order[] $order
  * @property-read int|null $order_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Order[] $orders
@@ -1063,7 +1065,7 @@ namespace App\Models\Helpers{
  * @property int $contactable_id
  * @property string|null $name
  * @property string|null $company
- * @property string|null $date_of_birth
+ * @property \datetime|null $date_of_birth
  * @property string|null $gender
  * @property string|null $email
  * @property string|null $phone
@@ -1187,11 +1189,16 @@ namespace App\Models\HumanResources{
  * @property int $id
  * @property string $nickname
  * @property string|null $worker_number
+ * @property string|null $job_title
  * @property string $type
  * @property string $state
  * @property string|null $employment_start_at
  * @property string|null $employment_end_at
+ * @property string|null $emergency_contact
+ * @property array|null $salary
+ * @property array|null $working_hours
  * @property array $data
+ * @property array $errors
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -1200,6 +1207,10 @@ namespace App\Models\HumanResources{
  * @property-read int|null $audits_count
  * @property-read Contact|null $contact
  * @property-read mixed $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|Employee[] $supervisors
+ * @property-read int|null $supervisors_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Employee[] $team
+ * @property-read int|null $team_count
  * @property-read User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Employee newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Employee newQuery()
@@ -1209,18 +1220,35 @@ namespace App\Models\HumanResources{
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee whereEmergencyContact($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereEmploymentEndAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereEmploymentStartAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee whereErrors($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee whereJobTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereNickname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee whereSalary($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Employee whereWorkerNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee whereWorkingHours($value)
  * @method static \Illuminate\Database\Query\Builder|Employee withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Employee withoutTrashed()
  */
 	class IdeHelperEmployee extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable {}
+}
+
+namespace App\Models\HumanResources{
+/**
+ * App\Models\HumanResources\Supervisor
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Supervisor newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Supervisor newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Supervisor query()
+ * @mixin \Eloquent
+ */
+	class IdeHelperSupervisor extends \Eloquent {}
 }
 
 namespace App\Models\Inventory{
@@ -1779,6 +1807,7 @@ namespace App\Models\System{
 /**
  * App\Models\System\Guest
  *
+ * @mixin IdeHelperGuest
  * @property int $id
  * @property string $nickname
  * @property array $data
@@ -1804,7 +1833,6 @@ namespace App\Models\System{
  * @method static \Illuminate\Database\Eloquent\Builder|Guest whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Guest withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Guest withoutTrashed()
- * @mixin \Eloquent
  */
 	class IdeHelperGuest extends \Eloquent implements \OwenIt\Auditing\Contracts\Auditable {}
 }
@@ -1881,9 +1909,10 @@ namespace App\Models\System{
  * @property int $timezone_id
  * @property array $data
  * @property array $settings
+ * @property array $errors
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int|null $aurora_id
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -1901,6 +1930,7 @@ namespace App\Models\System{
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $userable
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
@@ -1908,6 +1938,7 @@ namespace App\Models\System{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereData($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereErrors($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLanguageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
@@ -1920,6 +1951,8 @@ namespace App\Models\System{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
+ * @method static \Illuminate\Database\Query\Builder|User withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  */
 	class IdeHelperUser extends \Eloquent {}
 }

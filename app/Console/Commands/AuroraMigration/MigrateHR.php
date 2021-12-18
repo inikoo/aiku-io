@@ -16,6 +16,7 @@ use App\Actions\Migrations\MigrateEmployee;
 use App\Actions\Migrations\MigrateGuest;
 use App\Actions\Migrations\MigrateUser;
 use App\Models\Account\Tenant;
+use App\Models\HumanResources\Employee;
 use Illuminate\Support\Facades\DB;
 
 
@@ -118,6 +119,25 @@ class MigrateHR extends MigrateAurora
             $result = MigrateDeletedUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }
+
+        foreach (DB::connection('aurora')
+            ->table('Staff Supervisor Bridge')
+            ->get() as $auroraData) {
+
+                $employee=Employee::firstWhere('aurora_id',$auroraData->{'Staff Key'});
+
+                $supervisor=Employee::firstWhere('aurora_id',$auroraData->{'Supervisor Key'});
+
+                if($employee and $supervisor){
+                    $employee->supervisors()->sync([$supervisor->id]);
+
+                }
+
+
+
+        }
+
+
     }
 
 

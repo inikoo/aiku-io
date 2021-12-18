@@ -12,6 +12,7 @@ use App\Models\Helpers\Contact;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -60,6 +61,16 @@ class Employee extends Model implements Auditable
     public function user(): MorphOne
     {
         return $this->morphOne(User::class, 'userable');
+    }
+
+    public function supervisors(): BelongsToMany
+    {
+        return $this->belongsToMany(Employee::class,'supervisors','employee_id','supervisor_id')->using(Supervisor::class)->withTimestamps();
+    }
+
+    public function team(): BelongsToMany
+    {
+        return $this->belongsToMany(Employee::class,'supervisors','supervisor_id','employee_id')->using(Supervisor::class)->withTimestamps();
     }
 
 }

@@ -28,16 +28,42 @@ class UpdateEmployee
         $res = new ActionResult();
 
 
+
         $contact = $employee->contact;
 
         $contact->update(Arr::except($contactData, ['data']));
         $contact->update($this->extractJson($contactData));
 
         $res->changes = array_merge($res->changes, $contact->getChanges());
-        $employee->update(Arr::except($employeeData, ['data', 'salary', 'working_hours']));
+        $employee->update(
+            Arr::except($employeeData, [
+                'data',
+                'salary',
+                'working_hours',
+                'employee_relationships'
+
+            ])
+        );
         $employee->update($this->extractJson($employeeData, ['data', 'salary', 'working_hours']));
 
         $res->changes = array_merge($res->changes, $employee->getChanges());
+
+        if (Arr::exists($employeeData, 'employee_relationships')) {
+
+
+            $res          = UpdateEmployeeRelationships::run(
+                employee:           $employee,
+                type:               $employeeData['employee_relationships']['type'],
+                operation:          $employeeData['employee_relationships']['operation'],
+                relatedEmployeeIds: $employeeData['employee_relationships']['ids'],
+
+            );
+
+
+
+            $res->changes = array_merge($res->changes, $res->changes);
+        }
+
 
         $res->model = $employee;
 
@@ -67,6 +93,7 @@ class UpdateEmployee
             'worker_number'            => 'sometimes|required|string',
             'salary'                   => 'sometimes|required|array',
             'working_hours'            => 'sometimes|required|array',
+            'employee_relationships'            => 'sometimes|required|array:type,operation,ids',
 
             'status' => [
                 'sometimes',
@@ -91,7 +118,14 @@ class UpdateEmployee
             $request->merge(
                 [
                     'working_hours' => json_decode($request->get('working_hours'), true)
+                ]
 
+            );
+        }
+        if ($request->exists('employee_relationships')) {
+            $request->merge(
+                [
+                    'employee_relationships' => json_decode($request->get('employee_relationships'), true)
                 ]
 
             );
@@ -116,7 +150,8 @@ class UpdateEmployee
                     'emergency_contact',
                     'salary',
                     'job_title',
-                    'working_hours'
+                    'working_hours',
+                    'employee_relationships'
                 )
             )
         );
