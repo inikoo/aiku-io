@@ -11,6 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
 use App\Models\HumanResources\Employee;
+use App\Models\HumanResources\JobPosition;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -121,10 +122,57 @@ class MigrateEmployee extends MigrateModel
         return StoreEmployee::run($this->modelData['contact'], $this->modelData['employee']);
     }
 
+    public function postMigrateActions(ActionResult $res): ActionResult
+    {
+        /** @var Employee $employee */
+        $employee = $this->model;
+
+
+        $jobPositions=[];
+
+        foreach (
+            DB::connection('aurora')
+                ->table('Staff Role Bridge')
+                ->where('Staff Key',$employee->aurora_id)
+                ->get() as $auroraData
+        ) {
+            $roleCode= match ($auroraData->{'Role Code'}){
+                'WAHM'=>'wah-m',
+                'WAHSK'=>'wah-sk',
+                'WAHSC'=>'wah-sc',
+                'PICK'=>'dist-pik',
+                'OHADM'=>'dist-m',
+                'PRODM'=>'prod-m',
+                'PRODO'=>'prod-w',
+                'CUSM'=>'cus-m',
+                default=>strtolower($auroraData->{'Role Code'})
+            };
+
+            if($jobPosition=JobPosition::firstWhere('slug',$roleCode)){
+                $jobPositions[]=$jobPosition->id;
+            }
+
+            if($roleCode=='dist-pik'){
+                if($jobPosition=JobPosition::firstWhere('slug','dist-pak')){
+                    $jobPositions[]=$jobPosition->id;
+                }
+
+            }
+            $employee->jobPositions()->sync($jobPositions);
+
+
+        }
+
+
+        return $res;
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->tokenCan('root');
     }
+
+
 
     public function asController(int $auroraID): ActionResult
     {

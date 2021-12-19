@@ -136,6 +136,7 @@ class CreateTenant extends Command
         $tenant->makeCurrent();
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
+        Artisan::call('tenants:artisan "db:seed --force --class=JobPositionSeeder" --tenant='.$tenant->id);
 
         $userPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 

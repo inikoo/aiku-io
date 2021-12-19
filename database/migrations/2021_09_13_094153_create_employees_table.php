@@ -25,6 +25,7 @@ class CreateEmployeesTable extends Migration
             $table->string('name');
             $table->json('data')->nullable();
             $table->timestampsTz();
+
         });
 
         Schema::create('employees', function (Blueprint $table) {
@@ -47,6 +48,26 @@ class CreateEmployeesTable extends Migration
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
+
+        Schema::create('employee_job_position', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('job_position_id')->index();
+            $table->foreign('job_position_id')->references('id')->on('job_positions');
+            $table->unsignedBigInteger('employee_id')->index();
+            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->timestampsTz();
+            $table->unique(['job_position_id','employee_id']);
+        });
+
+        Schema::create('job_position_role', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('job_position_id')->index();
+            $table->foreign('job_position_id')->references('id')->on('job_positions');
+            $table->unsignedBigInteger('role_id')->index();
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->timestampsTz();
+            $table->unique(['job_position_id','role_id']);
+        });
     }
 
     /**
@@ -56,6 +77,7 @@ class CreateEmployeesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('employee_job_position');
         Schema::dropIfExists('employees');
         Schema::dropIfExists('job_positions');
     }

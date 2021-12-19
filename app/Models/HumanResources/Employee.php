@@ -73,4 +73,9 @@ class Employee extends Model implements Auditable
         return $this->belongsToMany(Employee::class,'supervisors','supervisor_id','employee_id')->using(Supervisor::class)->withTimestamps();
     }
 
+    public function jobPositions(): BelongsToMany
+    {
+        return $this->belongsToMany(JobPosition::class)->withTimestamps();
+    }
+
 }

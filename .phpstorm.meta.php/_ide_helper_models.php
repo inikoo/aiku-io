@@ -1207,6 +1207,8 @@ namespace App\Models\HumanResources{
  * @property-read int|null $audits_count
  * @property-read Contact|null $contact
  * @property-read mixed $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\HumanResources\JobPosition[] $jobPositions
+ * @property-read int|null $job_positions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Employee[] $supervisors
  * @property-read int|null $supervisors_count
  * @property-read \Illuminate\Database\Eloquent\Collection|Employee[] $team
@@ -1241,12 +1243,38 @@ namespace App\Models\HumanResources{
 
 namespace App\Models\HumanResources{
 /**
+ * App\Models\HumanResources\JobPosition
+ *
+ * @property int $id
+ * @property string $slug
+ * @property string $name
+ * @property array|null $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\HumanResources\Employee[] $employees
+ * @property-read int|null $employees_count
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition query()
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|JobPosition whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
+	class IdeHelperJobPosition extends \Eloquent {}
+}
+
+namespace App\Models\HumanResources{
+/**
  * App\Models\HumanResources\Supervisor
  *
+ * @mixin IdeHelperSupervisor
  * @method static \Illuminate\Database\Eloquent\Builder|Supervisor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Supervisor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Supervisor query()
- * @mixin \Eloquent
  */
 	class IdeHelperSupervisor extends \Eloquent {}
 }

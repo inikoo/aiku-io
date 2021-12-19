@@ -78,9 +78,11 @@ class MigrateHR extends MigrateAurora
 
     protected function migrate(Tenant $tenant)
     {
-        foreach (DB::connection('aurora')
-            ->table('Staff Dimension')
-            ->get() as $auroraData) {
+        foreach (
+            DB::connection('aurora')
+                ->table('Staff Dimension')
+                ->get() as $auroraData
+        ) {
             $this->results[$tenant->nickname]['models']++;
             if ($auroraData->{'Staff Type'} == 'Contractor') {
                 $result = MigrateGuest::run($auroraData);
@@ -120,24 +122,19 @@ class MigrateHR extends MigrateAurora
             $this->recordAction($tenant, $result);
         }
 
-        foreach (DB::connection('aurora')
-            ->table('Staff Supervisor Bridge')
-            ->get() as $auroraData) {
+        foreach (
+            DB::connection('aurora')
+                ->table('Staff Supervisor Bridge')
+                ->get() as $auroraData
+        ) {
+            $employee = Employee::firstWhere('aurora_id', $auroraData->{'Staff Key'});
 
-                $employee=Employee::firstWhere('aurora_id',$auroraData->{'Staff Key'});
+            $supervisor = Employee::firstWhere('aurora_id', $auroraData->{'Supervisor Key'});
 
-                $supervisor=Employee::firstWhere('aurora_id',$auroraData->{'Supervisor Key'});
-
-                if($employee and $supervisor){
-                    $employee->supervisors()->sync([$supervisor->id]);
-
-                }
-
-
-
+            if ($employee and $supervisor) {
+                $employee->supervisors()->sync([$supervisor->id]);
+            }
         }
-
-
     }
 
 
