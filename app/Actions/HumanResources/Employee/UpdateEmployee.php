@@ -9,6 +9,7 @@
 namespace App\Actions\HumanResources\Employee;
 
 use App\Http\Resources\Utils\ActionResultResource;
+use App\Models\HumanResources\JobPosition;
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\HumanResources\Employee;
@@ -17,6 +18,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Illuminate\Validation\Validator;
 
 class UpdateEmployee
 {
@@ -26,7 +28,6 @@ class UpdateEmployee
     public function handle(Employee $employee, array $contactData, array $employeeData): ActionResult
     {
         $res = new ActionResult();
-
 
 
         $contact = $employee->contact;
@@ -40,7 +41,8 @@ class UpdateEmployee
                 'data',
                 'salary',
                 'working_hours',
-                'employee_relationships'
+                'employee_relationships',
+                'job_positions'
 
             ])
         );
@@ -48,9 +50,17 @@ class UpdateEmployee
 
         $res->changes = array_merge($res->changes, $employee->getChanges());
 
+        if (Arr::exists($employeeData, 'job_positions')) {
+            $res          = UpdateEmployeeJobPositions::run(
+                employee:  $employee,
+                operation: $employeeData['job_positions']['operation'],
+                ids:       $employeeData['job_positions']['ids'],
+
+            );
+            $res->changes = array_merge($res->changes, $res->changes);
+        }
+
         if (Arr::exists($employeeData, 'employee_relationships')) {
-
-
             $res          = UpdateEmployeeRelationships::run(
                 employee:           $employee,
                 type:               $employeeData['employee_relationships']['type'],
@@ -58,9 +68,6 @@ class UpdateEmployee
                 relatedEmployeeIds: $employeeData['employee_relationships']['ids'],
 
             );
-
-
-
             $res->changes = array_merge($res->changes, $res->changes);
         }
 
@@ -93,7 +100,8 @@ class UpdateEmployee
             'worker_number'            => 'sometimes|required|string',
             'salary'                   => 'sometimes|required|array',
             'working_hours'            => 'sometimes|required|array',
-            'employee_relationships'            => 'sometimes|required|array:type,operation,ids',
+            'employee_relationships'   => 'sometimes|required|array:type,operation,ids',
+            'job_position_slugs'       => 'sometimes|required|array:operation,slugs',
 
             'status' => [
                 'sometimes',
@@ -130,7 +138,66 @@ class UpdateEmployee
 
             );
         }
+
+        if ($request->exists('job_position_slugs')) {
+            $request->merge(
+                [
+                    'job_position_slugs' => json_decode($request->get('job_position_slugs'), true)
+                ]
+
+            );
+        }
+
+
     }
+
+
+    public function afterValidator(Employee $employee,Validator $validator, ActionRequest $request): void
+    {
+
+        if ($request->exists('employee_relationships')) {
+
+            $employee_relationships = json_decode($request->get('employee_relationships'), true);
+
+            foreach ($employee_relationships['ids'] as $id) {
+                if ($relatedEmployee = Employee::find($id)) {
+                    if($employee->id==$relatedEmployee->id){
+                        $validator->errors()->add('employee_relationships', 'Related employee same as employee.');
+
+                    }
+                } else {
+                    $validator->errors()->add('employee_relationships', 'Related employee not found.');
+                }
+            }
+
+
+        }
+
+        if ($request->exists('job_position_slugs')) {
+            $jobPositions = [];
+
+            $job_position_slugs = json_decode($request->get('job_position_slugs'), true);
+
+            foreach ($job_position_slugs['slugs'] as $slug) {
+                if ($jobPosition = JobPosition::firstWhere('slug', $slug)) {
+                    $jobPositions[] = $jobPosition->id;
+                } else {
+                    $validator->errors()->add('job_positions', 'Wrong job position slug.');
+                }
+            }
+
+            $request->merge(
+                [
+                    'job_positions' =>
+                        [
+                            'operation' => $job_position_slugs['operation'],
+                            'ids'       => $jobPositions
+                        ]
+                ]
+            );
+        }
+    }
+
 
     public function asController(Employee $employee, ActionRequest $request): ActionResultResource
     {
@@ -151,7 +218,9 @@ class UpdateEmployee
                     'salary',
                     'job_title',
                     'working_hours',
-                    'employee_relationships'
+                    'employee_relationships',
+                    'job_positions'
+
                 )
             )
         );
