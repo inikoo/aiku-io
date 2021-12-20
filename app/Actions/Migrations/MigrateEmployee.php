@@ -58,24 +58,23 @@ class MigrateEmployee extends MigrateModel
         if ($working_hours) {
             $working_hours['week_distribution'] = array_change_key_case(
                 json_decode($this->auModel->data->{'Staff Working Hours Per Week Metadata'}, true)
-                , CASE_LOWER
+                ,
+                CASE_LOWER
             );
         }
 
 
-        $workingHours = json_decode($this->auModel->data->{'Staff Working Hours'}, true);
-        $weekDistribution= json_decode($this->auModel->data->{'Staff Working Hours Per Week Metadata'}, true);
+        $workingHours     = json_decode($this->auModel->data->{'Staff Working Hours'}, true);
+        $weekDistribution = json_decode($this->auModel->data->{'Staff Working Hours Per Week Metadata'}, true);
 
         if ($workingHours and $weekDistribution) {
             $workingHours['week_distribution'] = array_change_key_case($weekDistribution, CASE_LOWER);
         }
 
 
-
-
-        $salary=json_decode($this->auModel->data->{'Staff Salary'}, true);
-        if($salary){
-            $salary=array_change_key_case($salary,CASE_LOWER);
+        $salary = json_decode($this->auModel->data->{'Staff Salary'}, true);
+        if ($salary) {
+            $salary = array_change_key_case($salary, CASE_LOWER);
         }
 
 
@@ -145,14 +144,9 @@ class MigrateEmployee extends MigrateModel
         /** @var Employee $employee */
         $employee = $this->model;
 
-
-        $auroraAttachmentsCollection          = $this->getModelAttachmentsCollection('Staff', $employee->aurora_id);
-
+        $auroraAttachmentsCollection               = $this->getModelAttachmentsCollection('Staff', $employee->aurora_id);
         $auroraAttachmentsCollectionWithAttachment = $auroraAttachmentsCollection->each(function ($auroraAttachment) {
-
-            ;
-
-            if ($attachment= MigrateAttachment::run($auroraAttachment)) {
+            if ($attachment = MigrateAttachment::run($auroraAttachment)) {
                 return $auroraAttachment->attachment_id = $attachment->id;
             } else {
                 return $auroraAttachment->attachment_id = null;
@@ -169,39 +163,36 @@ class MigrateEmployee extends MigrateModel
         $employee = $this->model;
 
 
-        $jobPositions=[];
+        $jobPositions = [];
 
         foreach (
             DB::connection('aurora')
                 ->table('Staff Role Bridge')
-                ->where('Staff Key',$employee->aurora_id)
+                ->where('Staff Key', $employee->aurora_id)
                 ->get() as $auroraData
         ) {
-            $roleCode= match ($auroraData->{'Role Code'}){
-                'WAHM'=>'wah-m',
-                'WAHSK'=>'wah-sk',
-                'WAHSC'=>'wah-sc',
-                'PICK'=>'dist-pik',
-                'OHADM'=>'dist-m',
-                'PRODM'=>'prod-m',
-                'PRODO'=>'prod-w',
-                'CUSM'=>'cus-m',
-                default=>strtolower($auroraData->{'Role Code'})
+            $roleCode = match ($auroraData->{'Role Code'}) {
+                'WAHM' => 'wah-m',
+                'WAHSK' => 'wah-sk',
+                'WAHSC' => 'wah-sc',
+                'PICK' => 'dist-pik',
+                'OHADM' => 'dist-m',
+                'PRODM' => 'prod-m',
+                'PRODO' => 'prod-w',
+                'CUSM' => 'cus-m',
+                default => strtolower($auroraData->{'Role Code'})
             };
 
-            if($jobPosition=JobPosition::firstWhere('slug',$roleCode)){
-                $jobPositions[]=$jobPosition->id;
+            if ($jobPosition = JobPosition::firstWhere('slug', $roleCode)) {
+                $jobPositions[] = $jobPosition->id;
             }
 
-            if($roleCode=='dist-pik'){
-                if($jobPosition=JobPosition::firstWhere('slug','dist-pak')){
-                    $jobPositions[]=$jobPosition->id;
+            if ($roleCode == 'dist-pik') {
+                if ($jobPosition = JobPosition::firstWhere('slug', 'dist-pak')) {
+                    $jobPositions[] = $jobPosition->id;
                 }
-
             }
             $employee->jobPositions()->sync($jobPositions);
-
-
         }
 
 
@@ -212,7 +203,6 @@ class MigrateEmployee extends MigrateModel
     {
         return $request->user()->tokenCan('root');
     }
-
 
 
     public function asController(int $auroraID): ActionResult

@@ -53,20 +53,19 @@ class AppServiceProvider extends ServiceProvider
                 'Shipper'        => 'App\Models\Delivery\Shipper',
                 'DeliveryNote'   => 'App\Models\Delivery\DeliveryNote',
                 'Invoice'        => 'App\Models\Accounting\Invoice',
+                'Order'          => 'App\Models\Sales\Order',
+                'Stock'          => 'App\Models\Inventory\Stock',
 
 
                 /*
                 'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
 
-                'Customer'                 => 'App\Models\CRM\Customer',
                 'CustomerClient'           => 'App\Models\CRM\CustomerClient',
                 'Prospect'                 => 'App\Models\CRM\Prospect',
                 'WebBlock'                 => 'App\Models\ECommerce\WebBlock',
-                'Order'                    => 'App\Models\Sales\Order',
 
                 'ShippingZone'             => 'App\Models\Sales\ShippingZone',
                 'Charge'                   => 'App\Models\Sales\Charge',
-                'Stock'                    => 'App\Models\Inventory\Stock',
                 'Product'                  => 'App\Models\Stores\Product',
                 'ProductHistoricVariation' => 'App\Models\Stores\ProductHistoricVariation',
                 'EmailService'             => 'App\Models\Notifications\EmailService',

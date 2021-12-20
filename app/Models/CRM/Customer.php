@@ -10,6 +10,7 @@ namespace App\Models\CRM;
 
 use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
+use App\Models\Helpers\AttachmentModel;
 use App\Models\Helpers\Contact;
 use App\Models\Helpers\ImageModel;
 use App\Models\Trade\Product;
@@ -69,6 +70,11 @@ class Customer extends Model implements Auditable
         return $this->morphMany(ImageModel::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+    }
+
     public function contact(): MorphOne
     {
         return $this->morphOne(Contact::class, 'contactable');
@@ -88,8 +94,6 @@ class Customer extends Model implements Auditable
     {
         return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id','status', 'type','aurora_id');
     }
-
-
 
     public function shop(): BelongsTo
     {

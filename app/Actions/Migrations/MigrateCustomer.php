@@ -228,6 +228,23 @@ class MigrateCustomer extends MigrateModel
         return $res;
     }
 
+    protected function migrateAttachments()
+    {
+        /** @var \App\Models\CRM\Customer $customer */
+        $customer = $this->model;
+
+        $auroraAttachmentsCollection               = $this->getModelAttachmentsCollection('Customer', $customer->aurora_customer_id);
+        $auroraAttachmentsCollectionWithAttachment = $auroraAttachmentsCollection->each(function ($auroraAttachment) {
+            if ($attachment = MigrateAttachment::run($auroraAttachment)) {
+                return $auroraAttachment->attachment_id = $attachment->id;
+            } else {
+                return $auroraAttachment->attachment_id = null;
+            }
+        });
+
+        MigrateAttachmentModels::run($customer, $auroraAttachmentsCollectionWithAttachment);
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->tokenCan('root');

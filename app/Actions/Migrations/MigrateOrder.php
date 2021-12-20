@@ -159,6 +159,23 @@ class MigrateOrder extends MigrateModel
         return $res;
     }
 
+    protected function migrateAttachments()
+    {
+        /** @var Order $order */
+        $order = $this->model;
+
+        $auroraAttachmentsCollection               = $this->getModelAttachmentsCollection('Order', $order->aurora_id);
+        $auroraAttachmentsCollectionWithAttachment = $auroraAttachmentsCollection->each(function ($auroraAttachment) {
+            if ($attachment = MigrateAttachment::run($auroraAttachment)) {
+                return $auroraAttachment->attachment_id = $attachment->id;
+            } else {
+                return $auroraAttachment->attachment_id = null;
+            }
+        });
+
+        MigrateAttachmentModels::run($order, $auroraAttachmentsCollectionWithAttachment);
+    }
+
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->tokenCan('root');

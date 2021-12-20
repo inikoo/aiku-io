@@ -8,12 +8,14 @@
 
 namespace App\Models\Inventory;
 
+use App\Models\Helpers\AttachmentModel;
 use App\Models\LocationStock;
 use App\Models\Trade\TradeUnit;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -70,6 +72,11 @@ class Stock extends Model implements Auditable
     public function locations(): BelongsToMany
     {
         return $this->belongsToMany(Location::class)->using(LocationStock::class)->withTimestamps();
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
 

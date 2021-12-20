@@ -46,10 +46,6 @@ class MigrateSupplier extends MigrateModel
     }
 
 
-
-
-
-
     public function parseModelData()
     {
         $deleted_at = $this->auModel->data->{'Supplier Valid To'};
@@ -124,6 +120,24 @@ class MigrateSupplier extends MigrateModel
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->tokenCan('root');
+    }
+
+    protected function migrateAttachments()
+    {
+
+        /** @var Supplier $model */
+        $model = $this->model;
+
+        $auroraAttachmentsCollection               = $this->getModelAttachmentsCollection('Supplier', $model->aurora_id);
+        $auroraAttachmentsCollectionWithAttachment = $auroraAttachmentsCollection->each(function ($auroraAttachment) {
+            if ($attachment = MigrateAttachment::run($auroraAttachment)) {
+                return $auroraAttachment->attachment_id = $attachment->id;
+            } else {
+                return $auroraAttachment->attachment_id = null;
+            }
+        });
+
+        MigrateAttachmentModels::run($model, $auroraAttachmentsCollectionWithAttachment);
     }
 
     public function asController(int $auroraID): ActionResult

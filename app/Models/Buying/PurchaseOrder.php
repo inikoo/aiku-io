@@ -8,8 +8,10 @@
 
 namespace App\Models\Buying;
 
+use App\Models\Helpers\AttachmentModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -39,5 +41,10 @@ class PurchaseOrder extends Model implements Auditable
     public function vendor(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 }

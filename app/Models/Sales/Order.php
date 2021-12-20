@@ -12,12 +12,14 @@ use App\Models\Accounting\Invoice;
 use App\Models\Accounting\InvoiceTransaction;
 use App\Models\CRM\Customer;
 use App\Models\Delivery\DeliveryNote;
+use App\Models\Helpers\AttachmentModel;
 use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -80,6 +82,10 @@ class Order extends Model implements Auditable
         return $this->belongsToMany(DeliveryNote::class);
     }
 
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+    }
 
     /** @noinspection PhpUnused */
     public function setExchangeAttribute($val)
