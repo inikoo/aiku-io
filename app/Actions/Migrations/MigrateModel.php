@@ -74,6 +74,11 @@ class MigrateModel
         return null;
     }
 
+    protected function migrateAttachments()
+    {
+        return null;
+    }
+
     protected function postMigrateActions(ActionResult $res): ActionResult
     {
         return $res;
@@ -117,6 +122,7 @@ class MigrateModel
 
 
         $this->migrateImages();
+        $this->migrateAttachments();
 
         return $this->postMigrateActions($res);
     }
@@ -232,6 +238,17 @@ class MigrateModel
             ->where('Image Subject Object', $model)
             ->where('Image Subject Object Key', $id)
             ->orderByRaw("FIELD(`Image Subject Is Principal`, 'Yes','No')")
+            ->get();
+    }
+
+    protected function getModelAttachmentsCollection($model, $id): Collection
+    {
+
+        return DB::connection('aurora')
+            ->table('Attachment Bridge as B')
+            ->leftJoin('Attachment Dimension as A', 'A.Attachment Key', '=', 'B.Attachment Key')
+            ->where('Subject', $model)
+            ->where('Subject Key', $id)
             ->get();
     }
 

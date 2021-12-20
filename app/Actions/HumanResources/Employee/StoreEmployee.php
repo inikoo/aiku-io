@@ -23,7 +23,7 @@ class StoreEmployee
 
     public function handle(array $contactData, array $employeeData): ActionResult
     {
-        $res  = new ActionResult();
+        $res = new ActionResult();
 
         $employee = Employee::create($employeeData);
         $employee->contact()->create($contactData);
@@ -33,7 +33,8 @@ class StoreEmployee
         $res->model_id = $employee->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';
 
-        return $res;    }
+        return $res;
+    }
 
     public function authorize(ActionRequest $request): bool
     {

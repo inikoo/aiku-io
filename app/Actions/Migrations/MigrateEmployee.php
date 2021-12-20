@@ -122,6 +122,47 @@ class MigrateEmployee extends MigrateModel
         return StoreEmployee::run($this->modelData['contact'], $this->modelData['employee']);
     }
 
+    protected function migrateImages()
+    {
+        /** @var Employee $employee */
+        $employee = $this->model;
+
+
+        $auroraImagesCollection          = $this->getModelImagesCollection('Staff', $employee->aurora_id);
+        $auroraImagesCollectionWithImage = $auroraImagesCollection->each(function ($auroraImage) {
+            if ($image = MigrateImage::run($auroraImage)) {
+                return $auroraImage->image_id = $image->id;
+            } else {
+                return $auroraImage->image_id = null;
+            }
+        });
+
+        MigrateImageModels::run($employee, $auroraImagesCollectionWithImage);
+    }
+
+    protected function migrateAttachments()
+    {
+        /** @var Employee $employee */
+        $employee = $this->model;
+
+
+        $auroraAttachmentsCollection          = $this->getModelAttachmentsCollection('Staff', $employee->aurora_id);
+
+        $auroraAttachmentsCollectionWithAttachment = $auroraAttachmentsCollection->each(function ($auroraAttachment) {
+
+            ;
+
+            if ($attachment= MigrateAttachment::run($auroraAttachment)) {
+                return $auroraAttachment->attachment_id = $attachment->id;
+            } else {
+                return $auroraAttachment->attachment_id = null;
+            }
+        });
+
+        MigrateAttachmentModels::run($employee, $auroraAttachmentsCollectionWithAttachment);
+    }
+
+
     public function postMigrateActions(ActionResult $res): ActionResult
     {
         /** @var Employee $employee */

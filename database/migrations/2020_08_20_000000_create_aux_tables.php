@@ -128,7 +128,8 @@ class CreateAuxTables extends Migration
             $table->id();
             $table->string('checksum')->unique()->index();
             $table->unsignedBigInteger('filesize')->index();
-            $table->binary('attachment_data');
+            $table->string('mime');
+            $table->binary('attachment_data')->nullable();
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
@@ -144,6 +145,8 @@ class CreateAuxTables extends Migration
             $table->unsignedBigInteger('attachmentable_id')->nullable()->index();
 
             $table->string('scope', 64)->index();
+            $table->string('filename')->index();
+
             $table->jsonb('data');
             $table->timestampsTz();
             $table->index(['attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx1');
