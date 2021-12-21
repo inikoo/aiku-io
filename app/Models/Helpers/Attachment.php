@@ -10,7 +10,9 @@ namespace App\Models\Helpers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use JetBrains\PhpStorm\Pure;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
+use App\Models\Traits;
 
 /**
  * @mixin IdeHelperAttachment
@@ -18,6 +20,7 @@ use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 class Attachment extends Model {
     use UsesTenantConnection;
     use SoftDeletes;
+    use Traits\HasFile;
 
 
     protected $casts = [
@@ -32,6 +35,13 @@ class Attachment extends Model {
 
     public function models(): HasMany {
         return $this->hasMany(AttachmentModel::class);
+    }
+
+
+    #[Pure] public function getFormattedFilesizeAttribute(): string
+    {
+        return $this->formatSizeUnits($this->filesize);
+
     }
 
 

@@ -1,6 +1,8 @@
 <?php
 
+use App\Actions\Helpers\Attachment\ShowAttachments;
 use App\Actions\HumanResources\Employee\ShowEmployee;
+use App\Actions\HumanResources\Employee\ShowEmployeeAttachments;
 use App\Actions\HumanResources\Employee\ShowEmployees;
 use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
@@ -13,10 +15,16 @@ use App\Actions\System\User\UpdateUser;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('/attachments', ShowAttachments::class)->name('attachments.index');
+
+
 Route::get('/employees', ShowEmployees::class)->name('employees.index');
 Route::post('/employees', StoreEmployee::class)->name('employees.store');
 Route::get('/employees/{employee}',ShowEmployee::class)->name('employees.show');
 Route::patch('/employees/{employee}',UpdateEmployee::class)->name('employees.update');
+Route::get('/employees/{employee}/attachments',ShowEmployeeAttachments::class)->name('employee.attachments.index');
+
+
 
 Route::get('/users', ShowUsers::class)->name('users.index');
 Route::post('/users', StoreUser::class)->name('users.store');
