@@ -123,7 +123,7 @@ class CreateAuxTables extends Migration
             $table->unsignedBigInteger('aurora_id')->nullable();
 
         });
-
+/*
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->string('checksum')->unique()->index();
@@ -135,11 +135,12 @@ class CreateAuxTables extends Migration
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
+*/
 
         Schema::create('attachment_model', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('attachment_id');
-            $table->foreign('attachment_id')->references('id')->on('attachments');
+         //   $table->foreign('attachment_id')->references('id')->on('attachments');
 
             $table->string('attachmentable_type', 64)->nullable()->index();
             $table->unsignedBigInteger('attachmentable_id')->nullable()->index();

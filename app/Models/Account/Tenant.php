@@ -19,13 +19,13 @@ use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+
 /**
  * @mixin IdeHelperTenant
  */
 class Tenant extends SpatieTenant
 {
     use HasSlug;
-
     protected $guarded = [];
     protected $attributes = [
         'data' => '{}',

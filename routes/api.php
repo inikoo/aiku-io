@@ -1,11 +1,12 @@
 <?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Wed, 21 Oct 2021 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
 
-use App\Actions\Helpers\Attachment\ShowAttachments;
-use App\Actions\HumanResources\Employee\ShowEmployee;
-use App\Actions\HumanResources\Employee\ShowEmployeeAttachments;
-use App\Actions\HumanResources\Employee\ShowEmployees;
-use App\Actions\HumanResources\Employee\StoreEmployee;
-use App\Actions\HumanResources\Employee\UpdateEmployee;
+
 
 use App\Actions\System\Role\ShowRoles;
 use App\Actions\System\User\ShowUser;
@@ -15,14 +16,9 @@ use App\Actions\System\User\UpdateUser;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/attachments', ShowAttachments::class)->name('attachments.index');
+Route::prefix('employees')->name('employees.')
+    ->group(__DIR__ . '/api/employees.php');
 
-
-Route::get('/employees', ShowEmployees::class)->name('employees.index');
-Route::post('/employees', StoreEmployee::class)->name('employees.store');
-Route::get('/employees/{employee}',ShowEmployee::class)->name('employees.show');
-Route::patch('/employees/{employee}',UpdateEmployee::class)->name('employees.update');
-Route::get('/employees/{employee}/attachments',ShowEmployeeAttachments::class)->name('employee.attachments.index');
 
 
 

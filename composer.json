@@ -11,6 +11,7 @@
         "php": "^8.0",
         "ext-curl": "*",
         "ext-intl": "*",
+        "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-pgsql": "*",
         "ext-zlib": "*",
@@ -39,8 +40,7 @@
         "symfony/process": "^5.3",
         "tightenco/ziggy": "^1.0",
         "twilio/sdk": "^6.28",
-        "vemcogroup/laravel-translation": "^3.0",
-      "ext-mbstring": "*"
+        "vemcogroup/laravel-translation": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",

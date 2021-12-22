@@ -32,7 +32,7 @@ class StoreImage
                                  'filesize'   => filesize($imagePath),
                                  'megapixels' => $width * $height / 1000000,
                                  'mime'       => $mime,
-                                 'image_data' => pg_escape_bytea(file_get_contents($imagePath)),
+                                 'image_data' => file_get_contents($imagePath),
 
                              ],
                          ],
@@ -53,22 +53,6 @@ class StoreImage
 
 
 
-        /*
-                $rawImage = (new RawImage())->firstOrCreate(
-                    ['checksum' => md5_file($imagePath)], [
-                                                            'filesize' => filesize($imagePath),
-                                                            'megapixels' => $width * $height / 1000000,
-                                                            'mime' => $mime,
-                                                            'image_data' => pg_escape_bytea(file_get_contents($imagePath)),
-
-                                                        ]
-                );
-
-
-                if ($rawImage->wasRecentlyCreated === true) {
-                    $rawImage->communalImage()->save(new CommunalImage());
-                }
-        */
         $image = Image::where(
             'communal_image_id',
             $rawImage->communalImage->id

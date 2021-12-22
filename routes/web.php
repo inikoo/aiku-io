@@ -25,6 +25,7 @@ Route::get('/', function () {
 });
 
 
+
 Route::middleware(['auth', 'verified'])->get('/customers', function () {
     return Inertia::render('Customers');
 })->name('customers');

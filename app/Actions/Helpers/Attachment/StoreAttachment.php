@@ -27,8 +27,7 @@ class StoreAttachment
                                    'checksum'        => $checksum,
                                    'filesize'        => filesize($imagePath),
                                    'mime'            => $mime,
-                                   'data'            => '{}',
-                                   'attachment_data' => pg_escape_bytea(file_get_contents($imagePath)),
+                                   'attachment_data' => file_get_contents($imagePath),
 
                                ],
                            ],
