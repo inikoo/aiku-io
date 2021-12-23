@@ -8,9 +8,7 @@
 
 namespace App\Http\Resources\Helpers;
 
-use App\Http\Resources\HumanResources\EmployeeLightResource;
 use App\Http\Resources\Traits\WhenMorphToLoaded;
-use App\Models\HumanResources\Employee;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;

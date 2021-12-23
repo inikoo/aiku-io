@@ -41,6 +41,8 @@ class MigrateCustomers extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Customer Portfolio Fact')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Attachment Bridge')->where('Subject','Customer')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int

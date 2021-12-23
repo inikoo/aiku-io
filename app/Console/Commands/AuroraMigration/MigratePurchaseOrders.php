@@ -32,6 +32,8 @@ class MigratePurchaseOrders extends MigrateAurora
     {
         DB::connection('aurora')->table('Purchase Order Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Attachment Bridge')->where('Subject','Purchase Order')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int

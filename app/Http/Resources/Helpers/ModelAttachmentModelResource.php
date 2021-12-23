@@ -24,11 +24,13 @@ class ModelAttachmentModelResource extends JsonResource
 
 
         return [
-            'id'                  => $attachmentModel->id,
-            'scope'               => $attachmentModel->scope,
-            'filename'            => $attachmentModel->filename,
-            'created_at'          => $attachmentModel->created_at,
-            'updated_at'          => $attachmentModel->updated_at,
+            'id'         => $attachmentModel->id,
+            'scope'      => $attachmentModel->scope,
+            'filename'   => $attachmentModel->filename,
+            'caption'    => $attachmentModel->caption,
+            'public'     => $attachmentModel->public,
+            'created_at' => $attachmentModel->created_at,
+            'updated_at' => $attachmentModel->updated_at,
 
         ];
     }

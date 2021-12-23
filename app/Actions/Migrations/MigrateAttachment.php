@@ -11,6 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\Helpers\Attachment\StoreAttachment;
 use App\Models\Helpers\Attachment;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
@@ -33,8 +34,10 @@ class MigrateAttachment
             /** @var \App\Models\Helpers\Attachment $attachment */
             $attachment = $res->model;
 
-            $attachment->aurora_id  = $auroraAttachmentData->{'Attachment Key'};
-            $attachment->save();
+            DB::connection('aurora')->table('Attachment Dimension')
+                ->where('Attachment Key', $auroraAttachmentData->{'Attachment Key'})
+                ->update(['aiku_master_id' => $attachment->id]);
+
 
             $attachmentData['temporary_directory']->delete();
 

@@ -34,27 +34,30 @@ class MigrateInventory extends MigrateAurora
         DB::connection('aurora')->table('Part Deleted Dimension')
             ->update(['aiku_id' => null]);
 
+        DB::connection('aurora')->table('Attachment Bridge')->where('Subject', 'Part')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
-        $count= DB::connection('aurora')->table('Part Dimension')->count();
-        $count+= DB::connection('aurora')->table('Part Deleted Dimension')->count();
-        return $count;
+        $count = DB::connection('aurora')->table('Part Dimension')->count();
+        $count += DB::connection('aurora')->table('Part Deleted Dimension')->count();
 
+        return $count;
     }
 
     protected function migrate(Tenant $tenant)
     {
-
         foreach (DB::connection('aurora')->table('Part Dimension')->get() as $auroraPartData) {
             $result = MigrateStock::run($auroraPartData);
             $this->recordAction($tenant, $result);
         }
 
-        foreach (DB::connection('aurora')->table('Part Deleted Dimension')
-            ->where('Part Deleted Key','>',0)
-            ->get() as $auroraPartData) {
+        foreach (
+            DB::connection('aurora')->table('Part Deleted Dimension')
+                ->where('Part Deleted Key', '>', 0)
+                ->get() as $auroraPartData
+        ) {
             $result = MigrateDeletedStock::run($auroraPartData);
             $this->recordAction($tenant, $result);
         }

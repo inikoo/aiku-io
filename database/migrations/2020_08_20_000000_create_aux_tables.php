@@ -123,19 +123,7 @@ class CreateAuxTables extends Migration
             $table->unsignedBigInteger('aurora_id')->nullable();
 
         });
-/*
-        Schema::create('attachments', function (Blueprint $table) {
-            $table->id();
-            $table->string('checksum')->unique()->index();
-            $table->unsignedBigInteger('filesize')->index();
-            $table->string('mime');
-            $table->binary('attachment_data')->nullable();
-            $table->jsonb('data');
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-        });
-*/
+
 
         Schema::create('attachment_model', function (Blueprint $table) {
             $table->id();
@@ -147,11 +135,15 @@ class CreateAuxTables extends Migration
 
             $table->string('scope', 64)->index();
             $table->string('filename')->index();
+            $table->text('caption')->nullable();
 
-            $table->jsonb('data');
+            $table->boolean('public')->default(false);
             $table->timestampsTz();
+            $table->unsignedBigInteger('aurora_id')->nullable();
+
             $table->index(['attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx1');
             $table->unique(['attachment_id', 'attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx2');
+
         });
 
         Schema::create('categories', function (Blueprint $table) {

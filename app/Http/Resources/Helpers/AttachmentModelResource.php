@@ -8,9 +8,7 @@
 
 namespace App\Http\Resources\Helpers;
 
-use App\Http\Resources\HumanResources\EmployeeLightResource;
 use App\Http\Resources\Traits\WhenMorphToLoaded;
-use App\Models\HumanResources\Employee;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
@@ -30,6 +28,8 @@ class AttachmentModelResource extends JsonResource
             'attachmentable_type' => $attachmentModel->attachmentable_type,
             'attachmentable_id'   => $attachmentModel->attachmentable_id,
             'scope'               => $attachmentModel->scope,
+            'caption'             => $attachmentModel->caption,
+            'public'              => $attachmentModel->public,
             'filename'            => $attachmentModel->filename,
             'created_at'          => $attachmentModel->created_at,
             'updated_at'          => $attachmentModel->updated_at,

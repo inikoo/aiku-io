@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 22 Dec 2021 20:40:23 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Thu, 23 Dec 2021 00:41:18 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\AttachmentModel;
+namespace App\Actions\Helpers\AttachmentModel\Employee;
 
 use App\Models\Helpers\AttachmentModel;
 use App\Models\HumanResources\Employee;

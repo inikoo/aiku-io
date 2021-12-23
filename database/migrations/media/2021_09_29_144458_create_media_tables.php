@@ -65,7 +65,6 @@ class CreateMediaTables extends Migration
             //$table->binary('attachment_data')->nullable();
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
 
         /** @noinspection SqlNoDataSourceInspection */

@@ -63,6 +63,9 @@ class MigrateHR extends MigrateAurora
             ->update(['aiku_token' => null]);
         DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Staff', 'Contractor'])
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Attachment Bridge')->where('Subject','Staff')
+            ->update(['aiku_id' => null]);
+
     }
 
     protected function count(): int

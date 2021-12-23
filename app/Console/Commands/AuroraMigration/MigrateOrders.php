@@ -58,6 +58,8 @@ class MigrateOrders extends MigrateAurora
                 'aiku_picking_id' => null,
             ]
         );
+        DB::connection('aurora')->table('Attachment Bridge')->where('Subject','Order')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
