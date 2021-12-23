@@ -84,8 +84,8 @@ class UpdateEmployeeAttachment
                 $attachmentModel,
                 $request->only(
                     'caption',
-
-
+                    'scope',
+                    'public',
                 )
             )
         );
