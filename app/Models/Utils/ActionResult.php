@@ -18,6 +18,7 @@ class ActionResult
     public string $status;
 
     public int|null $model_id;
+    public array $data;
 
     public function __construct()
     {
@@ -28,5 +29,6 @@ class ActionResult
 
         $this->model    = null;
         $this->model_id = null;
+        $this->data = [];
     }
 }

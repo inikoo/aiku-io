@@ -13,6 +13,8 @@ use App\Http\Resources\Utils\ActionResultResource;
 use App\Models\HumanResources\Employee;
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
@@ -31,32 +33,44 @@ class StoreEmployeeAttachment
 
         $resAttachment = StoreCommonAttachment::run($attachmentData['file']->path(),
                                                     [
-                                                  'mime'      => $attachmentData['file']->getMimeType(),
-                                                  'extension' => $attachmentData['file']->extension()
-                                              ]
+                                                        'mime'      => $attachmentData['file']->getMimeType(),
+                                                        'extension' => $attachmentData['file']->extension()
+                                                    ]
         );
 
         $attachmentData['common_attachment_id'] = $resAttachment->model_id;
 
         /** @var \App\Models\Helpers\Attachment $attachment */
 
-        $attachmentData['filename']=$attachmentData['file']->getClientOriginalName();
+        $attachmentData['filename'] = $attachmentData['file']->getClientOriginalName();
 
 
+        try {
+            $attachment = $employee->attachments()->create(
+                Arr::except(
+                    $attachmentData,
+                    ['file']
+                )
+            );
+        } catch (Exception $e) {
+            $res->status = 'error';
 
-        $attachment = $employee->attachments()->create(
-            Arr::except(
-                $attachmentData,
-                ['file']
-            )
-        );
+            if($e->getCode()==23505){
+                $res->errors['attachment']='Attachment already associated with model';
+            }else{
+                $res->errors['attachment']='Database error '.$e->getCode();
+
+            }
 
 
+            return $res;
+        }
 
 
-        $res->model    = $attachment;
-        $res->model_id = $attachment->id;
-        $res->status   = $res->model_id ? 'inserted' : 'error';
+        $res->model                  = $attachment;
+        $res->model_id               = $attachment->id;
+        $res->data['aiku_master_id'] = $attachment->common_attachment_id;
+        $res->status                 = $res->model_id ? 'inserted' : 'error';
 
 
         return $res;
@@ -83,20 +97,28 @@ class StoreEmployeeAttachment
     }
 
 
-    public function asController(Employee $employee, ActionRequest $request): ActionResultResource
+    public function asController(Employee $employee, ActionRequest $request): ActionResultResource|JsonResponse
     {
-        return new ActionResultResource(
-            $this->handle(
+        $actionResult = $this->handle(
 
-                $employee,
-                $request->only(
-                    'caption',
-                    'scope',
-                    'public',
-                    'file'
-                )
+            $employee,
+            $request->only(
+                'caption',
+                'scope',
+                'public',
+                'file',
+                'aurora_id'
             )
         );
+
+        if ($actionResult->status == 'error') {
+            return response()->json([
+                                        'message' => 'Attachment can not be added',
+                                        'errors'  => $actionResult->errors,
+                                    ], 422);
+        } else {
+            return new ActionResultResource($actionResult);
+        }
     }
 
 }
