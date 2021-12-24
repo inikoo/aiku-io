@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\AttachmentModel\Traits;
+namespace App\Actions\Helpers\Attachment\Traits;
 
 
-use App\Http\Resources\Helpers\ModelAttachmentModelResource;
-use App\Models\Helpers\AttachmentModel;
+use App\Http\Resources\Helpers\ModelAttachmentResource;
+use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -20,12 +20,12 @@ trait HasModelAttachments
 
     public function jsonResponse(Employee $model): AnonymousResourceCollection
     {
-        $attachmentModels = QueryBuilder::for(AttachmentModel::class)
+        $attachments = QueryBuilder::for(Attachment::class)
             ->where('attachmentable_type', class_basename($model))
             ->where('attachmentable_id', $model->id)
             ->paginate();
 
-        return ModelAttachmentModelResource::collection($attachmentModels);
+        return ModelAttachmentResource::collection($attachments);
     }
 
 }

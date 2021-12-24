@@ -7,10 +7,11 @@
  */
 
 
-use App\Actions\Helpers\AttachmentModel\Employee\DownloadEmployeeAttachment;
-use App\Actions\Helpers\AttachmentModel\Employee\ShowEmployeeAttachment;
-use App\Actions\Helpers\AttachmentModel\Employee\ShowEmployeeAttachments;
-use App\Actions\Helpers\AttachmentModel\Employee\UpdateEmployeeAttachment;
+use App\Actions\Helpers\Attachment\Employee\DownloadEmployeeAttachment;
+use App\Actions\Helpers\Attachment\Employee\ShowEmployeeAttachment;
+use App\Actions\Helpers\Attachment\Employee\ShowEmployeeAttachments;
+use App\Actions\Helpers\Attachment\Employee\StoreEmployeeAttachment;
+use App\Actions\Helpers\Attachment\Employee\UpdateEmployeeAttachment;
 use Illuminate\Support\Facades\Route;
 use App\Actions\HumanResources\Employee\ShowEmployee;
 use App\Actions\HumanResources\Employee\ShowEmployees;
@@ -24,7 +25,10 @@ Route::get('{employee}',ShowEmployee::class)->name('show');
 Route::patch('{employee}',UpdateEmployee::class)->name('update');
 
 Route::get('{employee}/attachments',ShowEmployeeAttachments::class)->name('attachments.index');
-Route::get('{employee}/attachments/{attachmentModel}',ShowEmployeeAttachment::class)->name('attachment.show');
-Route::get('{employee}/attachments/{attachmentModel}/download',DownloadEmployeeAttachment::class)->name('attachment.downland');
-Route::patch('{employee}/attachments/{attachmentModel}',UpdateEmployeeAttachment::class)->name('attachment.update');
+Route::post('{employee}/attachments',StoreEmployeeAttachment::class)->name('attachment.store');
+
+Route::get('{employee}/attachments/{attachment}',ShowEmployeeAttachment::class)->name('attachment.show');
+Route::get('{employee}/attachments/{attachment}/download',DownloadEmployeeAttachment::class)->name('attachment.downland');
+
+Route::patch('{employee}/attachments/{attachment}',UpdateEmployeeAttachment::class)->name('attachment.update');
 

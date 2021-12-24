@@ -8,43 +8,44 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Helpers\Attachment\StoreAttachment;
-use App\Models\Helpers\Attachment;
+use App\Actions\Helpers\CommonAttachment\StoreCommonAttachment;
+use App\Models\Helpers\CommonAttachment;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Mimey\MimeTypes;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 
-class MigrateAttachment
+class MigrateCommonAttachment
 {
     use AsAction;
 
     /**
      * @throws \Spatie\TemporaryDirectory\Exceptions\PathAlreadyExists
      */
-    public function handle($auroraAttachmentData): ?Attachment
+    public function handle($auroraAttachmentData): ?CommonAttachment
     {
         if ($attachmentData = $this->getAttachmentData($auroraAttachmentData)) {
-            $res = StoreAttachment::run(
+
+
+
+            $res = StoreCommonAttachment::run(
                 Arr::get($attachmentData, 'attachment_path'),
-                Arr::get($attachmentData, 'mime')
+                Arr::only($attachmentData, ['mime', 'extension'])
             );
 
-            /** @var \App\Models\Helpers\Attachment $attachment */
-            $attachment = $res->model;
+            /** @var \App\Models\Helpers\CommonAttachment $commonAttachment */
+            $commonAttachment = $res->model;
 
             DB::connection('aurora')->table('Attachment Dimension')
                 ->where('Attachment Key', $auroraAttachmentData->{'Attachment Key'})
-                ->update(['aiku_master_id' => $attachment->id]);
+                ->update(['aiku_master_id' => $commonAttachment->id]);
 
 
             $attachmentData['temporary_directory']->delete();
 
-            return $attachment;
-
-
-
+            return $commonAttachment;
         } else {
             return null;
         }
@@ -67,12 +68,14 @@ class MigrateAttachment
         $tmpPath = str_replace(storage_path('app'), '', $temporaryDirectory->path($filename));
         Storage::put($tmpPath, $auroraAttachmentData->{'Attachment Data'});
 
+        $mimes = new MimeTypes();
 
         return [
             'temporary_directory' => $temporaryDirectory,
             'attachment_path'     => $temporaryDirectory->path($filename),
             'filename'            => $auroraAttachmentData->{'Attachment File Original Name'},
-            'mime'                => $auroraAttachmentData->{'Attachment MIME Type'}
+            'mime'                => $auroraAttachmentData->{'Attachment MIME Type'},
+            'extension'           => $mimes->getExtension($auroraAttachmentData->{'Attachment MIME Type'})
         ];
     }
 }

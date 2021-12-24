@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\AttachmentModel\Employee;
+namespace App\Actions\Helpers\Attachment\Employee;
 
-use App\Actions\Helpers\AttachmentModel\Traits\HasValidateModelAttachment;
+use App\Actions\Helpers\Attachment\Traits\HasValidateModelAttachment;
 use App\Http\Resources\Utils\ActionResultResource;
-use App\Models\Helpers\AttachmentModel;
+use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
@@ -26,14 +26,14 @@ class UpdateEmployeeAttachment
 
     use HasValidateModelAttachment;
 
-    public function handle(AttachmentModel $attachmentModel, array $attachmentModelData): ActionResult
+    public function handle(Attachment $attachment, array $attachmentData): ActionResult
     {
         $res = new ActionResult();
 
-        $attachmentModel->update($attachmentModelData);
-        $res->model    = $attachmentModel;
-        $res->changes  = $attachmentModel->getChanges();
-        $res->model_id = $attachmentModel->id;
+        $attachment->update($attachmentData);
+        $res->model    = $attachment;
+        $res->changes  = $attachment->getChanges();
+        $res->model_id = $attachment->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';
 
         return $res;
@@ -54,7 +54,8 @@ class UpdateEmployeeAttachment
                 'sometimes',
                 'required',
                 Rule::in(['cv', 'contract', 'other']),
-            ]
+            ],
+            'aurora_id'  => 'sometimes|nullable|integer',
 
         ];
     }
@@ -63,25 +64,25 @@ class UpdateEmployeeAttachment
     public function afterValidator(Validator $validator, ActionRequest $request): void
     {
         /** @var Employee $employee */
-        /** @var AttachmentModel $attachmentModel */
+        /** @var Attachment $attachment */
 
         $employee = $request->route('employee');
 
-        $attachmentModel = $request->route('attachmentModel');
+        $attachment = $request->route('attachment');
 
-        if (!$this->validateModelAttachmentModel(model: $employee, attachmentModel: $attachmentModel)) {
-            $validator->errors()->add('attachment_mode', 'AttachmentModel do not belongs to Model.');
+        if (!$this->validateModelAttachment(model: $employee, attachment: $attachment)) {
+            $validator->errors()->add('attachment_mode', 'Attachment do not belongs to Model.');
         }
     }
 
 
     /** @noinspection PhpUnusedParameterInspection */
-    public function asController(Employee $employee, AttachmentModel $attachmentModel, ActionRequest $request): ActionResultResource
+    public function asController(Employee $employee, Attachment $attachment, ActionRequest $request): ActionResultResource
     {
         return new ActionResultResource(
             $this->handle(
 
-                $attachmentModel,
+                $attachment,
                 $request->only(
                     'caption',
                     'scope',

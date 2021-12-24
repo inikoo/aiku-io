@@ -125,10 +125,10 @@ class CreateAuxTables extends Migration
         });
 
 
-        Schema::create('attachment_model', function (Blueprint $table) {
+        Schema::create('attachments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('attachment_id');
-         //   $table->foreign('attachment_id')->references('id')->on('attachments');
+            $table->unsignedBigInteger('common_attachment_id')->index();
+         //   $table->foreign('common_attachment_id')->references('id')->on('common_attachments');
 
             $table->string('attachmentable_type', 64)->nullable()->index();
             $table->unsignedBigInteger('attachmentable_id')->nullable()->index();
@@ -142,7 +142,7 @@ class CreateAuxTables extends Migration
             $table->unsignedBigInteger('aurora_id')->nullable();
 
             $table->index(['attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx1');
-            $table->unique(['attachment_id', 'attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx2');
+            $table->unique(['common_attachment_id', 'attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx2');
 
         });
 
@@ -207,7 +207,6 @@ class CreateAuxTables extends Migration
         Schema::dropIfExists('contacts');
         Schema::dropIfExists('categoriables');
         Schema::dropIfExists('categories');
-        Schema::dropIfExists('attachment_model');
         Schema::dropIfExists('attachments');
         Schema::dropIfExists('image_model');
         Schema::dropIfExists('images');

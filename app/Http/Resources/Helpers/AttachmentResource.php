@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 21 Oct 2021 12:37:51 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 21 Dec 2021 00:29:35 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
@@ -24,12 +24,15 @@ class AttachmentResource extends JsonResource
 
 
         return [
-            'id'         => $attachment->id,
-            'mime'       => $attachment->mime,
-            'filesize'   => $attachment->formatted_filesize,
-            'models'     => AttachmentModelResource::collection($this->whenLoaded('models')),
-            'created_at' => $attachment->created_at,
-            'updated_at' => $attachment->updated_at,
+            'id'                  => $attachment->id,
+            'attachmentable_type' => $attachment->attachmentable_type,
+            'attachmentable_id'   => $attachment->attachmentable_id,
+            'scope'               => $attachment->scope,
+            'caption'             => $attachment->caption,
+            'public'              => $attachment->public,
+            'filename'            => $attachment->filename,
+            'created_at'          => $attachment->created_at,
+            'updated_at'          => $attachment->updated_at,
 
         ];
     }

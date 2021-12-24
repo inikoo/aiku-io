@@ -23,7 +23,7 @@ class ActionResultResource extends JsonResource
 
         return [
             'status'   => $actionResult->status,
-            'model'    => class_basename($actionResult->model::class),
+            'model'    => $actionResult->model ? class_basename($actionResult->model::class) : null,
             'model_id' => $actionResult->model_id,
             'changes'  => $actionResult->changes,
         ];

@@ -6,9 +6,9 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\AttachmentModel\Employee;
+namespace App\Actions\Helpers\Attachment\Employee;
 
-use App\Actions\Helpers\AttachmentModel\Traits\HasModelAttachments;
+use App\Actions\Helpers\Attachment\Traits\HasModelAttachments;
 use App\Models\HumanResources\Employee;
 use Lorisleiva\Actions\Concerns\AsAction;
 

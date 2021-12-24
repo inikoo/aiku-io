@@ -2,7 +2,7 @@
 
 namespace App\Models\Buying;
 
-use App\Models\Helpers\AttachmentModel;
+use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
 use App\Models\Trade\Product;
 use App\Models\System\User;
@@ -56,7 +56,7 @@ class Supplier extends Model implements Auditable
 
     public function attachments(): MorphMany
     {
-        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+        return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
     public function owner(): MorphTo

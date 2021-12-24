@@ -8,7 +8,7 @@
 
 namespace App\Models\HumanResources;
 
-use App\Models\Helpers\AttachmentModel;
+use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
 use App\Models\Helpers\ImageModel;
 use App\Models\System\User;
@@ -87,7 +87,7 @@ class Employee extends Model implements Auditable
     }
     public function attachments(): MorphMany
     {
-        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+        return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
 }

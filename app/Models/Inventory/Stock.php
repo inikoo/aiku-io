@@ -8,7 +8,7 @@
 
 namespace App\Models\Inventory;
 
-use App\Models\Helpers\AttachmentModel;
+use App\Models\Helpers\Attachment;
 use App\Models\LocationStock;
 use App\Models\Trade\TradeUnit;
 use App\Models\Traits\HasSlug;
@@ -76,7 +76,7 @@ class Stock extends Model implements Auditable
 
     public function attachments(): MorphMany
     {
-        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+        return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
 

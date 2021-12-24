@@ -146,14 +146,14 @@ class MigrateEmployee extends MigrateModel
 
         $auroraAttachmentsCollection               = $this->getModelAttachmentsCollection('Staff', $employee->aurora_id);
         $auroraAttachmentsCollectionWithAttachment = $auroraAttachmentsCollection->each(function ($auroraAttachment) {
-            if ($attachment = MigrateAttachment::run($auroraAttachment)) {
-                return $auroraAttachment->attachment_id = $attachment->id;
+            if ($attachment = MigrateCommonAttachment::run($auroraAttachment)) {
+                return $auroraAttachment->common_attachment_id = $attachment->id;
             } else {
-                return $auroraAttachment->attachment_id = null;
+                return $auroraAttachment->common_attachment_id = null;
             }
         });
 
-        MigrateAttachmentModels::run($employee, $auroraAttachmentsCollectionWithAttachment);
+        MigrateAttachments::run($employee, $auroraAttachmentsCollectionWithAttachment);
     }
 
 

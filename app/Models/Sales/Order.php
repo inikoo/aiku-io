@@ -12,7 +12,7 @@ use App\Models\Accounting\Invoice;
 use App\Models\Accounting\InvoiceTransaction;
 use App\Models\CRM\Customer;
 use App\Models\Delivery\DeliveryNote;
-use App\Models\Helpers\AttachmentModel;
+use App\Models\Helpers\Attachment;
 use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -84,7 +84,7 @@ class Order extends Model implements Auditable
 
     public function attachments(): MorphMany
     {
-        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+        return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
     /** @noinspection PhpUnused */

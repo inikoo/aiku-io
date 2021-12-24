@@ -6,16 +6,16 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\Attachment;
+namespace App\Actions\Helpers\CommonAttachment;
 
-use App\Http\Resources\Helpers\AttachmentResource;
-use App\Models\Helpers\Attachment;
+use App\Http\Resources\Helpers\CommonAttachmentResource;
+use App\Models\Helpers\CommonAttachment;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class ShowAttachments
+class ShowCommonAttachments
 {
     use AsAction;
 
@@ -33,10 +33,10 @@ class ShowAttachments
 
     public function jsonResponse(): AnonymousResourceCollection
     {
-        $attachments = QueryBuilder::for(Attachment::class)
+        $attachments = QueryBuilder::for(CommonAttachment::class)
             ->allowedIncludes(['models'])
             ->paginate();
 
-        return AttachmentResource::collection($attachments);
+        return CommonAttachmentResource::collection($attachments);
     }
 }

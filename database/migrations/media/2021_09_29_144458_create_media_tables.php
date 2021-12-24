@@ -57,26 +57,27 @@ class CreateMediaTables extends Migration
         DB::statement('ALTER TABLE processed_images ADD image_data  LONGBLOB');
 
 
-        Schema::create('attachments', function (Blueprint $table) {
+        Schema::create('common_attachments', function (Blueprint $table) {
             $table->id();
             $table->string('checksum')->unique()->index();
             $table->unsignedBigInteger('filesize')->index();
             $table->string('mime');
-            //$table->binary('attachment_data')->nullable();
+            $table->string('extension')->nullable();
+            //$table->binary('file_content')->nullable();
             $table->timestampsTz();
             $table->softDeletesTz();
         });
 
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
-        DB::statement('ALTER TABLE attachments ADD attachment_data  LONGBLOB');
+        DB::statement('ALTER TABLE common_attachments ADD file_content  LONGBLOB');
 
     }
 
 
     public function down()
     {
-        Schema::dropIfExists('attachments');
+        Schema::dropIfExists('common_attachments');
         Schema::dropIfExists('processed_images');
         Schema::dropIfExists('raw_images');
     }

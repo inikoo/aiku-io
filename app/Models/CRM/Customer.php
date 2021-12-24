@@ -10,7 +10,7 @@ namespace App\Models\CRM;
 
 use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
-use App\Models\Helpers\AttachmentModel;
+use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
 use App\Models\Helpers\ImageModel;
 use App\Models\Trade\Product;
@@ -72,7 +72,7 @@ class Customer extends Model implements Auditable
 
     public function attachments(): MorphMany
     {
-        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+        return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
     public function contact(): MorphOne

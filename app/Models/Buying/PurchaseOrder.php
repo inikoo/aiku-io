@@ -8,7 +8,7 @@
 
 namespace App\Models\Buying;
 
-use App\Models\Helpers\AttachmentModel;
+use App\Models\Helpers\Attachment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -45,6 +45,6 @@ class PurchaseOrder extends Model implements Auditable
 
     public function attachments(): MorphMany
     {
-        return $this->morphMany(AttachmentModel::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
+        return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 }
