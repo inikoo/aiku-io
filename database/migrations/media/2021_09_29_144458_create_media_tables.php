@@ -64,19 +64,33 @@ class CreateMediaTables extends Migration
             $table->string('mime');
             $table->string('extension')->nullable();
             //$table->binary('file_content')->nullable();
+            $table->unsignedSmallInteger('relations')->default(0);
+            $table->unsignedSmallInteger('tenants')->default(0);
             $table->timestampsTz();
             $table->softDeletesTz();
+            $table->unsignedSmallInteger('deleted_relations')->default(0);
+
         });
 
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
-        DB::statement('ALTER TABLE common_attachments ADD file_content  LONGBLOB');
+        DB::statement('ALTER TABLE common_attachments ADD file_content  LONGBLOB AFTER extension');
+
+        Schema::create('common_attachment_tenant', function (Blueprint $table) {
+            $table->unsignedBigInteger('common_attachment_id');
+            $table->foreign('common_attachment_id')->references('id')->on('common_attachments');
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->timestampsTz();
+            $table->unique(['common_attachment_id','tenant_id']);
+        });
+
 
     }
 
 
     public function down()
     {
+        Schema::dropIfExists('common_attachment_tenant');
         Schema::dropIfExists('common_attachments');
         Schema::dropIfExists('processed_images');
         Schema::dropIfExists('raw_images');

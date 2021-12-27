@@ -9,9 +9,11 @@
 namespace App\Models\Helpers;
 
 
+use App\Providers\AttachmentDeleted;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 
@@ -22,9 +24,15 @@ use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 class Attachment extends Model
 {
     use UsesTenantConnection;
+    use SoftDeletes;
 
 
     protected $guarded = [];
+
+    protected $dispatchesEvents = [
+        'deleted' => AttachmentDeleted::class,
+        'restored' => AttachmentDeleted::class,
+    ];
 
     public function commonAttachment(): BelongsTo
     {

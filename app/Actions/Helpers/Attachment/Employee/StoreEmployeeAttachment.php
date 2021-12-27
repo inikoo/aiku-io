@@ -10,6 +10,7 @@ namespace App\Actions\Helpers\Attachment\Employee;
 
 use App\Actions\Helpers\CommonAttachment\StoreCommonAttachment;
 use App\Http\Resources\Utils\ActionResultResource;
+use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
@@ -31,14 +32,14 @@ class StoreEmployeeAttachment
         $res = new ActionResult();
 
 
-        $resAttachment = StoreCommonAttachment::run($attachmentData['file']->path(),
-                                                    [
-                                                        'mime'      => $attachmentData['file']->getMimeType(),
-                                                        'extension' => $attachmentData['file']->extension()
-                                                    ]
+        $resCommomAttachment = StoreCommonAttachment::run($attachmentData['file']->path(),
+                                                          [
+                                                              'mime'      => $attachmentData['file']->getMimeType(),
+                                                              'extension' => $attachmentData['file']->extension()
+                                                          ]
         );
 
-        $attachmentData['common_attachment_id'] = $resAttachment->model_id;
+        $attachmentData['common_attachment_id'] = $resCommomAttachment->model_id;
 
         /** @var \App\Models\Helpers\Attachment $attachment */
 
@@ -52,18 +53,40 @@ class StoreEmployeeAttachment
                     ['file']
                 )
             );
+
+            $resCommomAttachment->model->tenants()->attach(App('currentTenant')->id);
         } catch (Exception $e) {
             $res->status = 'error';
 
-            if($e->getCode()==23505){
-                $res->errors['attachment']='Attachment already associated with model';
-            }else{
-                $res->errors['attachment']='Database error '.$e->getCode();
 
+            if ($attachment = Attachment::withTrashed()
+                ->where('attachmentable_type', $employee->getMorphClass())
+                ->where('attachmentable_id', $employee->id)
+                ->where('common_attachment_id', $resCommomAttachment->model_id)
+                ->where('scope', $attachmentData['scope'])->first()
+            ) {
+                $attachment->restore();
+
+                $attachment->update(
+                    Arr::except(
+                        $attachmentData,
+                        ['file','attachmentable_type','attachmentable_id','common_attachment_id','scope']
+                    )
+                );
+
+            }else{
+
+                if ($e->getCode() == 23505) {
+                    $res->errors['attachment'] = 'Attachment already associated with model';
+                } else {
+                    $res->errors['attachment'] = 'Database error '.$e->getCode();
+                }
+
+
+                return $res;
             }
 
 
-            return $res;
         }
 
 

@@ -7,6 +7,7 @@
  */
 
 
+use App\Actions\Helpers\Attachment\Employee\DestroyEmployeeAttachment;
 use App\Actions\Helpers\Attachment\Employee\DownloadEmployeeAttachment;
 use App\Actions\Helpers\Attachment\Employee\ShowEmployeeAttachment;
 use App\Actions\Helpers\Attachment\Employee\ShowEmployeeAttachments;
@@ -31,4 +32,5 @@ Route::get('{employee}/attachments/{attachment}',ShowEmployeeAttachment::class)-
 Route::get('{employee}/attachments/{attachment}/download',DownloadEmployeeAttachment::class)->name('attachment.downland');
 
 Route::patch('{employee}/attachments/{attachment}',UpdateEmployeeAttachment::class)->name('attachment.update');
+Route::delete('{employee}/attachments/{attachment}',DestroyEmployeeAttachment::class)->name('attachment.destroy');
 

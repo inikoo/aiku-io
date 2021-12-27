@@ -24,19 +24,18 @@ class StoreCommonAttachment
         $checksum = md5_file($imagePath);
 
         $commonAttachmentData = array_merge(
-            Arr::only($commonAttachmentData, ['mime','extension']),
+            Arr::only($commonAttachmentData, ['mime', 'extension']),
             [
-                'checksum'        => $checksum,
-                'filesize'        => filesize($imagePath),
+                'checksum'     => $checksum,
+                'filesize'     => filesize($imagePath),
                 'file_content' => file_get_contents($imagePath),
-
             ]
         );
 
 
         CommonAttachment::upsert([
-                               $commonAttachmentData,
-                           ],
+                                     $commonAttachmentData,
+                                 ],
                                  ['checksum'],
                                  ['filesize']
         );

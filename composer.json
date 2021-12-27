@@ -25,6 +25,7 @@
         "inertiajs/inertia-laravel": "^0.4.3",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.54",
+        "laravel/horizon": "^5.7",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
         "lorisleiva/laravel-actions": "^2.1",

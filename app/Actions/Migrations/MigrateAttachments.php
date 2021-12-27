@@ -12,9 +12,11 @@ use App\Models\Buying\PurchaseOrder;
 use App\Models\Buying\Supplier;
 use App\Models\CRM\Customer;
 use App\Models\Helpers\Attachment;
+use App\Models\Helpers\CommonAttachment;
 use App\Models\HumanResources\Employee;
 use App\Models\Inventory\Stock;
 use App\Models\Sales\Order;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -40,34 +42,30 @@ class MigrateAttachments
 
 
                 Attachment::upsert([
-                                            [
-                                                'attachmentable_type' => $model->getMorphClass(),
-                                                'attachmentable_id'   => $model->id,
-                                                'scope'               => $scope,
-                                                'filename'            => Str::of($attachmentData->{'Attachment File Original Name'})->limit(255),
-                                                'common_attachment_id'       => $attachmentData->{'common_attachment_id'},
-                                                'caption'             => $attachmentData->{'Attachment Caption'},
-                                                'public'              => $attachmentData->{'Attachment Public'} === 'Yes',
-                                                'aurora_id'           => $attachmentData->{'Attachment Bridge Key'}
+                                       [
+                                           'attachmentable_type' => $model->getMorphClass(),
+                                           'attachmentable_id' => $model->id,
+                                           'scope' => $scope,
+                                           'filename' => Str::of($attachmentData->{'Attachment File Original Name'})->limit(255),
+                                           'common_attachment_id' => $attachmentData->{'common_attachment_id'},
+                                           'caption' => $attachmentData->{'Attachment Caption'},
+                                           'public' => $attachmentData->{'Attachment Public'} === 'Yes',
+                                           'aurora_id' => $attachmentData->{'Attachment Bridge Key'}
 
-                                            ],
-                                        ],
+                                       ],
+                                   ],
                                    ['common_attachment_id', 'attachmentable_id', 'attachmentable_type', 'scope'],
                                    ['filename', 'aurora_id']
                 );
 
 
-
-
-
-
                 $attachment = Attachment::where('attachmentable_type', $model->getMorphClass())
                     ->where('attachmentable_id', $model->id)
-                    ->where('common_attachment_id',$attachmentData->{'common_attachment_id'})
+                    ->where('common_attachment_id', $attachmentData->{'common_attachment_id'})
                     ->where('scope', $scope)
                     ->first();
 
-                if($attachment){
+                if ($attachment) {
                     DB::connection('aurora')->table('Attachment Bridge')
                         ->where('Attachment Bridge Key', $attachmentData->{'Attachment Bridge Key'})
                         ->update(['aiku_id' => $attachment->id]);
@@ -76,12 +74,21 @@ class MigrateAttachments
                     $new[] = $attachment->id;
                     $model->attachments()->save($attachment);
 
+                    $commonAttachment = CommonAttachment::find($attachmentData->{'common_attachment_id'});
 
-                }else{
+                    try {
+                        $commonAttachment->tenants()->attach(App('currentTenant')->id);
+                    }catch (Exception){
+                        //
+                    }
+
+
+
+
+
+                } else {
                     print "Error migrating a attachment model";
                 }
-
-
             }
         }
 

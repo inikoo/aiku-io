@@ -139,6 +139,7 @@ class CreateAuxTables extends Migration
 
             $table->boolean('public')->default(false);
             $table->timestampsTz();
+            $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable();
 
             $table->index(['attachmentable_id', 'attachmentable_type', 'scope'], 'attachments_idx1');
