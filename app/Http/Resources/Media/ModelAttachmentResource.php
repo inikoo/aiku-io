@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Tue, 21 Dec 2021 15:55:13 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 14:17:36 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Http\Resources\Helpers;
+namespace App\Http\Resources\Media;
 
 use App\Http\Resources\Traits\WhenMorphToLoaded;
 use Illuminate\Contracts\Support\Arrayable;

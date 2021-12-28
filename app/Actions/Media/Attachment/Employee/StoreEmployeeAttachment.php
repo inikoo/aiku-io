@@ -1,25 +1,28 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 23 Dec 2021 16:14:08 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 15:22:55 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\Attachment\Employee;
+namespace App\Actions\Media\Attachment\Employee;
 
 use App\Actions\Helpers\CommonAttachment\StoreCommonAttachment;
+use App\Actions\WithUpdate;
 use App\Http\Resources\Utils\ActionResultResource;
 use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
 use App\Models\Utils\ActionResult;
-use App\Actions\WithUpdate;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
+use function app;
+use function response;
 
 class StoreEmployeeAttachment
 {

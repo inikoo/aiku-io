@@ -8,6 +8,7 @@
 
 namespace App\Http\Resources\HumanResources;
 
+use App\Http\Resources\Media\ModelImageResource;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
@@ -35,9 +36,10 @@ class EmployeeResource extends JsonResource
             'employment_end_at'   => $employee->employment_end_at,
             'salary'              => $employee->salary,
             'user'                => $employee->user?->only('username', 'status'),
-            'supervisors'         => EmployeeLightResource::collection($employee->supervisors),
+            'images'              => ModelImageResource::collection($employee->images),
             'team'                => EmployeeLightResource::collection($employee->team),
             'job_positions'       => JobPositionLightResource::collection($employee->jobPositions),
+            'supervisors'         => EmployeeLightResource::collection($employee->supervisors),
 
             'created_at' => $employee->created_at,
             'updated_at' => $employee->updated_at,

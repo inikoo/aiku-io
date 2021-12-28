@@ -12,6 +12,7 @@ namespace App\Models\Media;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 
@@ -21,6 +22,7 @@ use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
  */
 class Image extends Model {
     use UsesTenantConnection;
+    use SoftDeletes;
 
 
     protected $casts = [

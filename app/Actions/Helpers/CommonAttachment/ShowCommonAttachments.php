@@ -8,7 +8,7 @@
 
 namespace App\Actions\Helpers\CommonAttachment;
 
-use App\Http\Resources\Helpers\CommonAttachmentResource;
+use App\Http\Resources\Media\CommonAttachmentResource;
 use App\Models\Helpers\CommonAttachment;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Lorisleiva\Actions\ActionRequest;

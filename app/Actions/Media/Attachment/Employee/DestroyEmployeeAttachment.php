@@ -1,21 +1,21 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Fri, 24 Dec 2021 22:45:13 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 15:22:55 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\Attachment\Employee;
+namespace App\Actions\Media\Attachment\Employee;
 
-use App\Actions\Helpers\Attachment\Traits\HasValidateModelAttachment;
+use App\Actions\Media\Attachment\Traits\HasValidateModelAttachment;
 use App\Http\Resources\Utils\ActionResultResource;
 use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
 use App\Models\Utils\ActionResult;
+use Illuminate\Validation\Validator;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Illuminate\Validation\Validator;
 
 class DestroyEmployeeAttachment
 {
@@ -61,7 +61,7 @@ class DestroyEmployeeAttachment
     public function asController(Employee $employee, Attachment $attachment, ActionRequest $request): ActionResultResource
     {
         return new ActionResultResource(
-            $this->handle($attachment,)
+            $this->handle($attachment)
         );
     }
 

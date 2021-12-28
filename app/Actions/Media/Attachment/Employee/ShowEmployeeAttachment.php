@@ -1,14 +1,14 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 23 Dec 2021 00:41:27 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 15:22:55 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\Attachment\Employee;
+namespace App\Actions\Media\Attachment\Employee;
 
-use App\Actions\Helpers\Attachment\Traits\HasModelAttachment;
+use App\Actions\Media\Attachment\Traits\HasModelAttachment;
 use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
 use Lorisleiva\Actions\Concerns\AsAction;

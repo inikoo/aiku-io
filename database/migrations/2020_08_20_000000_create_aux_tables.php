@@ -100,10 +100,13 @@ class CreateAuxTables extends Migration
 
             $table->string('imageable_type')->nullable()->index();
             $table->unsignedBigInteger('imageable_id')->nullable()->index();
+            $table->text('caption')->nullable();
 
             $table->string('scope',16)->index();
             $table->smallInteger('rank')->default(0);
             $table->string('filename',255);
+            $table->boolean('public')->default(false);
+
             $table->jsonb('compression')->nullable();
 
 

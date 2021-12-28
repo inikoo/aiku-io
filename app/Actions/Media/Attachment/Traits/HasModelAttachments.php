@@ -1,19 +1,21 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Tue, 21 Dec 2021 16:37:30 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 15:22:55 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\Attachment\Traits;
+namespace App\Actions\Media\Attachment\Traits;
 
 
-use App\Http\Resources\Helpers\ModelAttachmentResource;
+use App\Http\Resources\Media\ModelAttachmentResource;
 use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
+
+use function class_basename;
 
 trait HasModelAttachments
 {

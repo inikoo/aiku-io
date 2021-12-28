@@ -1,16 +1,18 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 23 Dec 2021 02:23:22 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 15:22:55 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\Attachment\Traits;
+namespace App\Actions\Media\Attachment\Traits;
 
 
 use App\Models\Helpers\Attachment;
 use App\Models\HumanResources\Employee;
+
+use function class_basename;
 
 trait HasValidateModelAttachment
 {

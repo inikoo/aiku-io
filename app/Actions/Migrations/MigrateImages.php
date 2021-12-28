@@ -35,12 +35,13 @@ class MigrateImages
                 $scope = strtolower($imageData->{'Image Subject Object Image Scope'});
 
 
-
                 Image::upsert([
                                   [
                                       'imageable_type'    => $model->getMorphClass(),
                                       'imageable_id'      => $model->id,
                                       'scope'             => $scope,
+                                      'caption'           => $imageData->{'Image Subject Image Caption'},
+                                      'created_at'        => $imageData->{'Image Subject Date'},
                                       'filename'          => Str::of($imageData->{'Image Filename'})->limit(255),
                                       'communal_image_id' => $imageData->{'communal_image_id'},
                                       'aurora_id'         => $imageData->{'Image Subject Key'},
@@ -68,16 +69,15 @@ class MigrateImages
 
                     try {
                         $communalImage->tenants()->attach(App('currentTenant')->id);
-                    }catch (Exception ) {
+                    } catch (Exception) {
                         //dd($e->getMessage());
                     }
-
-
                 } else {
                     dd([
                            'imageable_type'    => $model->getMorphClass(),
                            'imageable_id'      => $model->id,
                            'scope'             => $scope,
+                           'caption'           => $imageData->{'Image Subject Image Caption'},
                            'filename'          => Str::of($imageData->{'Image Filename'})->limit(255),
                            'communal_image_id' => $imageData->{'communal_image_id'},
                            'aurora_id'         => $imageData->{'Image Subject Key'},
