@@ -4,8 +4,9 @@ namespace App\Models\Buying;
 
 use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
-use App\Models\Trade\Product;
+use App\Models\Media\Image;
 use App\Models\System\User;
+use App\Models\Trade\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -51,7 +52,7 @@ class Supplier extends Model implements Auditable
 
     public function images(): MorphMany
     {
-        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_model', 'imageable_type', 'imageable_id');
+        return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function attachments(): MorphMany

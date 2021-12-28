@@ -40,10 +40,10 @@ class StoreCommonAttachment
                                  ['filesize']
         );
 
-        $attachment = CommonAttachment::firstWhere('checksum', $checksum);
+        $commonAttachment = CommonAttachment::firstWhere('checksum', $checksum);
 
-        $res->model    = $attachment;
-        $res->model_id = $attachment->id;
+        $res->model    = $commonAttachment;
+        $res->model_id = $commonAttachment->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';
 
         return $res;

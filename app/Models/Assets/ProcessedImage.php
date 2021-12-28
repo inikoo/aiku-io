@@ -31,7 +31,7 @@ class ProcessedImage extends Pivot {
 
     public function communalImage(): MorphOne
     {
-        return $this->morphOne('App\Models\Assets\CommunalImage', 'imageable');
+        return $this->morphOne('App\Models\Media\CommunalImage', 'imageable');
     }
 
 }

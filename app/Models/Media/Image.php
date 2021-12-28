@@ -1,19 +1,20 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 29 Sep 2021 12:57:31 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 00:31:29 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Helpers;
+namespace App\Models\Media;
 
 
-use App\Models\Assets\RawImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
+
+
 
 /**
  * @mixin IdeHelperImage
@@ -23,22 +24,25 @@ class Image extends Model {
 
 
     protected $casts = [
-        'data' => 'array'
+        'compression' => 'array'
     ];
 
     protected $attributes = [
-        'data' => '{}',
+        'compression' => '{}',
     ];
 
     protected $guarded = [];
 
-    public function models(): HasMany {
-        return $this->hasMany(ImageModel::class);
+
+
+    public function model(): MorphTo
+    {
+        return $this->morphTo(__FUNCTION__, 'imageable_type', 'imageable_id');
     }
 
-    public function rawImage(): BelongsTo
+    public function communalImage(): BelongsTo
     {
-        return $this->belongsTo(RawImage::class);
+        return $this->belongsTo(CommunalImage::class);
 
     }
 

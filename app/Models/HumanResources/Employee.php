@@ -10,7 +10,7 @@ namespace App\Models\HumanResources;
 
 use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
-use App\Models\Helpers\ImageModel;
+use App\Models\Media\Image;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 
 /**
@@ -83,7 +83,7 @@ class Employee extends Model implements Auditable
 
     public function images(): MorphMany
     {
-        return $this->morphMany(ImageModel::class, 'image_model', 'imageable_type', 'imageable_id');
+        return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
     public function attachments(): MorphMany
     {

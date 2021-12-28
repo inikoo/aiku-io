@@ -8,6 +8,7 @@
 
 namespace App\Models\System;
 
+use App\Models\Media\Image;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -15,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use Spatie\Permission\Traits\HasRoles;
@@ -60,7 +60,7 @@ class User extends Authenticatable
 
     public function images(): MorphMany
     {
-        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_model', 'imageable_type', 'imageable_id');
+        return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function stats(): HasOne

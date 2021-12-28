@@ -9,7 +9,7 @@
 
 namespace App\Models\Helpers;
 
-use App\Providers\CommonAttachmentAnchoring;
+use App\Events\CommonAttachmentAnchoring;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**

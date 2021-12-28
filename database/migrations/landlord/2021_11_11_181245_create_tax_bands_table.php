@@ -51,5 +51,7 @@ class CreateTaxBandsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('tax_bands');
+        Schema::dropIfExists('communal_image');
+
     }
 }

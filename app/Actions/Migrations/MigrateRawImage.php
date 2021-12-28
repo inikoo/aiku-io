@@ -8,28 +8,35 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Helpers\Image\StoreImage;
+use App\Actions\Assets\RawImage\StoreRawImage;
+use App\Models\Media\RawImage;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class MigrateImage
+class MigrateRawImage
 {
     use AsAction;
 
-    public function handle( $auroraImageData)
+    public function handle($auroraImageData): ?RawImage
     {
         if ($imageData = $this->getImageData($auroraImageData)) {
-            $image = StoreImage::run(Arr::get($imageData, 'image_path'), Arr::get($imageData, 'mime'));
-
-            $image->aurora_id = $auroraImageData->{'Image Key'};
-            $image->created_at = $auroraImageData->{'Image Creation Date'};
-            $image->save();
 
 
 
-            return $image;
+            $rawImageRes = StoreRawImage::run(Arr::get($imageData, 'image_path'), Arr::get($imageData, 'mime'));
+
+
+            // dd($rawImageRes->model->communalImage->id);
+
+
+            //$image->aurora_id = $auroraImageData->{'Image Key'};
+            //$image->created_at = $auroraImageData->{'Image Creation Date'};
+            //$image->save();
+
+
+            return $rawImageRes->model;
         } else {
-            return false;
+            return null;
         }
     }
 

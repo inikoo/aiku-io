@@ -8,6 +8,7 @@
 
 namespace App\Models\Trade;
 
+use App\Models\Media\Image;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
-
 
 
 /**
@@ -69,7 +69,7 @@ class Product extends Model implements Auditable
 
     public function images(): MorphMany
     {
-        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_model', 'imageable_type', 'imageable_id');
+        return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function historicRecords(): HasMany

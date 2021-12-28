@@ -8,6 +8,10 @@
 
 namespace App\Providers;
 
+use App\Events\CommonAttachmentAnchoring;
+use App\Events\CommunalImageAnchoring;
+use App\Listeners\UpdateCommonAttachmentStats;
+use App\Listeners\UpdateCommunalImageStats;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,6 +32,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CommonAttachmentAnchoring::class => [
             UpdateCommonAttachmentStats::class
+        ],
+        CommunalImageAnchoring::class => [
+            UpdateCommunalImageStats::class
         ]
     ];
 

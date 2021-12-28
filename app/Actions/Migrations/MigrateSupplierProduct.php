@@ -88,15 +88,15 @@ class MigrateSupplierProduct extends MigrateModel
             'Supplier Part',
             $this->auModel->data->{'Supplier Part Key'}
         )->each(function ($auroraImage) {
-            if ($image = MigrateImage::run($auroraImage)) {
-                return $auroraImage->image_id = $image->id;
+            if ($rawImage = MigrateRawImage::run($auroraImage)) {
+                return $auroraImage->communal_image_id = $rawImage->communalImage->id;
             } else {
-                return $auroraImage->image_id = null;
+                return $auroraImage->communal_image_id = null;
             }
         });
 
 
-        MigrateImageModels::run($this->model, $images);
+        MigrateImages::run($this->model, $images);
     }
 
 

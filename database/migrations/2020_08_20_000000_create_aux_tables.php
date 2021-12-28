@@ -96,17 +96,7 @@ class CreateAuxTables extends Migration
 
         Schema::create('images', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('communal_image_id')->nullable()->unique();
-            $table->jsonb('data');
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-        });
-
-        Schema::create('image_model', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('image_id');
-            $table->foreign('image_id')->references('id')->on('images');
+            $table->unsignedBigInteger('communal_image_id')->nullable();
 
             $table->string('imageable_type')->nullable()->index();
             $table->unsignedBigInteger('imageable_id')->nullable()->index();
@@ -114,15 +104,18 @@ class CreateAuxTables extends Migration
             $table->string('scope',16)->index();
             $table->smallInteger('rank')->default(0);
             $table->string('filename',255);
+            $table->jsonb('compression')->nullable();
 
 
-            //$table->jsonb('data');
             $table->timestampsTz();
+            $table->softDeletesTz();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
             $table->index(['imageable_id', 'imageable_type', 'scope']);
-            $table->unique(['image_id', 'imageable_id', 'imageable_type', 'scope']);
-            $table->unsignedBigInteger('aurora_id')->nullable();
+            $table->unique(['communal_image_id', 'imageable_id', 'imageable_type', 'scope']);
 
         });
+
+
 
 
         Schema::create('attachments', function (Blueprint $table) {
@@ -209,7 +202,6 @@ class CreateAuxTables extends Migration
         Schema::dropIfExists('categoriables');
         Schema::dropIfExists('categories');
         Schema::dropIfExists('attachments');
-        Schema::dropIfExists('image_model');
         Schema::dropIfExists('images');
         Schema::dropIfExists('audits');
         Schema::dropIfExists('dates');

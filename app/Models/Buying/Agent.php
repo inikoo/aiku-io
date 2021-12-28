@@ -9,6 +9,7 @@
 namespace App\Models\Buying;
 
 use App\Models\Helpers\Contact;
+use App\Models\Media\Image;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -54,7 +55,7 @@ class Agent extends Model implements Auditable
 
     public function images(): MorphMany
     {
-        return $this->morphMany('App\Models\Helpers\ImageModel', 'image_model', 'imageable_type', 'imageable_id');
+        return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function suppliers(): MorphMany

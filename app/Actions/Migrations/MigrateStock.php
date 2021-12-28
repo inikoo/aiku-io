@@ -123,6 +123,27 @@ class MigrateStock extends MigrateModel
         return $res;
     }
 
+    protected function migrateImages()
+    {
+        /** @var Stock $model */
+        $model = $this->model;
+
+
+        $auroraImagesCollection          = $this->getModelImagesCollection('Part', $model->aurora_id);
+        $auroraImagesCollectionWithImage = $auroraImagesCollection->each(function ($auroraImage) {
+            if ($rawImage = MigrateRawImage::run($auroraImage)) {
+                return $auroraImage->communal_image_id = $rawImage->communalImage->id;
+            } else {
+                return $auroraImage->communal_image_id = null;
+            }
+        });
+
+        if($auroraImagesCollectionWithImage->count()){
+            MigrateImages::run($model, $auroraImagesCollectionWithImage);
+        }
+
+    }
+
     protected function migrateAttachments()
     {
 

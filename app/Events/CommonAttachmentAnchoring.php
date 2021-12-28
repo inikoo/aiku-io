@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Mon, 27 Dec 2021 15:19:35 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 01:00:55 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Providers;
+namespace App\Events;
 
 use App\Models\Helpers\CommonAttachmentTenant;
 use Illuminate\Broadcasting\InteractsWithSockets;

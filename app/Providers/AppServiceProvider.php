@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
                 'Employee'       => 'App\Models\HumanResources\Employee',
                 'Guest'          => 'App\Models\System\Guest',
                 'Customer'       => 'App\Models\CRM\Customer',
-                'RawImage'       => 'App\Models\Assets\RawImage',
+                'RawImage'       => 'App\Models\Media\RawImage',
                 'ProcessedImage' => 'App\Models\Assets\ProcessedImage',
                 'Product'        => 'App\Models\Trade\Product',
                 'Agent'          => 'App\Models\Buying\Agent',

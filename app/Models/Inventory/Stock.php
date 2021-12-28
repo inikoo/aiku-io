@@ -10,6 +10,7 @@ namespace App\Models\Inventory;
 
 use App\Models\Helpers\Attachment;
 use App\Models\LocationStock;
+use App\Models\Media\Image;
 use App\Models\Trade\TradeUnit;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -72,6 +73,12 @@ class Stock extends Model implements Auditable
     public function locations(): BelongsToMany
     {
         return $this->belongsToMany(Location::class)->using(LocationStock::class)->withTimestamps();
+    }
+
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function attachments(): MorphMany

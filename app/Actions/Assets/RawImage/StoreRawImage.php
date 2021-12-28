@@ -1,25 +1,27 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 29 Sep 2021 20:47:42 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Mon, 27 Dec 2021 21:00:49 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Helpers\Image;
+namespace App\Actions\Assets\RawImage;
 
-use App\Models\Assets\CommunalImage;
-use App\Models\Assets\RawImage;
-use App\Models\Helpers\Image;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Media\CommunalImage;
+use App\Models\Media\RawImage;
+use App\Models\Utils\ActionResult;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class StoreImage
+class StoreRawImage
 {
     use AsAction;
 
-    public function handle($imagePath, $mime): Model|Image
+    public function handle($imagePath, $mime):ActionResult
     {
+        $res = new ActionResult();
+
+
         $size_data = getimagesize($imagePath);
         $width     = $size_data[0];
         $height    = $size_data[0];
@@ -51,7 +53,7 @@ class StoreImage
 
         }
 
-
+/*
 
         $image = Image::where(
             'communal_image_id',
@@ -68,5 +70,16 @@ class StoreImage
 
 
         return $image;
+
+*/
+
+        $res->model    = $rawImage;
+        $res->model_id = $rawImage->id;
+        $res->status   = $res->model_id ? 'inserted' : 'error';
+
+
+        return $res;
+
+
     }
 }

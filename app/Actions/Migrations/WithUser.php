@@ -47,27 +47,7 @@ trait WithUser
         }
     }
 
-    protected function migrateImages()
-    {
-        /** @var User $user */
-        $user = $this->model;
 
-        if ($user->userable_type == 'Employee') {
-            $auroraModel = 'Staff';
-        } else {
-            return;
-        }
-        $auroraImagesCollection          = $this->getModelImagesCollection($auroraModel, $this->parent->aurora_id);
-        $auroraImagesCollectionWithImage = $auroraImagesCollection->each(function ($auroraImage) {
-            if ($image = MigrateImage::run($auroraImage)) {
-                return $auroraImage->image_id = $image->id;
-            } else {
-                return $auroraImage->image_id = null;
-            }
-        });
-
-        MigrateImageModels::run($user, $auroraImagesCollectionWithImage);
-    }
 
 }
 

@@ -1,16 +1,15 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 29 Sep 2021 12:47:39 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 28 Dec 2021 00:32:13 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Assets;
+namespace App\Models\Media;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-
 
 
 /**

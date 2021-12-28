@@ -106,14 +106,14 @@ class MigrateSupplier extends MigrateModel
         $supplier                        = $this->model;
         $auroraImagesCollection          = $this->getModelImagesCollection('Supplier', $supplier->aurora_id);
         $auroraImagesCollectionWithImage = $auroraImagesCollection->each(function ($auroraImage) {
-            if ($image = MigrateImage::run($auroraImage)) {
-                return $auroraImage->image_id = $image->id;
+            if ($rawImage = MigrateRawImage::run($auroraImage)) {
+                return $auroraImage->communal_image_id = $rawImage->communalImage->id;
             } else {
-                return $auroraImage->image_id = null;
+                return $auroraImage->communal_image_id = null;
             }
         });
 
-        MigrateImageModels::run($supplier, $auroraImagesCollectionWithImage);
+        MigrateImages::run($supplier, $auroraImagesCollectionWithImage);
     }
 
 

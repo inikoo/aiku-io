@@ -12,7 +12,7 @@ use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
-use App\Models\Helpers\ImageModel;
+use App\Models\Media\Image;
 use App\Models\Trade\Product;
 use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,7 +67,7 @@ class Customer extends Model implements Auditable
 
     public function images(): MorphMany
     {
-        return $this->morphMany(ImageModel::class, 'image_model', 'imageable_type', 'imageable_id');
+        return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
     public function attachments(): MorphMany

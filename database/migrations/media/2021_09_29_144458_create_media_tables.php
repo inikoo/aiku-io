@@ -32,29 +32,25 @@ class CreateMediaTables extends Migration
 
 
 
-        DB::statement('ALTER TABLE raw_images ADD image_data  LONGBLOB');
+        DB::statement('ALTER TABLE raw_images ADD image_data  LONGBLOB AFTER mime');
 
 
         Schema::create('processed_images', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('raw_image_id');
             $table->foreign('raw_image_id')->references('id')->on('raw_images');
-
             $table->string('checksum', 32)->index()->unique();
-
             $table->unsignedBigInteger('filesize')->index();
             $table->double('megapixels')->index();
             $table->string('mime');
-
             $table->jsonb('data');
             //$table->binary('image_data');
-
             $table->timestampsTz();
             $table->softDeletesTz();
         });
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
-        DB::statement('ALTER TABLE processed_images ADD image_data  LONGBLOB');
+        DB::statement('ALTER TABLE processed_images ADD image_data  LONGBLOB AFTER mime ');
 
 
         Schema::create('common_attachments', function (Blueprint $table) {
