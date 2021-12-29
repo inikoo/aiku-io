@@ -11,6 +11,7 @@ use App\Models\Media\Image;
 use App\Models\System\User;
 use App\Models\Trade\Product;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -61,6 +62,12 @@ class MigrateImages
                     ->first();
 
                 if ($image) {
+
+
+                    DB::connection('aurora')->table('Image Subject Bridge')
+                        ->where('Image Subject Key', $imageData->{'Image Subject Key'})
+                        ->update(['aiku_id' => $image->id]);
+
                     $new[] = $image->id;
                     $model->images()->save($image);
                     $rank--;

@@ -11,6 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\Media\RawImage\StoreRawImage;
 use App\Models\Media\RawImage;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class MigrateRawImage
@@ -25,6 +26,10 @@ class MigrateRawImage
                 Arr::only($imageData, ['mime', 'created_at'])
             );
 
+
+            DB::connection('aurora')->table('Image Dimension')
+                ->where('Image Key', $auroraImageData->{'Image Key'})
+                ->update(['aiku_master_id' => $rawImageRes->model_id]);
 
             return $rawImageRes->model;
         } else {

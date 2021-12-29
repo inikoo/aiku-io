@@ -33,6 +33,8 @@ class MigrateProducts extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Product History Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object','Product')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int

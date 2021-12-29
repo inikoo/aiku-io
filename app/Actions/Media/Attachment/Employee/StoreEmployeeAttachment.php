@@ -62,7 +62,7 @@ class StoreEmployeeAttachment
             $res->status = 'error';
 
 
-            if ($attachment = Attachment::withTrashed()
+            if ($attachment = Attachment::onlyTrashed()
                 ->where('attachmentable_type', $employee->getMorphClass())
                 ->where('attachmentable_id', $employee->id)
                 ->where('common_attachment_id', $resCommomAttachment->model_id)
@@ -111,7 +111,7 @@ class StoreEmployeeAttachment
     {
         return [
             'file'      => 'required|file|max:100000',
-            'caption'   => 'required|nullable|string',
+            'caption'   => 'sometimes|nullable|string',
             'public'    => 'sometimes|required|boolean',
             'scope'     => [
                 'required',

@@ -65,6 +65,8 @@ class MigrateHR extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Attachment Bridge')->where('Subject','Staff')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object','Staff')
+            ->update(['aiku_id' => null]);
 
     }
 

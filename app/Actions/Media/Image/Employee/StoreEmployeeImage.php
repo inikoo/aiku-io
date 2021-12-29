@@ -48,13 +48,7 @@ class StoreEmployeeImage
         $imageData['filename'] = $imageData['file']->getClientOriginalName();
 
 
-        dd(
-            Arr::except(
-                $imageData,
-                ['file']
-            )
 
-        );
 
         try {
             $image = $employee->images()->create(
@@ -64,18 +58,22 @@ class StoreEmployeeImage
                 )
             );
 
-            $resRawImage->model->tenants()->attach(App('currentTenant')->id);
+
+            $resRawImage->model->communalImage->tenants()->attach(App('currentTenant')->id);
         } catch (Exception $e) {
             $res->status = 'error';
 
 
 
-            if ($image = Image::withTrashed()
+            if ($image = Image::onlyTrashed()
                 ->where('imageable_type', $employee->getMorphClass())
                 ->where('imageable_id', $employee->id)
                 ->where('communal_image_id', $resRawImage->model->communalImage->id)
-                ->where('scope', $imageData['scope'])->first()
+                ->where('scope', $imageData['scope'])
+                ->first()
             ) {
+
+
                 $image->restore();
 
                 $image->update(
@@ -88,7 +86,11 @@ class StoreEmployeeImage
                 if ($e->getCode() == 23505) {
                     $res->errors['image'] = 'Image already associated with model';
                 } else {
-                    $res->errors['image'] = 'Database error '.$e->getCode();
+                    $res->errors['image'] = 'Database error';
+                    if(config('app.env') == 'local' ){
+                        $res->errors['image'] .= ' '.$e->getCode().' '.$e->getMessage();
+
+                    }
                 }
 
 
@@ -115,7 +117,7 @@ class StoreEmployeeImage
     {
         return [
             'file'      => 'required|file|max:100000',
-            'caption'   => 'required|nullable|string',
+            'caption'   => 'sometimes|nullable|string',
             'scope'     => [
                 'required',
                 Rule::in(['profile']),

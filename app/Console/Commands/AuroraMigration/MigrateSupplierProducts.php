@@ -33,7 +33,8 @@ class MigrateSupplierProducts extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Supplier Part Historic Dimension')
             ->update(['aiku_id' => null]);
-
+        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object', 'Supplier Part')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
@@ -48,20 +49,19 @@ class MigrateSupplierProducts extends MigrateAurora
     {
         DB::connection('aurora')
             ->table('Supplier Part Dimension')
-          //  ->leftJoin('Part Dimension', 'Supplier Part Part SKU', '=', 'Part SKU')
+            //  ->leftJoin('Part Dimension', 'Supplier Part Part SKU', '=', 'Part SKU')
             ->orderBy('Supplier Part Key')
             ->chunk(100, function ($chunk) use ($tenant) {
-            foreach ($chunk as $auroraData) {
-                $result = MigrateSupplierProduct::run($auroraData);
-                $this->recordAction($tenant, $result);
-
-                foreach (DB::connection('aurora')->table('Supplier Part Historic Dimension')->where('Supplier Part Historic Supplier Part Key','=',$auroraData->{'Supplier Part Key'})->get() as $auroraHistoricData) {
-                    $result = MigrateSupplierHistoricProduct::run($auroraHistoricData);
+                foreach ($chunk as $auroraData) {
+                    $result = MigrateSupplierProduct::run($auroraData);
                     $this->recordAction($tenant, $result);
 
+                    foreach (DB::connection('aurora')->table('Supplier Part Historic Dimension')->where('Supplier Part Historic Supplier Part Key', '=', $auroraData->{'Supplier Part Key'})->get() as $auroraHistoricData) {
+                        $result = MigrateSupplierHistoricProduct::run($auroraHistoricData);
+                        $this->recordAction($tenant, $result);
+                    }
                 }
-            }
-        });
+            });
     }
 
 

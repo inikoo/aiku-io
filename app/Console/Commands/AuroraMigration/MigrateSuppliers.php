@@ -46,6 +46,8 @@ class MigrateSuppliers extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Attachment Bridge')->where('Subject', 'Supplier')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Image Subject Bridge')->whereIn('Image Subject Object', ['Agent', 'Supplier'])
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int

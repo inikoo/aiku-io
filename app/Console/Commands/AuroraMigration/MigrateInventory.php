@@ -36,6 +36,9 @@ class MigrateInventory extends MigrateAurora
 
         DB::connection('aurora')->table('Attachment Bridge')->where('Subject', 'Part')
             ->update(['aiku_id' => null]);
+
+        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object','Part')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
