@@ -68,6 +68,10 @@ class CreateEmployeesTable extends Migration
             $table->timestampsTz();
             $table->unique(['job_position_id','role_id']);
         });
+
+
+
+
     }
 
     /**

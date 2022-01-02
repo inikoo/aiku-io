@@ -9,8 +9,10 @@
 namespace App\Models\System;
 
 use App\Models\Helpers\Contact;
+use App\Models\HumanResources\Workplace;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -51,6 +53,11 @@ class Guest extends Model implements Auditable
     public function user(): MorphOne
     {
         return $this->morphOne(User::class, 'userable');
+    }
+
+    public function ownOffice(): morphOne
+    {
+        return $this->morphOne(Workplace::class, 'owner');
     }
 
 }

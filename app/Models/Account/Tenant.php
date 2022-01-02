@@ -11,6 +11,7 @@ namespace App\Models\Account;
 use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
 use App\Models\Helpers\Contact;
+use App\Models\HumanResources\Workplace;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -70,6 +71,11 @@ class Tenant extends SpatieTenant
     public function suppliers(): MorphMany
     {
         return $this->morphMany(Supplier::class, 'owner');
+    }
+
+    public function workplaces(): MorphMany
+    {
+        return $this->morphMany(Workplace::class, 'owner');
     }
 
 }

@@ -10,6 +10,7 @@ namespace App\Models\Helpers;
 
 use App\Models\Health\Patient;
 
+use App\Models\Traits\HasAddress;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +31,7 @@ class Contact extends Model implements Auditable
     use UsesTenantConnection;
     use HasFactory;
     use \OwenIt\Auditing\Auditable;
+    use HasAddress;
 
     protected $appends = ['age', 'formatted_address', 'formatted_dob'];
     protected $touches = ['contactable'];
@@ -54,10 +56,7 @@ class Contact extends Model implements Auditable
         'data' => '{}',
     ];
 
-    public function address(): BelongsTo
-    {
-        return $this->belongsTo(Address::class);
-    }
+
 
 
     public function contactable(): MorphTo
@@ -77,15 +76,7 @@ class Contact extends Model implements Auditable
         return Carbon::parse($this->date_of_birth)->locale(auth()->user()->locale ?? 'en')->isoFormat('ll');
     }
 
-    /** @noinspection PhpUnused */
-    public function getFormattedAddressAttribute(): string
-    {
-        if ($this->address) {
-            return $this->address->formatted_address;
-        } else {
-            return '';
-        }
-    }
+
 
     /** @noinspection PhpUnused */
     public function getFormattedGenderAttribute(): string

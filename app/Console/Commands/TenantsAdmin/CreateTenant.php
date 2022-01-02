@@ -10,6 +10,7 @@ namespace App\Console\Commands\TenantsAdmin;
 
 use App\Actions\Account\AccountUser\StoreAccountUser;
 use App\Actions\Account\Tenant\StoreTenant;
+use App\Actions\HumanResources\Workplace\StoreWorkplace;
 use App\Actions\System\User\StoreUser;
 use App\Models\Account\BusinessType;
 use App\Models\Account\Tenant;
@@ -27,7 +28,7 @@ use Illuminate\Support\Str;
 class CreateTenant extends Command
 {
 
-    protected $signature = 'tenant:new {domain} {name} {email} {nickname?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en} {--aurora_db=} {--aurora_account_code=}  ';
+    protected $signature = 'tenant:new {domain} {name} {email} {nickname?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en} {--aurora_db=} {--aurora_account_code=} {--workplace=}  ';
 
     protected $description = 'Create new tenant';
 
@@ -40,6 +41,7 @@ class CreateTenant extends Command
     {
         $database = strtolower(preg_replace('/\..*/i', '', $this->argument('domain'))).'_aiku';
 
+        //todo make this database engine aware
         if (DB::connection('scaffolding')->table('pg_catalog.pg_database')->select('datname')->where('datname', $database)->first()) {
             $this->error("Database $database already exists");
             //return 0;
@@ -137,6 +139,16 @@ class CreateTenant extends Command
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=JobPositionSeeder" --tenant='.$tenant->id);
+
+
+        StoreWorkplace::run($tenant,
+                            [
+                                'type'        => 'hq',
+                                'name'        => $this->option('workplace') ?? 'headquarters',
+                                'timezone_id' => $tenant->timezone_id
+                            ]
+        );
+
 
         $userPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 

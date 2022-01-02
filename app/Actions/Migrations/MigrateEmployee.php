@@ -12,6 +12,7 @@ use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
 use App\Models\HumanResources\Employee;
 use App\Models\HumanResources\JobPosition;
+use App\Models\HumanResources\Workplace;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -26,6 +27,14 @@ class MigrateEmployee extends MigrateModel
         parent::__construct();
         $this->auModel->table    = 'Staff Dimension';
         $this->auModel->id_field = 'Staff Key';
+    }
+
+    public function getParent(): Workplace|null
+    {
+        /** @var \App\Models\Account\Tenant $tenant */
+        $tenant = App('currentTenant');
+
+        return $tenant->workplaces()->where('type', 'hq')->first();
     }
 
     public function parseModelData()
@@ -118,7 +127,7 @@ class MigrateEmployee extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreEmployee::run($this->modelData['contact'], $this->modelData['employee']);
+        return StoreEmployee::run(workplace: $this->parent, contactData: $this->modelData['contact'], employeeData: $this->modelData['employee']);
     }
 
     protected function migrateImages()
@@ -136,10 +145,9 @@ class MigrateEmployee extends MigrateModel
             }
         });
 
-        if($auroraImagesCollectionWithImage->count()){
+        if ($auroraImagesCollectionWithImage->count()) {
             MigrateImages::run($employee, $auroraImagesCollectionWithImage);
         }
-
     }
 
     protected function migrateAttachments()

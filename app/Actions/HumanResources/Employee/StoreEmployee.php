@@ -8,6 +8,7 @@
 
 namespace App\Actions\HumanResources\Employee;
 
+use App\Models\HumanResources\Workplace;
 use App\Models\Utils\ActionResult;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
@@ -21,11 +22,17 @@ class StoreEmployee
     use AsAction;
 
 
-    public function handle(array $contactData, array $employeeData): ActionResult
+    public function handle(?Workplace $workplace, array $contactData, array $employeeData): ActionResult
     {
         $res = new ActionResult();
 
-        $employee = Employee::create($employeeData);
+        if ($workplace) {
+            $employee = $workplace->employees()->create($employeeData);
+        } else {
+            $employee = Employee::create($employeeData);
+        }
+
+
         $employee->contact()->create($contactData);
         $employee->save();
 
@@ -57,8 +64,9 @@ class StoreEmployee
     public function asController(ActionRequest $request): ActionResult
     {
         return $this->handle(
-            $request->only('name', 'email', 'phone'),
-            $request->only('status')
+            workplace:    null,
+            contactData:  $request->only('name', 'email', 'phone'),
+            employeeData: $request->only('status')
         );
     }
 }
