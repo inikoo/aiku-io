@@ -11,6 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
 use App\Models\HumanResources\Employee;
+use App\Models\HumanResources\Workplace;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -27,10 +28,16 @@ class MigrateDeletedEmployee extends MigrateModel
         $this->auModel->id_field = 'Staff Deleted Key';
     }
 
+    public function getParent(): Workplace|null
+    {
+        /** @var \App\Models\Account\Tenant $tenant */
+        $tenant = App('currentTenant');
+        return $tenant->workplaces()->where('type', 'hq')->first();
+    }
+
     public function parseModelData()
     {
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'Staff Deleted Metadata'}));
-
 
         $this->modelData['contact']  = $this->sanitizeData(
             [
@@ -75,7 +82,7 @@ class MigrateDeletedEmployee extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreEmployee::run($this->modelData['contact'], $this->modelData['employee']);
+        return StoreEmployee::run(workplace: $this->parent, contactData: $this->modelData['contact'], employeeData: $this->modelData['employee']);
     }
 
 

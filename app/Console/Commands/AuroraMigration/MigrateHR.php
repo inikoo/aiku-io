@@ -9,12 +9,14 @@
 namespace App\Console\Commands\AuroraMigration;
 
 
+use App\Actions\Migrations\MigrateClockingMachine;
 use App\Actions\Migrations\MigrateDeletedEmployee;
 use App\Actions\Migrations\MigrateDeletedGuest;
 use App\Actions\Migrations\MigrateDeletedUser;
 use App\Actions\Migrations\MigrateEmployee;
 use App\Actions\Migrations\MigrateGuest;
 use App\Actions\Migrations\MigrateUser;
+use App\Actions\Migrations\MigrateWorkTarget;
 use App\Models\Account\Tenant;
 use App\Models\HumanResources\Employee;
 use Illuminate\Support\Facades\DB;
@@ -63,11 +65,16 @@ class MigrateHR extends MigrateAurora
             ->update(['aiku_token' => null]);
         DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Staff', 'Contractor'])
             ->update(['aiku_id' => null]);
-        DB::connection('aurora')->table('Attachment Bridge')->where('Subject','Staff')
+        DB::connection('aurora')->table('Attachment Bridge')->where('Subject', 'Staff')
             ->update(['aiku_id' => null]);
-        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object','Staff')
+        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object', 'Staff')
             ->update(['aiku_id' => null]);
-
+        DB::connection('aurora')->table('Timesheet Dimension')
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Timesheet Record Dimension')
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Clocking Machine Dimension')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
@@ -76,6 +83,7 @@ class MigrateHR extends MigrateAurora
         $count += DB::connection('aurora')->table('Staff Deleted Dimension')->count();
         $count += DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])->count();
         $count += DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Staff', 'Contractor'])->count();
+        $count += DB::connection('aurora')->table('Timesheet Dimension')->where('Timesheet Staff Key','>',0)->count();
 
         return $count;
     }
@@ -83,6 +91,14 @@ class MigrateHR extends MigrateAurora
 
     protected function migrate(Tenant $tenant)
     {
+        foreach (
+            DB::connection('aurora')
+                ->table('Clocking Machine Dimension')
+                ->get() as $auroraData
+        ) {
+            MigrateClockingMachine::run($auroraData);
+        }
+
         foreach (
             DB::connection('aurora')
                 ->table('Staff Dimension')
@@ -139,6 +155,18 @@ class MigrateHR extends MigrateAurora
             if ($employee and $supervisor) {
                 $employee->supervisors()->sync([$supervisor->id]);
             }
+        }
+
+
+        foreach (
+            DB::connection('aurora')
+                ->table('Timesheet Dimension')
+                ->where('Timesheet Staff Key','>',0)
+                ->get() as $auroraData
+        ) {
+            $result=MigrateWorkTarget::run($auroraData);
+            $this->recordAction($tenant, $result);
+
         }
     }
 

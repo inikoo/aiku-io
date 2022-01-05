@@ -26,6 +26,5 @@ trait HasValidateModelImage
     }
 
 
-
 }
 

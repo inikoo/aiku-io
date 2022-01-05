@@ -21,7 +21,7 @@ class CreateWorkTargetsTable extends Migration
     {
         Schema::create('work_schedules', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['work-day', 'extra-time', 'vacation', 'workplace-closed', 'festivity', 'rest-day']);
+            $table->enum('type', ['work-day', 'extra-time', 'vacation', 'workplace-closed', 'festivity', 'rest-day'])->index();
             $table->time('starts_at')->nullable();
             $table->time('ends_at')->nullable();
             $table->jsonb('breaks');

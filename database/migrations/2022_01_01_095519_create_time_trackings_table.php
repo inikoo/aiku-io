@@ -17,8 +17,24 @@ class CreateTimeTrackingsTable extends Migration
      *
      * @return void
      */
+
+
     public function up()
     {
+        Schema::create('clockings', function (Blueprint $table) {
+            $table->id();
+            $table->enum('source',['clocking-machine','manual','self-manual','system'])->index();
+
+            $table->nullableMorphs('creator');
+            $table->nullableMorphs('clockable');
+            $table->unsignedBigInteger('time_tracking_id')->index()->nullable();
+            $table->dateTimeTz('clocked_at');
+            $table->timestampsTz();
+            $table->softDeletes();
+            $table->nullableMorphs('deleter');
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+        });
+
         Schema::create('time_trackings', function (Blueprint $table) {
             $table->id();
             $table->morphs('time_trackable');
@@ -26,12 +42,18 @@ class CreateTimeTrackingsTable extends Migration
             $table->foreign('workplace_id')->references('id')->on('workplaces');
             $table->dateTimeTz('starts_at');
             $table->dateTimeTz('ends_at');
+
+            $table->unsignedBigInteger('start_clocking_id')->index();
+            $table->foreign('start_clocking_id')->references('id')->on('clockings');
+            $table->unsignedBigInteger('end_clocking_id')->index();
+            $table->foreign('end_clocking_id')->references('id')->on('clockings');
             $table->text('notes');
+        });
 
-            $table->unsignedBigInteger('aurora_start_id')->nullable()->unique();
-            $table->unsignedBigInteger('aurora_end_id')->nullable()->unique();
+        Schema::table('clockings', function (Blueprint $table) {
+            // $table->integer('holding_id')->unsigned()->index()->nullable();
 
-
+            $table->foreign('time_tracking_id')->references('id')->on('time_trackings');
         });
     }
 
@@ -42,6 +64,10 @@ class CreateTimeTrackingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('timesheet_records');
+        DB::statement('drop table if exists time_trackings cascade');
+        DB::statement('drop table if exists clockings cascade');
+
+        //Schema::dropIfExists('timesheet_records');
+        //Schema::dropIfExists('clockings');
     }
 }

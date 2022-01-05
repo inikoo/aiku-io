@@ -139,6 +139,7 @@ class CreateTenant extends Command
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=JobPositionSeeder" --tenant='.$tenant->id);
+        Artisan::call('tenants:artisan "db:seed --force --class=WorkScheduleSeeder" --tenant='.$tenant->id);
 
 
         StoreWorkplace::run($tenant,

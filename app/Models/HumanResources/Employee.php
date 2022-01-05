@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -91,14 +92,29 @@ class Employee extends Model implements Auditable
         return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
-    public function timesheets(): HasMany
+    public function workTargets(): HasMany
     {
-        return $this->hasMany(Timesheet::class);
+        return $this->hasMany(WorkTarget::class);
     }
 
     public function homeOffice(): morphOne
     {
         return $this->morphOne(Workplace::class, 'owner');
+    }
+
+    public function clockings(): MorphMany
+    {
+        return $this->morphMany(Clocking::class, 'clockable');
+    }
+
+    public function createdClockings(): MorphMany
+    {
+        return $this->morphMany(Clocking::class, 'generator');
+    }
+
+    public function deletedClockings(): MorphMany
+    {
+        return $this->morphMany(Clocking::class, 'deleter');
     }
 
 }

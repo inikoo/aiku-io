@@ -15,20 +15,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
- * @mixin IdeHelperTimesheet
+ * @mixin IdeHelperWorkTarget
  */
-class Timesheet extends Model
+class WorkTarget extends Model
 {
     use HasFactory;
     use UsesTenantConnection;
+
+    protected $guarded = [];
 
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
     }
 
-    public function records(): HasMany
+    public function timeTrackings(): HasMany
     {
-        return $this->hasMany(TimesheetRecord::class);
+        return $this->hasMany(TimeTracking::class);
     }
 }

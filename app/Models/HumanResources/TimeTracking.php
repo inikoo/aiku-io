@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
- * @mixin IdeHelperTimesheetRecord
+ * @mixin IdeHelperTimeTracking
  */
-class TimesheetRecord extends Model
+class TimeTracking extends Model
 {
     use HasFactory;
     use UsesTenantConnection;
@@ -18,6 +18,6 @@ class TimesheetRecord extends Model
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Timesheet::class);
+        return $this->belongsTo(WorkTarget::class);
     }
 }

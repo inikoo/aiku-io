@@ -8,6 +8,7 @@
 
 namespace App\Models\HumanResources;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +24,8 @@ class WorkSchedule extends Model
 
     protected $casts = [
         'breaks' => 'array',
+        'starts_at' => 'datetime:H:i:s',
+        'ends_at' => 'datetime:H:i:s'
     ];
 
     protected $attributes = [
@@ -34,11 +37,12 @@ class WorkSchedule extends Model
     protected static function booted()
     {
         static::creating(
-
             function (WorkSchedule $workSchedule) {
+                $workSchedule->setLengths();
                 $workSchedule->checksum = $workSchedule->getChecksum();
             }
         );
+
     }
 
 
@@ -59,4 +63,24 @@ class WorkSchedule extends Model
     {
         return $this->hasMany(WorkTarget::class);
     }
+
+    public function setLengths()
+    {
+        $length = 0;
+        if ($this->ends_at and $this->starts_at) {
+            /** @var \Carbon\Carbon $start */
+            $start=$this->ends_at;
+            $length = $start->diffInMinutes($this->starts_at);
+        }
+        $breakLength = 0;
+        foreach ($this->breaks as $break) {
+            $start=Carbon::parse($break[0]);
+            $end=Carbon::parse($break[1]);
+            $breakLength+=$end->diffInMinutes($start);
+        }
+
+        $this->gross_length = $length;
+        $this->length       = $length - $breakLength;
+    }
+
 }

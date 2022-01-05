@@ -11,6 +11,7 @@ namespace App\Models\HumanResources;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -41,5 +42,16 @@ class ClockingMachine extends Model implements Auditable
     {
         return $this->belongsTo(Workplace::class);
     }
+
+    public function createdClockings(): MorphToMany
+    {
+        return $this->morphedByMany(Clocking::class, 'generator');
+    }
+
+    public function deletedClockings(): MorphToMany
+    {
+        return $this->morphedByMany(Clocking::class, 'deleter');
+    }
+
 
 }

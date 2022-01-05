@@ -33,7 +33,6 @@ class MigrateEmployee extends MigrateModel
     {
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant = App('currentTenant');
-
         return $tenant->workplaces()->where('type', 'hq')->first();
     }
 
@@ -205,6 +204,8 @@ class MigrateEmployee extends MigrateModel
             }
             $employee->jobPositions()->sync($jobPositions);
         }
+
+
 
 
         return $res;

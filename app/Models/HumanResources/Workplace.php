@@ -14,6 +14,7 @@ use App\Models\Traits\HasAddress;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -56,6 +57,11 @@ class Workplace extends Model implements Auditable
     public function guests(): MorphToMany
     {
         return $this->morphedByMany(Guest::class, 'workplace_user')->withTimestamps();
+    }
+
+    public function clockingMachines(): HasMany
+    {
+        return $this->hasMany(ClockingMachine::class);
     }
 
 }
