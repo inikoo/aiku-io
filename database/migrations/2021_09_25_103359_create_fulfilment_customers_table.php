@@ -23,12 +23,14 @@ class CreateFulfilmentCustomersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id')->index()->nullable();
             $table->foreign('customer_id')->references('id')->on('customers');
-            $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
         });
+
+
+
     }
 
     /**

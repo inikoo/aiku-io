@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
+/**
+ * @mixin IdeHelperFulfilmentCustomer
+ */
 class FulfilmentCustomer extends Model implements Auditable
 {
     use HasFactory;
@@ -25,6 +28,8 @@ class FulfilmentCustomer extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     use HasFactory;
+
+    protected $guarded = [];
 
     public function stocks(): MorphMany
     {

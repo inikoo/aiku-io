@@ -49,6 +49,28 @@ class Customer extends Model implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::created(
+            function (Customer $customer) {
+                if($customer->shop->type=='fulfilment'){
+                    $customer->fulfilmentCustomer()->create(
+                        [
+                            'aurora_id'=>$customer->aurora_customer_id
+                        ]
+                    );
+                }
+            }
+        );
+        static::deleted(
+            function (Customer $customer) {
+                if($customer->shop->type=='fulfilment'){
+                    $customer->fulfilmentCustomer()->delete();
+                }
+            }
+        );
+    }
+
 
 
     public function addresses(): MorphToMany

@@ -140,6 +140,30 @@ class MigrateCustomer extends MigrateModel
         $customer = $this->model;
 
         if ($customer->vendor_type == 'Shop') {
+
+            if($customer->shop->type=='fulfilment'){
+
+                if($res->status=='inserted'){
+
+                    DB::connection('aurora')->table('Customer Fulfilment Dimension')
+                        ->where('Customer Fulfilment Customer Key', $this->auModel->id)
+                        ->update(['aiku_id' => $customer->fulfilmentCustomer->id]);
+
+                }
+
+                foreach (
+                    DB::connection('aurora')
+                        ->table('Customer Fulfilment Dimension')
+                        ->where('Customer Fulfilment Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFulfilmentCustomer
+                ) {
+                    MigrateFulfilmentCustomer::run($auroraFulfilmentCustomer);
+
+                }
+
+
+            }
+
+
             foreach (
                 DB::connection('aurora')
                     ->table('Customer Favourite Product Fact')
