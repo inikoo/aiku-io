@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
+/**
+ * @mixin IdeHelperUniqueStock
+ */
 class UniqueStock extends Model implements Auditable
 {
     use UsesTenantConnection;

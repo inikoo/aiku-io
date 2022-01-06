@@ -16,7 +16,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
- * @mixin IdeHelperWorkTarget
+ * @mixin IdeHelperClocking
  */
 class Clocking extends Model implements Auditable
 {
