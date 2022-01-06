@@ -12,6 +12,7 @@ use App\Models\Buying\Agent;
 use App\Models\Buying\Supplier;
 use App\Models\Helpers\Contact;
 use App\Models\HumanResources\Workplace;
+use App\Models\Inventory\Stock;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -76,6 +77,11 @@ class Tenant extends SpatieTenant
     public function workplaces(): MorphMany
     {
         return $this->morphMany(Workplace::class, 'owner');
+    }
+
+    public function stocks(): MorphMany
+    {
+        return $this->morphMany(Stock::class, 'owner');
     }
 
 }

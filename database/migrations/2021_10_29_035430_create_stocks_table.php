@@ -21,40 +21,24 @@ class CreateStocksTable extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-
+            $table->morphs('owner');
             $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
-
             $table->string('state')->nullable()->index();
             $table->string('quantity_status')->nullable()->index();
-
             $table->boolean('sellable')->default(1)->index();
             $table->boolean('raw_material')->default(0)->index();
-
-
             $table->string('slug')->index();
-
             $table->string('code')->index();
             $table->string('barcode')->index()->nullable();
-
-
             $table->text('description')->nullable();
-
-
             $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
             $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
             $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
-
-
             $table->decimal('quantity', 16, 3)->nullable()->comment('stock quantity in units');
             $table->float('available_forecast')->nullable()->comment('days');
-
-
             $table->decimal('value', 16)->nullable();
-
-
             $table->unsignedBigInteger('image_id')->nullable();
             $table->foreign('image_id')->references('id')->on('images');
-
             $table->unsignedBigInteger('package_image_id')->nullable();
             $table->foreign('package_image_id')->references('id')->on('images');
             $table->jsonb('settings');

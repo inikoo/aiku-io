@@ -23,6 +23,9 @@ class CreateStockMovementsTable extends Migration
             $table->id();
 
             $table->enum('type',['purchase','return','delivery','lost','found','location-transfer','cancelled-to-restock','cancelled-restocked','amendment','consumption'])->index();
+
+            $table->morphs('stockable');
+
             $table->unsignedBigInteger('stock_id')->nullable()->index();
             $table->foreign('stock_id')->references('id')->on('stocks');
 

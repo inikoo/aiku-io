@@ -8,8 +8,9 @@
 
 namespace App\Actions\Inventory\Stock;
 
+use App\Models\Account\Tenant;
+use App\Models\CRM\FulfilmentCustomer;
 use App\Models\Utils\ActionResult;
-use App\Models\Inventory\Stock;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
@@ -17,13 +18,12 @@ class StoreStock
 {
     use AsAction;
 
-    public function handle($modelData): ActionResult
+    public function handle(Tenant|FulfilmentCustomer $owner,$modelData): ActionResult
     {
         $res  = new ActionResult();
 
-        $stock= Stock::create($modelData);
-
-
+        /** @var \App\Models\Inventory\Stock $stock */
+        $stock= $owner->stocks()->create($modelData);
 
         $res->model    = $stock;
         $res->model_id = $stock->id;

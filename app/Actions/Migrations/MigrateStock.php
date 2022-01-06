@@ -10,6 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\Stock\StoreStock;
 use App\Actions\Inventory\Stock\UpdateStock;
+use App\Models\Account\Tenant;
 use App\Models\Inventory\Location;
 use App\Models\Inventory\Stock;
 use App\Models\Trade\TradeUnit;
@@ -29,6 +30,10 @@ class MigrateStock extends MigrateModel
         $this->auModel->id_field = 'Part SKU';
     }
 
+    public function getParent(): Tenant
+    {
+        return App('currentTenant');
+    }
 
     public function parseModelData()
     {
@@ -56,7 +61,7 @@ class MigrateStock extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreStock::run($this->modelData);
+        return StoreStock::run(owner:$this->parent , modelData:$this->modelData);
     }
 
     public function postMigrateActions(ActionResult $res): ActionResult
