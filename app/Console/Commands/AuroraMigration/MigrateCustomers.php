@@ -59,7 +59,6 @@ class MigrateCustomers extends MigrateAurora
     {
 
         DB::connection('aurora')->table('Customer Dimension')
-            ->where('Customer Store Key',21)
             ->orderBy('Customer Key')->chunk(1000, function ($chunk) use ($tenant) {
             foreach ($chunk as $auroraData) {
                 $result = MigrateCustomer::run($auroraData);
@@ -75,7 +74,6 @@ class MigrateCustomers extends MigrateAurora
 
 
         DB::connection('aurora')->table('Customer Deleted Dimension')
-            ->where('Customer Store Key',21)
             ->orderBy('Customer Key')->chunk(1000, function ($chunk) use ($tenant) {
             foreach ($chunk as $auroraData) {
                 if (!$auroraData->{'Customer Key'}) {
