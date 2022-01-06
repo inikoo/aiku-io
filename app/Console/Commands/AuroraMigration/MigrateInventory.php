@@ -10,6 +10,7 @@ namespace App\Console\Commands\AuroraMigration;
 
 use App\Actions\Migrations\MigrateDeletedStock;
 use App\Actions\Migrations\MigrateStock;
+use App\Actions\Migrations\MigrateUniqueStock;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +29,8 @@ class MigrateInventory extends MigrateAurora
 
     protected function reset()
     {
+        DB::connection('aurora')->table('Fulfilment Asset Dimension')
+            ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Part Dimension')
             ->update(['aiku_id' => null]);
 
@@ -37,7 +40,7 @@ class MigrateInventory extends MigrateAurora
         DB::connection('aurora')->table('Attachment Bridge')->where('Subject', 'Part')
             ->update(['aiku_id' => null]);
 
-        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object','Part')
+        DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object', 'Part')
             ->update(['aiku_id' => null]);
     }
 
@@ -45,12 +48,19 @@ class MigrateInventory extends MigrateAurora
     {
         $count = DB::connection('aurora')->table('Part Dimension')->count();
         $count += DB::connection('aurora')->table('Part Deleted Dimension')->count();
+        $count += DB::connection('aurora')->table('Fulfilment Asset Dimension')->count();
 
         return $count;
     }
 
     protected function migrate(Tenant $tenant)
     {
+        foreach (DB::connection('aurora')->table('Fulfilment Asset Dimension')->get() as $auroraData) {
+            $result = MigrateUniqueStock::run($auroraData);
+            $this->recordAction($tenant, $result);
+        }
+
+
         foreach (DB::connection('aurora')->table('Part Dimension')->get() as $auroraPartData) {
             $result = MigrateStock::run($auroraPartData);
             $this->recordAction($tenant, $result);

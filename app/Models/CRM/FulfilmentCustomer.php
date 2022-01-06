@@ -9,9 +9,11 @@
 namespace App\Models\CRM;
 
 use App\Models\Inventory\Stock;
+use App\Models\Inventory\UniqueStock;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -34,6 +36,11 @@ class FulfilmentCustomer extends Model implements Auditable
     public function stocks(): MorphMany
     {
         return $this->morphMany(Stock::class, 'owner');
+    }
+
+    public function uniqueStocks(): HasMany
+    {
+        return $this->hasMany(UniqueStock::class);
     }
 
     public function customer(): BelongsTo

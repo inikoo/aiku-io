@@ -21,18 +21,19 @@ class CreateUniqueStocksTable extends Migration
     {
         Schema::create('unique_stocks', function (Blueprint $table) {
             $table->id();
-            $table->string('reference')->index();
+            $table->boolean('status')->default('true')->index();
+            $table->string('reference')->nullable()->index();
 
-            $table->enum('state', ['in-process', 'received', 'booked-in', 'booked-out', 'invoiced', 'lost'])->index();
-            $table->enum('type', ['pallet', 'box', 'oversize'])->index();
+            $table->enum('state', ['in-process', 'received', 'booked-in', 'booked-out', 'invoiced', 'lost'])->default('in-process')->index();
+            $table->enum('type', ['pallet', 'box', 'oversize','item'])->default('item')->index();
 
             $table->unsignedBigInteger('fulfilment_customer_id')->nullable();
             $table->foreign('fulfilment_customer_id')->references('id')->on('fulfilment_customers');
 
             $table->unsignedBigInteger('location_id')->nullable();
             $table->foreign('location_id')->references('id')->on('locations');
-            $table->text('notes');
-
+            $table->text('notes')->nullable();
+            $table->dateTimeTz('delivered_at')->nullable();
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();

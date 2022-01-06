@@ -26,6 +26,12 @@ class UniqueStock extends Model implements Auditable
     use SoftDeletes;
     use HasFactory;
 
+    protected $casts = [
+        'delivered_at' => 'datetime',
+
+
+    ];
+
     protected $guarded = [];
 
     public function fulfilmentCustomer(): BelongsTo
