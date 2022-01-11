@@ -9,12 +9,12 @@
 
     <form @submit.prevent="submit">
         <div>
-            <BreezeLabel for="slug" value="Username" />
-            <BreezeInput id="slug" type="text" class="mt-1 block w-full" v-model="form.slug" required autofocus autocomplete="username" />
+            <Label for="username" value="Username" />
+            <BreezeInput id="username" type="text" class="mt-1 block w-full" v-model="form.username" required autofocus autocomplete="username" />
         </div>
 
         <div class="mt-4">
-            <BreezeLabel for="password" value="Password" />
+            <Label for="password" value="Password" />
             <BreezeInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
         </div>
 
@@ -42,7 +42,7 @@ import BreezeButton from '@/Components/Button.vue'
 import BreezeCheckbox from '@/Components/Checkbox.vue'
 import BreezeGuestLayout from '@/Layouts/Guest.vue'
 import BreezeInput from '@/Components/Input.vue'
-import BreezeLabel from '@/Components/Label.vue'
+import Label from '@/Components/Label.vue'
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue'
 import { Head, Link } from '@inertiajs/inertia-vue3';
 
@@ -53,7 +53,7 @@ export default {
         BreezeButton,
         BreezeCheckbox,
         BreezeInput,
-        BreezeLabel,
+        Label,
         BreezeValidationErrors,
         Head,
         Link,
@@ -67,7 +67,7 @@ export default {
     data() {
         return {
             form: this.$inertia.form({
-                slug: '',
+                username: '',
                 password: '',
                 remember: false
             })

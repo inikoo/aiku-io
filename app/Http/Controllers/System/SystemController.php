@@ -72,8 +72,15 @@ class SystemController extends Controller
         return Inertia::render(
             'System/Users',
             [
-                'title'       => __('Users'),
-                'breadcrumbs' => $breadcrumbs
+
+
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'       => __('Users'),
+                    'breadcrumbs' => $breadcrumbs,
+
+                ]
+
             ]
         );
     }

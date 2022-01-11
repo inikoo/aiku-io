@@ -20,7 +20,8 @@
 
         <template #head>
             <tr>
-                <HeaderCell :cell="sortableHeader('employees.id')">ID</HeaderCell>
+                <HeaderCell :cell="sortableHeader('employees.nickname')">Nickname</HeaderCell>
+                <HeaderCell :cell="sortableHeader('employees.worker_number')">Payroll Id</HeaderCell>
                 <HeaderCell :cell="sortableHeader('contacts.name')">Name</HeaderCell>
 
 
@@ -28,8 +29,9 @@
         </template>
 
         <template #body>
-            <tr v-for="employee in employees.data" :key="employee.id">
-                <td><Link :href="route('employees.show',employee.id)">{{ employee['formatted_id'] }}</Link></td>
+            <tr v-for="employee in employees.data" :key="employee.employee_id">
+                <td><Link :href="route('employees.show',employee.employee_id)">{{ employee.nickname }}</Link></td>
+                <td>{{ employee['worker_number'] }}</td>
                 <td>{{ employee.name }}</td>
 
             </tr>
