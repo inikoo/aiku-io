@@ -8,10 +8,11 @@
 
 
 $human_resources = [
-    'route'    => 'human_resources.index',
-    'name'     => 'Staff',
-    'fa'       => ['fal', 'clipboard-user'],
-    'sections' => [
+    'route'       => 'human_resources.index',
+    'permissions' => ['employees.view'],
+    'name'        => 'Human resources',
+    'fa'          => ['fal', 'clipboard-user'],
+    'sections'    => [
         'human_resources.employees.index'  => [
             'name' => 'Employees',
         ],
@@ -26,10 +27,11 @@ $human_resources = [
 ];
 
 $system = [
-    'route'    => 'system.index',
-    'name'     => 'system',
-    'fa'       => ['fal', 'robot'],
-    'sections' => [
+    'route'       => 'system.index',
+    'permissions' => ['users.view'],
+    'name'        => 'My account',
+    'fa'          => ['fal', 'user-circle'],
+    'sections'    => [
         'system.users' => [
             'name' => 'Users',
         ],
@@ -52,12 +54,38 @@ return [
 
         'name'              => 'B2B commerce',
         'modules'           => [
-            'dashboard'       => [
+
+            'dashboard' => [
                 'route'    => 'dashboard.index',
                 'name'     => 'Dashboard',
                 'fa'       => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
+
+            'shops' => [
+                'with_options'=>true,
+                'route'       => 'shops.index',
+                'permissions' => ['shops.view'],
+                'name'        => 'Store',
+
+                'fa'          => ['fal', 'store-alt'],
+                'sections'    => [
+
+
+                ]
+            ],
+
+            'dropshippings' => [
+                'route'       => 'dropshippings.index',
+                'permissions' => ['shops.view'],
+                'name'        => 'Dropshipping',
+                'fa'          => ['fal', 'store'],
+                'sections'    => [
+
+
+                ]
+            ],
+
             'human_resources' => $human_resources,
             'system'          => $system
 
@@ -76,8 +104,7 @@ return [
             'employees.payroll',
             'employees.confidential',
             'employees.attendance',
-            'employees.*'
-            ,
+            'employees.*',
             'agents.view',
             'agents.edit',
             'agents.delete',
@@ -88,6 +115,8 @@ return [
             'suppliers.*',
 
             'shops.*',
+            'shops.*.*',
+            'shops.*.*.*',
             'shops.view',
             'shops.edit',
             'shops.delete',
@@ -149,32 +178,32 @@ return [
         ],
         'model_permissions' => [
             'Shop'      => [
-                'shop.#.*',
-                'shop.#.view',
-                'shop.#.edit',
-                'shop.#.delete',
+                'shops.#.*',
+                'shops.#.view',
+                'shops.#.edit',
+                'shops.#.delete',
 
-                'shop.#.products.*',
-                'shop.#.products.view',
-                'shop.#.products.edit',
-                'shop.#.products.delete',
+                'shops.#.products.*',
+                'shops.#.products.view',
+                'shops.#.products.edit',
+                'shops.#.products.delete',
 
-                'shop.#.customers.*',
-                'shop.#.customers.view',
-                'shop.#.customers.edit',
-                'shop.#.customers.delete',
+                'shops.#.customers.*',
+                'shops.#.customers.view',
+                'shops.#.customers.edit',
+                'shops.#.customers.delete',
 
-                'shop.#.broadcasting.*',
-                'shop.#.broadcasting.view',
-                'shop.#.broadcasting.edit',
-                'shop.#.broadcasting.send',
-                'shop.#.broadcasting.delete',
+                'shops.#.broadcasting.*',
+                'shops.#.broadcasting.view',
+                'shops.#.broadcasting.edit',
+                'shops.#.broadcasting.send',
+                'shops.#.broadcasting.delete',
 
-                'shop.#.website.*',
-                'shop.#.website.view',
-                'shop.#.website.edit',
-                'shop.#.website.publish',
-                'shop.#.website.delete',
+                'shops.#.website.*',
+                'shops.#.website.view',
+                'shops.#.website.edit',
+                'shops.#.website.publish',
+                'shops.#.website.delete',
 
 
             ],
@@ -316,7 +345,17 @@ return [
 
         'roles'       => [
 
-            'super-admin'           => [],
+            'super-admin'           => [
+                'users.*',
+                'look-and-field',
+                'employees.*',
+                'agents.*',
+                'suppliers.*',
+                'production.*',
+                'shops.*',
+                'warehouses.*',
+                'accounts.*',
+            ],
             'system-admin'          => [
                 'users.*',
                 'look-and-field',
@@ -409,25 +448,25 @@ return [
         ],
         'model_roles' => [
             'Shop'      => [
-                'shop-#-admin'              =>
+                'shops-#-admin'              =>
                     [
-                        'shop.#.*',
+                        'shops.#.*',
                     ],
-                'shop-#-clerk'              =>
+                'shops-#-clerk'              =>
                     [
-                        'shop.#.view',
-                        'shop.#.products.*',
+                        'shops.#.view',
+                        'shops.#.products.*',
                     ],
                 'customer-services-#-admin' =>
                     [
-                        'shop.#.view',
-                        'shop.#.customers.*',
+                        'shops.#.view',
+                        'shops.#.customers.*',
                     ],
                 'customer-services-#-clerk' =>
                     [
-                        'shop.#.view',
-                        'shop.#.customers.view',
-                        'shop.#.customers.edit',
+                        'shops.#.view',
+                        'shops.#.customers.view',
+                        'shops.#.customers.edit',
                     ]
             ],
             'Warehouse' => [

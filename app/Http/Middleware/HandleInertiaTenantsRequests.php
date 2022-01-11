@@ -25,6 +25,7 @@ class HandleInertiaTenantsRequests extends Middleware
      * Determine the current asset version.
      *
      * @param  \Illuminate\Http\Request  $request
+     *
      * @return string|null
      */
     public function version(Request $request): ?string
@@ -36,29 +37,22 @@ class HandleInertiaTenantsRequests extends Middleware
      * Define the props that are shared by default.
      *
      * @param  \Illuminate\Http\Request  $request
+     *
      * @return array
      */
     public function share(Request $request): array
     {
-
-
-
         return array_merge(parent::share($request), [
 
-            'auth.user' => fn () => $request->user()
+            'auth.user' => fn() => $request->user()
                 ? $request->user()->only('id', 'name', 'email')
                 : null,
-
-            'appType' => app('currentTenant')->businessType->slug,
-            'modules' => function () use ($request) {
-                if (! $request->user()) {
-                    return [];
-                }
-
-                return (new ModuleController())();
+            'tenant'    => app('currentTenant')->name,
+            'appType'   => app('currentTenant')->businessType->slug,
+            'modules'   => function () use ($request) {
 
 
-
+                return (new ModuleController())($request->user());
             },
         ]);
     }

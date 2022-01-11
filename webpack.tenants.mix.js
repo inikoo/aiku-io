@@ -1,18 +1,29 @@
 const mix = require('laravel-mix');
-const tailwindcss = require('tailwindcss');
+//const tailwindcss = require('tailwindcss');
+//const tailwindcss = require('tailwindcss');
 
+mix.js('resources/js/tenants/app.js', 'public/js/t').
+    vue({version: 3}).
+    postCss('resources/css/tenants/app.css', 'public/css/t', [
+        require('tailwindcss')('./tailwind.tenants.config.js'),
+        require('autoprefixer'),
+]).webpackConfig(require('./webpack.config'));
+
+/*
 mix.js('resources/js/tenants/app.js', 'public/js/t').
     vue({version: 3}).
     postCss('resources/css/tenants/app.css', 'public/css/t', [
         require('postcss-import'),
         require('tailwindcss'),
         require('autoprefixer'),
-    ]).options({
+    ]).
+    options({
                    postCss: [tailwindcss('./tailwind.tenants.config.js')],
                }).webpackConfig(require('./webpack.config'));
 
 
 
+ */
 
 /*
 

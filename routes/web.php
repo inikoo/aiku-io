@@ -50,6 +50,14 @@ Route::prefix('system')->name('system.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/system.php');
 
+Route::prefix('shops')->name('shops.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__ . '/web/shops.php');
+
+Route::prefix('dropshippings')->name('dropshippings.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__ . '/web/dropshippings.php');
+
 
 Route::middleware(['auth', 'verified'])->get('/profile', function () {
     return Inertia::render('Profile');

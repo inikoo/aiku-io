@@ -21,15 +21,13 @@ class EmployeeController extends HumanResourcesController
     private mixed $defaultCountry;
 
 
-
-
     public function __construct()
     {
         parent::__construct();
 
 
-        $this->defaultCountry = $this->getDefaultCountry();
-        $this->identityDocumentTypes=$this->getDefaultDocumentTypes($this->defaultCountry);
+        $this->defaultCountry        = $this->getDefaultCountry();
+        $this->identityDocumentTypes = $this->getDefaultDocumentTypes($this->defaultCountry);
 
         if (Arr::get($this->defaultCountry->data, 'identity_document_type')) {
             $this->identityDocumentTypes = array_merge(
@@ -47,7 +45,6 @@ class EmployeeController extends HumanResourcesController
                 ]
             );
         }
-
     }
 
     public function index(): Response

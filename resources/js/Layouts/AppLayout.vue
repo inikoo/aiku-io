@@ -6,6 +6,7 @@
   -->
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
+
     <div class="h-screen flex overflow-hidden bg-white">
         <!-- Static sidebar for mobile -->
         <TransitionRoot as="template" :show="sidebarOpen">
@@ -101,18 +102,26 @@
             <div class="flex flex-col w-64">
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
                 <div class="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-gray-100">
-                    <div class="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+                    <div class="flex-1 flex flex-col pt-0 pb-4 overflow-y-auto">
+
+                        <div class="flex items-center flex-shrink-0 px-4 py-2 border-b-2 mb-2	">
+                            <font-awesome-icon :icon="['fal', 'tachometer-alt-fast']" class="mr-3" aria-hidden="true"/>
+                            {{ $page.props.tenant }}
+                        </div>
+
                         <div class="flex items-center flex-shrink-0 px-4">
                             <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-900-text.svg" alt="Workflow"/>
                         </div>
                         <nav class="mt-5 flex-1" aria-label="Sidebar">
                             <div class="px-2 space-y-1">
-                                <Link v-for="item in navigation" :key="item.name" :href="item['href']"
-                                      :class="[route().current(item['module']+'.*') ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
-                                    <font-awesome-icon fixed-width :icon="item['icon']" :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
-                                                       aria-hidden="true"/>
-                                    {{ item['name'] }}
-                                </Link>
+                                <div v-for="item in navigation" key="item.name" v-show="route().current(item['module']+'.*')">
+                                    <Link v-for="section in item['sections']" :href="section.href"
+                                          :class="[route().current(section.href) ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']">
+                                        <font-awesome-icon fixed-width :icon="section['icon']" :class="[route().current(section.href) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
+                                                           aria-hidden="true"/>
+                                        {{ section['name'] }}
+                                    </Link>
+                                </div>
                             </div>
                             <div class="space-y-1 mt-6">
 
@@ -158,8 +167,33 @@
                 </div>
             </div>
         </div>
+
+
         <div class="flex flex-col min-w-0 flex-1 overflow-hidden">
+            <div class="border-b border-gray-200 ">
+
+
+
+
+               <span class="ml-2 mr-4" v-for="item in navigation" :key="item.name">
+                   <Link :href="item['href']" as="button" :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', '']">
+                    <font-awesome-icon fixed-width :icon="item['icon']"
+                                       :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-1 ']"
+                                       aria-hidden="true"/>
+                       {{ item['name'] }}
+                       <div class="w-24 inline-block  " v-if="item.hasOptions">
+                        <div class="flex flex-row">
+                            <div class="flex-none ">[</div>
+                              <div class="grow">b</div>
+                              <div class="flex-none "><font-awesome-icon :icon="['fal', 'angle-down']" class="mr-1" aria-hidden="true"/> ]</div>
+                        </div>
+                       </div>
+                   </Link>
+
+                </span>
+            </div>
             <div class="lg:hidden">
+
                 <div class="flex items-center justify-between bg-gray-50 border-b border-gray-200 px-4 py-1.5">
                     <div>
                         <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow"/>
@@ -178,7 +212,10 @@
                     <span class="sr-only">Open sidebar</span>
                     <MenuAlt2Icon class="h-6 w-6" aria-hidden="true"/>
                 </button>
+
+
                 <div class="flex-1 px-4 flex justify-between">
+
                     <div class="flex-1 flex">
                         <form class="w-full flex md:ml-0" action="#" method="GET">
                             <label for="search-field" class="sr-only">Search</label>
@@ -243,12 +280,20 @@ import {usePage} from '@inertiajs/inertia-vue3';
 import {SearchIcon} from '@heroicons/vue/solid';
 import Header from '@/Layouts/PageHeader';
 
-import {faTachometerAltFast, faUsers, faRobot, faClipboardUser, faSlidersHSquare, faHistory, faPlus,faEdit,faPortalExit} from '@/private/pro-light-svg-icons';
-library.add(faTachometerAltFast, faUsers, faClipboardUser, faRobot, faSlidersHSquare, faHistory, faPlus,faEdit,faPortalExit);
+// App icons
+import {faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight,faAngleDown} from '@/private/pro-light-svg-icons';
 
-import {faBirthdayCake,faMars,faVenus} from '@/private/pro-regular-svg-icons';
-library.add(faBirthdayCake,faMars,faVenus);
+library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight,faAngleDown);
+import {faBirthdayCake, faMars, faVenus} from '@/private/pro-regular-svg-icons';
 
+library.add(faBirthdayCake, faMars, faVenus);
+
+// Module icons
+import {faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faStore} from '@/private/pro-light-svg-icons';
+
+library.add(faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faStore);
+
+// Section icons
 
 export default {
     components: {
@@ -260,14 +305,36 @@ export default {
         let secondaryNavigation = [];
 
         let navigation = [];
+        let sections;
         const modules = usePage().props.value.modules;
         for (const module in modules) {
 
-            navigation.push(
-                {
-                    name: modules[module].name, href: route(modules[module]['route']), icon: modules[module]['fa'], module: module,
-                },
-            );
+            if (module != 'dashboard') {
+
+                sections = [];
+                for (const section in modules[module]['sections']) {
+
+                    sections.push(
+                        {
+                            name: modules[module]['sections'][section].name,
+                            href: route(section),
+                            icon: modules[module]['sections'][section]['icon'],
+                        },
+                    );
+                }
+
+                navigation.push(
+                    {
+                        name      : modules[module].name,
+                        href      : route(modules[module]['route']),
+                        icon      : modules[module]['icon'],
+                        sections  : sections,
+                        module    : module,
+                        options   : modules[module]['options'] ?? {},
+                        hasOptions: modules[module]['options'] && Object.keys(modules[module]['options']).length > 1,
+                    },
+                );
+            }
         }
 
         return {

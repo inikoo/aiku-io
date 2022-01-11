@@ -78,9 +78,10 @@ class AppServiceProvider extends ServiceProvider
             ]
         );
 
-        Collection::macro('toLocale', function ($locale) {
-            return $this->map(function ($item) use ($locale) {
-                //$item['name']=Lang::get($item['name']);
+        //todo Make the actual translation
+        Collection::macro('translateElement', function ($index,$locale) {
+            return $this->map(function ($item) use ($index,$locale) {
+                //$item['name']=Lang::get($item[$index]);
 
 
                 return $item;

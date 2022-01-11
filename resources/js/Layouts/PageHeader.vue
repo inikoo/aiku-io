@@ -90,6 +90,8 @@ export default {
     setup(props) {
 
         let sections = [];
+
+        /*
         const items = usePage().props.value.modules[props.headerData.module]['sections'];
 
         for (const item in items) {
@@ -99,6 +101,8 @@ export default {
                 },
             );
         }
+        */
+
         let displayBreadcrumbs = Object.keys(props.headerData['breadcrumbs']).length > 0;
         return {
             sections, displayBreadcrumbs,

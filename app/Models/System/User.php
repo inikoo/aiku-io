@@ -8,8 +8,10 @@
 
 namespace App\Models\System;
 
+use App\Models\Assets\Language;
 use App\Models\Media\Image;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -66,6 +68,11 @@ class User extends Authenticatable
     public function stats(): HasOne
     {
         return $this->hasOne(UserStats::class, 'id', 'id');
+    }
+
+    public function language(): BelongsTo
+    {
+        return $this->belongsTo(Language::class);
     }
 
 }
