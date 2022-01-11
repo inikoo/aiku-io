@@ -29,8 +29,7 @@ class MigrateInventory extends MigrateAurora
 
     protected function reset()
     {
-        DB::connection('aurora')->table('Fulfilment Asset Dimension')
-            ->update(['aiku_id' => null]);
+
         DB::connection('aurora')->table('Part Dimension')
             ->update(['aiku_id' => null]);
 
@@ -48,17 +47,13 @@ class MigrateInventory extends MigrateAurora
     {
         $count = DB::connection('aurora')->table('Part Dimension')->count();
         $count += DB::connection('aurora')->table('Part Deleted Dimension')->count();
-        $count += DB::connection('aurora')->table('Fulfilment Asset Dimension')->count();
 
         return $count;
     }
 
     protected function migrate(Tenant $tenant)
     {
-        foreach (DB::connection('aurora')->table('Fulfilment Asset Dimension')->get() as $auroraData) {
-            $result = MigrateUniqueStock::run($auroraData);
-            $this->recordAction($tenant, $result);
-        }
+
 
 
         foreach (DB::connection('aurora')->table('Part Dimension')->get() as $auroraPartData) {

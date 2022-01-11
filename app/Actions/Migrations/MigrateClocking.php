@@ -53,10 +53,10 @@ class MigrateClocking extends MigrateModel
             $creator = Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Timesheet Authoriser Key'});
         }
 
-        if (!$creator) {
-            print "creator not found";
-            dd($this->auModel->data);
-        }
+        //if (!$creator) {
+           // print "creator not found";
+           // print_r($this->auModel->data);
+        //}
 
 
         $this->modelData['creator'] = $creator;

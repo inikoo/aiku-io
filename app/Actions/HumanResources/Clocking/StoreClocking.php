@@ -19,7 +19,7 @@ class StoreClocking
     use AsAction;
 
 
-    public function handle(Employee|Guest $clockable, ClockingMachine|Employee $creator, array $clockingData): ActionResult
+    public function handle(Employee|Guest $clockable, ClockingMachine|Employee|null $creator, array $clockingData): ActionResult
     {
         $res = new ActionResult();
 
@@ -27,9 +27,10 @@ class StoreClocking
 
 
 
-        $clockingData['creator_type']=class_basename($creator);
-        $clockingData['creator_id']=$creator->id;
-
+        if($creator) {
+            $clockingData['creator_type'] = class_basename($creator);
+            $clockingData['creator_id']   = $creator->id;
+        }
 
         $clocking      = $clockable->clockings()->create($clockingData);
 
