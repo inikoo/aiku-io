@@ -15,8 +15,10 @@ Route::get('/customers', [ShopsController::class, 'index'])->name('customers.ind
 Route::get('/orders', [ShopsController::class, 'index'])->name('orders.index');
 
 
+Route::get('/xcustomders', [ShopsController::class, 'show'])->name('shop.index');
 
-Route::get('/{id}', [ShopsController::class, 'show'])->name('show');
+Route::get('/xcustomers', [ShopsController::class, 'show'])->name('shop.customers.index');
+Route::get('/xorders', [ShopsController::class, 'show'])->name('shop.orders.index');
 
 //Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
 

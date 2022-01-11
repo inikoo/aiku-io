@@ -171,9 +171,7 @@
 
         <div class="flex flex-col min-w-0 flex-1 overflow-hidden">
 
-            <TopMenu :items="navigation"  :currentRoute="route"  />
-
-
+            <TopMenu :items="navigation" :currentRoute="route"/>
 
 
             <div class="lg:hidden">
@@ -265,13 +263,12 @@ import {SearchIcon} from '@heroicons/vue/solid';
 import Header from '@/Layouts/PageHeader';
 
 // App icons
-import {faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight,faAngleDown} from '@/private/pro-light-svg-icons';
+import {faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown} from '@/private/pro-light-svg-icons';
 
-library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight,faAngleDown);
+library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown);
 import {faBirthdayCake, faMars, faVenus} from '@/private/pro-regular-svg-icons';
 
 library.add(faBirthdayCake, faMars, faVenus);
-
 
 import TopMenu from '@/Layouts/TopMenu';
 
@@ -280,7 +277,7 @@ import TopMenu from '@/Layouts/TopMenu';
 export default {
     components: {
         TopMenu,
-        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header
+        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header,
 
     }, setup() {
 
@@ -308,13 +305,15 @@ export default {
 
                 navigation.push(
                     {
-                        name      : modules[module].name,
-                        href      : route(modules[module]['route']),
-                        icon      : modules[module]['icon'],
-                        sections  : sections,
-                        module    : module,
-                        options   : modules[module]['options'] ?? {},
-                        hasOptions: modules[module]['options'] && Object.keys(modules[module]['options']).length > 1,
+                        name        : modules[module].name,
+                        href        : route(modules[module]['route']),
+                        icon        : modules[module]['icon'],
+                        type        : modules[module].type,
+                        sections    : sections,
+                        module      : module,
+                        currentModel: modules[module].currentModel,
+                        options     : modules[module]['options'] ?? {},
+                        hasOptions  : modules[module]['options'] && Object.keys(modules[module]['options']).length > 1,
                     },
                 );
             }

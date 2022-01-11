@@ -8,7 +8,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\UI\ModuleController;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -51,8 +50,10 @@ class HandleInertiaTenantsRequests extends Middleware
             'appType'   => app('currentTenant')->businessType->slug,
             'modules'   => function () use ($request) {
 
+                /** @var \App\Models\Account\BusinessType $businessType */
+                $businessType=app('currentTenant')->businessType;
 
-                return (new ModuleController())($request->user());
+                return  $businessType->getUserLayout($request->user());
             },
         ]);
     }

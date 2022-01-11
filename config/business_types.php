@@ -8,10 +8,12 @@
 
 
 $human_resources = [
+    'id'          => 'human_resources',
+    'type'        => 'standard',
     'route'       => 'human_resources.index',
     'permissions' => ['employees.view'],
     'name'        => 'Human resources',
-    'fa'          => ['fal', 'clipboard-user'],
+    'icon'        => ['fal', 'clipboard-user'],
     'sections'    => [
         'human_resources.employees.index'  => [
             'name' => 'Employees',
@@ -27,10 +29,12 @@ $human_resources = [
 ];
 
 $system = [
+    'id'          => 'system',
+    'type'        => 'standard',
     'route'       => 'system.index',
     'permissions' => ['users.view'],
     'name'        => 'My account',
-    'fa'          => ['fal', 'user-circle'],
+    'icon'        => ['fal', 'user-circle'],
     'sections'    => [
         'system.users' => [
             'name' => 'Users',
@@ -56,37 +60,61 @@ return [
         'modules'           => [
 
             'dashboard' => [
+                'type'     => 'home',
                 'route'    => 'dashboard.index',
                 'name'     => 'Dashboard',
-                'fa'       => ['fal', 'tachometer-alt-fast'],
+                'icon'     => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
 
             'shops' => [
-                'with_options'=>true,
-                'route'       => 'shops.index',
-                'permissions' => ['shops.view'],
-                'name'        => 'Store',
+                'id'           => 'shops',
+                'type'         => 'modelIndex',
+                'with_options' => true,
+                'route'        => 'shops.index',
+                'permissions'  => ['shops.view'],
+                'name'         => 'Store',
 
-                'fa'          => ['fal', 'store-alt'],
-                'sections'    => [
+                'icon'     => ['fal', 'store-alt'],
+                'sections' => [
                     'shops.customers.index' => [
                         'name' => 'Customers',
                     ],
-                    'shops.orders.index' => [
+                    'shops.orders.index'    => [
                         'name' => 'Orders',
                     ],
 
+
+                ]
+            ],
+            'shop'  => [
+                'id'          => 'shop',
+                'type'        => 'modelOptions',
+                'route'       => 'shops.shop.index',
+                'permissions' => ['shops.view'],
+                'name'        => 'Store',
+
+                'sections' => [
+                    'shops.shop.customers.index' => [
+                        'name' => 'Customers',
+                    ],
+                    'shops.shop.orders.index'    => [
+                        'name' => 'Orders',
+                    ],
 
 
                 ]
             ],
 
+
             'dropshippings' => [
+                'id'   => 'dropshippings',
+                'type' => 'modelIndex',
+
                 'route'       => 'dropshippings.index',
                 'permissions' => ['shops.view'],
                 'name'        => 'Dropshipping',
-                'fa'          => ['fal', 'store'],
+                'icon'        => ['fal', 'store'],
                 'sections'    => [
 
 
@@ -455,11 +483,11 @@ return [
         ],
         'model_roles' => [
             'Shop'      => [
-                'shops-#-admin'              =>
+                'shops-#-admin'             =>
                     [
                         'shops.#.*',
                     ],
-                'shops-#-clerk'              =>
+                'shops-#-clerk'             =>
                     [
                         'shops.#.view',
                         'shops.#.products.*',
@@ -495,13 +523,13 @@ return [
             'dashboard'       => [
                 'route'    => 'dashboard.index',
                 'name'     => 'Dashboard',
-                'fa'       => ['fal', 'tachometer-alt-fast'],
+                'icon'     => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
             'patients'        => [
                 'route'    => 'patients.index',
                 'name'     => 'Patients',
-                'fa'       => ['fal', 'users'],
+                'icon'     => ['fal', 'users'],
                 'sections' => [
 
 
