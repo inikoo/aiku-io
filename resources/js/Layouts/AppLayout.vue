@@ -170,28 +170,12 @@
 
 
         <div class="flex flex-col min-w-0 flex-1 overflow-hidden">
-            <div class="border-b border-gray-200 ">
+
+            <TopMenu :items="navigation"  :currentRoute="route"  />
 
 
 
 
-               <span class="ml-2 mr-4" v-for="item in navigation" :key="item.name">
-                   <Link :href="item['href']" as="button" :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', '']">
-                    <font-awesome-icon fixed-width :icon="item['icon']"
-                                       :class="[route().current(item['route']) ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-1 ']"
-                                       aria-hidden="true"/>
-                       {{ item['name'] }}
-                       <div class="w-24 inline-block  " v-if="item.hasOptions">
-                        <div class="flex flex-row">
-                            <div class="flex-none ">[</div>
-                              <div class="grow">b</div>
-                              <div class="flex-none "><font-awesome-icon :icon="['fal', 'angle-down']" class="mr-1" aria-hidden="true"/> ]</div>
-                        </div>
-                       </div>
-                   </Link>
-
-                </span>
-            </div>
             <div class="lg:hidden">
 
                 <div class="flex items-center justify-between bg-gray-50 border-b border-gray-200 px-4 py-1.5">
@@ -288,16 +272,15 @@ import {faBirthdayCake, faMars, faVenus} from '@/private/pro-regular-svg-icons';
 
 library.add(faBirthdayCake, faMars, faVenus);
 
-// Module icons
-import {faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faStore} from '@/private/pro-light-svg-icons';
 
-library.add(faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faStore);
+import TopMenu from '@/Layouts/TopMenu';
 
 // Section icons
 
 export default {
     components: {
-        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header,
+        TopMenu,
+        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header
 
     }, setup() {
 
@@ -309,7 +292,7 @@ export default {
         const modules = usePage().props.value.modules;
         for (const module in modules) {
 
-            if (module != 'dashboard') {
+            if (module !== 'dashboard') {
 
                 sections = [];
                 for (const section in modules[module]['sections']) {
