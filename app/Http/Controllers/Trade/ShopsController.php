@@ -9,8 +9,11 @@
 namespace App\Http\Controllers\Trade;
 
 use App\Http\Controllers\Controller;
+use App\Models\Trade\Shop;
 use Inertia\Inertia;
 use Inertia\Response;
+use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use Spatie\QueryBuilder\QueryBuilder;
 
 
 class ShopsController extends Controller
@@ -30,14 +33,19 @@ class ShopsController extends Controller
         ];
 
 
-
         $this->module = 'shops';
     }
 
     public function index(): Response
     {
+        $shops = QueryBuilder::for(Shop::class)
+            ->allowedSorts([ 'code', 'name'])
+            ->paginate()
+            ->withQueryString();
+
+
         return Inertia::render(
-            'Shops/Index',
+            'Shops/Shops',
             [
                 'headerData' => [
                     'module'      => $this->module,
@@ -45,11 +53,46 @@ class ShopsController extends Controller
                     'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
 
                 ],
-
+                'shops'      => $shops,
 
 
             ]
-        );
+        )->table(function (InertiaTable $table) {
+            $table->addSearchRows(
+                [
 
+
+                ]
+            );
+        });
+    }
+
+    public function show($id): Response
+    {
+        $shop = Shop::find($id);
+
+        $breadcrumbs = array_merge($this->breadcrumbs, [
+            'shops' => [
+                'route'           => 'shops.show',
+                'routeParameters' => $shop->id,
+                'name'            => $shop->code,
+                'current'         => true
+            ]
+        ]);
+
+
+        return Inertia::render(
+            'Shops/Shop',
+            [
+                'headerData' => [
+                    'module'      => $this->module,
+                    'title'       => $shop->name,
+                    'breadcrumbs' => $breadcrumbs,
+
+                ],
+                'shop'    => $shop
+            ]
+
+        );
     }
 }

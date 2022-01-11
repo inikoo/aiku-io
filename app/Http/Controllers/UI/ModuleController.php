@@ -41,7 +41,19 @@ class ModuleController extends Controller
 
                 if ($shops->count()) {
                     $options  = [];
+
                     $sections = [];
+                    foreach (Arr::get($module, 'sections', []) as $sectionRoute => $section) {
+                        $sectionPermissions = $section['permissions'] ?? false;
+
+                        if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
+                            $sections[$sectionRoute] = [
+                                'icon' => Arr::get($section, 'fa', ['fal', 'angle-right']),
+                                'name' => Arr::get($section, 'name'),
+                            ];
+                        }
+                    }
+
 
                     foreach($shops as $shop){
                         $options[$shop->id]=[

@@ -70,6 +70,13 @@ return [
 
                 'fa'          => ['fal', 'store-alt'],
                 'sections'    => [
+                    'shops.customers.index' => [
+                        'name' => 'Customers',
+                    ],
+                    'shops.orders.index' => [
+                        'name' => 'Orders',
+                    ],
+
 
 
                 ]

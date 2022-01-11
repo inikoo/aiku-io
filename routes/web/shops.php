@@ -11,6 +11,13 @@ use App\Http\Controllers\Trade\ShopsController;
 
 
 Route::get('/', [ShopsController::class, 'index'])->name('index');
+Route::get('/customers', [ShopsController::class, 'index'])->name('customers.index');
+Route::get('/orders', [ShopsController::class, 'index'])->name('orders.index');
+
+
+
+Route::get('/{id}', [ShopsController::class, 'show'])->name('show');
+
 //Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
 
 //Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
