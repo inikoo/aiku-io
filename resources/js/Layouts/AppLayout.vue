@@ -6,7 +6,9 @@
   -->
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
-
+    <span  v-for="model in modelsToWatch" >
+    {{watchCurrentModel(model)}}
+    </span>
     <div class="h-screen flex overflow-hidden bg-white">
         <!-- Static sidebar for mobile -->
         <TransitionRoot as="template" :show="sidebarOpen">
@@ -106,7 +108,7 @@
 
                         <div class="flex items-center flex-shrink-0 px-4 py-2 border-b-2 mb-2	">
                             <font-awesome-icon :icon="['fal', 'tachometer-alt-fast']" class="mr-3" aria-hidden="true"/>
-                            {{ $page.props.tenant }}
+                            {{ tenantName }} {{currentModels['shop']}}
                         </div>
 
                         <div class="flex items-center flex-shrink-0 px-4">
@@ -171,7 +173,7 @@
 
         <div class="flex flex-col min-w-0 flex-1 overflow-hidden">
 
-            <TopMenu :items="navigation" :currentRoute="route"/>
+            <TopMenu :items="navigation" :currentModels="currentModels"   />
 
 
             <div class="lg:hidden">
@@ -189,7 +191,7 @@
                 </div>
             </div>
 
-            <div class="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+            <div class="relative z-10 flex-shrink-0 flex h-6 bg-white shadow">
                 <button type="button" class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden" @click="sidebarOpen = true">
                     <span class="sr-only">Open sidebar</span>
                     <MenuAlt2Icon class="h-6 w-6" aria-hidden="true"/>
@@ -214,7 +216,7 @@
                     <div class="ml-4 flex items-center md:ml-6">
                         <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             <span class="sr-only">View notifications</span>
-                            <BellIcon class="h-6 w-6" aria-hidden="true"/>
+                            <BellIcon class="h-4 w-4" aria-hidden="true"/>
                         </button>
 
 
@@ -273,7 +275,7 @@ library.add(faBirthdayCake, faMars, faVenus);
 import TopMenu from '@/Layouts/TopMenu';
 
 // Section icons
-
+let currentModels;
 export default {
     components: {
         TopMenu,
@@ -284,12 +286,23 @@ export default {
         const sidebarOpen = ref(false);
         let secondaryNavigation = [];
 
+        const tenantName=usePage().props.value.tenant;
+        currentModels=usePage().props.value.currentModels;
+
+        console.log(currentModels)
+
         let navigation = [];
         let sections;
         const modules = usePage().props.value.modules;
+
+        let modelsToWatch=[];
         for (const module in modules) {
 
             if (module !== 'dashboard') {
+
+                if(modules[module].type==='modelOptions'){
+                    modelsToWatch.push(module)
+                }
 
                 sections = [];
                 for (const section in modules[module]['sections']) {
@@ -303,30 +316,52 @@ export default {
                     );
                 }
 
+
+                console.log(modules[module]['options'] ?? {})
+
+
                 navigation.push(
                     {
-                        name        : modules[module].name,
+
                         href        : route(modules[module]['route']),
-                        icon        : modules[module]['icon'],
-                        type        : modules[module].type,
                         sections    : sections,
                         module      : module,
+
+                        name        : modules[module].name,
+                        icon        : modules[module].icon,
+                        type        : modules[module].type,
                         currentModel: modules[module].currentModel,
                         options     : modules[module]['options'] ?? {},
-                        hasOptions  : modules[module]['options'] && Object.keys(modules[module]['options']).length > 1,
+
+                        //options     : modules[module]['options'] ?? {},
+                       // hasOptions  : modules[module]['options'] && Object.keys(modules[module]['options']).length > 1,
                     },
                 );
             }
         }
 
         return {
-            navigation, secondaryNavigation, sidebarOpen,
+            navigation, secondaryNavigation, sidebarOpen,tenantName,currentModels,modelsToWatch
         };
     }, methods: {
         __: __,
         logout() {
             this.$inertia.post(route('logout'));
         },
+        watchCurrentModel(model){
+
+
+
+
+
+            if(route().current(model + '.*')){
+                let actualModel=model
+                console.log(route().params)
+                currentModels[model]=route().params[actualModel];
+            }
+
+            return null;
+        }
     },
 
 };

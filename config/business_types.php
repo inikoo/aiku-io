@@ -73,7 +73,7 @@ return [
                 'with_options' => true,
                 'route'        => 'shops.index',
                 'permissions'  => ['shops.view'],
-                'name'         => 'Store',
+                'name'         => 'Stores',
 
                 'icon'     => ['fal', 'store-alt'],
                 'sections' => [
@@ -89,21 +89,13 @@ return [
             ],
             'shop'  => [
                 'id'          => 'shop',
+                'icon'     => ['fal', 'store-alt'],
                 'type'        => 'modelOptions',
-                'route'       => 'shops.shop.index',
+                'route'       => 'shops.index',
                 'permissions' => ['shops.view'],
                 'name'        => 'Store',
 
-                'sections' => [
-                    'shops.shop.customers.index' => [
-                        'name' => 'Customers',
-                    ],
-                    'shops.shop.orders.index'    => [
-                        'name' => 'Orders',
-                    ],
 
-
-                ]
             ],
 
 

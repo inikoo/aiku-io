@@ -54,6 +54,10 @@ Route::prefix('shops')->name('shops.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/shops.php');
 
+Route::prefix('shop')->name('shop.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__ . '/web/shop.php');
+
 Route::prefix('dropshippings')->name('dropshippings.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/dropshippings.php');

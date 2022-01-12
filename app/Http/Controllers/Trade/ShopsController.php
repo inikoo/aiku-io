@@ -38,8 +38,8 @@ class ShopsController extends Controller
 
     public function index(): Response
     {
-        $shops = QueryBuilder::for(Shop::class)
-            ->allowedSorts([ 'code', 'name'])
+        $shops = QueryBuilder::for(Shop::class)->where('type','b2b')
+            ->allowedSorts(['code', 'name'])
             ->paginate()
             ->withQueryString();
 
@@ -67,13 +67,17 @@ class ShopsController extends Controller
         });
     }
 
-    public function show($id): Response
+    public function show(Shop $shop): Response
     {
-        $shop = Shop::find($id);
+
+
+
+        session(['currentShop' => $shop->id]);
+
 
         $breadcrumbs = array_merge($this->breadcrumbs, [
             'shops' => [
-                'route'           => 'shops.show',
+                'route'           => 'shop.index',
                 'routeParameters' => $shop->id,
                 'name'            => $shop->code,
                 'current'         => true
@@ -90,7 +94,7 @@ class ShopsController extends Controller
                     'breadcrumbs' => $breadcrumbs,
 
                 ],
-                'shop'    => $shop
+                'shop'       => $shop
             ]
 
         );

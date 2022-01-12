@@ -14,18 +14,3 @@ Route::get('/', [ShopsController::class, 'index'])->name('index');
 Route::get('/customers', [ShopsController::class, 'index'])->name('customers.index');
 Route::get('/orders', [ShopsController::class, 'index'])->name('orders.index');
 
-
-Route::get('/xcustomders', [ShopsController::class, 'show'])->name('shop.index');
-
-Route::get('/xcustomers', [ShopsController::class, 'show'])->name('shop.customers.index');
-Route::get('/xorders', [ShopsController::class, 'show'])->name('shop.orders.index');
-
-//Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
-
-//Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
-//Route::get('/employees/logbook', [EmployeeController::class, 'logbook'])->name('employees.logbook');
-//Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-//Route::post('/employees/create', [EmployeeController::class, 'store'])->name('employees.store');
-
-
-//Route::get('/timesheets', [TimesheetsController::class, 'index'])->name('timesheets.index');
