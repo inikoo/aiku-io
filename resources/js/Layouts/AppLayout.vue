@@ -328,6 +328,7 @@ export default {
                         module      : module,
 
                         name        : modules[module].name,
+                        code        : modules[module].code,
                         icon        : modules[module].icon,
                         type        : modules[module].type,
                         currentModel: modules[module].currentModel,

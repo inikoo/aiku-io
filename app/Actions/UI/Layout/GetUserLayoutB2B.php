@@ -19,6 +19,8 @@ class GetUserLayoutB2B extends GetUserLayout
 
 
     private Collection $shops;
+    private Collection $dropshippings;
+
     private mixed $currentShop;
 
 
@@ -26,10 +28,12 @@ class GetUserLayoutB2B extends GetUserLayout
     {
         $this->user = $user;
 
-        $this->shops = Shop::withTrashed()->where('type', 'b2b')->get()->filter(function ($shop) use ($user) {
+        $this->shops         = Shop::withTrashed()->where('type', 'b2b')->get()->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
-
+        $this->dropshippings = Shop::withTrashed()->where('type', 'dropshipping')->get()->filter(function ($shop) use ($user) {
+            return $user->hasPermissionTo("shops.$shop->id.view");
+        });
     }
 
     #[Pure] protected function canShow($moduleKey): bool
@@ -37,6 +41,8 @@ class GetUserLayoutB2B extends GetUserLayout
         return match ($moduleKey) {
             'shops' => $this->shops->count() > 1,
             'shop' => $this->shops->count() != 0,
+            'dropshippings' => $this->dropshippings->count() > 1,
+            'dropshipping' => $this->dropshippings->count() != 0,
             default => true,
         };
     }
@@ -45,20 +51,23 @@ class GetUserLayoutB2B extends GetUserLayout
     {
         return match ($module['id']) {
             'shop' => (function () use ($module) {
-
-
-                /*
-                if ($this->currentShop) {
-                    $currentShop            = Shop::find($this->currentShop);
-                    $module['name']         = $currentShop->code;
-                    $module['currentModel'] = $currentShop->id;
-                }
-                */
                 $options = [];
-
-
-
                 foreach ($this->shops as $shop) {
+                    $options[$shop->id] = [
+                        'icon' => null,
+                        'code' => $shop->code,
+                        'name' => $shop->name
+                    ];
+                }
+
+                $module['options'] = $options;
+
+
+                return $module;
+            })(),
+            'dropshipping' => (function () use ($module) {
+                $options = [];
+                foreach ($this->dropshippings as $shop) {
                     $options[$shop->id] = [
                         'icon' => null,
                         'code' => $shop->code,

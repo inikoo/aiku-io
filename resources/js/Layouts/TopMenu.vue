@@ -5,46 +5,28 @@
   -  Version 4.0
   -->
 
+
 <template>
-
-    <div class="border-b border-gray-200 ">
-
-
-
+    <div class="border-b border-gray-200 ml-2 ">
         <span v-for="item in items" :key="item.name">
+            <span v-if="item.type==='modelOptions'" :class="[isCurrent(item.module)  ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', 'mr-4  inline-block']">
 
-
-
-            <span v-if="item.type==='modelOptions'" :class="[isCurrent(item.module)  ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', 'ml-1 mr-4  inline-block']">
-
-
-                <span v-show="isCurrent(item.module)">
-                     <font-awesome-icon
-                         v-if="item['icon']"
-                         :icon="item['icon']"
-                         :class="[isCurrent(item.module)  ? 'text-gray-800' : 'text-gray-400 group-hover:text-gray-500', 'mr-1 ']"
-                         fixed-width aria-hidden="true"/>
-                       {{ item['name'] }}
-                </span>
-
-
-                [<span v-if="currentModels[item.module]" class="mx-2 ">
-                   <Link
-                       as="button"
-                       :href="route(item.module+'.index',currentModels[item.module])"
-                   >
-                                      {{ item.options[currentModels[item.module]]['code'] }}
-                       </Link>
-                                  </span>
-
-
-                <Menu as="span" class="inline-block relative">
+                <TopMenuLink
+                    v-if=" (currentModels[item.module]  && !isCurrent(item.module+'s') ) "
+                    :href="route(item.module+'s.index')" :icon="['fal', 'bars']"/>
+                <TopMenuLink
+                    v-if="(!isCurrent(item.module+'s') && currentModels[item.module]  )"
+                    :href="route(item.module+'.index',currentModels[item.module])" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrent(item.module)"/>
+                [ <TopMenuLink
+                v-if="currentModels[item.module]"
+                :href="route(item.module+'.index',currentModels[item.module])" :label="item.options[currentModels[item.module]]['code']" :isCurrent="isCurrent(item.module)"/>
+                    <Menu as="span" class="inline-block relative ml-2">
                     <div>
                         <MenuButton>
 
 
                                 <span v-show="!currentModels[item.module]">
-                                     {{  Object.keys(item.options).length    }} <font-awesome-icon :icon="['fal', 'bars']" class="mr-1" aria-hidden="true"/>
+                                     {{ Object.keys(item.options).length }} <font-awesome-icon :icon="['fal', 'bars']" class="mr-1" aria-hidden="true"/>
                                   </span>
 
                                   <font-awesome-icon :icon="['fal', 'angle-down']" class="mr-1" aria-hidden="true"/>
@@ -62,94 +44,43 @@
                             </MenuItem>
                         </MenuItems>
                     </transition>
-                </Menu>
-
-                ]
-
-
-
+                </Menu> ]
             </span>
-            <span v-else-if="item.type==='modelIndex'" :class="[ item.type==='modelIndex' ?'':'mr-4',    'ml-2 ']">
-            <Link
-                as="button"
-                :href="item['href']"
-                :class="[isCurrent(item.module) ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', '']">
-
-                <span  v-show="isCurrent(item.module)">
-                <font-awesome-icon
-                    v-if="item['icon']"
-                    :icon="item['icon']"
-                    :class="[isCurrent(item.module)  ? 'text-gray-800' : 'text-gray-400 group-hover:text-gray-500', 'mr-1 ']"
-                    fixed-width aria-hidden="true"/>{{ item['name'] }}
-                </span>
-                <span v-show="!isCurrent(item.module)">
-                       {{ currentModels[item.module] }} <font-awesome-icon :icon="['fal', 'bars']" class="mr-1" aria-hidden="true"/>
-                </span>
-
-            </Link>
+            <span v-else-if="item.type==='modelIndex'" :class="'mr-2'">
+                <TopMenuLink v-if="(isCurrent(item.module) || !currentModels[item.module.slice(0, -1)]  )" :href="item['href']" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrent(item.module)"/>
             </span>
-            <span v-else :class="[ item.type==='modelIndex' ?'':'mr-4',    'ml-2 ']">
-            <Link
-                as="button"
-                :href="item['href']"
-                :class="[isCurrent(item.module) ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', '']">
-
-                <font-awesome-icon
-                    v-if="item['icon']"
-                    :icon="item['icon']"
-                    :class="[isCurrent(item.module)  ? 'text-gray-800' : 'text-gray-400 group-hover:text-gray-500', 'mr-1 ']"
-                    fixed-width aria-hidden="true"/>
-                       {{ item['name'] }}
-
-            </Link>
-            </span>
-
+            <TopMenuLink v-else :href="item['href']" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrent(item.module)" :class="'mr-4'"/>
         </span>
     </div>
 </template>
 
 <script>
+/* global route */
+
 
 // Aux icons
 import {faAngleDown, faBars} from '@/private/pro-light-svg-icons';
 
 library.add(faAngleDown, faBars);
-
 // Module icons
-import {faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faStore} from '@/private/pro-light-svg-icons';
+import {faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry} from '@/private/pro-light-svg-icons';
 
-library.add(faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faStore);
+library.add(faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry);
 
 import {library} from '@fortawesome/fontawesome-svg-core';
-
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {Link} from '@inertiajs/inertia-vue3';
 import {Menu, MenuButton, MenuItems, MenuItem} from '@headlessui/vue';
-
-const userNavigation = [
-    {name: 'Your Profile', href: '#'},
-    {name: 'Settings', href: '#'},
-    {name: 'Sign out', href: '#'},
-];
 import {ref} from 'vue';
+import TopMenuLink from '@/Layouts/TopMenuILink';
 
 export default {
     props     : ['items', 'currentModels'],
-    components: {
+    components: {TopMenuLink, FontAwesomeIcon, Link, Menu, MenuButton, MenuItems, MenuItem},
 
-        FontAwesomeIcon, Link, Menu, MenuButton, MenuItems, MenuItem,
-    },
-
-    setup(props) {
+    setup() {
         const sidebarOpen = ref(false);
-        let currentModels = props.currentModels;
-
-        return {
-            userNavigation,
-            sidebarOpen,
-            currentModels,
-
-        };
+        return {sidebarOpen};
     },
 
     methods: {
@@ -157,7 +88,7 @@ export default {
             this.$page.url;
             return route().current(module + '.*');
 
-        }
+        },
     },
 
 };

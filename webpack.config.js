@@ -6,6 +6,7 @@ module.exports = {
             '@': path.resolve('resources/js'),
             '@t': path.resolve('resources/js/tenants'),
             '@l': path.resolve('resources/js/landlord'),
+
         },
     },
 };

@@ -13,6 +13,7 @@ $human_resources = [
     'route'       => 'human_resources.index',
     'permissions' => ['employees.view'],
     'name'        => 'Human resources',
+    'code'        => 'HR',
     'icon'        => ['fal', 'clipboard-user'],
     'sections'    => [
         'human_resources.employees.index'  => [
@@ -34,6 +35,8 @@ $system = [
     'route'       => 'system.index',
     'permissions' => ['users.view'],
     'name'        => 'My account',
+    'code'        => 'My account',
+
     'icon'        => ['fal', 'user-circle'],
     'sections'    => [
         'system.users' => [
@@ -63,6 +66,7 @@ return [
                 'type'     => 'home',
                 'route'    => 'dashboard.index',
                 'name'     => 'Dashboard',
+                'code'     => 'Dashboard',
                 'icon'     => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
@@ -74,7 +78,7 @@ return [
                 'route'        => 'shops.index',
                 'permissions'  => ['shops.view'],
                 'name'         => 'Stores',
-
+                'code'         => 'Stores',
                 'icon'     => ['fal', 'store-alt'],
                 'sections' => [
                     'shops.customers.index' => [
@@ -89,29 +93,38 @@ return [
             ],
             'shop'  => [
                 'id'          => 'shop',
-                'icon'     => ['fal', 'store-alt'],
+                'icon'        => ['fal', 'store-alt'],
                 'type'        => 'modelOptions',
-                'route'       => 'shops.index',
                 'permissions' => ['shops.view'],
                 'name'        => 'Store',
-
+                'code'        => 'Store',
 
             ],
 
 
             'dropshippings' => [
-                'id'   => 'dropshippings',
-                'type' => 'modelIndex',
-
+                'id'          => 'dropshippings',
+                'type'        => 'modelIndex',
                 'route'       => 'dropshippings.index',
                 'permissions' => ['shops.view'],
-                'name'        => 'Dropshipping',
-                'icon'        => ['fal', 'store'],
+                'name'        => 'Dropshippings',
+                'code'        => 'DSs',
+                'icon'        => ['fal', 'person-carry'],
                 'sections'    => [
 
 
                 ]
             ],
+            'dropshipping'  => [
+                'id'          => 'dropshipping',
+                'icon'        => ['fal', 'person-carry'],
+                'type'        => 'modelOptions',
+                'permissions' => ['shops.view'],
+                'name'        => 'Dropshipping',
+                'code'        => 'DS',
+
+            ],
+
 
             'human_resources' => $human_resources,
             'system'          => $system
