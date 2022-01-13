@@ -14,9 +14,11 @@ use App\Models\Sales\Adjust;
 use App\Models\Sales\Charge;
 use App\Models\Sales\Order;
 use App\Models\Sales\ShippingSchema;
+use App\Models\Web\Website;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -90,6 +92,11 @@ class Shop extends Model implements Auditable
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function website(): HasOne
+    {
+        return $this->hasOne(Website::class);
     }
 
 }

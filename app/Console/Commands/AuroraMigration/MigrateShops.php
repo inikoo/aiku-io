@@ -12,6 +12,7 @@ use App\Actions\Migrations\MigrateCharge;
 use App\Actions\Migrations\MigrateShipper;
 use App\Actions\Migrations\MigrateShippingSchema;
 use App\Actions\Migrations\MigrateShop;
+use App\Actions\Migrations\MigrateWebsite;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +41,8 @@ class MigrateShops extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Shipper Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Website Dimension')
+            ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
@@ -48,6 +51,7 @@ class MigrateShops extends MigrateAurora
         $count += DB::connection('aurora')->table('Shipping Zone Schema Dimension')->count();
         $count += DB::connection('aurora')->table('Charge Dimension')->count();
         $count += DB::connection('aurora')->table('Shipper Dimension')->count();
+        $count += DB::connection('aurora')->table('Website Dimension')->count();
 
         return $count;
     }
@@ -75,15 +79,16 @@ class MigrateShops extends MigrateAurora
                 $result = MigrateCharge::run($auroraChargeData);
                 $this->recordAction($tenant, $result);
             }
-
         }
 
         foreach (DB::connection('aurora')->table('Shipper Dimension')->get() as $auroraShipperData) {
             $result = MigrateShipper::run($auroraShipperData);
             $this->recordAction($tenant, $result);
+        }
 
-
-
+        foreach (DB::connection('aurora')->table('Website Dimension')->get() as $auroraWebsiteData) {
+            $result = MigrateWebsite::run($auroraWebsiteData);
+            $this->recordAction($tenant, $result);
         }
 
     }
