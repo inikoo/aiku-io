@@ -7,10 +7,6 @@
 
 <template>
     <page-header :headerData="headerData"/>
-
-
-
-
 </template>
 
 <script>

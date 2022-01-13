@@ -62,6 +62,7 @@ class HandleInertiaTenantsRequests extends Middleware
         Session::forget('redirectFromLogin');
 
 
+
         return array_merge(parent::share($request), $firstLoadOnlyProps, [
 
             'auth.user' => fn() => $request->user()

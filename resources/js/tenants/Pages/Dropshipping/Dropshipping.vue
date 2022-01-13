@@ -1,6 +1,6 @@
 <!--
   -  Author: Raul Perusquia <raul@inikoo.com>
-  -  Created: Tue, 11 Jan 2022 04:52:11 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Created: Thu, 13 Jan 2022 05:00:04 Malaysia Time, Kuala Lumpur, Malaysia
   -  Copyright (c) 2022, Inikoo
   -  Version 4.0
   -->
@@ -11,12 +11,16 @@
 
 <script>
 import PageHeader from '@/Layouts/PageHeader';
+import Card from '@/Components/DataDisplay/Card';
 
 export default {
     components: {
-        PageHeader,
+        PageHeader,Card
     },
-    props     : ['headerData'],
+
+    props: ['headerData', 'shop'],
 
 };
 </script>
+
+

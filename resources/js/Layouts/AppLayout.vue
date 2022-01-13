@@ -108,7 +108,7 @@
 
                         <div class="flex items-center flex-shrink-0 px-4 py-2 border-b-2 mb-2	">
                             <font-awesome-icon :icon="['fal', 'tachometer-alt-fast']" class="mr-3" aria-hidden="true"/>
-                            {{ tenantName }} {{currentModels['shop']}}
+                            {{ tenantName }}
                         </div>
 
                         <div class="flex items-center flex-shrink-0 px-4">
@@ -289,7 +289,7 @@ export default {
         const tenantName=usePage().props.value.tenant;
         currentModels=usePage().props.value.currentModels;
 
-        console.log(currentModels)
+
 
         let navigation = [];
         let sections;
@@ -315,9 +315,6 @@ export default {
                         },
                     );
                 }
-
-
-                console.log(modules[module]['options'] ?? {})
 
 
                 navigation.push(
@@ -352,12 +349,13 @@ export default {
         watchCurrentModel(model){
 
 
-
-
-
             if(route().current(model + '.*')){
                 let actualModel=model
-                console.log(route().params)
+                if(model==='dropshipping' || model==='fulfilment'){
+                    actualModel='shop';
+                }
+
+
                 currentModels[model]=route().params[actualModel];
             }
 

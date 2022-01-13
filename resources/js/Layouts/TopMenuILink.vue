@@ -16,6 +16,7 @@
             v-if="icon"
             :icon="icon"
             :class="[isCurrent  ? 'text-gray-800' : 'text-gray-400 group-hover:text-gray-500', 'mr-1 ']"
+            fixed-width
              aria-hidden="true"/> {{ label }}
 
 

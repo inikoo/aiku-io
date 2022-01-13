@@ -17,9 +17,13 @@
                 <TopMenuLink
                     v-if="(!isCurrent(item.module+'s') && currentModels[item.module]  )"
                     :href="route(item.module+'.index',currentModels[item.module])" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrent(item.module)"/>
+
                 [ <TopMenuLink
                 v-if="currentModels[item.module]"
-                :href="route(item.module+'.index',currentModels[item.module])" :label="item.options[currentModels[item.module]]['code']" :isCurrent="isCurrent(item.module)"/>
+                :href="route(item.module+'.index',currentModels[item.module])"
+                :label="item.options[
+                    currentModels[item.module]]
+                    ['code']" :isCurrent="isCurrent(item.module)"/>
                     <Menu as="span" class="inline-block relative ml-2">
                     <div>
                         <MenuButton>
@@ -78,7 +82,11 @@ export default {
     props     : ['items', 'currentModels'],
     components: {TopMenuLink, FontAwesomeIcon, Link, Menu, MenuButton, MenuItems, MenuItem},
 
-    setup() {
+    setup(props) {
+        console.log(props.items)
+
+        console.log(props.currentModels)
+
         const sidebarOpen = ref(false);
         return {sidebarOpen};
     },

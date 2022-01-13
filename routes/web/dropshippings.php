@@ -6,10 +6,10 @@
  *  Version 4.0
  */
 
-use App\Http\Controllers\Trade\ShopsController;
+use App\Http\Controllers\Dropshipping\DropshippingShopController;
 
 
-Route::get('/', [ShopsController::class, 'index'])->name('index');
+Route::get('/', [DropshippingShopController::class, 'index'])->name('index');
 //Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
 
 //Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');

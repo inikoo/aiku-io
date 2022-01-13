@@ -21,7 +21,6 @@ class GetUserLayoutB2B extends GetUserLayout
     private Collection $shops;
     private Collection $dropshippings;
 
-    private mixed $currentShop;
 
 
     protected function initialize($user)

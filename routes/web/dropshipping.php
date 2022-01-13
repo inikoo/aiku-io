@@ -6,10 +6,9 @@
  *  Version 4.0
  */
 
-use App\Http\Controllers\Trade\ShopsController;
+use App\Http\Controllers\Dropshipping\DropshippingShopController;
 
 
-Route::get('/{shop}', [ShopsController::class, 'show'])->name('index');
-Route::get('/customers', [ShopsController::class, 'index'])->name('customers.index');
-Route::get('/orders', [ShopsController::class, 'index'])->name('orders.index');
+Route::get('/{shop}', [DropshippingShopController::class, 'show'])->name('index');
+
 
