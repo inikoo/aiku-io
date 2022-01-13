@@ -53,7 +53,7 @@ class Customer extends Model implements Auditable
     {
         static::created(
             function (Customer $customer) {
-                if($customer->shop->type=='fulfilment'){
+                if($customer->shop->type=='fulfilment_house'){
                     $customer->fulfilmentCustomer()->create(
                         [
                             'aurora_id'=>$customer->aurora_customer_id
@@ -64,7 +64,7 @@ class Customer extends Model implements Auditable
         );
         static::deleted(
             function (Customer $customer) {
-                if($customer->shop->type=='fulfilment'){
+                if($customer->shop->type=='fulfilment_house'){
                     $customer->fulfilmentCustomer()->delete();
                 }
             }

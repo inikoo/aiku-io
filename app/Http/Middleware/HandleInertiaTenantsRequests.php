@@ -43,33 +43,29 @@ class HandleInertiaTenantsRequests extends Middleware
     public function share(Request $request): array
     {
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
-            'tenant'  => app('currentTenant')->name,
-            'appType' => app('currentTenant')->businessType->slug,
-            'modules' => function () use ($request) {
+            'tenant'        => app('currentTenant')->name,
+            'appType'       => app('currentTenant')->businessType->slug,
+            'modules'       => function () use ($request) {
                 /** @var \App\Models\Account\BusinessType $businessType */
                 $businessType = app('currentTenant')->businessType;
 
                 return $businessType->getUserLayout($request->user());
             },
             'currentModels' => fn() => [
-                'shop' => session('currentShop'),
-                'dropshipping' => session('currentDropshipping'),
-                'fulfilment' => session('currentFulfilment'),
-                'warehouse' => session('currentWarehouse')
+                'shop'             => session('currentShop'),
+                'fulfilment_house' => session('currentFulfilmentHouse'),
+                'warehouse'        => session('currentWarehouse'),
+                'website'          => session('currentWebsite')
             ]
         ] : [];
 
         Session::forget('redirectFromLogin');
-
-
 
         return array_merge(parent::share($request), $firstLoadOnlyProps, [
 
             'auth.user' => fn() => $request->user()
                 ? $request->user()->only('id', 'name', 'email')
                 : null,
-
-
 
 
         ]);

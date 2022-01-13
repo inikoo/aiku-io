@@ -23,13 +23,15 @@ use App\Actions\UI\WithInertia;
 use function __;
 use function data_set;
 
+/**
+ * @property Shop $shop
+ * @property string $module
+ */
 class ShopIndex
 {
     use AsAction;
     use WithInertia;
 
-    protected string $module;
-    protected array $breadcrumbs;
 
 
     public function handle(): LengthAwarePaginator
@@ -51,7 +53,7 @@ class ShopIndex
         return [
             'module' => [
                 'required',
-                Rule::in(['shops', 'dropshippings', 'fulfilments']),
+                Rule::in(['shops', 'fulfilment_houses']),
             ],
 
 
@@ -95,22 +97,20 @@ class ShopIndex
     public function prepareForValidation(ActionRequest $request): void
     {
 
-        $module=$this->get('module');
+
         $request->merge(
             [
-                'page'  => match ($module) {
-                    'fulfilments' => 'Fulfilments/Fulfilments',
+                'page'  => match ($this->module) {
+                    'fulfilment_houses' => 'FulfilmentHouses/FulfilmentHouses',
                     default => 'Shops/Shops',
                 },
-                'title' => match ($module) {
-                    'dropshippings' => __('Dropshipping providers'),
-                    'fulfilments' => __('Fulfilment providers'),
+                'title' => match ($this->module) {
+                    'fulfilment_houses' => __('Fulfilment houses'),
                     default => __('Stores'),
                 },
-                'type'=>match ($module) {
-                    'dropshippings' => 'dropshipping',
-                    'fulfilments' => 'fulfilment',
-                    default => 'b2b'
+                'type'=>match ($this->module) {
+                    'fulfilment_houses' => 'fulfilment_house',
+                    default => 'shop'
                 }
 
             ]
@@ -128,7 +128,7 @@ class ShopIndex
 
         return [
             'index' => [
-                'route'   => $this->get('module').'.index',
+                'route'   => $this->module.'.index',
                 'name'    => $this->get('title'),
                 'current' => false
             ],

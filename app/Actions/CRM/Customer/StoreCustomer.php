@@ -47,8 +47,8 @@ class StoreCustomer
             }
         }
 
-        if (class_basename($vendor::class) == 'Shop'   ) {
-            if(!$delivery_address_id and $vendor->type!='dropshipping'){
+        if (class_basename($vendor::class) == 'Shops'   ) {
+            if(!$delivery_address_id and $vendor->type=='shop'){
                 $delivery_address_id=$billing_address_id;
             }
         }

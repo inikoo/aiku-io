@@ -17,7 +17,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
-
 /**
  * @property Shop $shop
  * @property string $module
@@ -27,8 +26,6 @@ class ShowShop
 {
     use AsAction;
     use WithInertia;
-
-
 
 
     public function handle()
@@ -43,13 +40,9 @@ class ShowShop
 
     public function afterValidator(): void
     {
-
-
-
-      if($this->shop->type!=$this->type){
-          abort(422,"Store is not the correct type $this->type, has {$this->shop->type} ");
-      }
-
+        if ($this->shop->type != $this->type) {
+            abort(422, "Store is not the correct type $this->type, has {$this->shop->type} ");
+        }
     }
 
 
@@ -58,8 +51,6 @@ class ShowShop
         $this->set('shop', $shop)->set('module', $module)->fill($attributes);
 
         $this->validateAttributes();
-
-
 
 
         session(['current'.ucfirst($module) => $shop->id]);
@@ -84,15 +75,11 @@ class ShowShop
     {
         $request->merge(
             [
-                'page' => match ($this->module) {
-                    'fulfilments' => 'Fulfilment/Shop',
-                    default => 'Shop/Shop',
+                'page'  => match ($this->module) {
+                    'fulfilment_houses' => 'FulfilmentHouses/FulfilmentHouse',
+                    default => 'Shops/Shop',
                 },
-                'type'=>match ($this->module) {
-                    'dropshipping' => 'dropshipping',
-                    'fulfilment' => 'fulfilment',
-                    default => 'b2b'
-                }
+                'type' => $this->module
 
             ]
         );
@@ -111,16 +98,14 @@ class ShowShop
         return array_merge(
             (new ShopIndex())->getBreadcrumbs($this->module.'s'),
             [
-              'shop' => [
-                  'route'           => $this->module.'.index',
-                  'routeParameters' => $shop->id,
-                  'name'            => $shop->code,
-                  'current'         => false
-              ],
-          ]
+                'shop' => [
+                    'route'           => $this->module.'.index',
+                    'routeParameters' => $shop->id,
+                    'name'            => $shop->code,
+                    'current'         => false
+                ],
+            ]
         );
-
-
     }
 
 

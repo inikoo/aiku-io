@@ -89,7 +89,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Session Cache Shop
+    | Session Cache Shops
     |--------------------------------------------------------------------------
     |
     | While using one of the framework's cache driven session backends you may

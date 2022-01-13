@@ -50,7 +50,7 @@ class Product extends Model implements Auditable
         $vendor=$this->vendor;
 
         $prefix=match ($this->vendor_type){
-            'Shop'=>'shp',
+            'Shops'=>'shp',
             'Supplier'=>'supplier',
             default=>strtolower($this->vendor_type)
         };

@@ -43,9 +43,15 @@ class MigrateShop extends MigrateModel
             ]
         );
 
+
         $this->modelData['shop'] = $this->sanitizeData(
             [
-                'type'        => strtolower($this->auModel->data->{'Store Type'}),
+                'type'        =>
+                    match ($this->auModel->data->{'Store Type'}) {
+                        'Dropshipping', 'Fulfilment' => 'fulfilment_house',
+                        default => 'shop'
+                    },
+                'subtype'     => strtolower($this->auModel->data->{'Store Type'}),
                 'name'        => $this->auModel->data->{'Store Name'},
                 'code'        => strtolower($this->auModel->data->{'Store Code'}),
                 'language_id' => $this->parseLanguageID($this->auModel->data->{'Store Locale'}),
@@ -59,7 +65,7 @@ class MigrateShop extends MigrateModel
 
             ]
         );
-        $this->auModel->id       = $this->auModel->data->{'Store Key'};
+        $this->auModel->id          = $this->auModel->data->{'Store Key'};
     }
 
 

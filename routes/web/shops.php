@@ -7,10 +7,10 @@
  */
 
 
-use App\Http\Controllers\B2BShops\B2BShopController;
+use App\Http\Controllers\Shop\ShopController;
 
 
-Route::get('/', [B2BShopController::class, 'index'])->name('index');
-Route::get('/customers', [B2BShopController::class, 'index'])->name('customers.index');
-Route::get('/orders', [B2BShopController::class, 'index'])->name('orders.index');
+Route::get('/', [ShopController::class, 'index'])->name('index');
+Route::get('/customers', [ShopController::class, 'index'])->name('customers.index');
+Route::get('/orders', [ShopController::class, 'index'])->name('orders.index');
 

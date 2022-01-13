@@ -48,7 +48,7 @@ class AppServiceProvider extends ServiceProvider
                 'Product'        => 'App\Models\Trade\Product',
                 'Agent'          => 'App\Models\Buying\Agent',
                 'Supplier'       => 'App\Models\Buying\Supplier',
-                'Shop'           => 'App\Models\Trade\Shop',
+                'Shops'           => 'App\Models\Trade\Shop',
                 'Adjust'         => 'App\Models\Sales\Adjust',
                 'Shipper'        => 'App\Models\Delivery\Shipper',
                 'DeliveryNote'   => 'App\Models\Delivery\DeliveryNote',

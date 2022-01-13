@@ -28,7 +28,20 @@ class GetUserLayout
 
         foreach ($modulesScaffolding as $moduleKey => $module) {
             $modulePermissions = $module['permissions'] ?? false;
-            if ($modulePermissions and $user->hasAnyPermission($modulePermissions) and $this->canShow($moduleKey)) {
+
+
+            if (
+                $module['type'] == 'modelOptions'
+
+                or
+
+                (
+                    $modulePermissions and
+                    $user->hasAnyPermission($modulePermissions) and
+                    $this->canShow($moduleKey)
+                )
+
+            ) {
                 $module = $this->prepareModule($module);
 
 

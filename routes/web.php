@@ -58,13 +58,13 @@ Route::prefix('shop')->name('shop.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/shop.php');
 
-Route::prefix('dropshippings')->name('dropshippings.')
+Route::prefix('fulfilment_houses')->name('fulfilment_houses.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/dropshippings.php');
+    ->group(__DIR__ . '/web/fulfilment_houses.php');
 
-Route::prefix('dropshipping')->name('dropshipping.')
+Route::prefix('fulfilment_house')->name('fulfilment_house.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/dropshipping.php');
+    ->group(__DIR__ . '/web/fulfilment_house.php');
 
 
 Route::middleware(['auth', 'verified'])->get('/profile', function () {

@@ -37,7 +37,7 @@ class MigrateOrder extends MigrateModel
 
     public function getParent(): Customer
     {
-        //return Shop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Store Key'});
+        //return Shops::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Store Key'});
         if ($this->auModel->data->{'Order Customer Client Key'} != '') {
             $parent = Customer::withTrashed()->firstWhere('aurora_customer_client_id', $this->auModel->data->{'Order Customer Client Key'});
         } else {
@@ -53,7 +53,7 @@ class MigrateOrder extends MigrateModel
         if (
             $parent->trashed() or
             (
-                $parent->shop->type == 'dropshipping' and
+                $parent->shop->type == 'fulfilment_house' and
                 !$this->auModel->data->{'Order Customer Client Key'})
         ) {
             $this->ignore = true;

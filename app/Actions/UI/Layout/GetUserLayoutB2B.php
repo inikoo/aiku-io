@@ -19,7 +19,7 @@ class GetUserLayoutB2B extends GetUserLayout
 
 
     private Collection $shops;
-    private Collection $dropshippings;
+    private Collection $fulfilmentHouses;
 
 
 
@@ -27,12 +27,14 @@ class GetUserLayoutB2B extends GetUserLayout
     {
         $this->user = $user;
 
-        $this->shops         = Shop::withTrashed()->where('type', 'b2b')->get()->filter(function ($shop) use ($user) {
+        $this->shops         = Shop::withTrashed()->where('type', 'shop')->get()->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
-        $this->dropshippings = Shop::withTrashed()->where('type', 'dropshipping')->get()->filter(function ($shop) use ($user) {
+        $this->fulfilmentHouses = Shop::withTrashed()->where('type', 'fulfilment_house')->get()->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
+
+
     }
 
     #[Pure] protected function canShow($moduleKey): bool
@@ -40,8 +42,8 @@ class GetUserLayoutB2B extends GetUserLayout
         return match ($moduleKey) {
             'shops' => $this->shops->count() > 1,
             'shop' => $this->shops->count() != 0,
-            'dropshippings' => $this->dropshippings->count() > 1,
-            'dropshipping' => $this->dropshippings->count() != 0,
+            'fulfilment_houses' => $this->fulfilmentHouses->count() > 1,
+            'fulfilment_house' => $this->fulfilmentHouses->count() != 0,
             default => true,
         };
     }
@@ -64,9 +66,9 @@ class GetUserLayoutB2B extends GetUserLayout
 
                 return $module;
             })(),
-            'dropshipping' => (function () use ($module) {
+            'fulfilment_house' => (function () use ($module) {
                 $options = [];
-                foreach ($this->dropshippings as $shop) {
+                foreach ($this->fulfilmentHouses as $shop) {
                     $options[$shop->id] = [
                         'icon' => null,
                         'code' => $shop->code,

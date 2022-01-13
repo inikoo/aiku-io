@@ -25,7 +25,7 @@ class CreateCustomersTable extends Migration
             $table->enum('state',['in-process','active','losing','lost','registered'])->index()->nullable();
             $table->unsignedBigInteger('billing_address_id')->nullable()->index();
             $table->foreign('billing_address_id')->references('id')->on('addresses');
-            $table->unsignedBigInteger('delivery_address_id')->nullable()->index()->comment('null for dropshipping customers');
+            $table->unsignedBigInteger('delivery_address_id')->nullable()->index()->comment('null for fulfilment customers');
             $table->foreign('delivery_address_id')->references('id')->on('addresses');
 
 

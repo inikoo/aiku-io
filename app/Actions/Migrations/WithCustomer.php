@@ -63,7 +63,7 @@ trait WithCustomer
             }
 
             $result->model->delivery_address_id = null;
-            if ($result->model->vendor_type == 'Shop' and $result->model->vendor->type != 'dropshipping') {
+            if ($result->model->vendor_type == 'Shops' and $result->model->vendor->type == 'shop') {
                 $result->model->delivery_address_id = $result->model->billing_address_id;
             }
             $result->model->save();

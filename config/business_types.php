@@ -95,33 +95,31 @@ return [
                 'id'          => 'shop',
                 'icon'        => ['fal', 'store-alt'],
                 'type'        => 'modelOptions',
-                'permissions' => ['shops.view'],
                 'name'        => 'Store',
                 'code'        => 'Store',
 
             ],
 
 
-            'dropshippings' => [
-                'id'          => 'dropshippings',
+            'fulfilment_houses' => [
+                'id'          => 'fulfilment_houses',
                 'type'        => 'modelIndex',
-                'route'       => 'dropshippings.index',
+                'route'       => 'fulfilment_houses.index',
                 'permissions' => ['shops.view'],
-                'name'        => 'Dropshippings',
-                'code'        => 'DSs',
+                'name'        => 'Fulfilment houses',
+                'code'        => 'FHs',
                 'icon'        => ['fal', 'person-carry'],
                 'sections'    => [
 
 
                 ]
             ],
-            'dropshipping'  => [
-                'id'          => 'dropshipping',
+            'fulfilment_house'  => [
+                'id'          => 'fulfilment_house',
                 'icon'        => ['fal', 'person-carry'],
                 'type'        => 'modelOptions',
-                'permissions' => ['shops.view'],
-                'name'        => 'Dropshipping',
-                'code'        => 'DS',
+                'name'        => 'Fulfilment',
+                'code'        => 'FH',
 
             ],
 
@@ -217,7 +215,7 @@ return [
 
         ],
         'model_permissions' => [
-            'Shop'      => [
+            'Shops'      => [
                 'shops.#.*',
                 'shops.#.view',
                 'shops.#.edit',
@@ -487,7 +485,7 @@ return [
 
         ],
         'model_roles' => [
-            'Shop'      => [
+            'Shops'      => [
                 'shops-#-admin'             =>
                     [
                         'shops.#.*',

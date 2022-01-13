@@ -351,7 +351,7 @@ export default {
 
             if(route().current(model + '.*')){
                 let actualModel=model
-                if(model==='dropshipping' || model==='fulfilment'){
+                if(model==='fulfilment_house'){
                     actualModel='shop';
                 }
 

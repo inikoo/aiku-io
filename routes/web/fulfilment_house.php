@@ -6,9 +6,9 @@
  *  Version 4.0
  */
 
-use App\Http\Controllers\Dropshipping\DropshippingShopController;
+use App\Http\Controllers\FulfilmentHouse\FulfilmentHouseController;
 
 
-Route::get('/{shop}', [DropshippingShopController::class, 'show'])->name('index');
+Route::get('/{shop}', [FulfilmentHouseController::class, 'show'])->name('index');
 
 

@@ -139,9 +139,9 @@ class MigrateCustomer extends MigrateModel
         /** @var Customer $customer */
         $customer = $this->model;
 
-        if ($customer->vendor_type == 'Shop') {
+        if ($customer->vendor_type == 'Shops') {
 
-            if($customer->shop->type=='fulfilment'){
+            if($customer->shop->type=='fulfilment_house'){
 
                 if($res->status=='inserted'){
 
