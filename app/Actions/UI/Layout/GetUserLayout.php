@@ -31,15 +31,16 @@ class GetUserLayout
 
 
             if (
-                $module['type'] == 'modelOptions'
-
-                or
-
-                (
-                    $modulePermissions and
-                    $user->hasAnyPermission($modulePermissions) and
-                    $this->canShow($moduleKey)
+                $this->canShow($moduleKey)
+                and (
+                    $module['type'] == 'modelOptions'
+                    or
+                    (
+                        $modulePermissions and
+                        $user->hasAnyPermission($modulePermissions)
+                    )
                 )
+
 
             ) {
                 $module = $this->prepareModule($module);

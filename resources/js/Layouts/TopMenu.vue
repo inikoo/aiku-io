@@ -67,9 +67,9 @@ import {faAngleDown, faBars} from '@/private/pro-light-svg-icons';
 
 library.add(faAngleDown, faBars);
 // Module icons
-import {faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry} from '@/private/pro-light-svg-icons';
+import {faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry, faGlobe} from '@/private/pro-light-svg-icons';
 
-library.add(faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry);
+library.add(faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry, faGlobe);
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -83,9 +83,9 @@ export default {
     components: {TopMenuLink, FontAwesomeIcon, Link, Menu, MenuButton, MenuItems, MenuItem},
 
     setup(props) {
-        console.log(props.items)
+        console.log(props.items);
 
-        console.log(props.currentModels)
+        console.log(props.currentModels);
 
         const sidebarOpen = ref(false);
         return {sidebarOpen};

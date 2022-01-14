@@ -8,9 +8,13 @@
 
 namespace App\Actions\Web\Website;
 
+use App\Models\System\Permission;
+use App\Models\System\Role;
 use App\Models\Utils\ActionResult;
 use App\Models\Trade\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Spatie\Multitenancy\Models\Tenant;
+use Spatie\Permission\PermissionRegistrar;
 
 
 class StoreWebsite
@@ -23,6 +27,28 @@ class StoreWebsite
 
         /** @var \App\Models\Web\Website $website */
         $website = $shop->website()->create($data);
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        /** @var \App\Models\Account\Tenant $tenant */
+        $tenant      = Tenant::current();
+        $permissions = collect(config("business_types.{$tenant->businessType->slug}.model_permissions.Website"))->map(function ($name) use ($shop) {
+            return preg_replace('/#/', $shop->id, $name);
+        });
+        $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
+            Permission::create(['name' => $permission]);
+        });
+
+        $roles = collect(config("business_types.{$tenant->businessType->slug}.model_roles.Website"))->map(function ($name) use ($shop) {
+            return preg_replace('/#/', $shop->id, $name);
+        });
+
+        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) use ($shop) {
+            Role::create(['name' => preg_replace('/#/', $shop->id, $role)]);
+        });
+        $roles->each(function ($permissions, $role_name) use ($shop) {
+            Role::where('name', preg_replace('/#/', $shop->id, $role_name))->first()->syncPermissions($permissions);
+        });
+
 
         $res->model    = $website;
         $res->model_id = $website->id;

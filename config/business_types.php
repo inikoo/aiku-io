@@ -37,8 +37,8 @@ $system = [
     'name'        => 'My account',
     'code'        => 'My account',
 
-    'icon'        => ['fal', 'user-circle'],
-    'sections'    => [
+    'icon'     => ['fal', 'user-circle'],
+    'sections' => [
         'system.users' => [
             'name' => 'Users',
         ],
@@ -79,8 +79,8 @@ return [
                 'permissions'  => ['shops.view'],
                 'name'         => 'Stores',
                 'code'         => 'Stores',
-                'icon'     => ['fal', 'store-alt'],
-                'sections' => [
+                'icon'         => ['fal', 'store-alt'],
+                'sections'     => [
                     'shops.customers.index' => [
                         'name' => 'Customers',
                     ],
@@ -92,11 +92,11 @@ return [
                 ]
             ],
             'shop'  => [
-                'id'          => 'shop',
-                'icon'        => ['fal', 'store-alt'],
-                'type'        => 'modelOptions',
-                'name'        => 'Store',
-                'code'        => 'Store',
+                'id'   => 'shop',
+                'icon' => ['fal', 'store-alt'],
+                'type' => 'modelOptions',
+                'name' => 'Store',
+                'code' => 'Store',
 
             ],
 
@@ -115,14 +115,34 @@ return [
                 ]
             ],
             'fulfilment_house'  => [
-                'id'          => 'fulfilment_house',
-                'icon'        => ['fal', 'person-carry'],
-                'type'        => 'modelOptions',
-                'name'        => 'Fulfilment',
-                'code'        => 'FH',
+                'id'   => 'fulfilment_house',
+                'icon' => ['fal', 'person-carry'],
+                'type' => 'modelOptions',
+                'name' => 'Fulfilment',
+                'code' => 'FH',
 
             ],
 
+            'websites' => [
+                'id'           => 'websites',
+                'type'         => 'modelIndex',
+                'with_options' => true,
+                'route'        => 'websites.index',
+                'permissions'  => ['websites.view'],
+                'name'         => 'Websites',
+                'code'         => 'Websites',
+                'icon'         => ['fal', 'globe'],
+
+
+            ],
+            'website'  => [
+                'id'   => 'website',
+                'icon' => ['fal', 'globe'],
+                'type' => 'modelOptions',
+                'name' => 'Website',
+                'code' => 'Website',
+
+            ],
 
             'human_resources' => $human_resources,
             'system'          => $system
@@ -175,11 +195,12 @@ return [
             'shops.broadcasting.send',
             'shops.broadcasting.delete',
 
-            'shops.website.*',
-            'shops.website.view',
-            'shops.website.edit',
-            'shops.website.publish',
-            'shops.website.delete',
+
+            'websites.*',
+            'websites.view',
+            'websites.edit',
+            'websites.publish',
+            'websites.delete',
 
 
             'accounts.*',
@@ -215,7 +236,7 @@ return [
 
         ],
         'model_permissions' => [
-            'Shops'      => [
+            'Shop'     => [
                 'shops.#.*',
                 'shops.#.view',
                 'shops.#.edit',
@@ -245,6 +266,20 @@ return [
 
 
             ],
+
+            'Website'     => [
+
+
+                'websites.#.*',
+                'websites.#.view',
+                'websites.#.edit',
+                'websites.#.publish',
+                'websites.#.delete',
+
+
+            ],
+
+
             'Warehouse' => [
                 'warehouse.#.*',
                 'warehouse.#.view',
@@ -391,6 +426,7 @@ return [
                 'suppliers.*',
                 'production.*',
                 'shops.*',
+                'websites.*',
                 'warehouses.*',
                 'accounts.*',
             ],
@@ -485,7 +521,7 @@ return [
 
         ],
         'model_roles' => [
-            'Shops'      => [
+            'Shop'     => [
                 'shops-#-admin'             =>
                     [
                         'shops.#.*',
@@ -506,6 +542,19 @@ return [
                         'shops.#.customers.view',
                         'shops.#.customers.edit',
                     ]
+            ],
+            'Website'     => [
+                'websites-#-admin'             =>
+                    [
+                        'websites.#.*',
+                    ],
+                'websites-#-clerk'             =>
+                    [
+                        'websites.#.edit',
+                        'websites.#.view',
+                        'websites.#.publish',
+                    ],
+
             ],
             'Warehouse' => [
                 'distribution-warehouse-#-admin' =>

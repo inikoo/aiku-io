@@ -1,6 +1,6 @@
 <!--
   -  Author: Raul Perusquia <raul@inikoo.com>
-  -  Created: Thu, 13 Jan 2022 22:03:43 Malaysia Time, Kuala Lumpur, Malaysia
+  -  Created: Fri, 14 Jan 2022 14:44:28 Malaysia Time, Kuala Lumpur, Malaysia
   -  Copyright (c) 2022, Inikoo
   -  Version 4.0
   -->
@@ -14,25 +14,23 @@
         :search="queryBuilderProps.search"
         :columns="queryBuilderProps.columns"
         :on-update="setQueryBuilder"
-        :meta="shops"
+        :meta="websites"
     >
 
         <template #head>
             <tr>
-
                 <HeaderCell :cell="sortableHeader('code')">Code</HeaderCell>
                 <HeaderCell :cell="sortableHeader('name')">Name</HeaderCell>
-
-
+                <HeaderCell :cell="sortableHeader('url')">Url</HeaderCell>
             </tr>
         </template>
 
         <template #body>
-            <tr v-for="shop in shops.data" :key="shop.id">
+            <tr v-for="website in websites.data" :key="website.id">
 
-                <td><Link :href="route('fulfilment_house.index',shop.id)">{{ shop.code }}</Link></td>
-
-                <td>{{ shop.name }}</td>
+                <td><Link :href="route('website.index',website.id)">{{ website.code }}</Link></td>
+                <td>{{ website.name }}</td>
+                <td>{{ website.url }}</td>
 
             </tr>
         </template>
@@ -49,7 +47,7 @@ export default {
     components: {
         PageHeader,Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link
     },
-    props     : ['headerData','shops'],
+    props     : ['headerData','websites'],
 
 };
 </script>

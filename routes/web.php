@@ -66,6 +66,14 @@ Route::prefix('fulfilment_house')->name('fulfilment_house.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__ . '/web/fulfilment_house.php');
 
+Route::prefix('websites')->name('websites.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__ . '/web/websites.php');
+
+Route::prefix('website')->name('website.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__ . '/web/website.php');
+
 
 Route::middleware(['auth', 'verified'])->get('/profile', function () {
     return Inertia::render('Profile');

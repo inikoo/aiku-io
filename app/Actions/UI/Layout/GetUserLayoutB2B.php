@@ -9,6 +9,7 @@
 namespace App\Actions\UI\Layout;
 
 use App\Models\Trade\Shop;
+use App\Models\Web\Website;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -20,7 +21,7 @@ class GetUserLayoutB2B extends GetUserLayout
 
     private Collection $shops;
     private Collection $fulfilmentHouses;
-
+    private Collection $websites;
 
 
     protected function initialize($user)
@@ -33,17 +34,23 @@ class GetUserLayoutB2B extends GetUserLayout
         $this->fulfilmentHouses = Shop::withTrashed()->where('type', 'fulfilment_house')->get()->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
+        $this->websites         = Website::withTrashed()->get()->filter(function ($website) use ($user) {
+            return $user->hasPermissionTo("websites.$website->id.view");
+        });
 
 
     }
 
     #[Pure] protected function canShow($moduleKey): bool
     {
+
         return match ($moduleKey) {
             'shops' => $this->shops->count() > 1,
-            'shop' => $this->shops->count() != 0,
+            'shop' => $this->shops->count() > 0,
             'fulfilment_houses' => $this->fulfilmentHouses->count() > 1,
-            'fulfilment_house' => $this->fulfilmentHouses->count() != 0,
+            'fulfilment_house' => $this->fulfilmentHouses->count() > 0,
+            'websites' => $this->websites->count() > 1,
+            'website' => $this->websites->count() > 0,
             default => true,
         };
     }
@@ -81,7 +88,21 @@ class GetUserLayoutB2B extends GetUserLayout
 
                 return $module;
             })(),
+            'website' => (function () use ($module) {
+                $options = [];
+                foreach ($this->websites as $website) {
+                    $options[$website->id] = [
+                        'icon' => null,
+                        'code' => $website->code,
+                        'name' => $website->name
+                    ];
+                }
 
+                $module['options'] = $options;
+
+
+                return $module;
+            })(),
             default => $module,
         };
     }
