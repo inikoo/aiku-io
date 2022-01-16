@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Web;
 
 
 use App\Actions\Web\Website\ShowWebsite;
-use App\Actions\Web\Website\WebsiteIndex;
+use App\Actions\Web\Website\IndexWebsite;
 use App\Http\Controllers\Controller;
 use App\Models\Web\Website;
 use Inertia\Response;
@@ -22,7 +22,7 @@ class WebController extends Controller
 
     public function index(): Response
     {
-        return WebsiteIndex::make()->asInertia();
+        return IndexWebsite::make()->asInertia();
     }
 
     public function show(Website $website): Response

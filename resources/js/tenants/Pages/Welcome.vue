@@ -6,10 +6,17 @@
         <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 
 
+                <div class="mx-auto ">
+                    <font-awesome-icon :icon="['fad', 'dice-d10']" class="ml-4" size="2x" /> <span class="ml-4 text-3xl font-light tracking-tighter">{{tenantCode}}@aiku</span>
+                </div>
+
+
+
             <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
 
-    
+
+
 
                     <form class="space-y-6" @submit.prevent="submit">
                         <div>
@@ -17,7 +24,7 @@
                                 Username
                             </label>
                             <div class="mt-1">
-                                <input id="username" name="username" type="username" autocomplete="username" required="" 
+                                <input id="username" name="username" type="username" autocomplete="username" required=""
                                 v-model="form.username"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                             </div>
@@ -28,7 +35,7 @@
                                 Password
                             </label>
                             <div class="mt-1">
-                                <input id="password" name="password" type="password" autocomplete="current-password" required="" 
+                                <input id="password" name="password" type="password" autocomplete="current-password" required=""
                                 v-model="form.password"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                             </div>
@@ -36,7 +43,7 @@
 
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <input id="remember-me" name="remember-me" type="checkbox" 
+                                <input id="remember-me" name="remember-me" type="checkbox"
                                 v-model="form.remember"
                                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
                                 <label for="remember-me" class="ml-2 block text-sm text-gray-900">
@@ -44,7 +51,7 @@
                                 </label>
                             </div>
 
-                           
+
                         </div>
 
                         <div>
@@ -56,7 +63,7 @@
                         </div>
                     </form>
 
-                   
+
                  <div v-if="hasErrors" class="mt-4 text-center" >
                     <div class="font-medium text-red-600">Whoops! Something went wrong.</div>
 
@@ -68,15 +75,15 @@
                 <div v-if="status" class="mb-4 font-medium text-sm text-center text-green-600">
                     {{ status }}
                 </div>
-                
-                
-                
-                
-                
-                
+
+
+
+
+
+
                 </div>
 
-                
+
 
             </div>
         </div>
@@ -87,19 +94,27 @@
 
 
 <script>
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import { faDiceD10 } from '@/private/pro-duotone-svg-icons'
+library.add(faDiceD10);
+
+import {Head, Link, usePage} from '@inertiajs/inertia-vue3';
 
 export default {
     layout    : null,
     components: {
       Head,
-      Link,
+      Link,FontAwesomeIcon
     },
 
       props: {
         status: String,
     },
-
+    setup() {
+        const tenantCode = usePage().props.value.tenantCode;
+        return {tenantCode}
+    },
      data() {
         return {
             form: this.$inertia.form({

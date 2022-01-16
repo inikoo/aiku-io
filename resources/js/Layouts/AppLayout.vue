@@ -6,8 +6,8 @@
   -->
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
-    <span  v-for="model in modelsToWatch" >
-    {{watchCurrentModel(model)}}
+    <span v-for="model in modelsToWatch">
+    {{ watchCurrentModel(model) }}
     </span>
     <div class="h-screen flex overflow-hidden bg-white">
         <!-- Static sidebar for mobile -->
@@ -111,9 +111,11 @@
                             {{ tenantName }}
                         </div>
 
-                        <div class="flex items-center flex-shrink-0 px-4">
-                            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-900-text.svg" alt="Workflow"/>
+                        <div class="flex items-center flex-shrink-0 px-4 ">
+                            <font-awesome-icon :icon="['fad', 'dice-d10']" class="ml-4" size="2x"/>
+                            <span class="ml-4 text-3xl font-light tracking-tighter">aiku</span>
                         </div>
+
                         <nav class="mt-5 flex-1" aria-label="Sidebar">
                             <div class="px-2 space-y-1">
                                 <div v-for="item in navigation" key="item.name" v-show="route().current(item['module']+'.*')">
@@ -173,7 +175,7 @@
 
         <div class="flex flex-col min-w-0 flex-1 overflow-hidden">
 
-            <TopMenu :items="navigation" :currentModels="currentModels"   />
+            <TopMenu :items="navigation" :currentModels="currentModels"/>
 
 
             <div class="lg:hidden">
@@ -264,6 +266,10 @@ import {usePage} from '@inertiajs/inertia-vue3';
 import {SearchIcon} from '@heroicons/vue/solid';
 import Header from '@/Layouts/PageHeader';
 
+import {faDiceD10} from '@/private/pro-duotone-svg-icons';
+
+library.add(faDiceD10);
+
 // App icons
 import {faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown} from '@/private/pro-light-svg-icons';
 
@@ -286,22 +292,20 @@ export default {
         const sidebarOpen = ref(false);
         let secondaryNavigation = [];
 
-        const tenantName=usePage().props.value.tenant;
-        currentModels=usePage().props.value.currentModels;
-
-
+        const tenantName = usePage().props.value.tenant;
+        currentModels = usePage().props.value.currentModels;
 
         let navigation = [];
         let sections;
         const modules = usePage().props.value.modules;
 
-        let modelsToWatch=[];
+        let modelsToWatch = [];
         for (const module in modules) {
 
             if (module !== 'dashboard') {
 
-                if(modules[module].type==='modelOptions'){
-                    modelsToWatch.push(module)
+                if (modules[module].type === 'modelOptions') {
+                    modelsToWatch.push(module);
                 }
 
                 sections = [];
@@ -316,51 +320,50 @@ export default {
                     );
                 }
 
-
                 navigation.push(
                     {
 
-                        href        : route(modules[module]['route']),
-                        sections    : sections,
-                        module      : module,
+                        sections: sections,
 
-                        name        : modules[module].name,
-                        code        : modules[module].code,
-                        icon        : modules[module].icon,
-                        type        : modules[module].type,
-                        currentModel: modules[module].currentModel,
-                        options     : modules[module]['options'] ?? {},
-
-                        //options     : modules[module]['options'] ?? {},
-                       // hasOptions  : modules[module]['options'] && Object.keys(modules[module]['options']).length > 1,
+                        options        : modules[module]['options'] ?? {},
+                        route          : modules[module].route,
+                        routeParameters: modules[module].routeParameters,
+                        name           : modules[module].name,
+                        code           : modules[module].code,
+                        icon           : modules[module].icon,
+                        type           : modules[module].type,
+                        currentModel   : modules[module].currentModel,
+                        indexRoute     : modules[module].indexRoute,
+                        module         : module,
+                        modelIndex     : modules[module].modelIndex,
+                        bgColor         : modules[module].bgColor,
                     },
                 );
+
             }
         }
 
         return {
-            navigation, secondaryNavigation, sidebarOpen,tenantName,currentModels,modelsToWatch
+            navigation, secondaryNavigation, sidebarOpen, tenantName, currentModels, modelsToWatch,
         };
     }, methods: {
         __: __,
         logout() {
             this.$inertia.post(route('logout'));
         },
-        watchCurrentModel(model){
+        watchCurrentModel(model) {
 
-
-            if(route().current(model + '.*')){
-                let actualModel=model
-                if(model==='fulfilment_house'){
-                    actualModel='shop';
+            if (route().current(model + 's.*')) {
+                let actualModel = model;
+                if (model === 'fulfilment_house') {
+                    actualModel = 'shop';
                 }
 
-
-                currentModels[model]=route().params[actualModel];
+                currentModels[model] = route().params[actualModel];
             }
 
             return null;
-        }
+        },
     },
 
 };

@@ -8,9 +8,11 @@
 
 namespace App\Actions\UI\Layout;
 
+use App\Models\Inventory\Warehouse;
+use App\Models\Production\Workshop;
 use App\Models\Trade\Shop;
 use App\Models\Web\Website;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -19,38 +21,43 @@ class GetUserLayoutB2B extends GetUserLayout
     use AsAction;
 
 
-    private Collection $shops;
-    private Collection $fulfilmentHouses;
-    private Collection $websites;
-
+    private array $models;
 
     protected function initialize($user)
     {
-        $this->user = $user;
+        $this->user   = $user;
+        $this->models = [];
 
-        $this->shops         = Shop::withTrashed()->where('type', 'shop')->get()->filter(function ($shop) use ($user) {
+        $this->models['shop']             = Shop::withTrashed()->where('type', 'shop')->get()->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
-        $this->fulfilmentHouses = Shop::withTrashed()->where('type', 'fulfilment_house')->get()->filter(function ($shop) use ($user) {
+        $this->models['fulfilment_house'] = Shop::withTrashed()->where('type', 'fulfilment_house')->get()->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
-        $this->websites         = Website::withTrashed()->get()->filter(function ($website) use ($user) {
+        $this->models['website']          = Website::withTrashed()->get()->filter(function ($website) use ($user) {
             return $user->hasPermissionTo("websites.$website->id.view");
         });
-
-
+        $this->models['warehouse']        = Warehouse::withTrashed()->get()->filter(function ($warehouse) use ($user) {
+            return $user->hasPermissionTo("warehouses.$warehouse->id.view");
+        });
+        $this->models['workshop']         = Workshop::withTrashed()->get()->filter(function ($workshop) use ($user) {
+            return $user->hasPermissionTo("websites.$workshop->id.view");
+        });
     }
 
     #[Pure] protected function canShow($moduleKey): bool
     {
-
         return match ($moduleKey) {
-            'shops' => $this->shops->count() > 1,
-            'shop' => $this->shops->count() > 0,
-            'fulfilment_houses' => $this->fulfilmentHouses->count() > 1,
-            'fulfilment_house' => $this->fulfilmentHouses->count() > 0,
-            'websites' => $this->websites->count() > 1,
-            'website' => $this->websites->count() > 0,
+            'shops' => $this->models['shop']->count() > 1,
+            'shop' => $this->models['shop']->count() > 0,
+            'fulfilment_houses' => $this->models['fulfilment_house']->count() > 1,
+            'fulfilment_house' => $this->models['fulfilment_house']->count() > 0,
+            'websites' => $this->models['website']->count() > 1,
+            'website' => $this->models['website']->count() > 0,
+            'warehouses' => $this->models['warehouse']->count() > 1,
+            'warehouse' => $this->models['warehouse']->count() > 0,
+            'workshops' => $this->models['workshop']->count() > 1,
+            'workshop' => $this->models['workshop']->count() > 0,
             default => true,
         };
     }
@@ -58,51 +65,35 @@ class GetUserLayoutB2B extends GetUserLayout
     protected function prepareModule($module)
     {
         return match ($module['id']) {
-            'shop' => (function () use ($module) {
+            'shop',
+            'fulfilment_house',
+            'website',
+            'warehouse',
+            'workshop',
+            => (function () use ($module) {
                 $options = [];
-                foreach ($this->shops as $shop) {
-                    $options[$shop->id] = [
+                foreach ($this->models[$module['id']] as $model) {
+                    $options[$model->id] = [
                         'icon' => null,
-                        'code' => $shop->code,
-                        'name' => $shop->name
+                        'code' => $model->code,
+                        'name' => $model->name
                     ];
                 }
 
                 $module['options'] = $options;
+                $module['route'] = Str::plural($module['id']).'.show';
+                $module['indexRoute'] = Str::plural($module['id']).'.index';
 
 
-                return $module;
-            })(),
-            'fulfilment_house' => (function () use ($module) {
-                $options = [];
-                foreach ($this->fulfilmentHouses as $shop) {
-                    $options[$shop->id] = [
-                        'icon' => null,
-                        'code' => $shop->code,
-                        'name' => $shop->name
-                    ];
+                if ($this->models[$module['id']]->count() == 1) {
+                    $module['type']            = 'standard';
+                    $module['routeParameters'] = $this->models[$module['id']][0]->id;
                 }
 
-                $module['options'] = $options;
-
 
                 return $module;
             })(),
-            'website' => (function () use ($module) {
-                $options = [];
-                foreach ($this->websites as $website) {
-                    $options[$website->id] = [
-                        'icon' => null,
-                        'code' => $website->code,
-                        'name' => $website->name
-                    ];
-                }
 
-                $module['options'] = $options;
-
-
-                return $module;
-            })(),
             default => $module,
         };
     }

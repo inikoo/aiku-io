@@ -17,13 +17,9 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        'tenantCode' => app('currentTenant')->code
     ]);
 });
-
 
 
 Route::middleware(['auth', 'verified'])->get('/customers', function () {
@@ -33,12 +29,12 @@ Route::middleware(['auth', 'verified'])->get('/customers', function () {
 
 Route::prefix('dashboard')->name('dashboard.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/dashboard.php');
+    ->group(__DIR__.'/web/dashboard.php');
 
 
 Route::prefix('patients')->name('patients.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/patients.php');
+    ->group(__DIR__.'/web/patients.php');
 
 
 Route::prefix('human_resources')->name('human_resources.')
@@ -46,34 +42,37 @@ Route::prefix('human_resources')->name('human_resources.')
     ->group(__DIR__.'/web/human_resources.php');
 
 
-Route::prefix('system')->name('system.')
+Route::prefix('tenant')->name('tenant.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/system.php');
+    ->group(__DIR__.'/web/tenant.php');
 
 Route::prefix('shops')->name('shops.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/shops.php');
-
-Route::prefix('shop')->name('shop.')
-    ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/shop.php');
+    ->group(__DIR__.'/web/shops.php');
 
 Route::prefix('fulfilment_houses')->name('fulfilment_houses.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/fulfilment_houses.php');
-
-Route::prefix('fulfilment_house')->name('fulfilment_house.')
-    ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/fulfilment_house.php');
+    ->group(__DIR__.'/web/fulfilment_houses.php');
 
 Route::prefix('websites')->name('websites.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/websites.php');
+    ->group(__DIR__.'/web/websites.php');
 
-Route::prefix('website')->name('website.')
+Route::prefix('warehouses')->name('warehouses.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__ . '/web/website.php');
+    ->group(__DIR__.'/web/warehouses.php');
 
+Route::prefix('workshops')->name('workshops.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__.'/web/workshops.php');
+
+Route::prefix('procurement')->name('procurement.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__.'/web/procurement.php');
+
+Route::prefix('financials')->name('financials.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__.'/web/financials.php');
 
 Route::middleware(['auth', 'verified'])->get('/profile', function () {
     return Inertia::render('Profile');

@@ -46,7 +46,7 @@ class Product extends Model implements Auditable
     /** @noinspection PhpUnused */
     public function getSlugSourceAttribute(): string
     {
-        /**  @var \App\Models\Trade\Shop|\App\Models\Buying\Supplier $vendor*/
+        /**  @var \App\Models\Trade\Shop|\App\Models\Procurement\Supplier $vendor*/
         $vendor=$this->vendor;
 
         $prefix=match ($this->vendor_type){

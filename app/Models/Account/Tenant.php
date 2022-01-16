@@ -8,15 +8,17 @@
 
 namespace App\Models\Account;
 
-use App\Models\Buying\Agent;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Agent;
+use App\Models\Procurement\Supplier;
 use App\Models\Helpers\Contact;
 use App\Models\HumanResources\Workplace;
 use App\Models\Inventory\Stock;
+use App\Models\Production\Workshop;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Str;
 use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -74,6 +76,11 @@ class Tenant extends SpatieTenant
         return $this->morphMany(Supplier::class, 'owner');
     }
 
+    public function workshops(): MorphMany
+    {
+        return $this->morphMany(Workshop::class, 'owner');
+    }
+
     public function workplaces(): MorphMany
     {
         return $this->morphMany(Workplace::class, 'owner');
@@ -82,6 +89,11 @@ class Tenant extends SpatieTenant
     public function stocks(): MorphMany
     {
         return $this->morphMany(Stock::class, 'owner');
+    }
+
+    public function getCodeAttribute(): string
+    {
+        return Str::snake(app('currentTenant')->name,'-');
     }
 
 }

@@ -1,27 +1,29 @@
 <?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Fri, 08 Oct 2021 17:52:06 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 4.0
+ */
 
-namespace App\Models\Buying;
+namespace App\Models\Procurement;
 
-use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
 use App\Models\Media\Image;
 use App\Models\System\User;
-use App\Models\Trade\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
-
 /**
- * @mixin IdeHelperSupplier
+ * @mixin IdeHelperAgent
  */
-class Supplier extends Model implements Auditable
+class Agent extends Model implements Auditable
 {
     use HasFactory;
     use UsesTenantConnection;
@@ -40,6 +42,7 @@ class Supplier extends Model implements Auditable
 
     protected $guarded = [];
 
+
     public function contact(): MorphOne
     {
         return $this->morphOne(Contact::class, 'contactable');
@@ -55,19 +58,9 @@ class Supplier extends Model implements Auditable
         return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
 
-    public function attachments(): MorphMany
+    public function suppliers(): MorphMany
     {
-        return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
-    }
-
-    public function owner(): MorphTo
-    {
-        return $this->morphTo();
-    }
-
-    public function products(): MorphMany
-    {
-        return $this->morphMany(Product::class, 'vendor');
+        return $this->morphMany(Supplier::class, 'owner');
     }
 
     public function user(): MorphOne
@@ -79,4 +72,5 @@ class Supplier extends Model implements Auditable
     {
         return $this->morphMany(PurchaseOrder::class, 'vendor');
     }
+
 }

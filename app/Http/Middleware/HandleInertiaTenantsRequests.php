@@ -10,6 +10,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use Inertia\Middleware;
 
 class HandleInertiaTenantsRequests extends Middleware
@@ -44,6 +45,7 @@ class HandleInertiaTenantsRequests extends Middleware
     {
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
             'tenant'        => app('currentTenant')->name,
+
             'appType'       => app('currentTenant')->businessType->slug,
             'modules'       => function () use ($request) {
                 /** @var \App\Models\Account\BusinessType $businessType */

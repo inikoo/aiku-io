@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SystemSettingsController extends SystemController
+class TenantSettingsController extends TenantController
 {
 
 
@@ -38,7 +38,7 @@ class SystemSettingsController extends SystemController
     {
         $breadcrumbs = array_merge($this->breadcrumbs, [
             'settings' => [
-                'route'   => 'system.settings',
+                'route'   => 'tenant.settings',
                 'name'    => __('Settings'),
                 'current' => true
             ]
@@ -46,14 +46,14 @@ class SystemSettingsController extends SystemController
 
 
         return Inertia::render(
-            'System/Settings',
+            'Tenant/Settings',
             [
                 'headerData'=>[
-                    'title'         => __('System Settings'),
+                    'title'         => __('Tenant Settings'),
                     'breadcrumbs' => $breadcrumbs,
                     'module'      => $this->module,
                     'actionIcons' => [
-                        'system.index' => [
+                        'tenant.show' => [
                             'name'            => __('Exit'),
                             'icon'            => ['fal', 'portal-exit'],
                         ]
@@ -120,7 +120,7 @@ class SystemSettingsController extends SystemController
     {
         app('currentTenant')->update($request->all());
 
-        return Redirect::route('system.settings');
+        return Redirect::route('tenant.settings');
     }
 
 }

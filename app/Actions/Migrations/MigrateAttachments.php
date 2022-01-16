@@ -8,8 +8,8 @@
 
 namespace App\Actions\Migrations;
 
-use App\Models\Buying\PurchaseOrder;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\PurchaseOrder;
+use App\Models\Procurement\Supplier;
 use App\Models\CRM\Customer;
 use App\Models\Helpers\Attachment;
 use App\Models\Helpers\CommonAttachment;

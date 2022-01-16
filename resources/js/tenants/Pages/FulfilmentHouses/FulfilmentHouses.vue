@@ -30,7 +30,7 @@
         <template #body>
             <tr v-for="shop in shops.data" :key="shop.id">
 
-                <td><Link :href="route('fulfilment_house.index',shop.id)">{{ shop.code }}</Link></td>
+                <td><Link :href="route('fulfilment_houses.show',shop.id)">{{ shop.code }}</Link></td>
 
                 <td>{{ shop.name }}</td>
 

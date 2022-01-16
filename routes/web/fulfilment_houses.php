@@ -10,3 +10,4 @@ use App\Http\Controllers\FulfilmentHouse\FulfilmentHouseController;
 
 
 Route::get('/', [FulfilmentHouseController::class, 'index'])->name('index');
+Route::get('/{shop}', [FulfilmentHouseController::class, 'show'])->name('show');

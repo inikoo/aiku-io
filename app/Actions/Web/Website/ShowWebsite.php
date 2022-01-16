@@ -32,9 +32,9 @@ class ShowWebsite
     }
 
 
-    public function authorize(ActionRequest $request, Website $website): bool
+    public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasAnyPermission(['websites.*', "websites.$website->id.*"]);
+        return $request->user()->hasPermissionTo( "websites.{$this->website->id}.view");
     }
 
 
@@ -78,17 +78,15 @@ class ShowWebsite
 
     private function breadcrumbs(): array
     {
-        /** @var Website $website */
-        $website = $this->get('website');
 
 
         return array_merge(
-            (new WebsiteIndex())->getBreadcrumbs($this->module.'s'),
+            (new IndexWebsite())->getBreadcrumbs(),
             [
                 'website' => [
-                    'route'           => $this->module.'.index',
-                    'routeParameters' => $website->id,
-                    'name'            => $website->code,
+                    'route'           => 'websites.show',
+                    'routeParameters' => $this->website->id,
+                    'name'            => $this->website->code,
                     'current'         => false
                 ],
             ]

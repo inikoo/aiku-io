@@ -21,13 +21,16 @@ use Spatie\QueryBuilder\QueryBuilder;
 use App\Actions\UI\WithInertia;
 
 use function __;
-use function data_set;
 
 /**
  * @property Website $website
  * @property string $module
+ * @property string $page
+ * @property string $title
+ * @property array $breadcrumbs
+
  */
-class WebsiteIndex
+class IndexWebsite
 {
     use AsAction;
     use WithInertia;
@@ -62,15 +65,14 @@ class WebsiteIndex
         $this->set('module', 'websites');
         $this->validateAttributes();
 
-        $breadcrumbs = $this->get('breadcrumbs');
 
         return Inertia::render(
-            $this->get('page'),
+            $this->page,
             [
                 'headerData' => [
                     'module'      => 'websites',
-                    'title'       => $this->get('title'),
-                    'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
+                    'title'       => $this->title,
+                    'breadcrumbs' => $this->breadcrumbs,
 
                 ],
                 'websites'      => $this->handle(),
@@ -110,16 +112,16 @@ class WebsiteIndex
 
         return [
             'index' => [
-                'route'   => $this->module.'.index',
+                'route'   => 'websites.index',
                 'name'    => $this->get('title'),
                 'current' => false
             ],
         ];
     }
 
-    public function getBreadcrumbs($module): array
+    public function getBreadcrumbs(): array
     {
-        $this->set('module', $module);
+
         $this->validateAttributes();
         return $this->breadcrumbs();
 

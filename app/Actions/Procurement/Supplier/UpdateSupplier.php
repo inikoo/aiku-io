@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Buying\Supplier;
+namespace App\Actions\Procurement\Supplier;
 
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Supplier;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 

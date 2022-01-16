@@ -6,13 +6,13 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Buying\Agent;
+namespace App\Actions\Procurement\Agent;
 
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\Aiku;
-use App\Models\Buying\Agent;
+use App\Models\Procurement\Agent;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreAgent

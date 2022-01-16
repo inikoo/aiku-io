@@ -10,8 +10,8 @@ namespace App\Actions\Migrations;
 
 
 use App\Actions\System\User\CreateUserToken;
-use App\Models\Buying\Agent;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Agent;
+use App\Models\Procurement\Supplier;
 use App\Models\HumanResources\Employee;
 use App\Models\System\Guest;
 use App\Models\Trade\Shop;

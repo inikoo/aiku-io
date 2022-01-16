@@ -8,8 +8,6 @@
 <template>
     <page-header :headerData="headerData"/>
     <Table
-
-
         :filters="queryBuilderProps.filters"
         :search="queryBuilderProps.search"
         :columns="queryBuilderProps.columns"
@@ -28,7 +26,7 @@
         <template #body>
             <tr v-for="website in websites.data" :key="website.id">
 
-                <td><Link :href="route('website.index',website.id)">{{ website.code }}</Link></td>
+                <td><Link :href="route('websites.index',website.id)">{{ website.code }}</Link></td>
                 <td>{{ website.name }}</td>
                 <td>{{ website.url }}</td>
 

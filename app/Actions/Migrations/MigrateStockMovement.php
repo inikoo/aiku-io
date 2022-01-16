@@ -34,17 +34,18 @@ class MigrateStockMovement extends MigrateModel
     }
 
 
+    public function getParent(): Stock
+    {
+        return Stock::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Part SKU'});
+    }
+
     public function parseModelData()
     {
-        $stock    = Stock::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Part SKU'});
         $location = Location::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Location Key'});
         //enum('Found','Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale','Production')
 
-        if(!$stock){
-            dd("Part not found: ".$this->auModel->data->{'Part SKU'});
-        }
 
-        if(!$location){
+        if (!$location) {
             dd("Location not found: ".$this->auModel->data->{'Location Key'});
         }
 
@@ -55,22 +56,21 @@ class MigrateStockMovement extends MigrateModel
             'Sale' => 'delivery',
             'FailSale' => 'cancelled-restocked',
             'In' => 'purchase',
-            'Broken','Lost' => 'lost',
+            'Broken', 'Lost' => 'lost',
             'Restock' => 'return',
-            'Adjust','Other Out' => 'amendment',
-            'Production'=>'consumption',
+            'Adjust', 'Other Out' => 'amendment',
+            'Production' => 'consumption',
 
             default => null
         };
 
-        if(!$type){
+        if (!$type) {
             dd($this->auModel->data->{'Inventory Transaction Type'});
         }
 
         $this->modelData = $this->sanitizeData(
             [
                 'type'        => $type,
-                'stock_id'    => $stock->id,
                 'location_id' => $location->id,
                 'quantity'    => $this->auModel->data->{'Inventory Transaction Quantity'},
                 'amount'      => $this->auModel->data->{'Inventory Transaction Amount'},
@@ -95,7 +95,7 @@ class MigrateStockMovement extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreStockMovement::run($this->modelData);
+        return StoreStockMovement::run(stockable: $this->parent, modelData: $this->modelData);
     }
 
 

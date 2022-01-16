@@ -10,8 +10,9 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Trade\Product\StoreProduct;
 use App\Actions\Trade\Product\UpdateProduct;
+use App\Models\Production\Workshop;
 use App\Models\Trade\Product;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Supplier;
 use App\Models\Trade\TradeUnit;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
@@ -115,9 +116,13 @@ class MigrateSupplierProduct extends MigrateModel
         return StoreProduct::run(vendor: $this->parent, data: $this->modelData);
     }
 
-    public function getParent(): Supplier
+    public function getParent(): Supplier|Workshop
     {
-        return Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+        $parent= Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+        if(!$parent){
+            $parent= Workshop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+        }
+        return $parent;
     }
 
     public function postMigrateActions(ActionResult $res): ActionResult

@@ -11,6 +11,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\Stock\StoreStock;
 use App\Actions\Inventory\Stock\UpdateStock;
+use App\Models\Account\Tenant;
 use App\Models\Inventory\Stock;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
@@ -28,6 +29,11 @@ class  MigrateDeletedStock extends MigrateModel
         parent::__construct();
         $this->auModel->table    = 'Part Deleted Dimension';
         $this->auModel->id_field = 'Part Deleted Key';
+    }
+
+    public function getParent(): Tenant
+    {
+        return App('currentTenant');
     }
 
     public function parseModelData()
@@ -74,7 +80,7 @@ class  MigrateDeletedStock extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreStock::run($this->modelData);
+        return StoreStock::run(owner:$this->parent ,modelData:$this->modelData);
     }
 
     public function authorize(ActionRequest $request): bool

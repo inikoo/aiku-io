@@ -67,7 +67,6 @@ class GetUserLayout
             }
         }
 
-
         return $layout;
     }
 

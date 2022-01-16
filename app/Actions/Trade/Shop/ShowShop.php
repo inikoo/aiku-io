@@ -11,6 +11,7 @@ namespace App\Actions\Trade\Shop;
 
 use App\Actions\UI\WithInertia;
 use App\Models\Trade\Shop;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -33,9 +34,9 @@ class ShowShop
     }
 
 
-    public function authorize(ActionRequest $request, Shop $shop): bool
+    public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasAnyPermission(['shops.*', "shops.{$shop->id}.*"]);
+        return $request->user()->hasPermissionTo("shops.{$this->shop->id}.view");
     }
 
     public function afterValidator(): void
@@ -75,7 +76,7 @@ class ShowShop
     {
         $request->merge(
             [
-                'page'  => match ($this->module) {
+                'page' => match ($this->module) {
                     'fulfilment_houses' => 'FulfilmentHouses/FulfilmentHouse',
                     default => 'Shops/Shop',
                 },
@@ -99,7 +100,7 @@ class ShowShop
             (new ShopIndex())->getBreadcrumbs($this->module.'s'),
             [
                 'shop' => [
-                    'route'           => $this->module.'.index',
+                    'route'           => Str::plural($this->module).'.index',
                     'routeParameters' => $shop->id,
                     'name'            => $shop->code,
                     'current'         => false

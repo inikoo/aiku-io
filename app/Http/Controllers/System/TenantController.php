@@ -8,12 +8,14 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Actions\Account\Tenant\ShowTenant;
+use App\Actions\Web\Website\IndexWebsite;
 use App\Http\Controllers\Controller;
 
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SystemController extends Controller
+class TenantController extends Controller
 {
 
     protected array $breadcrumbs = [];
@@ -23,8 +25,8 @@ class SystemController extends Controller
     {
         $this->breadcrumbs = [
             'index' => [
-                'route'   => 'system.index',
-                'name'    => __('System'),
+                'route'   => 'tenant.show',
+                'name'    => __('Tenant'),
                 'current' => false
             ],
         ];
@@ -33,63 +35,22 @@ class SystemController extends Controller
     }
 
 
-    public function index(): Response
+    public function show(): Response
     {
-        return Inertia::render(
-            'System/System',
-            [
-                'headerData' => [
-                    'module'      => $this->module,
-                    'title'       => __('System'),
-                    'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
-                    'actionIcons' => [
-                        'system.logbook'  => [
-                            'name' => 'History',
-                            'icon' => ['fal', 'history']
-                        ],
-                        'system.settings' => [
-                            'name' => 'Settings',
-                            'icon' => ['fal', 'sliders-h-square']
-                        ],
-                    ]
-                ]
-            ]
-        );
+        return ShowTenant::make()->asInertia();
     }
 
 
     public function users(): Response
     {
-        $breadcrumbs = array_merge($this->breadcrumbs, [
-            'users' => [
-                'route'   => 'system.users',
-                'name'    => __('Users'),
-                'current' => true
-            ]
-        ]);
-
-
-        return Inertia::render(
-            'System/Users',
-            [
-
-
-                'headerData' => [
-                    'module'      => $this->module,
-                    'title'       => __('Users'),
-                    'breadcrumbs' => $breadcrumbs,
-
-                ]
-
-            ]
-        );
+        return ShowTenant::make()->asInertia();
     }
 
     public function roles(): Response
     {
         $breadcrumbs = array_merge($this->breadcrumbs, [
             'roles' => [
-                'route'   => 'system.roles',
+                'route'   => 'tenant.roles',
                 'name'    => __('Roles'),
                 'current' => true
             ]
@@ -97,7 +58,7 @@ class SystemController extends Controller
 
 
         return Inertia::render(
-            'System/Roles',
+            'Tenant/Roles',
             [
                 'title'       => __('Roles'),
                 'breadcrumbs' => $breadcrumbs
@@ -109,7 +70,7 @@ class SystemController extends Controller
     {
         $breadcrumbs = array_merge($this->breadcrumbs, [
             'billing' => [
-                'route'   => 'system.billing',
+                'route'   => 'tenant.billing',
                 'name'    => __('Billing'),
                 'current' => true
             ]
@@ -117,7 +78,7 @@ class SystemController extends Controller
 
 
         return Inertia::render(
-            'System/Billing',
+            'Tenant/Billing',
             [
                 'title'       => __('Billing'),
                 'breadcrumbs' => $breadcrumbs
@@ -129,7 +90,7 @@ class SystemController extends Controller
     {
         $breadcrumbs = array_merge($this->breadcrumbs, [
             'logbook' => [
-                'route'   => 'system.logbook',
+                'route'   => 'tenant.logbook',
                 'name'    => __('Logbook'),
                 'current' => true
             ]
@@ -137,7 +98,7 @@ class SystemController extends Controller
 
 
         return Inertia::render(
-            'System/Logbook',
+            'Tenant/Logbook',
             [
                 'title'       => __('Logbook'),
                 'breadcrumbs' => $breadcrumbs

@@ -6,14 +6,14 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Buying\PurchaseOrder;
+namespace App\Actions\Procurement\PurchaseOrder;
 
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\Aiku;
-use App\Models\Buying\Agent;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Agent;
+use App\Models\Procurement\Supplier;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StorePurchaseOrder
@@ -24,7 +24,7 @@ class StorePurchaseOrder
     {
         $res  = new ActionResult();
 
-        /** @var \App\Models\Buying\PurchaseOrder $purchaseOrder */
+        /** @var \App\Models\Procurement\PurchaseOrder $purchaseOrder */
         $purchaseOrder = $parent->purchaseOrders()->create($data);
 
 

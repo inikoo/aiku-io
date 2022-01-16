@@ -26,8 +26,8 @@ class CreateStockMovementsTable extends Migration
 
             $table->morphs('stockable');
 
-            $table->unsignedBigInteger('stock_id')->nullable()->index();
-            $table->foreign('stock_id')->references('id')->on('stocks');
+            //$table->unsignedBigInteger('stock_id')->nullable()->index();
+            //$table->foreign('stock_id')->references('id')->on('stocks');
 
             $table->unsignedMediumInteger('location_id')->nullable()->index();
             $table->foreign('location_id')->references('id')->on('locations');

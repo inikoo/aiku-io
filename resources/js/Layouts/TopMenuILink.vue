@@ -10,7 +10,7 @@
     <Link
         as="button"
         :href="href"
-        :class="[isCurrent ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', '']">
+        :class="[isCurrent ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', 'ml-2']">
 
         <font-awesome-icon
             v-if="icon"

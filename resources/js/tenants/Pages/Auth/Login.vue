@@ -1,6 +1,10 @@
 <template>
     <Head title="Log in" />
 
+
+
+
+
     <BreezeValidationErrors class="mb-4" />
 
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -17,6 +21,7 @@
             <Label for="password" value="Password" />
             <BreezeInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required autocomplete="current-password" />
         </div>
+
 
         <div class="block mt-4">
             <label class="flex items-center">

@@ -46,8 +46,8 @@ class AppServiceProvider extends ServiceProvider
                 'RawImage'       => 'App\Models\Media\RawImage',
                 'ProcessedImage' => 'App\Models\Assets\ProcessedImage',
                 'Product'        => 'App\Models\Trade\Product',
-                'Agent'          => 'App\Models\Buying\Agent',
-                'Supplier'       => 'App\Models\Buying\Supplier',
+                'Agent'          => 'App\Models\Procurement\Agent',
+                'Supplier'       => 'App\Models\Procurement\Supplier',
                 'Shops'           => 'App\Models\Trade\Shop',
                 'Adjust'         => 'App\Models\Sales\Adjust',
                 'Shipper'        => 'App\Models\Delivery\Shipper',
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
 
 
                 /*
-                'AccountAdmin'                    => 'App\Models\System\AccountAdmin',
+                'AccountAdmin'                    => 'App\Models\Tenant\AccountAdmin',
 
                 'CustomerClient'           => 'App\Models\CRM\CustomerClient',
                 'Prospect'                 => 'App\Models\CRM\Prospect',

@@ -29,24 +29,26 @@ $human_resources = [
     ]
 ];
 
-$system = [
-    'id'          => 'system',
-    'type'        => 'standard',
-    'route'       => 'system.index',
-    'permissions' => ['users.view'],
-    'name'        => 'My account',
-    'code'        => 'My account',
+$tenant = [
+    'id' => 'tenant',
 
-    'icon'     => ['fal', 'user-circle'],
+
+    'type'        => 'standard',
+    'route'       => 'tenant.show',
+    'permissions' => ['users.view'],
+    'name'        => 'Account',
+    'code'        => 'Acc',
+
+    'icon'     => ['fal', 'dice-d4'],
     'sections' => [
-        'system.users' => [
+        'tenant.users.index' => [
             'name' => 'Users',
         ],
-        'system.roles' => [
+        'tenant.roles.index' => [
             'name' => 'Roles',
         ],
 
-        'system.billing' => [
+        'tenant.billing' => [
             'name' => 'Billing',
         ],
 
@@ -63,6 +65,7 @@ return [
         'modules'           => [
 
             'dashboard' => [
+                'id'       => 'dashboard',
                 'type'     => 'home',
                 'route'    => 'dashboard.index',
                 'name'     => 'Dashboard',
@@ -73,6 +76,7 @@ return [
 
             'shops' => [
                 'id'           => 'shops',
+                'bgColor'     => 'pink',
                 'type'         => 'modelIndex',
                 'with_options' => true,
                 'route'        => 'shops.index',
@@ -92,11 +96,13 @@ return [
                 ]
             ],
             'shop'  => [
-                'id'   => 'shop',
-                'icon' => ['fal', 'store-alt'],
-                'type' => 'modelOptions',
-                'name' => 'Store',
-                'code' => 'Store',
+                'id'         => 'shop',
+                'bgColor'   => 'pink',
+                'modelIndex' => 'shops.index',
+                'icon'       => ['fal', 'store-alt'],
+                'type'       => 'modelOptions',
+                'name'       => 'Store',
+                'code'       => 'Store',
 
             ],
 
@@ -115,7 +121,9 @@ return [
                 ]
             ],
             'fulfilment_house'  => [
-                'id'   => 'fulfilment_house',
+                'id'         => 'fulfilment_house',
+                'modelIndex' => 'fulfilment_houses.index',
+
                 'icon' => ['fal', 'person-carry'],
                 'type' => 'modelOptions',
                 'name' => 'Fulfilment',
@@ -123,8 +131,10 @@ return [
 
             ],
 
-            'websites' => [
-                'id'           => 'websites',
+            'websites'   => [
+                'id' => 'websites',
+
+
                 'type'         => 'modelIndex',
                 'with_options' => true,
                 'route'        => 'websites.index',
@@ -135,17 +145,88 @@ return [
 
 
             ],
-            'website'  => [
-                'id'   => 'website',
-                'icon' => ['fal', 'globe'],
-                'type' => 'modelOptions',
-                'name' => 'Website',
-                'code' => 'Website',
+            'website'    => [
+                'id'         => 'website',
+                'modelIndex' => 'websites.index',
+                'icon'       => ['fal', 'globe'],
+                'type'       => 'modelOptions',
+                'name'       => 'Website',
+                'code'       => 'Website',
+
+            ],
+            'warehouses' => [
+                'id'           => 'warehouses',
+                'type'         => 'modelIndex',
+                'with_options' => true,
+                'route'        => 'warehouses.index',
+                'permissions'  => ['warehouses.view'],
+                'name'         => 'Warehouses',
+                'code'         => 'WHs',
+                'icon'         => ['fal', 'warehouse-alt'],
+
+
+            ],
+            'warehouse'  => [
+                'id'         => 'warehouse',
+                'modelIndex' => 'warehouses.index',
+                'icon'       => ['fal', 'warehouse-alt'],
+                'type'       => 'modelOptions',
+                'name'       => 'Warehouse',
+                'code'       => 'WH',
 
             ],
 
+            'workshops' => [
+                'id'           => 'workshops',
+                'type'         => 'modelIndex',
+                'with_options' => true,
+                'route'        => 'workshops.index',
+                'permissions'  => ['workshops.view'],
+                'name'         => 'Workshops',
+                'code'         => 'WS',
+                'icon'         => ['fal', 'industry'],
+
+
+            ],
+            'workshop'  => [
+                'id'         => 'workshop',
+                'modelIndex' => 'workshop.index',
+                'icon'       => ['fal', 'industry'],
+                'type'       => 'modelOptions',
+                'name'       => 'Workshop',
+                'code'       => 'WS',
+
+            ],
+
+            'procurement' => [
+                'id' => 'procurement',
+
+
+                'type'        => 'standard',
+                'route'       => 'procurement.dashboard',
+                'permissions' => ['procurement.view'],
+                'name'        => 'Procurement',
+                'code'        => 'Buy',
+                'icon'        => ['fal', 'apple-crate'],
+                'sections'    => [
+                ]
+            ],
+            'financials'  => [
+                'id' => 'financials',
+
+                'type'        => 'standard',
+                'route'       => 'financials.dashboard',
+                'permissions' => ['financials.view'],
+                'name'        => 'Financials',
+                'code'        => 'F$',
+                'icon'        => ['fal', 'abacus'],
+                'sections'    => [
+                ]
+            ],
+
+
             'human_resources' => $human_resources,
-            'system'          => $system
+            'tenant'          => $tenant
 
 
         ],
@@ -154,7 +235,7 @@ return [
             'users.create',
             'users.edit',
             'users.delete',
-            'users.*',
+            'users',
             'look-and-field',
             'employees.view',
             'employees.edit',
@@ -162,61 +243,62 @@ return [
             'employees.payroll',
             'employees.confidential',
             'employees.attendance',
-            'employees.*',
-            'agents.view',
-            'agents.edit',
-            'agents.delete',
-            'agents.*',
-            'suppliers.view',
-            'suppliers.edit',
-            'suppliers.delete',
-            'suppliers.*',
+            'employees',
 
-            'shops.*',
-            'shops.*.*',
-            'shops.*.*.*',
+
+            'procurement',
+            'procurement.agents.view',
+            'procurement.agents.edit',
+            'procurement.agents.delete',
+            'procurement.agents',
+            'procurement.suppliers.view',
+            'procurement.suppliers.edit',
+            'procurement.suppliers.delete',
+            'procurement.suppliers',
+
+            'shops',
             'shops.view',
             'shops.edit',
             'shops.delete',
 
-            'shops.products.*',
+            'shops.products',
             'shops.products.view',
             'shops.products.edit',
             'shops.products.delete',
 
-            'shops.customers.*',
+            'shops.customers',
             'shops.customers.view',
             'shops.customers.edit',
             'shops.customers.delete',
 
-            'shops.broadcasting.*',
+            'shops.broadcasting',
             'shops.broadcasting.view',
             'shops.broadcasting.edit',
             'shops.broadcasting.send',
             'shops.broadcasting.delete',
 
 
-            'websites.*',
+            'websites',
             'websites.view',
             'websites.edit',
             'websites.publish',
             'websites.delete',
 
 
-            'accounts.*',
-            'accounts.view',
-            'accounts.edit',
-            'accounts.delete',
+            'financials',
+            'financials.view',
+            'financials.edit',
+            'financials.delete',
 
-            'accounts.receivable.*',
-            'accounts.receivable.view',
-            'accounts.receivable.edit',
-            'accounts.receivable.delete',
+            'financials.accounts_receivable',
+            'financials.accounts_receivable.view',
+            'financials.accounts_receivable.edit',
+            'financials.accounts_receivable.delete',
 
-            'accounts.payable.*',
-            'accounts.payable.view',
-            'accounts.payable.edit',
-            'accounts.payable.delete',
+            'financials.accounts_payable',
+            'financials.accounts_payable.view',
+            'financials.accounts_payable.edit',
+            'financials.accounts_payable.delete',
 
 
             'warehouses.view',
@@ -225,40 +307,40 @@ return [
             'warehouses.stock',
             'warehouses.lost_stock',
             'warehouses.dispatcher',
-            'warehouses.*',
+            'warehouses',
 
-            'production.view',
-            'production.edit',
-            'production.dispatcher',
-            'production.delete',
-            'production.*',
+            'workshops.view',
+            'workshops.edit',
+            'workshops.dispatcher',
+            'workshops.delete',
+            'workshops',
 
 
         ],
         'model_permissions' => [
-            'Shop'     => [
-                'shops.#.*',
+            'Shop' => [
+                'shops.#',
                 'shops.#.view',
                 'shops.#.edit',
                 'shops.#.delete',
 
-                'shops.#.products.*',
+                'shops.#.products',
                 'shops.#.products.view',
                 'shops.#.products.edit',
                 'shops.#.products.delete',
 
-                'shops.#.customers.*',
+                'shops.#.customers',
                 'shops.#.customers.view',
                 'shops.#.customers.edit',
                 'shops.#.customers.delete',
 
-                'shops.#.broadcasting.*',
+                'shops.#.broadcasting',
                 'shops.#.broadcasting.view',
                 'shops.#.broadcasting.edit',
                 'shops.#.broadcasting.send',
                 'shops.#.broadcasting.delete',
 
-                'shops.#.website.*',
+                'shops.#.website',
                 'shops.#.website.view',
                 'shops.#.website.edit',
                 'shops.#.website.publish',
@@ -267,10 +349,10 @@ return [
 
             ],
 
-            'Website'     => [
+            'Website' => [
 
 
-                'websites.#.*',
+                'websites.#',
                 'websites.#.view',
                 'websites.#.edit',
                 'websites.#.publish',
@@ -281,13 +363,19 @@ return [
 
 
             'Warehouse' => [
-                'warehouse.#.*',
+                'warehouse.#',
                 'warehouse.#.view',
                 'warehouse.#.edit',
                 'warehouse.#.delete',
                 'warehouse.#.stock',
                 'warehouse.#.lost_stock',
                 'warehouse.#.dispatcher',
+            ],
+            'Workshop'  => [
+                'workshops.#',
+                'workshops.#.view',
+                'workshops.#.edit',
+                'workshops.#.delete',
             ]
 
         ],
@@ -419,19 +507,18 @@ return [
         'roles'       => [
 
             'super-admin'           => [
-                'users.*',
+                'users',
                 'look-and-field',
-                'employees.*',
-                'agents.*',
-                'suppliers.*',
-                'production.*',
-                'shops.*',
-                'websites.*',
-                'warehouses.*',
-                'accounts.*',
+                'employees',
+                'procurement',
+                'workshops',
+                'shops',
+                'websites',
+                'warehouses',
+                'financials',
             ],
-            'system-admin'          => [
-                'users.*',
+            'tenant-admin'          => [
+                'users',
                 'look-and-field',
             ],
             'human-resources-clerk' => [
@@ -441,31 +528,30 @@ return [
                 'employees.attendance',
             ],
             'human-resources-admin' => [
-                'employees.*',
+                'employees',
             ],
             'buyer-clerk'           => [
-                'agents.view',
-                'agents.edit',
-                'suppliers.view',
-                'suppliers.edit',
+                'procurement.agents.view',
+                'procurement.agents.edit',
+                'procurement.suppliers.view',
+                'procurement.suppliers.edit',
             ],
             'buyer-admin'           => [
-                'agents.*',
-                'suppliers.*',
+                'procurement',
             ],
-            'production-operative'  => [
-                'production.view',
+            'workshops-operative'   => [
+                'workshops.view',
             ],
-            'production-dispatcher' => [
-                'production.view',
-                'production.dispatcher',
+            'workshops-dispatcher'  => [
+                'workshops.view',
+                'workshops.dispatcher',
             ],
-            'production-admin'      => [
-                'production.*',
+            'workshops-admin'       => [
+                'workshops',
             ],
 
             'shops-admin'               => [
-                'shops.*',
+                'shops',
             ],
             'shops-clerk'               => [
                 'shops.view',
@@ -474,7 +560,7 @@ return [
             'customer-services-*-admin' =>
                 [
                     'shops.view',
-                    'shops.customers.*',
+                    'shops.customers',
                 ],
             'customer-services-*-clerk' =>
                 [
@@ -484,7 +570,7 @@ return [
                 ],
 
             'distribution-admin'        => [
-                'warehouses.*',
+                'warehouses',
             ],
             'distribution-clerk'        => [
                 'warehouses.view',
@@ -498,43 +584,43 @@ return [
                 'warehouses.view',
             ],
             'accounts-admin'            => [
-                'accounts.*',
+                'financials',
             ],
             'accounts-clerk'            => [
-                'accounts.view',
-                'accounts.edit',
+                'financials.view',
+                'financials.edit',
             ],
             'accounts-receivable-admin' => [
-                'accounts.receivable.*',
+                'financials.accounts_receivable',
             ],
             'accounts-receivable-clerk' => [
-                'accounts.receivable.view',
-                'accounts.receivable.edit',
+                'financials.accounts_receivable.view',
+                'financials.accounts_receivable.edit',
             ],
             'accounts-payable-admin'    => [
-                'accounts.payable.*',
+                'financials.accounts_payable',
             ],
             'accounts-payable-clerk'    => [
-                'accounts.payable.view',
-                'accounts.payable.edit',
+                'financials.accounts_payable.view',
+                'financials.accounts_payable.edit',
             ],
 
         ],
         'model_roles' => [
-            'Shop'     => [
+            'Shop'      => [
                 'shops-#-admin'             =>
                     [
-                        'shops.#.*',
+                        'shops.#',
                     ],
                 'shops-#-clerk'             =>
                     [
                         'shops.#.view',
-                        'shops.#.products.*',
+                        'shops.#.products',
                     ],
                 'customer-services-#-admin' =>
                     [
                         'shops.#.view',
-                        'shops.#.customers.*',
+                        'shops.#.customers',
                     ],
                 'customer-services-#-clerk' =>
                     [
@@ -543,12 +629,12 @@ return [
                         'shops.#.customers.edit',
                     ]
             ],
-            'Website'     => [
-                'websites-#-admin'             =>
+            'Website'   => [
+                'websites-#-admin' =>
                     [
-                        'websites.#.*',
+                        'websites.#',
                     ],
-                'websites-#-clerk'             =>
+                'websites-#-clerk' =>
                     [
                         'websites.#.edit',
                         'websites.#.view',
@@ -559,7 +645,7 @@ return [
             'Warehouse' => [
                 'distribution-warehouse-#-admin' =>
                     [
-                        'warehouse.#.*',
+                        'warehouse.#',
                     ],
                 'distribution-warehouse-#-clerk' =>
                     [
@@ -588,7 +674,7 @@ return [
                 ]
             ],
             'human_resources' => $human_resources,
-            'system'          => $system
+            'tenant'          => $tenant
 
 
         ],
@@ -596,20 +682,20 @@ return [
             'users.create',
             'users.edit',
             'users.delete',
-            'users.*',
+            'users',
             'look-and-field',
             'employees.edit',
             'employees.delete',
             'employees.payroll',
             'employees.confidential',
             'employees.attendance',
-            'employees.*'
+            'employees'
         ],
         'roles'       => [
 
             'super-admin'            => [],
-            'system-admin'           => [
-                'users.*',
+            'tenant-admin'           => [
+                'users',
                 'look-and-field',
             ],
             'human-resources-clerk'  => [],

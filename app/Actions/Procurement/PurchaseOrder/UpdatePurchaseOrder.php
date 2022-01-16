@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Buying\PurchaseOrder;
+namespace App\Actions\Procurement\PurchaseOrder;
 
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\Buying\PurchaseOrder;
+use App\Models\Procurement\PurchaseOrder;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 

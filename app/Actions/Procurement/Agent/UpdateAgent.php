@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Buying\Agent;
+namespace App\Actions\Procurement\Agent;
 
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\Buying\Agent;
+use App\Models\Procurement\Agent;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 

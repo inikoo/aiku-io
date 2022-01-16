@@ -9,22 +9,29 @@
 <template>
     <div class="border-b border-gray-200 ml-2 ">
         <span v-for="item in items" :key="item.name">
-            <span v-if="item.type==='modelOptions'" :class="[isCurrent(item.module)  ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', 'mr-4  inline-block']">
+            <span v-if="item.type==='modelOptions'" :class="[isCurrentRouteBase(item.module)  ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', 'mr-4  inline-block']">
+
+
 
                 <TopMenuLink
-                    v-if=" (currentModels[item.module]  && !isCurrent(item.module+'s') ) "
-                    :href="route(item.module+'s.index')" :icon="['fal', 'bars']"/>
+                    v-if=" (currentModels[item.module]  && !isCurrentRoute(item.modelIndex)) "
+                    :href="route(item.indexRoute)" :icon="['fal', 'bars']"/>
+
+
                 <TopMenuLink
-                    v-if="(!isCurrent(item.module+'s') && currentModels[item.module]  )"
-                    :href="route(item.module+'.index',currentModels[item.module])" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrent(item.module)"/>
+                    v-if="(!isCurrentRoute(item.modelIndex) && currentModels[item.module]  )"
+                    :href="route(item.route,currentModels[item.module])" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrentRouteBase(item.module+'s')"/>
+
+
 
                 [ <TopMenuLink
                 v-if="currentModels[item.module]"
-                :href="route(item.module+'.index',currentModels[item.module])"
+                :href="route(item.route,currentModels[item.module])"
                 :label="item.options[
                     currentModels[item.module]]
-                    ['code']" :isCurrent="isCurrent(item.module)"/>
-                    <Menu as="span" class="inline-block relative ml-2">
+                    ['code']" :isCurrent="isCurrentRouteBase(item.module+'s')"/>
+
+                <Menu as="span" class="inline-block relative ml-2">
                     <div>
                         <MenuButton>
 
@@ -42,18 +49,21 @@
                         <MenuItems class="z-20 absolute   mt-0.5 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                             <MenuItem v-for="(model,modelID) in item.options" :key="model.code" v-slot="{ active }">
                                 <Link
-                                    :href="route(item.module+'.index',modelID)"
+                                    :href="route(item.route,modelID)"
                                     :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
                                     {{ model.name }}  </Link>
                             </MenuItem>
                         </MenuItems>
                     </transition>
                 </Menu> ]
+
             </span>
             <span v-else-if="item.type==='modelIndex'" :class="'mr-2'">
-                <TopMenuLink v-if="(isCurrent(item.module) || !currentModels[item.module.slice(0, -1)]  )" :href="item['href']" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrent(item.module)"/>
+                                <TopMenuLink v-if="(isCurrentRoute(item.route) || !currentModels[item.module.slice(0, -1)]  )" :href="route(item.route)" :icon="item['icon']" :label="item['code']"
+                                             :isCurrent="isCurrentRouteBase(item.module)"/>
+
             </span>
-            <TopMenuLink v-else :href="item['href']" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrent(item.module)" :class="'mr-4'"/>
+            <TopMenuLink v-else :href="route(item.route,item.routeParameters)" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrentRouteBase(item.module)" :class="'mr-4'"/>
         </span>
     </div>
 </template>
@@ -67,9 +77,13 @@ import {faAngleDown, faBars} from '@/private/pro-light-svg-icons';
 
 library.add(faAngleDown, faBars);
 // Module icons
-import {faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry, faGlobe} from '@/private/pro-light-svg-icons';
+import {
+    faTachometerAltFast, faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
+    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry,
+} from '@/private/pro-light-svg-icons';
 
-library.add(faTachometerAltFast, faClipboardUser, faUserCircle, faStoreAlt, faPersonCarry, faGlobe);
+library.add(faTachometerAltFast, faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
+            faWarehouseAlt, faAppleCrate, faAbacus, faIndustry);
 
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -92,9 +106,15 @@ export default {
     },
 
     methods: {
-        isCurrent(module) {
+        isCurrentRouteBase(module) {
             this.$page.url;
             return route().current(module + '.*');
+
+        },
+        isCurrentRoute(modelIndex) {
+            this.$page.url;
+
+            return route().current(modelIndex)
 
         },
     },

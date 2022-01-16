@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Buying;
+namespace App\Models\Procurement;
 
 use App\Models\Helpers\Attachment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

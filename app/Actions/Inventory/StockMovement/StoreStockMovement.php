@@ -8,8 +8,9 @@
 
 namespace App\Actions\Inventory\StockMovement;
 
+use App\Models\Inventory\Stock;
+use App\Models\Inventory\UniqueStock;
 use App\Models\Utils\ActionResult;
-use App\Models\Inventory\StockMovement;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
@@ -17,11 +18,12 @@ class StoreStockMovement
 {
     use AsAction;
 
-    public function handle(array $modelData): ActionResult
+    public function handle(Stock|UniqueStock $stockable, array $modelData): ActionResult
     {
         $res  = new ActionResult();
 
-        $stockMovement = StockMovement::create($modelData);
+        /** @var \App\Models\Inventory\StockMovement $stockMovement */
+        $stockMovement = $stockable->stockMovements()->create($modelData);
         $res->model    = $stockMovement;
         $res->model_id = $stockMovement->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';

@@ -14,3 +14,9 @@ Route::get('/', [ShopController::class, 'index'])->name('index');
 Route::get('/customers', [ShopController::class, 'index'])->name('customers.index');
 Route::get('/orders', [ShopController::class, 'index'])->name('orders.index');
 
+
+Route::get('/{shop}', [ShopController::class, 'show'])->name('show');
+Route::get('/{shop}/customers', [ShopController::class, 'index'])->name('store.customers.index');
+Route::get('/{shop}/orders', [ShopController::class, 'index'])->name('store.orders.index');
+
+

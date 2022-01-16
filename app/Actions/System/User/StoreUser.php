@@ -11,8 +11,8 @@ namespace App\Actions\System\User;
 
 use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
-use App\Models\Buying\Agent;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Agent;
+use App\Models\Procurement\Supplier;
 use App\Models\HumanResources\Employee;
 use App\Models\System\Guest;
 use App\Models\System\User;

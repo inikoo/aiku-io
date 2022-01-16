@@ -10,3 +10,4 @@
 use App\Http\Controllers\Web\WebController;
 
 Route::get('/', [WebController::class, 'index'])->name('index');
+Route::get('/{website}', [WebController::class, 'show'])->name('show');

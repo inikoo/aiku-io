@@ -9,10 +9,10 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Buying\Supplier\StoreSupplier;
-use App\Actions\Buying\Supplier\UpdateSupplier;
+use App\Actions\Procurement\Supplier\StoreSupplier;
+use App\Actions\Procurement\Supplier\UpdateSupplier;
 use App\Actions\Helpers\Address\UpdateAddress;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Supplier;
 use App\Models\Utils\ActionResult;
 
 trait WithSupplier{

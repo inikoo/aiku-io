@@ -92,4 +92,9 @@ class Stock extends Model implements Auditable
         return $this->morphTo();
     }
 
+    public function stockMovements(): MorphMany
+    {
+        return $this->morphMany(StockMovement::class, 'stockable');
+    }
+
 }

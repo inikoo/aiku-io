@@ -6,14 +6,14 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Buying\Supplier;
+namespace App\Actions\Procurement\Supplier;
 
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\Aiku;
-use App\Models\Buying\Agent;
-use App\Models\Buying\Supplier;
+use App\Models\Procurement\Agent;
+use App\Models\Procurement\Supplier;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreSupplier

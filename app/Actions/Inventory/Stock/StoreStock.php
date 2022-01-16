@@ -18,12 +18,12 @@ class StoreStock
 {
     use AsAction;
 
-    public function handle(Tenant|FulfilmentCustomer $owner,$modelData): ActionResult
+    public function handle(Tenant|FulfilmentCustomer $owner, $modelData): ActionResult
     {
-        $res  = new ActionResult();
+        $res = new ActionResult();
 
         /** @var \App\Models\Inventory\Stock $stock */
-        $stock= $owner->stocks()->create($modelData);
+        $stock = $owner->stocks()->create($modelData);
 
         $res->model    = $stock;
         $res->model_id = $stock->id;

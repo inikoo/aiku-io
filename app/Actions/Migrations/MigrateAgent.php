@@ -10,9 +10,9 @@ namespace App\Actions\Migrations;
 
 
 use App\Actions\Helpers\Address\UpdateAddress;
-use App\Actions\Buying\Agent\StoreAgent;
-use App\Actions\Buying\Agent\UpdateAgent;
-use App\Models\Buying\Agent;
+use App\Actions\Procurement\Agent\StoreAgent;
+use App\Actions\Procurement\Agent\UpdateAgent;
+use App\Models\Procurement\Agent;
 use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
