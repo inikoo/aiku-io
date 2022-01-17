@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,10 +15,25 @@ use Inertia\Inertia;
 |
 */
 
+
+
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('login');
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'tenantCode' => app('currentTenant')->code
-    ]);
+    return redirect('/dashboard');
+   // return Inertia::render('Dashboard', [
+   //     'tenantCode' => app('currentTenant')->code
+   // ]);
 });
 
 
@@ -79,4 +94,4 @@ Route::middleware(['auth', 'verified'])->get('/profile', function () {
 })->name('profile.show');
 
 
-require __DIR__.'/auth.php';
+

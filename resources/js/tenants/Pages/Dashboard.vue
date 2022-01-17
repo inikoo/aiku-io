@@ -5,6 +5,7 @@
   -  Version 4.0
   -->
 <template>
+    <Head title="Dashboard" />
     <page-header :headerData="headerData"/>
 </template>
 
