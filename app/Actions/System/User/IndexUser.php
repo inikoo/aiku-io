@@ -117,7 +117,6 @@ class IndexUser
 
     }
 
-
     private function breadcrumbs(): array
     {
 

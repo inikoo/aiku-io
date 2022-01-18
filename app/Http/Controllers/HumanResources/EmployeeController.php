@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResources;
 
 
+use App\Actions\HumanResources\Employee\IndexEmployee;
 use App\Http\Controllers\Assets\CountrySelectOptionsController;
 use App\Models\HumanResources\Employee;
 use App\Http\Controllers\Traits\HasContact;
@@ -21,6 +22,7 @@ class EmployeeController extends HumanResourcesController
     private mixed $defaultCountry;
 
 
+/*
     public function __construct()
     {
         parent::__construct();
@@ -46,71 +48,11 @@ class EmployeeController extends HumanResourcesController
             );
         }
     }
+*/
 
     public function index(): Response
     {
-        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
-            $query->where(function ($query) use ($value) {
-                $query->where('contacts.name', 'LIKE', "%$value%")
-                    ->orWhere('employees.nickname', 'LIKE', "%$value%");
-            });
-        });
-
-
-
-        $employees = QueryBuilder::for(Employee::class)
-
-            ->select('employees.id as employee_id','contacts.*', 'employees.*')
-            ->leftJoin('contacts', 'contacts.contactable_id', '=', 'employees.id')
-            ->where('contacts.contactable_type', '=', 'Employee')
-            ->defaultSort('-employees.id')
-           // ->allowedAppends(['contacts.age', 'employees.formatted_id', 'contacts.formatted_dob'])
-            ->allowedSorts([ 'employees.nickname', 'employees.worker_number','contacts.name'])
-            ->allowedFilters(['employees.state','contacts.name','employees.nickname', $globalSearch])
-            ->paginate()
-            ->withQueryString();
-
-
-
-        return Inertia::render(
-            'HumanResources/Employees',
-            [
-
-                'headerData' => [
-                    'module'      => $this->module,
-                    'title'       => __('Employees'),
-                    'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
-                    'actionIcons' => [
-
-                        'human_resources.employees.logbook' => [
-                            'name' => __('History'),
-                            'icon' => ['fal', 'history']
-                        ],
-                        'human_resources.employees.create'  => [
-                            'name' => __('Create employee'),
-                            'icon' => ['fal', 'plus']
-                        ],
-                    ],
-                ],
-
-
-                'employees' => $employees,
-
-            ]
-        )->table(function (InertiaTable $table) {
-            $table->addSearchRows(
-                [
-                    'contacts.name' => __('Name'),
-                    'employees.nickname' => __('Nickname'),
-
-                ]
-            )->addFilter('employees.state', __('State'), [
-
-                'working'   => __('Working'),
-                'hired'   => __('Hired'),
-                'left' => __('Left'),
-            ]);
-        });
+        return IndexEmployee::make()->asInertia();
     }
 
     /*
