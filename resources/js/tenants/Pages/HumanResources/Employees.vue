@@ -30,7 +30,7 @@
 
         <template #body>
             <tr v-for="employee in employees.data" :key="employee.employee_id">
-                <td><Link :href="route('employees.show',employee.employee_id)">{{ employee.nickname }}</Link></td>
+                <td><Link :href="route('human_resources.employees.show',employee.employee_id)">{{ employee.nickname }}</Link></td>
                 <td>{{ employee['worker_number'] }}</td>
                 <td>{{ employee.name }}</td>
 

@@ -18,7 +18,6 @@ use Inertia\Response;
 class UserController extends Controller
 {
 
-
     public function index(): Response
     {
         return IndexUser::make()->asInertia();

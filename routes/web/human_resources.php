@@ -15,6 +15,10 @@ Route::get('/', [HumanResourcesController::class, 'index'])->name('index');
 Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
 
 Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
+Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+Route::post('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+
 Route::get('/employees/logbook', [EmployeeController::class, 'logbook'])->name('employees.logbook');
 
 Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');

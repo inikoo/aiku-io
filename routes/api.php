@@ -16,15 +16,15 @@ use App\Actions\System\User\UpdateUser;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('employees')->name('employees.')
+Route::prefix('employees')->name('api.employees.')
     ->group(__DIR__ . '/api/employees.php');
 
 
 
 
-Route::get('/users', IndexUser::class)->name('users.index');
-Route::post('/users', StoreUser::class)->name('users.store');
-Route::get('/users/{user}',ShowUser::class)->name('users.show');
-Route::patch('/users/{user}',UpdateUser::class)->name('users.update');
+Route::get('/users', IndexUser::class)->name('api.users.index');
+Route::post('/users', StoreUser::class)->name('api.users.store');
+Route::get('/users/{user}',ShowUser::class)->name('api.users.show');
+Route::patch('/users/{user}',UpdateUser::class)->name('api.users.update');
 
-Route::get('/roles', ShowRoles::class)->name('roles.index');
+Route::get('/roles', ShowRoles::class)->name('api.roles.index');
