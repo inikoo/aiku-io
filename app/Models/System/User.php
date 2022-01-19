@@ -75,4 +75,26 @@ class User extends Authenticatable
         return $this->belongsTo(Language::class);
     }
 
+    public function getTypeIconAttribute(): array
+    {
+        return match($this->userable_type){
+            'Employee'=>['fal','clipboard-user'],
+            'Guest'=>['fal','user-alien'],
+            default=>['fal','male']
+        };
+    }
+
+    public function getLocalisedUserableTypeAttribute(): string
+    {
+        return match($this->userable_type){
+            'Employee'=>__('Employee'),
+            'Guest'=>__('Guest'),
+            'Tenant'=>__('Account administrator'),
+            default=>$this->userable_type
+        };
+    }
+
+
+
+
 }

@@ -2,12 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\AuroraMigration\MigrateCustomers;
-use App\Console\Commands\AuroraMigration\MigrateHR;
-use App\Console\Commands\Account\CreateAccountAdmin;
-use App\Console\Commands\Account\CreateAdminAccessToken;
-use App\Console\Commands\TenantsAdmin\CreateTenant;
-use App\Console\Commands\TenantsAdmin\CreateTenantAccessToken;
+use App\Actions\System\User\HydrateUser;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -19,12 +14,11 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        CreateTenantAccessToken::class,
-        CreateTenant::class,
-        CreateAccountAdmin::class,
-        CreateAdminAccessToken::class,
-        MigrateHR::class,
-        MigrateCustomers::class
+
+
+
+        HydrateUser::class
+
     ];
 
     /**

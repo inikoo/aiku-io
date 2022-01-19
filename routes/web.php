@@ -31,15 +31,10 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::get('/', function () {
     return redirect('/dashboard');
-   // return Inertia::render('Dashboard', [
-   //     'tenantCode' => app('currentTenant')->code
-   // ]);
 });
 
 
-Route::middleware(['auth', 'verified'])->get('/customers', function () {
-    return Inertia::render('Customers');
-})->name('customers');
+
 
 
 Route::prefix('dashboard')->name('dashboard.')

@@ -9,11 +9,16 @@
 namespace App\Http\Controllers\System;
 
 use App\Actions\System\User\IndexUser;
+use App\Actions\System\User\ShowEditUser;
 use App\Actions\System\User\ShowUser;
+use App\Actions\System\User\UpdateUser;
 use App\Http\Controllers\Controller;
 
 use App\Models\System\User;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
+use Illuminate\Http\Request;
+
 
 class UserController extends Controller
 {
@@ -28,6 +33,15 @@ class UserController extends Controller
         return ShowUser::make()->asInertia($user);
     }
 
+    public function edit(User $user): Response
+    {
+        return ShowEditUser::make()->asInertia($user);
+    }
+
+    public function update(User $user, Request $request): RedirectResponse
+    {
+        return UpdateUser::make()->asInertia($user, $request);
+    }
 
 }
 

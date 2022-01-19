@@ -8,7 +8,7 @@
 
 
 use App\Actions\HumanResources\Employee\ShowEmployee;
-use App\Actions\HumanResources\Employee\ShowEmployees;
+use App\Actions\HumanResources\Employee\IndexEmployee;
 use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
 use App\Actions\Media\Attachment\Employee\DestroyEmployeeAttachment;
@@ -26,7 +26,7 @@ use App\Actions\Media\Image\Employee\UpdateEmployeeImage;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('', ShowEmployees::class)->name('index');
+Route::get('', IndexEmployee::class)->name('index');
 Route::post('', StoreEmployee::class)->name('store');
 Route::get('{employee}',ShowEmployee::class)->name('show');
 Route::patch('{employee}',UpdateEmployee::class)->name('update');

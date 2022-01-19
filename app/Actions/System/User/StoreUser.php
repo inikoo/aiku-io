@@ -26,10 +26,12 @@ class StoreUser
 
     public function handle(Employee|Tenant|Agent|Supplier|Guest $userable, array $userData, array $roles = []): ActionResult
     {
-        $res  = new ActionResult();
+        $res = new ActionResult();
 
         $userData['language_id'] = $userData['language_id'] ?? app('currentTenant')->language_id;
         $userData['timezone_id'] = $userData['timezone_id'] ?? app('currentTenant')->timezone_id;
+        $userData['name']        = $userable->name;
+
         /** @var User $user */
         $user = $userable->user()->create($userData);
         $user->stats()->create([]);
@@ -41,7 +43,8 @@ class StoreUser
         $res->model_id = $user->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';
 
-        return $res;        }
+        return $res;
+    }
 
     public function authorize(ActionRequest $request): bool
     {

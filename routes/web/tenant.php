@@ -12,7 +12,11 @@ use App\Http\Controllers\System\UserController;
 
 Route::get('/', [TenantController::class, 'show'])->name('show');
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
-Route::get('/users/{user}', [TenantController::class, 'user'])->name('users.show');
+Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
+
+
 Route::get('/roles', [TenantController::class, 'roles'])->name('roles.index');
 Route::get('/usage', [TenantController::class, 'index'])->name('usage');
 Route::get('/logbook', [TenantController::class, 'logbook'])->name('logbook');

@@ -45,7 +45,8 @@ class IndexUser
         });
 
         return QueryBuilder::for(User::class)
-            ->allowedSorts(['username'])
+            ->allowedSorts(['username','name','status','userable_type'])
+            ->defaultSort('username')
             ->allowedFilters(['username', $globalSearch])
             ->paginate()
             ->withQueryString();
@@ -134,9 +135,8 @@ class IndexUser
 
     }
 
-    public function getBreadcrumbs($module): array
+    public function getBreadcrumbs(): array
     {
-        $this->set('module', $module);
         $this->validateAttributes();
         return $this->breadcrumbs();
 

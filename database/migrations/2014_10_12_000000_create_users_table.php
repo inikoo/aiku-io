@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique()->nullable();
             $table->string('password');
             $table->morphs('userable');
+            $table->string('name');
             $table->boolean('status')->default(true)->index();
             $table->unsignedSmallInteger('language_id');
             //$table->foreign('language_id')->references('id')->on('aiku.languages');
