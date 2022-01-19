@@ -57,7 +57,7 @@ class IndexWarehouse
         $breadcrumbs = $this->get('breadcrumbs');
 
         return Inertia::render(
-            $this->get('page'),
+            'Common/IndexModel',
             [
                 'headerData' => [
                     'module'      => 'warehouses',
@@ -65,7 +65,23 @@ class IndexWarehouse
                     'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
 
                 ],
-                'warehouses'      => $this->handle(),
+                'dataTable'  => [
+                    'records' => $this->handle(),
+                    'columns' => [
+                        'code' => [
+                            'sort'  => 'code',
+                            'label' => __('Code'),
+                            'href'  => [
+                                'route'  => 'warehouses.show',
+                                'column' => 'id'
+                            ],
+                        ],
+                        'name' => [
+                            'sort'  => 'name',
+                            'label' => __('Name')
+                        ]
+                    ]
+                ]
 
 
             ]
@@ -85,7 +101,6 @@ class IndexWarehouse
 
         $request->merge(
             [
-                'page'  =>'Warehouses/Warehouses',
                 'title' => __('Warehouses'),
 
 

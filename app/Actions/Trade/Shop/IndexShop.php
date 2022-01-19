@@ -27,7 +27,7 @@ use function data_set;
  * @property Shop $shop
  * @property string $module
  */
-class ShopIndex
+class IndexShop
 {
     use AsAction;
     use WithInertia;
@@ -72,7 +72,7 @@ class ShopIndex
         $breadcrumbs = $this->get('breadcrumbs');
 
         return Inertia::render(
-            $this->get('page'),
+            'Common/IndexModel',
             [
                 'headerData' => [
                     'module'      => 'shops',
@@ -80,7 +80,26 @@ class ShopIndex
                     'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
 
                 ],
-                'shops'      => $this->handle(),
+                'dataTable'  => [
+                    'records' => $this->handle(),
+                    'columns' => [
+                        'code'      => [
+                            'sort'  => 'code',
+                            'label' => __('Code'),
+                            'href'  => [
+                                'route'  =>  match ($this->module) {
+                                    'fulfilment_houses' => 'fulfilment_houses.show',
+                                    default => 'shops.show',
+                                },
+                                'column' => 'id'
+                            ],
+                        ],
+                        'name'          => [
+                            'sort'  => 'name',
+                            'label' => __('Name')
+                        ],
+                    ]
+                ]
 
 
             ]
@@ -100,10 +119,6 @@ class ShopIndex
 
         $request->merge(
             [
-                'page'  => match ($this->module) {
-                    'fulfilment_houses' => 'FulfilmentHouses/FulfilmentHouses',
-                    default => 'Shops/Shops',
-                },
                 'title' => match ($this->module) {
                     'fulfilment_houses' => __('Fulfilment houses'),
                     default => __('Stores'),

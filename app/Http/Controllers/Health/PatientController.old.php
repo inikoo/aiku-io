@@ -40,6 +40,7 @@ class PatientController extends Controller
     private array $identityDocumentTypes;
     private mixed $defaultCountry;
 
+
     public function __construct()
     {
         $this->breadcrumbs = [
@@ -83,7 +84,6 @@ class PatientController extends Controller
 
         $this->module = 'patients';
     }
-
 
     public function index(): Response
     {
@@ -147,7 +147,6 @@ class PatientController extends Controller
                            ]);
         });
     }
-
 
     public function create(): Response
     {
@@ -386,7 +385,6 @@ class PatientController extends Controller
         );
     }
 
-
     public function edit($id): Response
     {
         $patient = Patient::findOrFail($id);
@@ -484,7 +482,6 @@ class PatientController extends Controller
         );
     }
 
-
     public function update(UpdatePatientRequest $request, $id): RedirectResponse
     {
         $patient = Patient::findOrFail($id);
@@ -504,11 +501,9 @@ class PatientController extends Controller
         return Redirect::route('patients.edit', $patient->id);
     }
 
-
     public function destroy($id)
     {
     }
-
 
     private function personalInformationBlueprint($patient = false): array
     {

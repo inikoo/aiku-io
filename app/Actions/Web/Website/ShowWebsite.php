@@ -49,7 +49,7 @@ class ShowWebsite
 
 
         return Inertia::render(
-            $this->get('page'),
+            'Common/ShowModel',
             [
                 'headerData' => [
                     'module'      => $this->module,
@@ -57,7 +57,7 @@ class ShowWebsite
                     'breadcrumbs' => $this->get('breadcrumbs'),
 
                 ],
-                'website'       => $website
+                'model'       => $website
             ]
 
         );
@@ -65,11 +65,7 @@ class ShowWebsite
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        $request->merge(
-            [
-                'page'  =>'Websites/Website',
-            ]
-        );
+
         $this->fillFromRequest($request);
 
         $this->set('breadcrumbs', $this->breadcrumbs());

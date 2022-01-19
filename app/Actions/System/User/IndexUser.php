@@ -27,9 +27,7 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @property string $page
  * @property string $title
  * @property array $breadcrumbs
-
  */
-
 class IndexUser
 {
     use AsAction;
@@ -45,7 +43,7 @@ class IndexUser
         });
 
         return QueryBuilder::for(User::class)
-            ->allowedSorts(['username','name','status','userable_type'])
+            ->allowedSorts(['username', 'name', 'status', 'userable_type'])
             ->defaultSort('username')
             ->allowedFilters(['username', $globalSearch])
             ->paginate()
@@ -59,27 +57,25 @@ class IndexUser
                 $request->user()->tokenCan('root') or
                 $request->user()->hasPermissionTo('users.view')
             );
-
-
     }
 
-     public function jsonResponse():AnonymousResourceCollection
+    public function jsonResponse(): AnonymousResourceCollection
     {
         $users = QueryBuilder::for(User::class)
             ->allowedFilters(['username', 'status'])
             ->paginate();
-        return  UserResource::collection($users);
+
+        return UserResource::collection($users);
     }
 
     public function asInertia()
     {
-
         $this->set('module', 'tenant');
         $this->validateAttributes();
 
 
         return Inertia::render(
-            $this->page,
+            'Common/IndexModel',
             [
                 'headerData' => [
                     'module'      => 'tenant',
@@ -87,8 +83,48 @@ class IndexUser
                     'breadcrumbs' => $this->breadcrumbs,
 
                 ],
-                'users'      => $this->handle(),
 
+                'dataTable' => [
+                    'records' => $this->handle(),
+                    'columns' => [
+                        'status' => [
+                            'sort'  => 'status',
+                            'label' => __('Status'),
+                            'toggle'=>[
+                                [
+                                    'icon'=>'check-circle',
+                                    'iconClass'=>'text-green-600',
+                                    'cellTitle'=>__('Active')
+                                ],
+                                [
+                                    'icon'=>'times-circle',
+                                    'iconClass'=>'text-red-700',
+                                    'cellTitle'=>__('Blocked')
+                                ],
+                            ]
+                        ],
+
+                        'username'      => [
+                            'sort'  => 'username',
+                            'label' => __('Username'),
+                            'href'  => [
+                                'route'  => 'tenant.users.show',
+                                'column' => 'id'
+                            ],
+                        ],
+                        'userable_type' => [
+                            'sort'  => 'userable_type',
+                            'label' => __('Type')
+                        ],
+                        'name'          => [
+                            'sort'  => 'name',
+                            'label' => __('Name')
+                        ],
+
+                    ]
+
+
+                ]
 
             ]
         )->table(function (InertiaTable $table) {
@@ -102,25 +138,19 @@ class IndexUser
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
-
         $request->merge(
             [
-                'page'  => 'Tenant/Users',
                 'title' => __('Users'),
 
             ]
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs',$this->breadcrumbs());
-
-
+        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
     private function breadcrumbs(): array
     {
-
         return array_merge(
             (new ShowTenant())->getBreadcrumbs(),
             [
@@ -131,15 +161,13 @@ class IndexUser
                 ],
             ]
         );
-
-
     }
 
     public function getBreadcrumbs(): array
     {
         $this->validateAttributes();
-        return $this->breadcrumbs();
 
+        return $this->breadcrumbs();
     }
 
 

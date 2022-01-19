@@ -58,7 +58,7 @@ class ShowShop
 
 
         return Inertia::render(
-            $this->get('page'),
+           'Common/ShowModel',
             [
                 'headerData' => [
                     'module'      => $this->module,
@@ -66,7 +66,7 @@ class ShowShop
                     'breadcrumbs' => $this->get('breadcrumbs'),
 
                 ],
-                'shop'       => $shop
+                'model'       => $shop
             ]
 
         );
@@ -76,10 +76,6 @@ class ShowShop
     {
         $request->merge(
             [
-                'page' => match ($this->module) {
-                    'fulfilment_houses' => 'FulfilmentHouses/FulfilmentHouse',
-                    default => 'Shops/Shop',
-                },
                 'type' => $this->module
 
             ]
@@ -97,7 +93,7 @@ class ShowShop
 
 
         return array_merge(
-            (new ShopIndex())->getBreadcrumbs($this->module.'s'),
+            (new IndexShop())->getBreadcrumbs($this->module.'s'),
             [
                 'shop' => [
                     'route'           => Str::plural($this->module).'.index',

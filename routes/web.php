@@ -33,19 +33,15 @@ Route::get('/', function () {
     return redirect('/dashboard');
 });
 
-
-
-
-
 Route::prefix('dashboard')->name('dashboard.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/dashboard.php');
 
-
+/*
 Route::prefix('patients')->name('patients.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/patients.php');
-
+*/
 
 Route::prefix('human_resources')->name('human_resources.')
     ->middleware(['auth', 'verified'])

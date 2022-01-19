@@ -48,7 +48,7 @@ class ShowWarehouse
 
 
         return Inertia::render(
-            $this->get('page'),
+            'Common/ShowModel',
             [
                 'headerData' => [
                     'module'      => 'warehouses',
@@ -56,7 +56,7 @@ class ShowWarehouse
                     'breadcrumbs' => $this->get('breadcrumbs'),
 
                 ],
-                'warehouse'  => $warehouse
+                'model'       => $warehouse
             ]
 
         );
@@ -64,11 +64,7 @@ class ShowWarehouse
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        $request->merge(
-            [
-                'page' => 'Warehouses/Warehouse',
-            ]
-        );
+
         $this->fillFromRequest($request);
 
         $this->set('breadcrumbs', $this->breadcrumbs());

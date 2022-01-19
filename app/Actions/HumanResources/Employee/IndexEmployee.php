@@ -41,16 +41,14 @@ class IndexEmployee
         });
 
 
-
         return QueryBuilder::for(Employee::class)
-
-            ->select('employees.id as employee_id','contacts.*', 'employees.*')
+            ->select('employees.id as employee_id', 'contacts.*', 'employees.*')
             ->leftJoin('contacts', 'contacts.contactable_id', '=', 'employees.id')
             ->where('contacts.contactable_type', '=', 'Employee')
             ->defaultSort('-employees.id')
             // ->allowedAppends(['contacts.age', 'employees.formatted_id', 'contacts.formatted_dob'])
-            ->allowedSorts([ 'employees.nickname', 'employees.worker_number','contacts.name'])
-            ->allowedFilters(['employees.state','contacts.name','employees.nickname', $globalSearch])
+            ->allowedSorts(['employees.nickname', 'employees.worker_number', 'contacts.name'])
+            ->allowedFilters(['employees.state', 'contacts.name', 'employees.nickname', $globalSearch])
             ->paginate()
             ->withQueryString();
     }
@@ -62,20 +60,19 @@ class IndexEmployee
                 $request->user()->tokenCan('root') or
                 $request->user()->hasPermissionTo('employees.view')
             );
-
     }
 
-     public function jsonResponse():AnonymousResourceCollection
+    public function jsonResponse(): AnonymousResourceCollection
     {
         $employees = QueryBuilder::for(Employee::class)
-            ->allowedFilters(['nickname', 'worker_number','state'])
+            ->allowedFilters(['nickname', 'worker_number', 'state'])
             ->paginate();
-        return  EmployeeResource::collection($employees);
+
+        return EmployeeResource::collection($employees);
     }
 
     public function asInertia()
     {
-
         $this->validateAttributes();
 
 
@@ -97,7 +94,7 @@ class IndexEmployee
         }
 
         return Inertia::render(
-            'HumanResources/Employees',
+            'Common/IndexModel',
             [
                 'headerData' => [
                     'module'      => 'human_resources',
@@ -105,30 +102,50 @@ class IndexEmployee
                     'breadcrumbs' => $this->breadcrumbs,
                     'actionIcons' => $actionIcons,
                 ],
-                'employees'      => $this->handle(),
+                'dataTable'  => [
+                    'records' => $this->handle(),
+                    'columns' => [
+                        'nickname'      => [
+                            'sort'  => 'employee.nickname',
+                            'label' => __('Nickname'),
+                            'href'  => [
+                                'route'  => 'human_resources.employees.show',
+                                'column' => 'employee_id'
+                            ],
+                        ],
+                        'worker_number' => [
+                            'sort'  => 'employee.worker_number',
+                            'label' => __('Worker #')
+                        ],
+                        'name'          => [
+                            'sort'  => 'employee.name',
+                            'label' => __('Name')
+                        ],
+                    ]
+                ]
+
+
 
 
             ]
         )->table(function (InertiaTable $table) {
             $table->addSearchRows(
                 [
-                    'contacts.name' => __('Name'),
+                    'contacts.name'      => __('Name'),
                     'employees.nickname' => __('Nickname'),
 
                 ]
             )->addFilter('employees.state', __('State'), [
 
-                'working'   => __('Working'),
+                'working' => __('Working'),
                 'hired'   => __('Hired'),
-                'left' => __('Left'),
+                'left'    => __('Left'),
             ]);
         });
     }
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
-
         $request->merge(
             [
                 'title' => __('Employees'),
@@ -139,17 +156,14 @@ class IndexEmployee
 
         $this->set(
             'canEdit',
-            ($request->user()->can('employees.edit') )
+            ($request->user()->can('employees.edit'))
         );
 
-        $this->set('breadcrumbs',$this->breadcrumbs());
-
-
+        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
     private function breadcrumbs(): array
     {
-
         return array_merge(
             (new ShowTenant())->getBreadcrumbs(),
             [
@@ -160,15 +174,13 @@ class IndexEmployee
                 ],
             ]
         );
-
-
     }
 
     public function getBreadcrumbs(): array
     {
         $this->validateAttributes();
-        return $this->breadcrumbs();
 
+        return $this->breadcrumbs();
     }
 
 

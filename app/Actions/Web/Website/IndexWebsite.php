@@ -25,10 +25,8 @@ use function __;
 /**
  * @property Website $website
  * @property string $module
- * @property string $page
  * @property string $title
  * @property array $breadcrumbs
-
  */
 class IndexWebsite
 {
@@ -36,38 +34,32 @@ class IndexWebsite
     use WithInertia;
 
 
-
     public function handle(): LengthAwarePaginator
     {
-
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 $query->where('code', 'LIKE', "%$value%")
                     ->orWhere('name', 'LIKE', "%$value%")
-                    ->orWhere('url', 'LIKE', "%$value%")
-                ;
+                    ->orWhere('url', 'LIKE', "%$value%");
             });
         });
 
         return QueryBuilder::for(Website::class)
-            ->allowedSorts(['code', 'name','url'])
-            ->allowedFilters(['code','name','url', $globalSearch])
+            ->allowedSorts(['code', 'name', 'url'])
+            ->allowedFilters(['code', 'name', 'url', $globalSearch])
             ->paginate()
             ->withQueryString();
     }
 
 
-
     public function asInertia()
     {
-
-
         $this->set('module', 'websites');
         $this->validateAttributes();
 
 
         return Inertia::render(
-            $this->page,
+            'Common/IndexModel',
             [
                 'headerData' => [
                     'module'      => 'websites',
@@ -75,8 +67,27 @@ class IndexWebsite
                     'breadcrumbs' => $this->breadcrumbs,
 
                 ],
-                'websites'      => $this->handle(),
-
+                'dataTable'  => [
+                    'records' => $this->handle(),
+                    'columns' => [
+                        'code' => [
+                            'sort'  => 'code',
+                            'label' => __('Code'),
+                            'href'  => [
+                                'route'  => 'websites.show',
+                                'column' => 'id'
+                            ],
+                        ],
+                        'name' => [
+                            'sort'  => 'name',
+                            'label' => __('Name')
+                        ],
+                        'url' => [
+                            'sort'  => 'url',
+                            'label' => __('Url')
+                        ],
+                    ]
+                ]
 
             ]
         )->table(function (InertiaTable $table) {
@@ -90,26 +101,20 @@ class IndexWebsite
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
-
         $request->merge(
             [
-                'page'  => 'Websites/Websites',
                 'title' => __('Websites'),
 
             ]
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs',$this->breadcrumbs());
-
-
+        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
 
     private function breadcrumbs(): array
     {
-
         return [
             'index' => [
                 'route'   => 'websites.index',
@@ -121,10 +126,9 @@ class IndexWebsite
 
     public function getBreadcrumbs(): array
     {
-
         $this->validateAttributes();
-        return $this->breadcrumbs();
 
+        return $this->breadcrumbs();
     }
 
 
