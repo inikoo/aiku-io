@@ -135,7 +135,7 @@ class ShowEmployee
                             'nameClass' => $this->employee->user ?? 'text-gray-400 italic',
                             'iconClass' => $this->employee->user ?? 'text-gray-300 ',
                             'href'      => ($this->canViewUsers and $this->employee->user) ? [
-                                'route'           => 'tenant.users.show',
+                                'route'           => 'account.users.show',
                                 'routeParameters' => $this->employee->user->id
                             ] : null
 

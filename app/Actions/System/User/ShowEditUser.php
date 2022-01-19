@@ -69,7 +69,7 @@ class ShowEditUser
 
                     'actionIcons' => [
 
-                        'tenant.users.show' => [
+                        'account.users.show' => [
                             'routeParameters' => $this->user->id,
                             'name'            => __('Exit edit'),
                             'icon'            => ['fal', 'portal-exit']
@@ -111,7 +111,7 @@ class ShowEditUser
             (new IndexUser())->getBreadcrumbs(),
             [
                 'user' => [
-                    'route'           => 'tenant.users.show',
+                    'route'           => 'account.users.show',
                     'routeParameters' => $this->user->id,
                     'name'            => $this->user->username,
                     'suffix'          => '('.__('editing').')',

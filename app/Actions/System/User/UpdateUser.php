@@ -97,6 +97,6 @@ class UpdateUser
             $this->only(['username', 'password', 'status']),
         );
 
-        return Redirect::route('tenant.users.edit', $user->id);
+        return Redirect::route('account.users.edit', $user->id);
     }
 }

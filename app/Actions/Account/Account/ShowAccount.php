@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 20 Oct 2021 16:32:23 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Wed, 19 Jan 2022 23:44:48 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Account\Tenant;
+namespace App\Actions\Account\Account;
 
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\Account\TenantResource;
@@ -19,20 +19,15 @@ use Lorisleiva\Actions\Concerns\AsAction;
 
 /**
  * @property string $module
- * @property string $page
  * @property string $title
- * @property Tenant $tenant
+ * @property Tenant $account
  * @property array $breadcrumbs
  */
-class ShowTenant
+class ShowAccount
 {
     use AsAction;
     use WithInertia;
 
-    public function __construct()
-    {
-        $this->module = 'tenant';
-    }
 
     public function handle()
     {
@@ -48,14 +43,14 @@ class ShowTenant
     {
 
 
-        $this->set('tenant',app('currentTenant'))->fill($attributes);
+        $this->set('account',app('currentTenant'))->fill($attributes);
         $this->validateAttributes();
 
         return Inertia::render(
             'Common/ShowModel',
             [
                 'headerData' => [
-                    'module'      => $this->module,
+                    'module'      => 'account',
                     'title'       => $this->title,
                     'breadcrumbs' => $this->breadcrumbs,
                     'actionIcons' => [
@@ -69,6 +64,7 @@ class ShowTenant
                             'name' => 'Settings',
                             'icon' => ['fal', 'sliders-h-square']
                         ],
+
                     ]
                 ]
             ]
@@ -79,7 +75,7 @@ class ShowTenant
     {
         $request->merge(
             [
-                'title' => $this->tenant->name,
+                'title' => $this->account->name,
 
             ]
         );

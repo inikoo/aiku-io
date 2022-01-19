@@ -54,7 +54,7 @@ class ShowUser
 
 
         /*
-        $actionIcons['tenant.users.logbook'] =[
+        $actionIcons['account.users.logbook'] =[
             'routeParameters' => $this->user->id,
             'name'            => __('History'),
             'icon'            => ['fal', 'history']
@@ -62,7 +62,7 @@ class ShowUser
         */
 
         if ($this->canEdit) {
-            $actionIcons['tenant.users.edit'] = [
+            $actionIcons['account.users.edit'] = [
                 'routeParameters' => $this->user->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -142,7 +142,7 @@ class ShowUser
             (new IndexUser())->getBreadcrumbs(),
             [
                 'shop' => [
-                    'route'           => 'tenant.users.show',
+                    'route'           => 'account.users.show',
                     'routeParameters' => $this->user->id,
                     'name'            => $this->user->username,
                     'current'         => true

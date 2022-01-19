@@ -108,7 +108,7 @@ class IndexUser
                             'sort'  => 'username',
                             'label' => __('Username'),
                             'href'  => [
-                                'route'  => 'tenant.users.show',
+                                'route'  => 'account.users.show',
                                 'column' => 'id'
                             ],
                         ],
@@ -154,8 +154,8 @@ class IndexUser
         return array_merge(
             (new ShowTenant())->getBreadcrumbs(),
             [
-                'tenant.users.index' => [
-                    'route'   => 'tenant.users.index',
+                'account.users.index' => [
+                    'route'   => 'account.users.index',
                     'name'    => $this->title,
                     'current' => false
                 ],

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class TenantSettingsController extends TenantController
+class AccountSettingsController extends AccountController
 {
 
 
@@ -38,7 +38,7 @@ class TenantSettingsController extends TenantController
     {
         $breadcrumbs = array_merge($this->breadcrumbs, [
             'settings' => [
-                'route'   => 'tenant.settings',
+                'route'   => 'account.edit',
                 'name'    => __('Settings'),
                 'current' => true
             ]
@@ -53,7 +53,7 @@ class TenantSettingsController extends TenantController
                     'breadcrumbs' => $breadcrumbs,
                     'module'      => $this->module,
                     'actionIcons' => [
-                        'tenant.show' => [
+                        'account.show' => [
                             'name'            => __('Exit'),
                             'icon'            => ['fal', 'portal-exit'],
                         ]
@@ -120,7 +120,7 @@ class TenantSettingsController extends TenantController
     {
         app('currentTenant')->update($request->all());
 
-        return Redirect::route('tenant.settings');
+        return Redirect::route('account.edit');
     }
 
 }

@@ -167,8 +167,8 @@ class IndexEmployee
         return array_merge(
             (new ShowTenant())->getBreadcrumbs(),
             [
-                'tenant.users.index' => [
-                    'route'   => 'tenant.users.index',
+                'account.users.index' => [
+                    'route'   => 'account.users.index',
                     'name'    => $this->title,
                     'current' => false
                 ],

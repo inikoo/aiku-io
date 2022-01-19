@@ -48,9 +48,9 @@ Route::prefix('human_resources')->name('human_resources.')
     ->group(__DIR__.'/web/human_resources.php');
 
 
-Route::prefix('tenant')->name('tenant.')
+Route::prefix('account')->name('account.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__.'/web/tenant.php');
+    ->group(__DIR__.'/web/account.php');
 
 Route::prefix('shops')->name('shops.')
     ->middleware(['auth', 'verified'])

@@ -29,26 +29,24 @@ $human_resources = [
     ]
 ];
 
-$tenant = [
-    'id' => 'tenant',
-
-
+$account = [
+    'id'          => 'account',
     'type'        => 'standard',
-    'route'       => 'tenant.show',
+    'route'       => 'account.show',
     'permissions' => ['users.view'],
     'name'        => 'Account',
     'code'        => 'Acc',
 
     'icon'     => ['fal', 'dice-d4'],
     'sections' => [
-        'tenant.users.index' => [
+        'account.users.index' => [
             'name' => 'Users',
         ],
-        'tenant.roles.index' => [
+        'account.roles.index' => [
             'name' => 'Roles',
         ],
 
-        'tenant.billing' => [
+        'account.billing' => [
             'name' => 'Billing',
         ],
 
@@ -76,7 +74,7 @@ return [
 
             'shops' => [
                 'id'           => 'shops',
-                'bgColor'     => 'pink',
+                'bgColor'      => 'pink',
                 'type'         => 'modelIndex',
                 'with_options' => true,
                 'route'        => 'shops.index',
@@ -97,7 +95,7 @@ return [
             ],
             'shop'  => [
                 'id'         => 'shop',
-                'bgColor'   => 'pink',
+                'bgColor'    => 'pink',
                 'modelIndex' => 'shops.index',
                 'icon'       => ['fal', 'store-alt'],
                 'type'       => 'modelOptions',
@@ -226,17 +224,19 @@ return [
 
 
             'human_resources' => $human_resources,
-            'tenant'          => $tenant
+            'account'         => $account
 
 
         ],
         'permissions'       => [
-            'users.view',
-            'users.create',
-            'users.edit',
-            'users.delete',
-            'users',
-            'look-and-field',
+            'account',
+            'account.users.view',
+            'account.users.create',
+            'account.users.edit',
+            'account.users.delete',
+            'account.users',
+            'account.look-and-field',
+
             'employees.view',
             'employees.edit',
             'employees.delete',
@@ -507,8 +507,7 @@ return [
         'roles'       => [
 
             'super-admin'           => [
-                'users',
-                'look-and-field',
+                'account',
                 'employees',
                 'procurement',
                 'workshops',
@@ -518,8 +517,8 @@ return [
                 'financials',
             ],
             'tenant-admin'          => [
-                'users',
-                'look-and-field',
+                'account.users',
+                'account.look-and-field',
             ],
             'human-resources-clerk' => [
                 'employees.view',
@@ -674,7 +673,7 @@ return [
                 ]
             ],
             'human_resources' => $human_resources,
-            'tenant'          => $tenant
+            'account'         => $account
 
 
         ],
