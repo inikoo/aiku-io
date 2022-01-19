@@ -33,7 +33,7 @@ $account = [
     'id'          => 'account',
     'type'        => 'standard',
     'route'       => 'account.show',
-    'permissions' => ['users.view'],
+    'permissions' => ['account.users.view'],
     'name'        => 'Account',
     'code'        => 'Acc',
 
@@ -230,6 +230,7 @@ return [
         ],
         'permissions'       => [
             'account',
+            'account.edit',
             'account.users.view',
             'account.users.create',
             'account.users.edit',

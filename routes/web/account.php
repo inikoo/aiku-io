@@ -7,12 +7,11 @@
  */
 
 use App\Http\Controllers\System\AccountController;
-use App\Http\Controllers\System\AccountSettingsController;
 use App\Http\Controllers\System\UserController;
 
 Route::get('/', [AccountController::class, 'show'])->name('show');
 Route::get('/edit', [AccountController::class, 'edit'])->name('edit');
-Route::post('/', [AccountController::class, 'edit'])->name('update');
+Route::post('/', [AccountController::class, 'update'])->name('update');
 
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');

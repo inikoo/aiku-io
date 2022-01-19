@@ -9,7 +9,11 @@
 namespace App\Http\Controllers\System;
 
 use App\Actions\Account\Account\ShowAccount;
+use App\Actions\Account\Account\ShowEditAccount;
+use App\Actions\Account\Account\UpdateAccount;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 use Inertia\Response;
 
@@ -25,6 +29,11 @@ class AccountController extends Controller
     public function edit(): Response
     {
         return ShowEditAccount::make()->asInertia();
+    }
+
+    public function update(Request $request): RedirectResponse
+    {
+        return UpdateAccount::make()->asInertia($request);
     }
 
 

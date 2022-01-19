@@ -25,9 +25,8 @@ class ShowEditEmployee
     use AsAction;
     use WithInertia;
 
-    public function handle(Employee $employee): Employee
+    public function handle()
     {
-        return $employee;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -108,6 +107,7 @@ class ShowEditEmployee
 
     public function prepareForValidation(ActionRequest $request): void
     {
+        $this->fillFromRequest($request);
         $this->set('breadcrumbs', $this->breadcrumbs());
     }
 

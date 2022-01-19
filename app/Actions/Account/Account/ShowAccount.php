@@ -90,7 +90,7 @@ class ShowAccount
         return [
             'tenant' => [
                 'route'   => 'account.show',
-                'name'    => __('Account'),
+                'name'    => __('Account').' ['.$this->account->nickname.']',
                 'current' => false
             ],
         ];

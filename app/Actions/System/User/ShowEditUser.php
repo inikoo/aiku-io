@@ -9,7 +9,6 @@
 namespace App\Actions\System\User;
 
 use App\Actions\UI\WithInertia;
-use App\Http\Controllers\Assets\CountrySelectOptionsController;
 use App\Models\System\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,9 +25,8 @@ class ShowEditUser
     use AsAction;
     use WithInertia;
 
-    public function handle(User $user): User
+    public function handle()
     {
-        return $user;
     }
 
     public function authorize(ActionRequest $request): bool
@@ -60,7 +58,7 @@ class ShowEditUser
         ];
 
         return Inertia::render(
-            $this->get('page'),
+            'Common/EditModel',
             [
                 'headerData' => [
                     'module'      => 'users',
@@ -79,11 +77,11 @@ class ShowEditUser
 
 
                 ],
-                'user'       => $this->user,
+
                 'formData'    => [
                     'blueprint' => $blueprint,
                     'args'      => [
-                        'postURL' => "/tenant/users/{$this->user->id}",
+                        'postURL' => "/account/users/{$this->user->id}",
                     ]
 
                 ],
@@ -94,14 +92,8 @@ class ShowEditUser
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        $request->merge(
-            [
-                'page' => 'Tenant/EditUser',
 
-            ]
-        );
         $this->fillFromRequest($request);
-
         $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
@@ -111,7 +103,7 @@ class ShowEditUser
             (new IndexUser())->getBreadcrumbs(),
             [
                 'user' => [
-                    'route'           => 'account.users.show',
+                    'route'           => 'account.users.edit',
                     'routeParameters' => $this->user->id,
                     'name'            => $this->user->username,
                     'suffix'          => '('.__('editing').')',
