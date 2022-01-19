@@ -4,12 +4,11 @@ namespace App\Http\Controllers\HumanResources;
 
 
 use App\Actions\HumanResources\Employee\IndexEmployee;
+use App\Actions\HumanResources\Employee\ShowEditEmployee;
 use App\Actions\HumanResources\Employee\ShowEmployee;
-use App\Actions\System\User\ShowEditUser;
-use App\Actions\System\User\UpdateUser;
+use App\Actions\HumanResources\Employee\UpdateEmployee;
 use App\Models\HumanResources\Employee;
 use App\Http\Controllers\Traits\HasContact;
-use App\Models\System\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -35,14 +34,14 @@ class EmployeeController extends HumanResourcesController
         return ShowEmployee::make()->asInertia($employee);
     }
 
-    public function edit(User $user): Response
+    public function edit(Employee $employee): Response
     {
-        return ShowEditUser::make()->asInertia($user);
+        return ShowEditEmployee::make()->asInertia($employee);
     }
 
-    public function update(User $user, Request $request): RedirectResponse
+    public function update(Employee $employee, Request $request): RedirectResponse
     {
-        return UpdateUser::make()->asInertia($user, $request);
+        return UpdateEmployee::make()->asInertia($employee, $request);
     }
 
 

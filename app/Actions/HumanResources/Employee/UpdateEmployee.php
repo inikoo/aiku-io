@@ -14,16 +14,21 @@ use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Illuminate\Validation\Validator;
+use Lorisleiva\Actions\Concerns\WithAttributes;
 
 class UpdateEmployee
 {
     use AsAction;
     use WithUpdate;
+    use WithAttributes;
 
     public function handle(Employee $employee, array $contactData, array $employeeData): ActionResult
     {
@@ -83,7 +88,10 @@ class UpdateEmployee
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit');
+        return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit') ||
+            $request->user()->hasPermissionTo("employees.edit")
+
+            ;
     }
 
     public function rules(): array
@@ -201,6 +209,9 @@ class UpdateEmployee
 
     public function asController(Employee $employee, ActionRequest $request): ActionResultResource
     {
+
+        $request->validate();
+
         $contact = $request->only('name', 'email', 'phone', 'identity_document_number', 'date_of_birth');
         if ($contactData = $request->only('address')) {
             $contact['data'] = $contactData;
@@ -224,6 +235,36 @@ class UpdateEmployee
                 )
             )
         );
+    }
+
+    public function asInertia(Employee $employee, Request $request): RedirectResponse
+    {
+
+        $this->set('employee', $employee);
+        $this->fillFromRequest($request);
+        $this->validateAttributes();
+
+        $contact = $request->only('name', 'email', 'phone', 'identity_document_number', 'date_of_birth');
+        if ($contactData = $request->only('address')) {
+            $contact['data'] = $contactData;
+        }
+        $this->handle(
+            $employee,
+            $contact,
+            $request->only(
+                'nickname',
+                'worker_number',
+                'emergency_contact',
+                'salary',
+                'job_title',
+                'working_hours',
+                'employee_relationships',
+                'job_positions'
+
+            )
+        );
+
+        return Redirect::route('human_resources.employees.edit', $employee->id);
     }
 
 }

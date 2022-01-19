@@ -14,7 +14,6 @@ use App\Models\Traits\HasAddress;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -35,6 +34,7 @@ class Contact extends Model implements Auditable
 
     protected $appends = ['age', 'formatted_address', 'formatted_dob'];
     protected $touches = ['contactable'];
+
 
     public function generateTags(): array
     {
@@ -70,15 +70,12 @@ class Contact extends Model implements Auditable
         return $this->belongsToMany(Patient::class)->withPivot('relation')->withTimestamps();
     }
 
-    /** @noinspection PhpUnused */
     public function getFormattedDobAttribute(): string
     {
         return Carbon::parse($this->date_of_birth)->locale(auth()->user()->locale ?? 'en')->isoFormat('ll');
     }
 
 
-
-    /** @noinspection PhpUnused */
     public function getFormattedGenderAttribute(): string
     {
         return match ($this->gender) {

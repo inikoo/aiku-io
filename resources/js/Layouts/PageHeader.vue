@@ -46,7 +46,10 @@
                         <Badge v-if="meta.badge" :data="meta" ></Badge>
                         <template v-else>
                         <font-awesome-icon v-if="meta.icon" :icon="meta.icon"  :class="[meta.iconClass,'flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400']"  aria-hidden="true"/>
-                        <span :class="meta.nameClass" v-bind:title="meta.nameTitle">{{ meta.name }}</span>
+                            <Link v-if="meta.href" v-bind:title="meta.nameTitle" :href="route(meta.href.route,meta.href.routeParameters)">
+                                {{ meta.name }}
+                            </Link>
+                            <span v-else :class="meta.nameClass" v-bind:title="meta.nameTitle">{{ meta.name }}</span>
                         </template>
                     </div>
                 </div>

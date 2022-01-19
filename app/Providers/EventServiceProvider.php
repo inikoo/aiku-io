@@ -36,6 +36,9 @@ class EventServiceProvider extends ServiceProvider
         CommunalImageAnchoring::class => [
             UpdateCommunalImageStats::class
         ]
+
+
+
     ];
 
     /**

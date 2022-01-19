@@ -52,7 +52,7 @@ class Employee extends Model implements Auditable
     protected $guarded = [];
 
 
-    public function getNameAttribute()
+    public function getNameAttribute(): ?string
     {
         return $this->contact->name;
     }

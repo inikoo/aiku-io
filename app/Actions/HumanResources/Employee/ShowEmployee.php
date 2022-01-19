@@ -21,6 +21,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
  * @property Employee $employee
  * @property array $breadcrumbs
  * @property bool $canEdit
+ * @property bool $canViewUsers
  */
 class ShowEmployee
 {
@@ -69,7 +70,7 @@ class ShowEmployee
 
 
         return Inertia::render(
-            $this->get('page'),
+            'Common/ShowModel',
             [
                 'headerData' => [
                     'module'        => 'users',
@@ -119,11 +120,27 @@ class ShowEmployee
                                 'fal',
                                 'tasks'
                             ],
-                            'name'      => $this->employee->job_title??__('Job title not set'),
+                            'name'      => $this->employee->job_title ?? __('Job title not set'),
                             'nameTitle' => __('Job title'),
-                            'nameClass'=>!$this->employee->job_title??'text-red-500',
-                            'iconClass'=>!$this->employee->job_title??'text-red-500',
-                        ]
+                            'nameClass' => !$this->employee->job_title ?? 'text-red-500',
+                            'iconClass' => !$this->employee->job_title ?? 'text-red-500',
+                        ],
+                        [
+                            'icon'      => [
+                                'fal',
+                                'dice-d4'
+                            ],
+                            'name'      => $this->employee->user ? $this->employee->user->username : __('Not an user'),
+                            'nameTitle' => __('User'),
+                            'nameClass' => $this->employee->user ?? 'text-gray-400 italic',
+                            'iconClass' => $this->employee->user ?? 'text-gray-300 ',
+                            'href'      => ($this->canViewUsers and $this->employee->user) ? [
+                                'route'           => 'tenant.users.show',
+                                'routeParameters' => $this->employee->user->id
+                            ] : null
+
+
+                        ],
 
 
                     ],
@@ -139,15 +156,10 @@ class ShowEmployee
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        $request->merge(
-            [
-                'page' => 'HumanResources/Employee',
-
-            ]
-        );
         $this->fillFromRequest($request);
 
         $this->set('canEdit', $request->user()->can('employees.edit'));
+        $this->set('canViewUsers', $request->user()->can('users.view'));
 
         $this->set('breadcrumbs', $this->breadcrumbs());
     }

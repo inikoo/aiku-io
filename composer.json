@@ -15,6 +15,7 @@
         "ext-pdo": "*",
         "ext-pgsql": "*",
         "ext-zlib": "*",
+        "alexstewartja/laravel-attribute-observer": "^1.2",
         "commerceguys/addressing": "^1.2",
         "commerceguys/intl": "^1.1",
         "doctrine/dbal": "^3.2",
