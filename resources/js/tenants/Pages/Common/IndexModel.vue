@@ -41,7 +41,6 @@
 </template>
 
 <script>
-//v-data="record[columnIdx]?column.toggle[0]:column.toggle[1]"
 import PageHeader from '@/Layouts/PageHeader';
 import {InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder';
 import {Link} from '@inertiajs/inertia-vue3';

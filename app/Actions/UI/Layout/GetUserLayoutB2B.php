@@ -12,6 +12,7 @@ use App\Models\Inventory\Warehouse;
 use App\Models\Production\Workshop;
 use App\Models\Trade\Shop;
 use App\Models\Web\Website;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,24 +24,36 @@ class GetUserLayoutB2B extends GetUserLayout
 
     private array $models;
 
+    private Collection $shops;
+    private Collection $fulfilment_houses;
+    private Collection $websites;
+    private Collection $warehouses;
+    private Collection $workshops;
+
     protected function initialize($user)
     {
         $this->user   = $user;
         $this->models = [];
 
-        $this->models['shop']             = Shop::withTrashed()->where('type', 'shop')->get()->filter(function ($shop) use ($user) {
+        $this->shops = Shop::withTrashed()->where('type', 'shop')->get();
+
+        $this->models['shop']             = $this->shops->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
-        $this->models['fulfilment_house'] = Shop::withTrashed()->where('type', 'fulfilment_house')->get()->filter(function ($shop) use ($user) {
+        $this->fulfilment_houses          = Shop::withTrashed()->where('type', 'fulfilment_house')->get();
+        $this->models['fulfilment_house'] = $this->fulfilment_houses->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
-        $this->models['website']          = Website::withTrashed()->get()->filter(function ($website) use ($user) {
+        $this->websites                   = Website::withTrashed()->get();
+        $this->models['website']          = $this->websites->filter(function ($website) use ($user) {
             return $user->hasPermissionTo("websites.$website->id.view");
         });
-        $this->models['warehouse']        = Warehouse::withTrashed()->get()->filter(function ($warehouse) use ($user) {
+        $this->warehouses                 = Warehouse::withTrashed()->get();
+        $this->models['warehouse']        = $this->warehouses->filter(function ($warehouse) use ($user) {
             return $user->hasPermissionTo("warehouses.$warehouse->id.view");
         });
-        $this->models['workshop']         = Workshop::withTrashed()->get()->filter(function ($workshop) use ($user) {
+        $this->workshops                  = Workshop::withTrashed()->get();
+        $this->models['workshop']         = $this->workshops->filter(function ($workshop) use ($user) {
             return $user->hasPermissionTo("websites.$workshop->id.view");
         });
     }
@@ -48,16 +61,20 @@ class GetUserLayoutB2B extends GetUserLayout
     #[Pure] protected function canShow($moduleKey): bool
     {
         return match ($moduleKey) {
-            'shops' => $this->models['shop']->count() > 1,
+            'shops' => $this->shops->count() > 1 and $this->models['shop']->count(),
             'shop' => $this->models['shop']->count() > 0,
-            'fulfilment_houses' => $this->models['fulfilment_house']->count() > 1,
+            'fulfilment_houses' => $this->fulfilment_houses->count() > 1 and $this->models['fulfilment_house']->count(),
             'fulfilment_house' => $this->models['fulfilment_house']->count() > 0,
-            'websites' => $this->models['website']->count() > 1,
+
+            'websites' => $this->websites->count() > 1 and $this->models['website']->count(),
             'website' => $this->models['website']->count() > 0,
-            'warehouses' => $this->models['warehouse']->count() > 1,
-            'warehouse' => $this->models['warehouse']->count() > 0,
-            'workshops' => $this->models['workshop']->count() > 1,
+
+            'warehouses' => $this->warehouses->count() > 1 and $this->models['warehouse']->count(),
+            'warehouse' => $this->warehouses->count() > 1,
+
+            'workshops' => $this->workshops->count() and $this->models['workshop']->count(),
             'workshop' => $this->models['workshop']->count() > 0,
+
             default => true,
         };
     }
@@ -80,20 +97,31 @@ class GetUserLayoutB2B extends GetUserLayout
                     ];
                 }
 
-                $module['options'] = $options;
-                $module['route'] = Str::plural($module['id']).'.show';
+
+                $module['options']    = $options;
+                $module['route']      = Str::plural($module['id']).'.show';
                 $module['indexRoute'] = Str::plural($module['id']).'.index';
 
 
                 if ($this->models[$module['id']]->count() == 1) {
                     $module['type']            = 'standard';
                     $module['routeParameters'] = $this->models[$module['id']][0]->id;
+                } else {
+                    $module['fallbackModel'] = $this->models[$module['id']][0]->id;
                 }
 
 
                 return $module;
             })(),
+            'inventory' => (function () use ($module) {
+                if ($this->models['warehouse']->count() != 1) {
+                    unset($module['sections']['inventory.warehouses.show.locations.index']);
+                    unset($module['sections']['inventory.warehouses.show.areas.index']);
+                }
 
+
+                return $module;
+            })(),
             default => $module,
         };
     }

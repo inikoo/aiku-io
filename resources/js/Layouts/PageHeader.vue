@@ -6,6 +6,7 @@
   -->
 
 <template>
+    <Head :title="headerData.pageTitle??headerData.title??''" />
     <div class="mb-6">
         <div class="flex">
             <div v-if="displayBreadcrumbs">
@@ -84,13 +85,14 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {Link, usePage} from '@inertiajs/inertia-vue3';
 import {__} from 'matice';
 import Badge from '@/Components/Badge';
+import { Head } from '@inertiajs/inertia-vue3'
 
 export default {
     props     : ['headerData'],
     components: {
         Badge,
         ChevronLeftIcon,
-        ChevronRightIcon, Breadcrumbs, FontAwesomeIcon, Link,
+        ChevronRightIcon, Breadcrumbs, FontAwesomeIcon, Link,Head
     },
     setup(props) {
 

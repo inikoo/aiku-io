@@ -29,8 +29,8 @@ class GetUserLayout
         foreach ($modulesScaffolding as $moduleKey => $module) {
             $modulePermissions = $module['permissions'] ?? false;
 
-
             if (
+
                 $this->canShow($moduleKey)
                 and (
                     $module['type'] == 'modelOptions'
@@ -66,6 +66,7 @@ class GetUserLayout
                 );
             }
         }
+
 
         return $layout;
     }

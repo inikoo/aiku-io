@@ -64,6 +64,11 @@ Route::prefix('websites')->name('websites.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/websites.php');
 
+Route::prefix('inventory')->name('inventory.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__.'/web/inventory.php');
+
+
 Route::prefix('warehouses')->name('warehouses.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/warehouses.php');

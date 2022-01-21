@@ -1,16 +1,19 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 13 Jan 2022 03:06:51 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Thu, 20 Jan 2022 22:48:06 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Inventory\Warehouse;
+namespace App\Actions\CRM\Customer;
 
 
+use App\Models\CRM\Customer;
+use App\Models\Inventory\Stock;
 use App\Models\Inventory\Warehouse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,10 +25,8 @@ use App\Actions\UI\WithInertia;
 use function __;
 use function data_set;
 
-/**
- * @property Warehouse $warehouse
- */
-class IndexWarehouse
+
+class IndexCustomer
 {
     use AsAction;
     use WithInertia;
@@ -34,16 +35,35 @@ class IndexWarehouse
 
     public function handle(): LengthAwarePaginator
     {
-        return QueryBuilder::for(Warehouse::class)
-            ->allowedSorts(['code', 'name'])
+
+
+        return QueryBuilder::for(Customer::class)
+            ->when($this->get('routeName'), function ($query, $routeName) {
+
+
+                switch ($routeName){
+                    case 'inventory.stocks.index':
+                        return $query->where(
+                            'owner_type','Tenant'
+                        );
+                    default:
+                        return false;
+                }
+
+
+            })
+            ->allowedSorts(['code'])
             ->paginate()
             ->withQueryString();
     }
 
 
 
-    public function asInertia()
+    public function asInertia(Request $request)
     {
+
+        $this->set('routeName',$request->route()->getName());
+        $this->set('routeParameters',$request->route()->parameters());
 
 
         $this->validateAttributes();
@@ -54,7 +74,7 @@ class IndexWarehouse
             'Common/IndexModel',
             [
                 'headerData' => [
-                    'module'      => 'warehouses',
+                    'module'      => 'shops',
                     'title'       => $this->get('title'),
                     'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
 
@@ -66,13 +86,13 @@ class IndexWarehouse
                             'sort'  => 'code',
                             'label' => __('Code'),
                             'href'  => [
-                                'route'  => 'warehouses.show',
+                                'route'  => 'inventory.stocks.show',
                                 'column' => 'id'
                             ],
                         ],
                         'name' => [
-                            'sort'  => 'name',
-                            'label' => __('Name')
+                            'sort'  => 'description',
+                            'label' => __('Description')
                         ]
                     ]
                 ]
@@ -95,7 +115,7 @@ class IndexWarehouse
 
         $request->merge(
             [
-                'title' => __('Warehouses'),
+                'title' => __('Customers'),
 
 
             ]

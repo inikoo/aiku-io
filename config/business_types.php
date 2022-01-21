@@ -101,6 +101,14 @@ return [
                 'type'       => 'modelOptions',
                 'name'       => 'Store',
                 'code'       => 'Store',
+                'sections'   => [
+                    'shops.show.customers.index' => [
+                        'name' => 'Customers',
+                    ],
+                    'shops.show.orders.index'    => [
+                        'name' => 'Orders',
+                    ],
+                ]
 
             ],
 
@@ -129,7 +137,7 @@ return [
 
             ],
 
-            'websites'   => [
+            'websites' => [
                 'id' => 'websites',
 
 
@@ -138,20 +146,42 @@ return [
                 'route'        => 'websites.index',
                 'permissions'  => ['websites.view'],
                 'name'         => 'Websites',
-                'code'         => 'Websites',
+                'code'         => 'Webs',
                 'icon'         => ['fal', 'globe'],
 
 
             ],
-            'website'    => [
+            'website'  => [
                 'id'         => 'website',
                 'modelIndex' => 'websites.index',
                 'icon'       => ['fal', 'globe'],
                 'type'       => 'modelOptions',
                 'name'       => 'Website',
-                'code'       => 'Website',
+                'code'       => 'Web',
 
             ],
+
+            'inventory' => [
+                'id'          => 'inventory',
+                'type'        => 'standard',
+                'route'       => 'inventory.dashboard',
+                'permissions' => ['inventory.view'],
+                'name'        => 'Inventory',
+                'code'        => 'Inv',
+                'icon'        => ['fal', 'box'],
+                'sections'    => [
+                    'inventory.stocks.index'                    => [
+                        'name' => 'Stocks',
+                    ],
+                    'inventory.warehouses.show.locations.index' => [
+                        'name' => 'Locations',
+                    ],
+                    'inventory.warehouses.show.areas.index'     => [
+                        'name' => 'WH Areas',
+                    ],
+                ]
+            ],
+
             'warehouses' => [
                 'id'           => 'warehouses',
                 'type'         => 'modelIndex',
@@ -161,7 +191,14 @@ return [
                 'name'         => 'Warehouses',
                 'code'         => 'WHs',
                 'icon'         => ['fal', 'warehouse-alt'],
-
+                'sections'     => [
+                    'warehouses.locations.index' => [
+                        'name' => 'Locations',
+                    ],
+                    'warehouses.areas.index'     => [
+                        'name' => 'WH Areas',
+                    ],
+                ]
 
             ],
             'warehouse'  => [
@@ -171,7 +208,15 @@ return [
                 'type'       => 'modelOptions',
                 'name'       => 'Warehouse',
                 'code'       => 'WH',
+                'sections'   => [
 
+                    'warehouses.show.locations.index' => [
+                        'name' => 'Locations',
+                    ],
+                    'warehouses.show.areas.index'     => [
+                        'name' => 'WH Areas',
+                    ],
+                ]
             ],
 
             'workshops' => [
@@ -197,9 +242,7 @@ return [
             ],
 
             'procurement' => [
-                'id' => 'procurement',
-
-
+                'id'          => 'procurement',
                 'type'        => 'standard',
                 'route'       => 'procurement.dashboard',
                 'permissions' => ['procurement.view'],
@@ -302,6 +345,13 @@ return [
             'financials.accounts_payable.delete',
 
 
+            'inventory',
+            'inventory.stocks',
+            'inventory.stocks.view',
+            'inventory.stocks.edit',
+            'inventory.stocks.delete',
+
+
             'warehouses.view',
             'warehouses.edit',
             'warehouses.delete',
@@ -309,6 +359,7 @@ return [
             'warehouses.lost_stock',
             'warehouses.dispatcher',
             'warehouses',
+
 
             'workshops.view',
             'workshops.edit',
@@ -514,6 +565,7 @@ return [
                 'workshops',
                 'shops',
                 'websites',
+                'inventory',
                 'warehouses',
                 'financials',
             ],
@@ -570,13 +622,17 @@ return [
                 ],
 
             'distribution-admin'        => [
+                'inventory',
                 'warehouses',
             ],
             'distribution-clerk'        => [
+                'inventory.stocks',
                 'warehouses.view',
                 'warehouses.stock',
             ],
             'distribution-dispatcher'   => [
+
+                'inventory.stocks.view',
                 'warehouses.view',
                 'warehouses.dispatcher',
             ],

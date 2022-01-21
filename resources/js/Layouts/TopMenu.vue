@@ -9,33 +9,26 @@
 <template>
     <div class="border-b border-gray-200 ml-2 ">
         <span v-for="item in items" :key="item.name">
-            <span v-if="item.type==='modelOptions'" :class="[isCurrentRouteBase(item.module)  ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', 'mr-4  inline-block']">
-
-
+            <span v-if="item.type==='modelOptions'" :class="[isCurrentRouteBase(item)  ? 'text-gray-700' : 'text-gray-400 group-hover:text-gray-500', 'mr-4  inline-block']">
 
                 <TopMenuLink
                     v-if=" (currentModels[item.module]  && !isCurrentRoute(item.modelIndex)) "
                     :href="route(item.indexRoute)" :icon="['fal', 'bars']"/>
 
-
                 <TopMenuLink
                     v-if="(!isCurrentRoute(item.modelIndex) && currentModels[item.module]  )"
-                    :href="route(item.route,currentModels[item.module])" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrentRouteBase(item.module+'s')"/>
-
-
+                    :href="route(item.route,currentModels[item.module])" :icon="item['icon']" v-bind:title="item['name']"  :label="item['code']" :isCurrent="isCurrentRouteBase(item)"/>
 
                 [ <TopMenuLink
                 v-if="currentModels[item.module]"
                 :href="route(item.route,currentModels[item.module])"
                 :label="item.options[
                     currentModels[item.module]]
-                    ['code']" :isCurrent="isCurrentRouteBase(item.module+'s')"/>
+                    ['code']" :isCurrent="isCurrentRouteBase(item)"/>
 
                 <Menu as="span" class="inline-block relative ml-2">
                     <div>
                         <MenuButton>
-
-
                                 <span v-show="!currentModels[item.module]">
                                      {{ Object.keys(item.options).length }} <font-awesome-icon :icon="['fal', 'bars']" class="mr-1" aria-hidden="true"/>
                                   </span>
@@ -59,11 +52,11 @@
 
             </span>
             <span v-else-if="item.type==='modelIndex'" :class="'mr-2'">
-                                <TopMenuLink v-if="(isCurrentRoute(item.route) || !currentModels[item.module.slice(0, -1)]  )" :href="route(item.route)" :icon="item['icon']" :label="item['code']"
-                                             :isCurrent="isCurrentRouteBase(item.module)"/>
+                                <TopMenuLink v-if="(isCurrentRoute(item.route) || !currentModels[item.module.slice(0, -1)]  )" :href="route(item.route)" :icon="item['icon']" v-bind:title="item['name']"  :label="item['code']"
+                                             :isCurrent="isCurrentRouteBase(item)"/>
 
             </span>
-            <TopMenuLink v-else :href="route(item.route,item.routeParameters)" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrentRouteBase(item.module)" :class="'mr-4'"/>
+            <TopMenuLink v-else v-bind:title="item['name']"  :href="route(item.route,item.routeParameters)" :icon="item['icon']" :label="item['code']" :isCurrent="isCurrentRouteBase(item)" :class="'mr-4'"/>
         </span>
     </div>
 </template>
@@ -89,6 +82,9 @@ library.add(faTachometerAltFast, faClipboardUser, faDiceD4, faStoreAlt, faPerson
 import {faTasks} from '@/private/pro-light-svg-icons';
 library.add(faTasks);
 
+// For inventory
+import {faBox} from '@/private/pro-light-svg-icons';
+library.add(faBox);
 
 // For user model
 import {faCheckCircle,faTimesCircle} from '@fortawesome/free-solid-svg-icons';
@@ -119,7 +115,20 @@ export default {
     methods: {
         isCurrentRouteBase(module) {
             this.$page.url;
-            return route().current(module + '.*');
+            //return route().current(module + '.*');
+
+            let prefix = module.module;
+            if (module.type === 'modelOptions') {
+                prefix = prefix + 's.show'
+            }
+            console.log(module)
+
+            if (module.type === 'modelIndex') {
+                return route().current().startsWith(prefix) && !route().current().startsWith(prefix + '.show')
+            } else {
+                return route().current().startsWith(prefix)
+            }
+
 
         },
         isCurrentRoute(modelIndex) {

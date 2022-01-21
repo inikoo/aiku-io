@@ -5,7 +5,6 @@
   -  Version 4.0
   -->
 <template>
-    <Head title="Dashboard" />
     <page-header :headerData="headerData"/>
 </template>
 
@@ -14,7 +13,7 @@ import PageHeader from '@/Layouts/PageHeader';
 
 export default {
     components: {
-        PageHeader,
+        PageHeader
     },
     props     : ['headerData'],
 

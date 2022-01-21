@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Http\Controllers\Shop;
+namespace App\Http\Controllers\Shops;
 
 use App\Actions\Trade\Shop\IndexShop;
 use App\Actions\Trade\Shop\ShowShop;

@@ -10,4 +10,11 @@
 use App\Http\Controllers\Inventory\WarehouseController;
 
 Route::get('/', [WarehouseController::class, 'index'])->name('index');
+Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+Route::get('/areas', [WarehouseAreasController::class, 'index'])->name('areas.index');
+
+
+
 Route::get('/{warehouse}', [WarehouseController::class, 'show'])->name('show');
+Route::get('/{warehouse}/locations', [WarehouseController::class, 'show'])->name('show.locations.index');
+Route::get('/{warehouse}/areas', [WarehouseAreasController::class, 'show'])->name('show.areas.index');
