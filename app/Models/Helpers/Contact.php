@@ -32,7 +32,7 @@ class Contact extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     use HasAddress;
 
-    protected $appends = ['age', 'formatted_address', 'formatted_dob'];
+    //protected $appends = ['age', 'formatted_address', 'formatted_dob'];
     protected $touches = ['contactable'];
 
 
@@ -85,7 +85,6 @@ class Contact extends Model implements Auditable
         };
     }
 
-    /** @noinspection PhpUnused */
     public function getGenderIconAttribute(): array
     {
         return match ($this->gender) {

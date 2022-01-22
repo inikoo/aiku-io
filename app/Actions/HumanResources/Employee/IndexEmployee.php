@@ -10,6 +10,7 @@ namespace App\Actions\HumanResources\Employee;
 
 use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\UI\WithInertia;
+use App\Http\Resources\HumanResources\EmployeeInertiaResource;
 use App\Http\Resources\HumanResources\EmployeeResource;
 use App\Models\HumanResources\Employee;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -42,13 +43,13 @@ class IndexEmployee
 
 
         return QueryBuilder::for(Employee::class)
-            ->select('employees.id as employee_id', 'contacts.*', 'employees.*')
-            ->leftJoin('contacts', 'contacts.contactable_id', '=', 'employees.id')
-            ->where('contacts.contactable_type', '=', 'Employee')
             ->defaultSort('-employees.id')
-            // ->allowedAppends(['contacts.age', 'employees.formatted_id', 'contacts.formatted_dob'])
-            ->allowedSorts(['employees.nickname', 'employees.worker_number', 'contacts.name'])
-            ->allowedFilters(['employees.state', 'contacts.name', 'employees.nickname', $globalSearch])
+            ->select(['nickname','id','worker_number'])
+            ->with(['contact' => function ($query) {
+                $query->select('contactable_id','contactable_type','name');
+            }])
+            ->allowedSorts(['nickname', 'worker_number'])
+            ->allowedFilters(['state', 'nickname', $globalSearch])
             ->paginate()
             ->withQueryString();
     }
@@ -93,6 +94,7 @@ class IndexEmployee
             ];
         }
 
+
         return Inertia::render(
             'Common/IndexModel',
             [
@@ -103,28 +105,27 @@ class IndexEmployee
                     'actionIcons' => $actionIcons,
                 ],
                 'dataTable'  => [
-                    'records' => $this->handle(),
+                    'records' => EmployeeInertiaResource::collection($this->handle()),
                     'columns' => [
                         'nickname'      => [
-                            'sort'  => 'employee.nickname',
+                            'sort'  => 'nickname',
                             'label' => __('Nickname'),
                             'href'  => [
                                 'route'  => 'human_resources.employees.show',
-                                'column' => 'employee_id'
+                                'column' => 'id'
                             ],
                         ],
                         'worker_number' => [
-                            'sort'  => 'employee.worker_number',
+                            'sort'  => 'worker_number',
                             'label' => __('Worker #')
                         ],
-                        'name'          => [
-                            'sort'  => 'employee.name',
+                        'name'  => [
+                            //   'sort'  => 'contact.name',
+                            'relationship'=>'contact',
                             'label' => __('Name')
                         ],
                     ]
                 ]
-
-
 
 
             ]

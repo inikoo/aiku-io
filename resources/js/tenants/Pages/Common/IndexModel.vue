@@ -16,7 +16,7 @@
     >
         <template #head>
             <tr>
-                <HeaderCell :cell="header.sort?sortableHeader(header.sort):staticHeader(headerIdx)" 
+                <HeaderCell :cell="header.sort?sortableHeader(header.sort):staticHeader(headerIdx)"
                             v-for="(header,headerIdx) in dataTable.columns" v-bind:key="headerIdx">
                     {{header.label}}
                 </HeaderCell>
@@ -30,10 +30,10 @@
                     <span v-else-if="column.transformations" >
                         {{column.transformations[record[columnIdx]]}} x {{column.transformations}}
                     </span>
-                    <Cell v-else-if="column.toggle" :data="record[columnIdx]?column.toggle[0]:column.toggle[1]" />      
+                    <Cell v-else-if="column.toggle" :data="record[columnIdx]?column.toggle[0]:column.toggle[1]" />
                     <span v-else>{{record[columnIdx]}}</span>
                 </td>
-             
+
 
             </tr>
         </template>
@@ -53,7 +53,7 @@ export default {
     props     : ['headerData','dataTable'],
     methods:  {
         toggle(value,blueprint) {
-            
+
         }
     }
 

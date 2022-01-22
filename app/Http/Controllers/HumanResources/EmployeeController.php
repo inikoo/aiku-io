@@ -26,6 +26,8 @@ class EmployeeController extends HumanResourcesController
 
     public function index(): Response
     {
+
+
         return IndexEmployee::make()->asInertia();
     }
 
