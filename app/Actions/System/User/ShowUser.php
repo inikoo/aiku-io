@@ -41,7 +41,7 @@ class ShowUser
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("users.view");
+        return $request->user()->hasPermissionTo("account.users.view");
     }
 
     public function asInertia(User $user, array $attributes = []): Response

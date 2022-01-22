@@ -11,6 +11,7 @@ namespace App\Actions\System\User;
 
 use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\UI\WithInertia;
+use App\Http\Resources\System\UserInertiaResource;
 use App\Http\Resources\System\UserResource;
 use App\Models\System\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -55,7 +56,7 @@ class IndexUser
         return
             (
                 $request->user()->tokenCan('root') or
-                $request->user()->hasPermissionTo('users.view')
+                $request->user()->hasPermissionTo('account.users.view')
             );
     }
 
@@ -85,7 +86,7 @@ class IndexUser
                 ],
 
                 'dataTable' => [
-                    'records' => $this->handle(),
+                    'records' => UserInertiaResource::collection($this->handle()),
                     'columns' => [
                         'status' => [
                             'sort'  => 'status',

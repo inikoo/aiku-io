@@ -53,7 +53,7 @@ class UpdateUser
         }
 
         return $request->user()->tokenCan('root') || $request->user()->tokenCan('system:edit') ||
-            $request->user()->hasPermissionTo("users.edit")
+            $request->user()->hasPermissionTo("account.users.edit")
             ;
     }
 

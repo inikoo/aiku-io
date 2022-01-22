@@ -46,7 +46,7 @@
                     <div v-for="(meta,metaIdx) in headerData['meta']" :key="metaIdx" class="mt-2 flex items-center text-sm text-gray-500">
                         <Badge v-if="meta.badge" :data="meta" ></Badge>
                         <template v-else>
-                        <font-awesome-icon v-if="meta.icon" :icon="meta.icon"  :class="[meta.iconClass,'flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400']"  aria-hidden="true"/>
+                            <span class="text-gray-400"><font-awesome-icon v-if="meta.icon" :icon="meta.icon"  :class="[meta.iconClass,'flex-shrink-0 mr-1.5 h-5 w-5']"  aria-hidden="true"/></span>
                             <Link v-if="meta.href" v-bind:title="meta.nameTitle" :href="route(meta.href.route,meta.href.routeParameters)">
                                 {{ meta.name }}
                             </Link>
