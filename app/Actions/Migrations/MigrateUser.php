@@ -10,10 +10,13 @@ namespace App\Actions\Migrations;
 
 
 use App\Actions\System\User\CreateUserToken;
+use App\Models\Inventory\Warehouse;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
 use App\Models\HumanResources\Employee;
+use App\Models\Production\Workshop;
 use App\Models\System\Guest;
+use App\Models\System\User;
 use App\Models\Trade\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -36,7 +39,6 @@ class MigrateUser extends MigrateModel
 
     public function getParent(): Employee|Supplier|Agent|Guest
     {
-
         return match ($this->auModel->data->{'User Type'}) {
             'Staff' => Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Contractor' => Guest::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
@@ -53,25 +55,36 @@ class MigrateUser extends MigrateModel
         foreach (DB::connection('aurora')->table('User Group User Bridge')->where('User Key', $this->auModel->data->{'User Key'})->select('User Group Key')->get() as $auRole) {
             foreach (
             match ($auRole->{'User Group Key'}) {
-                1 => ['system-admin'],
+                1, 15 => ['system-admin'],
                 6 => ['human-resources-clerk'],
                 20 => ['human-resources-admin'],
                 8 => ['buyer-clerk'],
                 21, 28 => ['buyer-admin'],
-                4 => ['production-operative'],
-                27 => ['production-admin'],
-                3 => ['distribution-clerk'],
-                22 => ['distribution-admin'],
+                4 => $this->getWorkshopScopedRoles('workshop-#-operative'),
+                27 => $this->getWorkshopScopedRoles('workshop-#-admin'),
+                3 => $this->getWarehouseScopedRoles('distribution-#-clerk'),
+                22 => $this->getWarehouseScopedRoles('distribution-#-admin'),
+
                 23 => ['accounts-admin'],
-                17 => ['distribution-dispatcher'],
-                24, 25 => ['distribution-operative'],
+
+                17 => $this->getWarehouseScopedRoles('distribution-dispatcher-#-admin'),
+                24 => $this->getWarehouseScopedRoles('distribution-dispatcher-#-picker'),
+                25 => $this->getWarehouseScopedRoles('distribution-dispatcher-#-packer'),
+
+
                 16 => $this->getShopScopedRoles($this->auModel->data->{'User Key'}, 'customer-services-#-admin'),
                 2 => $this->getShopScopedRoles($this->auModel->data->{'User Key'}, 'customer-services-#-clerk'),
+                18 => $this->getShopScopedRoles($this->auModel->data->{'User Key'}, 'shop-#-admin'),
+                9 => $this->getShopScopedRoles($this->auModel->data->{'User Key'}, 'shop-#-clerk'),
+
+                14 => ['business-intelligence-analyst'],
+                30, 29 => ['shops-broadcaster'],
+
 
                 default => [],
             } as $role
             ) {
-                array_push($roles, $role);
+                $roles[] = $role;
             }
         }
 
@@ -110,16 +123,76 @@ class MigrateUser extends MigrateModel
 
             return $roles;
         } else {
-            return [preg_replace('/#/', '*', $role)];
+            return match ($role) {
+                'customer-services-#-admin' => ['customer-services-admin'],
+                'customer-services-#-clerk' => ['customer-services-clerk'],
+                default => [preg_replace('/-#-/', 's-', $role)]
+            };
         }
     }
 
+    private function getWebsiteScopedRoles($auUserKey, $role): array
+    {
+        $activeShops     = Shop::where('state', '!=', 'closed')->get()->pluck('aurora_id');
+        $authorisedShops = DB::connection('aurora')->table('User Right Scope Bridge')->where('User Key', $auUserKey)->where('Scope', 'Store')->pluck('Scope Key');
+
+        $diff = $activeShops->diff($authorisedShops);
+
+
+        if (count($diff)) {
+            $roles = [];
+            foreach ($authorisedShops as $aurora_id) {
+                /** @var Shop $shop */
+                $shop = Shop::where('aurora_id', $aurora_id)->first();
+                if ($shop->website->id) {
+                    $roles[] = preg_replace('/#/', $shop->website->id, $role);
+                }
+            }
+
+            return $roles;
+        } else {
+            return [preg_replace('/-#-/', 's-', $role)];
+        }
+    }
+
+
+    private function getWorkshopScopedRoles($role): array
+    {
+        $roles = [];
+
+        foreach (Workshop::all() as $workshop) {
+            $roles[] = preg_replace('/#/', $workshop->id, $role);
+        }
+
+        return $roles;
+    }
+
+    private function getWarehouseScopedRoles($role): array
+    {
+        $roles = [];
+
+        foreach (Warehouse::all() as $warehouse) {
+            $roles[] = preg_replace('/#/', $warehouse->id, $role);
+        }
+
+        return $roles;
+    }
+
+
     protected function postMigrateActions(ActionResult $res): ActionResult
     {
-        $token = CreateUserToken::run($this->model);
-        DB::connection('aurora')->table($this->auModel->table)
-            ->where($this->auModel->id_field, $this->auModel->id)
-            ->update(['aiku_token' => $token]);
+        /** @var User $user */
+        $user = $this->model;
+
+        if ($res->status == 'inserted') {
+            $token = CreateUserToken::run($user);
+            DB::connection('aurora')->table($this->auModel->table)
+                ->where($this->auModel->id_field, $this->auModel->id)
+                ->update(['aiku_token' => $token]);
+        }
+
+
+        $user->syncRoles($this->modelData['roles']);
 
         return $res;
     }

@@ -35,7 +35,6 @@ class Workplace extends Model implements Auditable
 
     protected $guarded = [];
 
-    /** @noinspection PhpUnused */
     public function getSlugSourceAttribute(): string
     {
         /** @var Employee|Guest|Tenant $owner */

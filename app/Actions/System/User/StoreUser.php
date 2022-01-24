@@ -24,7 +24,7 @@ class StoreUser
 {
     use AsAction;
 
-    public function handle(Employee|Tenant|Agent|Supplier|Guest $userable, array $userData, array $roles = []): ActionResult
+    public function handle(Employee|Tenant|Agent|Supplier|Guest $userable, array $userData): ActionResult
     {
         $res = new ActionResult();
 
@@ -36,7 +36,6 @@ class StoreUser
         $user = $userable->user()->create($userData);
         $user->stats()->create([]);
 
-        $user->syncRoles($roles);
 
 
         $res->model    = $user;
@@ -69,13 +68,11 @@ class StoreUser
 
     public function asController(Employee|Tenant $userable, ActionRequest $request): ActionResult
     {
-        $roles = [];
 
 
         return $this->handle(
             $userable,
             $request->only('username', 'password'),
-            $roles
         );
     }
 

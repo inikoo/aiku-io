@@ -357,13 +357,17 @@ return [
             'warehouses.delete',
             'warehouses.stock',
             'warehouses.lost_stock',
-            'warehouses.dispatcher',
+            'warehouses.dispatching',
+            'warehouses.dispatching.pick',
+            'warehouses.dispatching.pack',
+
             'warehouses',
 
 
             'workshops.view',
             'workshops.edit',
             'workshops.dispatcher',
+            'workshops.stock',
             'workshops.delete',
             'workshops',
 
@@ -421,13 +425,17 @@ return [
                 'warehouse.#.delete',
                 'warehouse.#.stock',
                 'warehouse.#.lost_stock',
-                'warehouse.#.dispatcher',
+                'warehouse.#.dispatching',
+                'warehouse.#.dispatching.pick',
+                'warehouse.#.dispatching.pack',
             ],
             'Workshop'  => [
-                'workshops.#',
-                'workshops.#.view',
-                'workshops.#.edit',
-                'workshops.#.delete',
+                'workshop.#',
+                'workshop.#.view',
+                'workshop.#.stock',
+                'workshop.#.dispatcher',
+                'workshop.#.edit',
+                'workshop.#.delete',
             ]
 
         ],
@@ -569,7 +577,7 @@ return [
                 'warehouses',
                 'financials',
             ],
-            'tenant-admin'          => [
+            'system-admin'          => [
                 'account.users',
                 'account.look-and-field',
             ],
@@ -591,12 +599,8 @@ return [
             'buyer-admin'           => [
                 'procurement',
             ],
-            'workshops-operative'   => [
+            'workshop-operative'   => [
                 'workshops.view',
-            ],
-            'workshops-dispatcher'  => [
-                'workshops.view',
-                'workshops.dispatcher',
             ],
             'workshops-admin'       => [
                 'workshops',
@@ -609,12 +613,16 @@ return [
                 'shops.view',
                 'shops.edit',
             ],
-            'customer-services-*-admin' =>
+            'shops-broadcaster'               => [
+                'shops.view',
+                'shops.broadcasting',
+            ],
+            'customer-services-admin' =>
                 [
                     'shops.view',
                     'shops.customers',
                 ],
-            'customer-services-*-clerk' =>
+            'customer-services-clerk' =>
                 [
                     'shops.view',
                     'shops.customers.view',
@@ -630,14 +638,23 @@ return [
                 'warehouses.view',
                 'warehouses.stock',
             ],
-            'distribution-dispatcher'   => [
+            'distribution-dispatcher-admin'   => [
 
                 'inventory.stocks.view',
                 'warehouses.view',
-                'warehouses.dispatcher',
+                'warehouses.dispatching',
             ],
-            'distribution-operative'    => [
+            'distribution-dispatcher-picker'   => [
+
+                'inventory.stocks.view',
                 'warehouses.view',
+                'warehouses.dispatching.pick',
+            ],
+            'distribution-dispatcher-packer'   => [
+
+                'inventory.stocks.view',
+                'warehouses.view',
+                'warehouses.dispatching.pack',
             ],
             'accounts-admin'            => [
                 'financials',
@@ -660,15 +677,23 @@ return [
                 'financials.accounts_payable.view',
                 'financials.accounts_payable.edit',
             ],
+            'business-intelligence-analyst' =>[
+                'financials.view',
+                'shops.view',
+                'websites.view',
+                'inventory.stocks.view',
+                'warehouses.view',
+                'workshops.view',
+            ]
 
         ],
         'model_roles' => [
             'Shop'      => [
-                'shops-#-admin'             =>
+                'shop-#-admin'             =>
                     [
                         'shops.#',
                     ],
-                'shops-#-clerk'             =>
+                'shop-#-clerk'             =>
                     [
                         'shops.#.view',
                         'shops.#.products',
@@ -699,14 +724,40 @@ return [
 
             ],
             'Warehouse' => [
-                'distribution-warehouse-#-admin' =>
+                'distribution-#-admin' =>
                     [
                         'warehouse.#',
                     ],
-                'distribution-warehouse-#-clerk' =>
+                'distribution-#-clerk' =>
                     [
                         'warehouse.#.view',
                         'warehouse.#.stock',
+                    ],
+                'distribution-dispatcher-#-admin' =>
+                    [
+                        'warehouse.#.view',
+                        'warehouse.#.dispatching',
+                    ],
+                'distribution-dispatcher-#-picker' =>
+                    [
+                        'warehouse.#.view',
+                        'warehouse.#.dispatching.pick',
+                    ],
+                'distribution-dispatcher-#-packer' =>
+                    [
+                        'warehouse.#.view',
+                        'warehouse.#.dispatching.packer',
+                    ]
+            ],
+            'Workshop' => [
+                'workshop-#-admin' =>
+                    [
+                        'workshop.#',
+                    ],
+                'workshop-#-operative' =>
+                    [
+                        'workshop.#.view',
+                        'workshop.#.stock',
                     ]
             ]
         ]
@@ -750,7 +801,7 @@ return [
         'roles'       => [
 
             'super-admin'            => [],
-            'tenant-admin'           => [
+            'account-admin'           => [
                 'users',
                 'look-and-field',
             ],

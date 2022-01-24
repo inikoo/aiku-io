@@ -35,8 +35,7 @@ trait WithUser
         try {
             return StoreUser::run(
                 userable: $this->parent,
-                userData: $this->modelData['user'],
-                roles:    $this->modelData['roles']
+                userData: $this->modelData['user']
             );
         } catch (Exception $e) {
             $res           = new ActionResult();
