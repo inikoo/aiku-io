@@ -153,16 +153,15 @@ class CreateTenant extends Command
 
         $userPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
 
-        StoreUser::run($tenant,
-                       [
+        $res=StoreUser::run(userable:$tenant,
+                       userData:[
                            'username' => 'admin',
                            'password' => Hash::make($userPassword),
-                       ],
-                       [
-                           'super-admin'
                        ]
 
         );
+
+        $res->model->syncRoles(['super-admin']);
 
 
         $this->line("Tenant $tenant->domain created :)");

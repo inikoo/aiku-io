@@ -71,6 +71,18 @@ return [
                 'icon'     => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
+            'profile' => [
+                'id'       => 'profile',
+                'type'     => 'profile',
+                'route'    => 'profile.show',
+                'name'     => 'Profile',
+                'code'     => 'Profile',
+                'sections' => [
+                    'profile.roles.index' => [
+                        'name' => 'Roles',
+                    ],
+                ]
+            ],
 
             'shops' => [
                 'id'           => 'shops',

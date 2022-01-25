@@ -148,7 +148,7 @@ class ShowEmployee
 
 
                 ],
-                'user'       => $this->employee
+                'model'       => $this->employee
             ]
 
         );

@@ -30,7 +30,10 @@ class StoreUser
 
         $userData['language_id'] = $userData['language_id'] ?? app('currentTenant')->language_id;
         $userData['timezone_id'] = $userData['timezone_id'] ?? app('currentTenant')->timezone_id;
-        $userData['name']        = $userable->name;
+        $userData['name']        = match (class_basename($userable::class)) {
+            'Tenant' => 'Admin',
+            default => $userable->name
+        };
 
         /** @var User $user */
         $user = $userable->user()->create($userData);

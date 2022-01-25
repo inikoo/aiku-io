@@ -33,7 +33,7 @@ class GetUserLayout
 
                 $this->canShow($moduleKey)
                 and (
-                    $module['type'] == 'modelOptions'
+                    $module['type'] == 'modelOptions' or  $module['type'] == 'profile'  or  $module['type'] == 'dashboard'
                     or
                     (
                         $modulePermissions and
@@ -66,7 +66,6 @@ class GetUserLayout
                 );
             }
         }
-
 
         return $layout;
     }

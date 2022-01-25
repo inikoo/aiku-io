@@ -70,7 +70,7 @@ class GetUserLayoutB2B extends GetUserLayout
             'website' => $this->models['website']->count() > 0,
 
             'warehouses' => $this->warehouses->count() > 1 and $this->models['warehouse']->count(),
-            'warehouse' => $this->warehouses->count() > 1,
+            'warehouse' => $this->models['warehouse']->count() > 0,
 
             'workshops' => $this->workshops->count() and $this->models['workshop']->count(),
             'workshop' => $this->models['workshop']->count() > 0,
@@ -106,7 +106,7 @@ class GetUserLayoutB2B extends GetUserLayout
                 if ($this->models[$module['id']]->count() == 1) {
                     $module['type']            = 'standard';
                     $module['routeParameters'] = $this->models[$module['id']][0]->id;
-                } else {
+                } elseif ($this->models[$module['id']]->count() > 1) {
                     $module['fallbackModel'] = $this->models[$module['id']][0]->id;
                 }
 

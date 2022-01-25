@@ -47,6 +47,7 @@
         "matice": "^1.1.4",
         "modern-normalize": "^1.1.0",
         "v-calendar": "^3.0.0-alpha.5",
+        "vue-boring-avatars": "^1.0.0",
         "vue-tel-input": "^6.0.0-beta.4"
     }
 }

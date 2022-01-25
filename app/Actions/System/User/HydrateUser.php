@@ -23,19 +23,26 @@ class HydrateUser
     public function handle(User $user): void
     {
         $user->update(
-            ['name' => $user->userable->name]
+            [
+                'name' =>
+                    match ($user->userable_type) {
+                        'Tenant' => 'Account Admin',
+                        default => $user->userable->name
+                    }
+
+
+            ]
         );
     }
 
     public function asCommand(Command $command): void
     {
-
         $tenants = match ($command->option('tenant')) {
             [] => Tenant::all(),
-            default => Tenant::where('nickname',$command->option('tenant'))->get()
+            default => Tenant::where('nickname', $command->option('tenant'))->get()
         };
 
-        $tenants->eachCurrent(function(Tenant $tenant) use ($command) {
+        $tenants->eachCurrent(function (Tenant $tenant) use ($command) {
             $command->info("Tenant: $tenant->nickname");
 
             if ($command->argument('user_id') == 'all') {
@@ -45,11 +52,7 @@ class HydrateUser
 
                 $command->info('Done!');
             }
-
         });
-
-
-
     }
 
 

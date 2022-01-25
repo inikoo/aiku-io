@@ -91,3 +91,7 @@ Route::middleware(['auth', 'verified'])->get('/profile', function () {
 
 
 
+Route::prefix('profile')->name('profile.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__.'/web/profile.php');
+

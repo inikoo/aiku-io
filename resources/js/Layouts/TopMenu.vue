@@ -63,7 +63,8 @@
 
 <script>
 /* global route */
-
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 // Aux icons
 import {faAngleDown, faBars} from '@/private/pro-light-svg-icons';
@@ -92,8 +93,7 @@ library.add(faCheckCircle, faTimesCircle);
 import {faUserAlien} from '@/private/pro-light-svg-icons';
 library.add(faUserAlien);
 
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+
 import {Link} from '@inertiajs/inertia-vue3';
 import {Menu, MenuButton, MenuItems, MenuItem} from '@headlessui/vue';
 import {ref} from 'vue';

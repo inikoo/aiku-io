@@ -96,15 +96,11 @@
                                 </div>
                             </nav>
                         </div>
-                        <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
+                        <div v-if="$page.props.userType!=='Tenant'" class="flex-shrink-0 flex border-t border-gray-200 p-4">
                             <Link :href="route('profile.show')" class="flex-shrink-0 group block">
                                 <div class="flex items-center">
                                     <div>
-                                        <img
-                                            class="inline-block h-10 w-10 rounded-full"
-                                            src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
-                                            alt
-                                        />
+                                       <Avatar variant="pixel" name="$page.props.auth.user.name" />
                                     </div>
                                     <div class="ml-3">
                                         <p
@@ -168,7 +164,7 @@
                                 <div
                                     v-for="item in navigation"
                                     key="item.name"
-                                    v-show="getLeftMenuVisibility(item)"
+                                    v-show=" getLeftMenuVisibility(item)"
                                 >
                                     <Link
                                         v-for="section in item['sections']"
@@ -204,22 +200,17 @@
                         </nav>
                     </div>
                     <div class="flex-shrink-0 w-full flex border-t border-gray-200 p-4">
-                        <Link :href="route('profile.show')">
+                        <Link v-if="$page.props.userType!=='Tenant'"  :href="route('profile.show')">
                             <div>
-                                <img
-                                    class="inline-block h-9 w-9 rounded-full"
-                                    src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
-                                    alt
-                                />
+                                <Avatar variant="pixel" name="$page.props.auth.user.name" />
                             </div>
                         </Link>
                         <div class="ml-3 w-full">
-                            <p
-                                class="text-sm font-medium text-gray-700 group-hover:text-gray-900"
-                            >{{ $page.props.auth.user.name }}</p>
+                            <p v-if="$page.props.userType!=='Tenant'" class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ $page.props.auth.user.name }}</p>
                             <div class="flex text-xs font-medium text-gray-500">
                                 <div class="flex-1">
-                                    <Link :href="route('profile.show')">{{ __('View profile') }}</Link>
+                                    <Link  v-if="$page.props.userType!=='Tenant'" :href="route('profile.show')">{{ __('View profile') }}</Link>
+                                    <span v-else>{{ $page.props.auth.user.name }}</span>
                                 </div>
                                 <div class="flex-1 text-right">
                                     <form @submit.prevent="logout" class="float-right">
@@ -361,13 +352,14 @@ import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons
 library.add(faBirthdayCake, faMars, faVenus);
 
 import TopMenu from '@/Layouts/TopMenu';
+import Avatar from "vue-boring-avatars";
 
 // Section icons
 let currentModels;
 export default {
     components: {
         TopMenu,
-        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header,
+        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header,Avatar
 
     }, setup() {
 
@@ -424,7 +416,7 @@ export default {
 
             }
         }
-
+        console.log(navigation)
         return {
             navigation, secondaryNavigation, sidebarOpen, tenantName, currentModels, modelsToWatch,
         };
@@ -446,7 +438,7 @@ export default {
 
             return null;
         },
-        getSectionRouteParameters(moduleName, fallbackModel, r) {
+        getSectionRouteParameters(moduleName, fallbackModel) {
 
 
             if (moduleName === 'inventory')

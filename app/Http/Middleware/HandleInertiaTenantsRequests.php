@@ -44,9 +44,10 @@ class HandleInertiaTenantsRequests extends Middleware
     public function share(Request $request): array
     {
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
-            'tenant'        => app('currentTenant')->name,
+            'tenant' => app('currentTenant')->name,
 
             'appType'       => app('currentTenant')->businessType->slug,
+            'userType'      => $request->user()->userable_type,
             'modules'       => function () use ($request) {
                 /** @var \App\Models\Account\BusinessType $businessType */
                 $businessType = app('currentTenant')->businessType;

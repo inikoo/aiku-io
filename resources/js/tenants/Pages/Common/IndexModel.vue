@@ -8,6 +8,8 @@
 <template>
     <page-header :headerData="headerData"/>
     <Table
+         v-if="dataTable.records.lenght>0"
+
         :filters="queryBuilderProps.filters"
         :search="queryBuilderProps.search"
         :columns="queryBuilderProps.columns"
@@ -38,6 +40,7 @@
             </tr>
         </template>
     </Table>
+    <EmptyState v-else :data="dataTable.empty??{}"></EmptyState>
 </template>
 
 <script>
@@ -45,10 +48,12 @@ import PageHeader from '@/Layouts/PageHeader';
 import {InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder';
 import {Link} from '@inertiajs/inertia-vue3';
 import Cell from '@/Components/Tables/Cell';
+import EmptyState from '@/Components/Tables/EmptyState';
+
 export default {
     mixins: [InteractsWithQueryBuilder],
     components: {
-        PageHeader,Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link,Cell
+        PageHeader,Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link,Cell,EmptyState
     },
     props     : ['headerData','dataTable'],
     methods:  {

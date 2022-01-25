@@ -25,4 +25,3 @@ Route::get('/usage', [AccountController::class, 'index'])->name('usage');
 Route::get('/logbook', [AccountController::class, 'logbook'])->name('logbook');
 Route::get('/billing', [AccountController::class, 'billing'])->name('billing');
 
-

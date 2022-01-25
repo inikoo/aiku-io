@@ -111,7 +111,7 @@ class ShowUser
 
 
                 ],
-                'user'       => $this->user
+                'model'       => $this->user
             ]
 
         );
@@ -120,12 +120,7 @@ class ShowUser
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        $request->merge(
-            [
-                'page' => 'Tenant/User',
 
-            ]
-        );
         $this->fillFromRequest($request);
 
         $this->set(

@@ -5,7 +5,7 @@
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
-use App\Actions\System\Role\ShowRoles;
+use App\Actions\System\Role\IndexRole;
 use App\Actions\System\User\ShowUser;
 use App\Actions\System\User\IndexUser;
 use App\Actions\System\User\StoreUser;
@@ -19,4 +19,4 @@ Route::post('/users', StoreUser::class)->name('api.users.store');
 Route::get('/users/{user}',ShowUser::class)->name('api.users.show');
 Route::patch('/users/{user}',UpdateUser::class)->name('api.users.update');
 
-Route::get('/roles', ShowRoles::class)->name('api.roles.index');
+Route::get('/roles', IndexRole::class)->name('api.roles.index');
