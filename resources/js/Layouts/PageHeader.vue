@@ -13,14 +13,14 @@
                 <nav class="sm:hidden" aria-label="Back">
                     <a href="#" class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
                         <ChevronLeftIcon class="flex-shrink-0 -ml-1 mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>
-                        {{ __('Back') }}
+                        {{ translations.back }}
                     </a>
                 </nav>
                 <breadcrumbs :breadcrumbs="headerData['breadcrumbs']"/>
             </div>
             <div class="flex-grow ">
                 <div class="sm:hidden">
-                    <label for="tabs" class="sr-only">{{ __('Select a tab') }}</label>
+                    <label for="tabs" class="sr-only">{{ translations.select_a_tab }}</label>
                     <select id="tabs" name="tabs" class="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
                         <option v-for="tab in sections" :key="tab.name" :selected="tab['current']">{{ tab.name }}</option>
                     </select>
@@ -83,9 +83,9 @@ import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/vue/solid';
 import Breadcrumbs from '@/Layouts/Breadcrumbs';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {Link, usePage} from '@inertiajs/inertia-vue3';
-import {__} from 'matice';
 import Badge from '@/Components/Badge';
 import { Head } from '@inertiajs/inertia-vue3'
+import { inject } from 'vue'
 
 export default {
     props     : ['headerData'],
@@ -96,6 +96,7 @@ export default {
     },
     setup(props) {
 
+        const translations = inject('translations')
 
 
         let sections = [];
@@ -114,11 +115,9 @@ export default {
 
         let displayBreadcrumbs = Object.keys(props.headerData['breadcrumbs']).length > 0;
         return {
-            sections, displayBreadcrumbs,
+            sections, displayBreadcrumbs,translations
         };
-    }, methods: {
-        __: __
-    },
+    }
 
 };
 </script>

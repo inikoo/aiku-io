@@ -27,14 +27,22 @@ createInertiaApp({
                          return page;
                      },
 
-                     setup({el, app, props, plugin}) {
-                         return createApp({render: () => h(app, props)}).
-                             use(plugin).
-                             component('InertiaLink',
-                                       Link) // Here happens the magic ;-)
-                             .mixin({methods: {route}}).
-                             mount(el);
+
+
+                     setup({ el, app, props, plugin }) {
+                         const VueApp = createApp({ render: () => h(app, props) });
+
+
+
+
+
+                         VueApp.use(plugin)
+                         .component('InertiaLink', Link)
+                         .mixin({ methods: { route } })
+                         .mount(el);
                      },
+
+
                  });
 
 InertiaProgress.init({color: '#4B5563'});

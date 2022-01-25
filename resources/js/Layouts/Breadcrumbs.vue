@@ -12,7 +12,7 @@
                 <div>
                     <Link :href="route('dashboard.index')" class="text-gray-400 hover:text-gray-500">
                         <font-awesome-icon :icon="['fal', 'tachometer-alt-fast']" class="flex-shrink-0 h-4 w-4" aria-hidden="true"/>
-                        <span class="sr-only">{{ __('Dashboard') }}</span>
+                        <span class="sr-only">{{ translations.dashboard }}</span>
                     </Link>
                 </div>
             </li>
@@ -31,7 +31,7 @@
 import {ChevronRightIcon, HomeIcon} from '@heroicons/vue/solid';
 import {Link} from '@inertiajs/inertia-vue3';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import {__} from 'matice';
+import { inject } from 'vue'
 
 
 export default {
@@ -41,9 +41,13 @@ export default {
         HomeIcon,
         Link, FontAwesomeIcon,
     },
+    setup() {
 
-    methods: {
-        __: __,
-    },
+        const translations = inject('translations')
+        return {
+            translations,
+        };
+    }
+
 };
 </script>

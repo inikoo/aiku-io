@@ -44,7 +44,6 @@
         "@vueform/multiselect": "^2.1.2",
         "axios": "^0.21",
         "laravel-mix-merge-manifest": "^2.0.0",
-        "matice": "^1.1.4",
         "modern-normalize": "^1.1.0",
         "v-calendar": "^3.0.0-alpha.5",
         "vue-boring-avatars": "^1.0.0",

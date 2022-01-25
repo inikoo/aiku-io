@@ -45,7 +45,7 @@
                                 <CheckCircleIcon v-if="form.recentlySuccessful" class="mt-1.5  h-5 w-5 text-green-500" aria-hidden="true"/>
                         </span>
                         <span class="ml-2 flex-shrink-0">
-                            <button :title=" __('Update')" :disabled="form.processing  || !form.isDirty " type="submit">
+                            <button :title="translations.update" :disabled="form.processing  || !form.isDirty " type="submit">
                                 <SaveIcon class="h-7 w-7 " :class="form.isDirty ? 'text-indigo-500' : 'text-gray-200'" aria-hidden="true"/>
                             </button>
                         </span>
@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import {__} from 'matice';
 import {Link} from '@inertiajs/inertia-vue3';
 import {useForm} from '@inertiajs/inertia-vue3';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
@@ -69,6 +68,7 @@ import Radio from '@/Components/Forms/Radio';
 import Address from '@/Components/Forms/Address';
 import Phone from '@/Components/Forms/Phone';
 import ToggleWithIcon from '@/Components/Forms/ToggleWithIcon';
+import { inject } from 'vue'
 
 export default {
 
@@ -78,12 +78,12 @@ export default {
     },
     props     : ['fieldData', 'field', 'args'],
     methods   : {
-        __          : __,
         handleChange: function(form) {
             form.clearErrors();
         },
     },
     setup(props) {
+        const translations = inject('translations')
 
         const postURL = props.fieldData['postURL'] ?? props.args['postURL'];
         let formFields = {};
@@ -111,11 +111,10 @@ export default {
 
         }
 
-        console.log(formFields);
 
         const form = useForm(formFields);
         return {
-            form, postURL,
+            form, postURL,translations
         };
     },
 

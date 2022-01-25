@@ -12,6 +12,7 @@ use App\Actions\Assets\Country\IndexCountry;
 use App\Actions\Assets\Currency\IndexCurrency;
 use App\Actions\Assets\Language\IndexLanguage;
 use App\Actions\Assets\Timezone\IndexTimezone;
+use App\Actions\UI\Localisation\GetUITranslations;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\Account\TenantResource;
 use App\Models\Account\Tenant;
@@ -45,18 +46,15 @@ class ShowEditAccount
 
     public function asInertia(array $attributes = []): Response
     {
-
-        $this->set('account',app('currentTenant'))->fill($attributes);
+        $this->set('account', app('currentTenant'))->fill($attributes);
         $this->validateAttributes();
-
-
-
-
 
 
         return Inertia::render(
             'Common/EditModel',
             [
+                'translations' => GetUITranslations::run(),
+
                 'headerData' => [
                     'module'      => 'account',
                     'title'       => __('Account settings', ['name' => $this->account->name]),
@@ -64,14 +62,14 @@ class ShowEditAccount
                     'actionIcons' => [
 
                         'account.show' => [
-                            'name'            => __('Exit edit'),
-                            'icon'            => ['fal', 'portal-exit']
+                            'name' => __('Exit edit'),
+                            'icon' => ['fal', 'portal-exit']
                         ],
 
                     ]
                 ],
-                'formData'    => [
-                    'blueprint' =>  [
+                'formData'   => [
+                    'blueprint' => [
                         'profile' => [
                             'title'    => __('Profile'),
                             'subtitle' => '',
@@ -145,7 +143,7 @@ class ShowEditAccount
             'tenant' => [
                 'route'   => 'account.show',
                 'name'    => __('Account').' ['.$this->account->nickname.']',
-                'suffix'          => '('.__('editing').')',
+                'suffix'  => '('.__('editing').')',
                 'current' => false
             ],
         ];

@@ -9,6 +9,7 @@
 namespace App\Actions\System\Profile;
 
 use App\Actions\Assets\Language\IndexLanguage;
+use App\Actions\UI\Localisation\GetUITranslations;
 use App\Actions\UI\WithInertia;
 use App\Models\System\User;
 use Illuminate\Http\Request;
@@ -55,6 +56,7 @@ class ShowEditProfile
         return Inertia::render(
             'Common/EditModel',
             [
+                'translations'  => GetUITranslations::run(),
                 'headerData' => [
                     'module'      => 'users',
                     'title'       => __('Editing profile'),
@@ -62,8 +64,7 @@ class ShowEditProfile
 
                     'actionIcons' => [
 
-                        'account.users.show' => [
-                            'routeParameters' => $this->user->id,
+                        'profile.show' => [
                             'name'            => __('Exit edit'),
                             'icon'            => ['fal', 'portal-exit']
                         ],

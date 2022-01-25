@@ -9,6 +9,7 @@ use App\Http\Middleware\HandleInertiaLandlordRequests;
 use App\Http\Middleware\HandleInertiaTenantsRequests;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustHosts;
 use App\Http\Middleware\TrustProxies;
@@ -63,6 +64,7 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             SubstituteBindings::class,
             EnsureValidTenantSession::class,
+            SetLocale::class,
             HandleInertiaTenantsRequests::class,
 
         ],

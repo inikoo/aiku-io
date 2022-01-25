@@ -39,12 +39,12 @@
 
                 <Link v-if="formData['cancelRoute']" :href="route(formData['cancelRoute'])" as="button" type="button"
                       class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    {{ __('Cancel') }}
+                    {{ translations.cancel }}
                 </Link>
 
                 <button type="submit"
                         class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    {{ __('Save') }}
+                    {{ translations.save }}
                 </button>
             </div>
         </div>
@@ -54,8 +54,8 @@
 <script>
 
 import {Link, useForm} from '@inertiajs/inertia-vue3';
-import {__} from 'matice';
 import Field from '@/Components/Forms/Field';
+import { inject } from 'vue'
 
 export default {
     components: {
@@ -63,6 +63,10 @@ export default {
     },
     props     : ['formData'],
     setup(props) {
+
+        const translations = inject('translations')
+
+
         let fields = {};
         props.formData['blueprint'].forEach(function(section) {
             Object.entries(section.fields).forEach(entry => {
@@ -96,11 +100,8 @@ export default {
         const form = useForm(fields);
 
         return {
-            form,
+            form,translations
         };
-    },
-    methods: {
-        __: __,
-    },
+    }
 };
 </script>

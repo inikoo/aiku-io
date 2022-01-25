@@ -21,8 +21,15 @@ class AuthenticatedSessionController extends Controller
     public function create()
     {
         return Inertia::render('Auth/Login', [
+            'labels'     => [
+                'username'    => __('Username'),
+                'password'    => __('Password'),
+                'login'       => __('Log in'),
+                'remember_me' => __('Remember me'),
+                'generic_error'=>__('Whoops! Something went wrong.')
+            ],
             'tenantCode' => app('currentTenant')->code,
-            'status'           => session('status'),
+            'status'     => session('status'),
         ]);
     }
 
@@ -40,6 +47,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         Session::put('redirectFromLogin', '1');
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

@@ -8,6 +8,7 @@
 
 namespace App\Models\Account;
 
+use App\Models\Assets\Language;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
 use App\Models\Helpers\Contact;
@@ -91,9 +92,15 @@ class Tenant extends SpatieTenant
         return $this->morphMany(Stock::class, 'owner');
     }
 
+    public function language(): BelongsTo
+    {
+        return $this->belongsTo(Language::class);
+    }
+
     public function getCodeAttribute(): string
     {
         return Str::snake(app('currentTenant')->name,'-');
     }
+
 
 }

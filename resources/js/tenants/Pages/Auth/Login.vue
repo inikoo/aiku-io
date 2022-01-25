@@ -1,7 +1,7 @@
 
 
 <template  >
-    <Head title="Log in" />
+    <Head :title="transactions.login" />
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0
  bg-gradient-to-r from-gray-100 to-gray-200
 
@@ -17,7 +17,7 @@
                             <form class="space-y-6" @submit.prevent="submit">
                                 <div>
                                     <label for="username" class="block text-sm font-medium text-gray-700">
-                                        Username
+                                        {{ transactions.username }}
                                     </label>
                                     <div class="mt-1">
                                         <input id="username" name="username" type="username" autocomplete="username" required=""
@@ -28,7 +28,7 @@
 
                                 <div>
                                     <label for="password" class="block text-sm font-medium text-gray-700">
-                                        Password
+                                        {{ transactions.password }}
                                     </label>
                                     <div class="mt-1">
                                         <input id="password" name="password" type="password" autocomplete="current-password" required=""
@@ -43,7 +43,7 @@
                                                v-model="form.remember"
                                                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
                                         <label for="remember-me" class="ml-2 block text-sm text-gray-900">
-                                            Remember me
+                                            {{ transactions.remember_me }}
                                         </label>
                                     </div>
 
@@ -54,14 +54,14 @@
                                     <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                                     >
-                                        Log in
+                                        {{ transactions.login }}
                                     </button>
                                 </div>
                             </form>
 
 
                             <div v-if="hasErrors" class="mt-4 text-center" >
-                                <div class="font-medium text-red-600">Whoops! Something went wrong.</div>
+                                <div class="font-medium text-red-600">{{ transactions.generic_error }}</div>
 
                                 <ul class="mt-3 list-disc list-inside text-sm text-red-600">
                                     <li v-for="(error, key) in errors" :key="key">{{ error }}</li>
@@ -72,13 +72,7 @@
                                 {{ status }}
                             </div>
 
-
-
-
-
-
                         </div>
-
 
                         <div class="pt-4 text-center	 sm:w-96">
                             aiku.io
@@ -114,8 +108,9 @@ export default {
         status: String,
     },
     setup() {
+        const transactions=usePage().props.value.labels;
         const tenantCode = usePage().props.value.tenantCode;
-        return {tenantCode}
+        return {tenantCode,transactions}
     },
     data() {
         return {

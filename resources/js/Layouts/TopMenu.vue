@@ -104,9 +104,7 @@ export default {
     components: {TopMenuLink, FontAwesomeIcon, Link, Menu, MenuButton, MenuItems, MenuItem},
 
     setup(props) {
-        console.log(props.items);
 
-        console.log(props.currentModels);
 
         const sidebarOpen = ref(false);
         return {sidebarOpen};
@@ -121,7 +119,6 @@ export default {
             if (module.type === 'modelOptions') {
                 prefix = prefix + 's.show'
             }
-            console.log(module)
 
             if (module.type === 'modelIndex') {
                 return route().current().startsWith(prefix) && !route().current().startsWith(prefix + '.show')

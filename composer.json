@@ -21,7 +21,6 @@
         "doctrine/dbal": "^3.2",
         "fakerphp/faker": "^1.15",
         "fruitcake/laravel-cors": "^2.0",
-        "genl/matice": "^1.1",
         "guzzlehttp/guzzle": "^7.0.1",
         "inertiajs/inertia-laravel": "^0.4.3",
         "itsgoingd/clockwork": "^5.1",

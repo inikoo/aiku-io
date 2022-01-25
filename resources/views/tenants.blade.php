@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="{{ mix('css/t/app.css') }}">
     @routes
-    @translations($lang)
     <script src="{{ mix('js/t/app.js') }}" defer></script>
 </head>
 <body class="font-sans antialiased h-full overflow-hidden">

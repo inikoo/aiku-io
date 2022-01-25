@@ -98,6 +98,6 @@ class UpdateProfile
             $this->only($this->fields),
         );
 
-        return Redirect::route('profile.edit', $this->user->id);
+        return Redirect::route('profile.edit')->with('locale_updated', true);
     }
 }

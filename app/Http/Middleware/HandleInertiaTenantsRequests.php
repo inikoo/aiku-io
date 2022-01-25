@@ -8,9 +8,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Actions\UI\Localisation\GetUITranslations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
 use Inertia\Middleware;
 
 class HandleInertiaTenantsRequests extends Middleware
@@ -47,7 +47,6 @@ class HandleInertiaTenantsRequests extends Middleware
             'tenant' => app('currentTenant')->name,
 
             'appType'       => app('currentTenant')->businessType->slug,
-            'userType'      => $request->user()->userable_type,
             'modules'       => function () use ($request) {
                 /** @var \App\Models\Account\BusinessType $businessType */
                 $businessType = app('currentTenant')->businessType;
@@ -59,7 +58,8 @@ class HandleInertiaTenantsRequests extends Middleware
                 'fulfilment_house' => session('currentFulfilmentHouse'),
                 'warehouse'        => session('currentWarehouse'),
                 'website'          => session('currentWebsite')
-            ]
+            ],
+            'translations'  => fn () =>GetUITranslations::run()
         ] : [];
 
         Session::forget('redirectFromLogin');
@@ -67,7 +67,7 @@ class HandleInertiaTenantsRequests extends Middleware
         return array_merge(parent::share($request), $firstLoadOnlyProps, [
 
             'auth.user' => fn() => $request->user()
-                ? $request->user()->only('id', 'name', 'email')
+                ? $request->user()->only('id', 'name', 'email','userable_type')
                 : null,
 
 

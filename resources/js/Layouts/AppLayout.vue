@@ -96,7 +96,7 @@
                                 </div>
                             </nav>
                         </div>
-                        <div v-if="$page.props.userType!=='Tenant'" class="flex-shrink-0 flex border-t border-gray-200 p-4">
+                        <div v-if="$page.props.auth.user.userable_type!=='Tenant'" class="flex-shrink-0 flex border-t border-gray-200 p-4">
                             <Link :href="route('profile.show')" class="flex-shrink-0 group block">
                                 <div class="flex items-center">
                                     <div>
@@ -108,7 +108,7 @@
                                         >{{ $page.props.auth.user.name }}</p>
                                         <p
                                             class="text-sm font-medium text-gray-500 group-hover:text-gray-700"
-                                        >{{ __('View profile') }}</p>
+                                        >{{ translations.see_profile }}</p>
                                     </div>
                                 </div>
                             </Link>
@@ -126,7 +126,7 @@
                                     <div class="ml-5">
                                         <p
                                             class="text-base font-medium text-gray-700 group-hover:text-gray-900"
-                                        >{{ __('Log out') }}</p>
+                                        >{{ translations.log_out }}</p>
                                     </div>
                                 </div>
                             </form>
@@ -200,16 +200,16 @@
                         </nav>
                     </div>
                     <div class="flex-shrink-0 w-full flex border-t border-gray-200 p-4">
-                        <Link v-if="$page.props.userType!=='Tenant'"  :href="route('profile.show')">
+                        <Link v-if="$page.props.auth.user.userable_type!=='Tenant'"  :href="route('profile.show')">
                             <div>
                                 <Avatar variant="pixel" name="$page.props.auth.user.name" />
                             </div>
                         </Link>
                         <div class="ml-3 w-full">
-                            <p v-if="$page.props.userType!=='Tenant'" class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ $page.props.auth.user.name }}</p>
+                            <p v-if="$page.props.auth.user.userable_type!=='Tenant'" class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ $page.props.auth.user.name }}</p>
                             <div class="flex text-xs font-medium text-gray-500">
                                 <div class="flex-1">
-                                    <Link  v-if="$page.props.userType!=='Tenant'" :href="route('profile.show')">{{ __('View profile') }}</Link>
+                                    <Link  v-if="$page.props.auth.user.userable_type!=='Tenant'" :href="route('profile.show')">{{ translations.see_profile }}</Link>
                                     <span v-else>{{ $page.props.auth.user.name }}</span>
                                 </div>
                                 <div class="flex-1 text-right">
@@ -219,7 +219,7 @@
                                                 class="inline-block text-gray-400 group-hover:text-gray-500 h-3 w-3 ml-1"
                                                 aria-hidden="true"
                                             />
-                                            {{ __('Log out') }}
+                                            {{ translations.log_out }}
                                         </button>
                                     </form>
                                 </div>
@@ -250,7 +250,7 @@
                             class="-mr-3 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900"
                             @click="sidebarOpen = true"
                         >
-                            <span class="sr-only">{{ __('Open sidebar') }}</span>
+                            <span class="sr-only">{{ translations.open_sidebar }}</span>
                             <MenuIcon class="h-6 w-6" aria-hidden="true" />
                         </button>
                     </div>
@@ -327,9 +327,8 @@
 
 
 <script>
-import { ref } from 'vue';
+import {ref, watchEffect} from 'vue';
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from '@headlessui/vue';
-import { __ } from 'matice';
 import { Link } from '@inertiajs/inertia-vue3';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -350,18 +349,40 @@ library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, 
 import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
 
 library.add(faBirthdayCake, faMars, faVenus);
+import { provide ,computed} from 'vue'
 
 import TopMenu from '@/Layouts/TopMenu';
 import Avatar from "vue-boring-avatars";
 
 // Section icons
 let currentModels;
+let initTranslations;
+
 export default {
     components: {
         TopMenu,
         Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header,Avatar
 
-    }, setup() {
+    },
+    setup() {
+
+        initTranslations=usePage().props.value.translations;
+
+        const translations = computed(() =>  {
+
+            if(usePage().props.value.translations){
+                initTranslations=usePage().props.value.translations;
+                return usePage().props.value.translations
+            }else{
+                return initTranslations
+            }
+        } )
+
+
+
+        provide('translations', translations)
+
+
 
         const sidebarOpen = ref(false);
         let secondaryNavigation = [];
@@ -418,10 +439,9 @@ export default {
         }
         console.log(navigation)
         return {
-            navigation, secondaryNavigation, sidebarOpen, tenantName, currentModels, modelsToWatch,
+            navigation, secondaryNavigation, sidebarOpen, tenantName, currentModels, modelsToWatch,translations
         };
     }, methods: {
-        __: __,
         logout() {
             this.$inertia.post(route('logout'));
         },
@@ -464,7 +484,7 @@ export default {
 
 
         }
-    },
+    }
 
 };
 </script>
