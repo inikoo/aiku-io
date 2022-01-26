@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
@@ -32,6 +33,7 @@ class Employee extends Model implements Auditable
     use UsesTenantConnection;
     use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
+    use Searchable;
 
 
     protected $casts = [
@@ -51,11 +53,6 @@ class Employee extends Model implements Auditable
 
     protected $guarded = [];
 
-
-    public function getNameAttribute(): ?string
-    {
-        return $this->contact->name;
-    }
 
     public function contact(): MorphOne
     {

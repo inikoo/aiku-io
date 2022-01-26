@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
@@ -29,6 +29,7 @@ class Guest extends Model implements Auditable
     use UsesTenantConnection;
     use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
+    use Searchable;
 
     protected $casts = [
         'data' => 'array'
@@ -41,11 +42,6 @@ class Guest extends Model implements Auditable
     protected $guarded =[];
 
 
-
-    public function getNameAttribute()
-    {
-        return $this->contact->name;
-    }
 
     public function contact(): MorphOne
     {

@@ -19,13 +19,19 @@ class HydrateModels extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->models=['user'];
+        $this->models=['user','employee','guest'];
     }
 
     public function handle(): int
     {
         foreach(array_intersect($this->models,$this->option('model')) as $model){
-            $this->{$model}();
+            $this->line("Hydrating $model");
+            Artisan::call("hydrate:$model",
+                          [
+                              $model.'_id' => 'all',
+                              '--tenant'  => $this->option('tenant')
+                          ]
+            );
         }
 
 
@@ -33,6 +39,7 @@ class HydrateModels extends Command
         return 0;
     }
 
+    /*
     protected function user(){
         $this->line("Hydrating users");
         Artisan::call("hydrate:user",
@@ -42,6 +49,17 @@ class HydrateModels extends Command
                       ]
         );
     }
+
+    protected function employee(){
+        $this->line("Hydrating employees");
+        Artisan::call("hydrate:employee",
+                      [
+                          'employee_id' => 'all',
+                          '--tenant'  => $this->option('tenant')
+                      ]
+        );
+    }
+    */
 
 
 }

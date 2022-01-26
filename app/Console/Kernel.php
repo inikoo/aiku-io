@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Actions\HumanResources\Employee\HydrateEmployee;
 use App\Actions\System\User\HydrateUser;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -14,10 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-
-
-
-        HydrateUser::class
+        HydrateUser::class,
+        HydrateEmployee::class
 
     ];
 

@@ -12,6 +12,7 @@ use App\Models\HumanResources\Workplace;
 use App\Models\Utils\ActionResult;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,7 +27,13 @@ class StoreEmployee
     {
         $res = new ActionResult();
 
+
+        // no normal data
+        $employeeData=array_merge($employeeData,Arr::only($contactData,['name','email','phone']));
+
+        /** @var Employee $employee */
         if ($workplace) {
+
             $employee = $workplace->employees()->create($employeeData);
         } else {
             $employee = Employee::create($employeeData);

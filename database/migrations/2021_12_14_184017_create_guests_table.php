@@ -22,6 +22,11 @@ class CreateGuestsTable extends Migration
         Schema::create('guests', function (Blueprint $table) {
             $table->id();
             $table->string('nickname')->index();
+            //these are no normal, hydra-table from contact
+            $table->string('name',256)->nullable()->index();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            //=====
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();

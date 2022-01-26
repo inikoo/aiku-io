@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-use App\AttributeObservers\ContactNameObserver;
+use App\AttributeObservers\ContactObserver;
 use App\AttributeObservers\TenantLanguageIdObserver;
 use App\Models\Account\Tenant;
 use App\Models\Helpers\Contact;
@@ -15,7 +15,7 @@ return [
 
     'observers' => [
         Contact::class => [
-            ContactNameObserver::class,
+            ContactObserver::class
         ],
         Tenant::class => [
             TenantLanguageIdObserver::class,
