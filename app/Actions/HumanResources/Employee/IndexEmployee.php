@@ -36,7 +36,7 @@ class IndexEmployee
     {
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
-                $query->where('contacts.name', 'LIKE', "%$value%")
+                $query->where('employees.name', 'LIKE', "%$value%")
                     ->orWhere('employees.nickname', 'LIKE', "%$value%");
             });
         });
@@ -44,12 +44,14 @@ class IndexEmployee
 
         return QueryBuilder::for(Employee::class)
             ->defaultSort('-employees.id')
-            ->select(['nickname','id','worker_number'])
-            ->with(['contact' => function ($query) {
-                $query->select('contactable_id','contactable_type','name');
-            }])
-            ->allowedSorts(['nickname', 'worker_number'])
-            ->allowedFilters(['state', 'nickname', $globalSearch])
+            ->select(['nickname', 'id', 'worker_number','name'])
+            ->with([
+                       'contact' => function ($query) {
+                           $query->select('contactable_id', 'contactable_type');
+                       }
+                   ])
+            ->allowedSorts(['nickname', 'worker_number', 'name'])
+            ->allowedFilters(['state', 'nickname', 'name', $globalSearch])
             ->paginate()
             ->withQueryString();
     }
@@ -119,10 +121,9 @@ class IndexEmployee
                             'sort'  => 'worker_number',
                             'label' => __('Worker #')
                         ],
-                        'name'  => [
-                            //   'sort'  => 'contact.name',
-                            'relationship'=>'contact',
-                            'label' => __('Name')
+                        'name'          => [
+                            'sort'         => 'name',
+                            'label'        => __('Name')
                         ],
                     ]
                 ]
@@ -168,8 +169,8 @@ class IndexEmployee
         return array_merge(
             (new ShowTenant())->getBreadcrumbs(),
             [
-                'account.users.index' => [
-                    'route'   => 'account.users.index',
+                'human_resources.employees.index' => [
+                    'route'   => 'human_resources.employees.index',
                     'name'    => $this->title,
                     'current' => false
                 ],

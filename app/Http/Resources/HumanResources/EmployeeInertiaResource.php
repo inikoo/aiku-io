@@ -26,7 +26,7 @@ class EmployeeInertiaResource extends JsonResource
             'id'            => $employee->id,
             'nickname'      => $employee->nickname,
             'worker_number' => $employee->worker_number,
-            'name'          => $employee->contact->name
+            'name'          => $employee->name
         ];
     }
 }

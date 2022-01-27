@@ -8,7 +8,7 @@
 <template>
     <page-header :headerData="headerData"/>
     <Table
-         v-if="dataTable.records.lenght>0"
+         v-if="dataTable.records.meta.total>0"
 
         :filters="queryBuilderProps.filters"
         :search="queryBuilderProps.search"
