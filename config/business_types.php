@@ -39,8 +39,12 @@ $account = [
 
     'icon'     => ['fal', 'dice-d4'],
     'sections' => [
+
         'account.users.index' => [
             'name' => 'Users',
+        ],
+        'account.guests.index' => [
+            'name' => 'Guests',
         ],
         'account.roles.index' => [
             'name' => 'Roles',

@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->morphs('userable');
             $table->string('name');
+            //If userable is Guest this is  no normal, hydra-table from Guest
             $table->boolean('status')->default(true)->index();
             $table->unsignedSmallInteger('language_id');
             //$table->foreign('language_id')->references('id')->on('aiku.languages');

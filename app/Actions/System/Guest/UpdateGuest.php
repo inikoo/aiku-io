@@ -25,6 +25,7 @@ class UpdateGuest
     {
         $res = new ActionResult();
 
+
         $guest->contact()->update($contactData);
 
         $res->changes = array_merge($res->changes, $guest->contact->getChanges());

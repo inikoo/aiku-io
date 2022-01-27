@@ -22,6 +22,9 @@ class CreateGuestsTable extends Migration
         Schema::create('guests', function (Blueprint $table) {
             $table->id();
             $table->string('nickname')->index();
+
+            // user status depends on this
+            $table->boolean('status')->default(true)->index()->comment('linked to user status');
             //these are no normal, hydra-table from contact
             $table->string('name',256)->nullable()->index();
             $table->string('email')->nullable();

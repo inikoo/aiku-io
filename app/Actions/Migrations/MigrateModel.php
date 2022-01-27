@@ -138,16 +138,21 @@ class MigrateModel
 
     protected function sanitizeData($data): array
     {
-        return array_filter($data, fn($value) => !is_null($value) && $value !== ''
-            && $value != '0000-00-00 00:00:00'
-            && $value != '2018-00-00 00:00:00'
-        );
+
+        foreach($data as $key=>$value){
+            if($value === '0000-00-00 00:00:00' or  $value === '2018-00-00 00:00:00'){
+                $data[$key]=null;
+            }
+        }
+
+
+       return $data;
     }
 
-    protected function getDate($value): string
+    protected function getDate($value): ?string
     {
         return ($value != '' && $value != '0000-00-00 00:00:00'
-            && $value != '2018-00-00 00:00:00') ? Carbon::parse($value)->format('Y-m-d') : '';
+            && $value != '2018-00-00 00:00:00') ? Carbon::parse($value)->format('Y-m-d') : null;
     }
 
     protected function parseLanguageID($locale): int|null

@@ -22,6 +22,7 @@ class StoreShop
 
     public function handle(array $data, array $contactData): ActionResult
     {
+
         $res  = new ActionResult();
         $shop = Shop::create($data);
         $shop->contact()->create($contactData);

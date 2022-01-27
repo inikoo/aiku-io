@@ -30,6 +30,16 @@ class MigrateGuest extends MigrateModel
 
     public function parseModelData()
     {
+        $status = false;
+
+        if ($auroraData = DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff','Contractor'])->where('User Parent Key', $this->auModel->data->{'Staff Key'})->first()) {
+
+            if ($auroraData->{'User Active'} == 'Yes') {
+                $status = true;
+            }
+        }
+
+
         $this->modelData['contact'] = $this->sanitizeData(
             [
                 'name'                     => $this->auModel->data->{'Staff Name'},
@@ -40,11 +50,10 @@ class MigrateGuest extends MigrateModel
             ]
         );
 
-        $data=[];
-        if($this->auModel->data->{'Staff Address'}){
-            $data['address']=$this->auModel->data->{'Staff Address'};
+        $data = [];
+        if ($this->auModel->data->{'Staff Address'}) {
+            $data['address'] = $this->auModel->data->{'Staff Address'};
         }
-
 
 
         if ($this->getDate($this->auModel->data->{'Staff Valid From'}) == '') {
@@ -55,14 +64,19 @@ class MigrateGuest extends MigrateModel
 
         ksort($data);
 
+
+
+
         $this->modelData['guest'] = $this->sanitizeData(
             [
                 'nickname'   => strtolower($this->auModel->data->{'Staff Alias'}),
+                'status'     => $status,
                 'created_at' => $this->auModel->data->{'Staff Valid From'},
                 'aurora_id'  => $this->auModel->data->{'Staff Key'},
                 'data'       => $data
             ]
         );
+
 
 
         $this->auModel->id = $this->auModel->data->{'Staff Key'};

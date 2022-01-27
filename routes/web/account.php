@@ -7,6 +7,7 @@
  */
 
 use App\Http\Controllers\System\AccountController;
+use App\Http\Controllers\System\GuestController;
 use App\Http\Controllers\System\UserController;
 
 Route::get('/', [AccountController::class, 'show'])->name('show');
@@ -19,6 +20,13 @@ Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')
 Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
+
+Route::get('/guests', [GuestController::class, 'index'])->name('guests.index');
+Route::get('/guests/{guest}', [GuestController::class, 'show'])->name('guests.show');
+Route::get('/guests/{guest}/edit', [GuestController::class, 'edit'])->name('guests.edit');
+Route::post('/guests/{guest}', [GuestController::class, 'update'])->name('guests.update');
+Route::get('/guests/create', [GuestController::class, 'create'])->name('guests.create');
+Route::post('/guests/create', [GuestController::class, 'store'])->name('guests.store');
 
 Route::get('/roles', [AccountController::class, 'roles'])->name('roles.index');
 Route::get('/usage', [AccountController::class, 'index'])->name('usage');
