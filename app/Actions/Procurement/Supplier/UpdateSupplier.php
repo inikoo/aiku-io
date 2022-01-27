@@ -22,7 +22,7 @@ class UpdateSupplier
     public function handle(Supplier $supplier, array $modelData, array $contactData): ActionResult
     {
         $res = new ActionResult();
-        $supplier->contact()->update($contactData);
+        $supplier->contact->update($contactData);
         $res->changes = array_merge($res->changes, $supplier->contact->getChanges());
 
 

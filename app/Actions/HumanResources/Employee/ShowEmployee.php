@@ -138,8 +138,6 @@ class ShowEmployee
                                 'route'           => 'account.users.show',
                                 'routeParameters' => $this->employee->user->id
                             ] : null
-
-
                         ],
 
 

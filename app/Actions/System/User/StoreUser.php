@@ -56,7 +56,7 @@ class StoreUser
     public function rules(): array
     {
         return [
-            'username' => 'required|string|unique:users',
+            'username' => 'required|string|unique:App\Models\System\User,username',
             'password' => ['required', 'confirmed', Password::min(8)->uncompromised()],
         ];
     }

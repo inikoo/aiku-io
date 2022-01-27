@@ -26,7 +26,7 @@ class UpdateShop
     ): ActionResult {
         $res = new ActionResult();
 
-        $shop->contact()->update($contactData);
+        $shop->contact->update($contactData);
         $res->changes = array_merge($res->changes, $shop->contact->getChanges());
 
         $shop->update(Arr::except($modelData, ['data', 'settings']));

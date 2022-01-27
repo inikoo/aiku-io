@@ -60,8 +60,8 @@ class UpdateUser
     public function rules(): array
     {
         return [
-            'username' => 'sometimes|required|string|unique:users',
-            'password' => ['sometimes', 'required', 'confirmed', Password::min(8)->uncompromised()],
+            'username' => 'sometimes|required|string|unique:App\Models\System\User,username',
+            'password' => ['sometimes', 'required', Password::min(8)->uncompromised()],
             'status'   => 'sometimes|required|boolean'
         ];
     }

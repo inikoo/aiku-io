@@ -26,7 +26,7 @@ class UpdateCustomer
     ): ActionResult {
         $res = new ActionResult();
 
-        $customer->contact()->update($contactData);
+        $customer->contact->update($contactData);
         $res->changes = array_merge($res->changes, $customer->contact->getChanges());
 
 

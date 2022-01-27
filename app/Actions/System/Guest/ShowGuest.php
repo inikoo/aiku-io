@@ -60,7 +60,6 @@ class ShowGuest
             ];
         }
 
-
         return Inertia::render(
             'Common/ShowModel',
             [
@@ -72,8 +71,32 @@ class ShowGuest
                     'subTitleTitle' => __('nickname'),
                     'breadcrumbs'   => $this->breadcrumbs,
                     'meta'          => [
-
-
+                        match ($this->guest->status) {
+                            true => [
+                                'icon'      => 'check-circle',
+                                'iconClass' => 'text-green-600',
+                                'name'      => __('Collaboration active')
+                            ],
+                            default => [
+                                'icon'      => 'times-circle',
+                                'iconClass' => 'text-red-700',
+                                'name'      => __('Collaboration finished')
+                            ]
+                        },
+                        [
+                            'icon'      => [
+                                'fal',
+                                'dice-d4'
+                            ],
+                            'name'      => $this->guest->user ? $this->guest->user->username : __('Not an user'),
+                            'nameTitle' => __('User'),
+                            'nameClass' => $this->guest->user ?? 'text-gray-400 italic',
+                            'iconClass' => $this->guest->user ?? 'text-gray-300 ',
+                            'href'      => ($this->canViewUsers and $this->guest->user) ? [
+                                'route'           => 'account.users.show',
+                                'routeParameters' => $this->guest->user->id
+                            ] : null
+                        ],
 
 
                     ],

@@ -26,7 +26,7 @@ class UpdateShipper
     ): ActionResult {
         $res = new ActionResult();
 
-        $shipper->contact()->update($contactData);
+        $shipper->contact->update($contactData);
         $res->changes = array_merge($res->changes, $shipper->contact->getChanges());
 
         $shipper->update(Arr::except($modelData, ['data']));

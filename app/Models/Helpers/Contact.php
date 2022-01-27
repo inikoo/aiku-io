@@ -35,15 +35,12 @@ class Contact extends Model implements Auditable
     //protected $appends = ['age', 'formatted_address', 'formatted_dob'];
     protected $touches = ['contactable'];
 
-
     public function generateTags(): array
     {
         return [
             //$this->patient->id??'xx',
-
         ];
     }
-
 
     protected $guarded = [];
 
@@ -55,8 +52,6 @@ class Contact extends Model implements Auditable
     protected $attributes = [
         'data' => '{}',
     ];
-
-
 
 
     public function contactable(): MorphTo

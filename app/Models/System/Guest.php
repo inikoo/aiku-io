@@ -41,6 +41,14 @@ class Guest extends Model implements Auditable
 
     protected $guarded =[];
 
+    protected static function booted()
+    {
+        static::updated(function ($guest) {
+            if ($guest->wasChanged('name')) {
+                $guest->user?->update(['name' => $guest->name]);
+            }
+        });
+    }
 
 
     public function contact(): MorphOne

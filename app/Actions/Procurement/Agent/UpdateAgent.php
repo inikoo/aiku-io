@@ -23,7 +23,7 @@ class UpdateAgent
     {
         $res = new ActionResult();
 
-        $agent->contact()->update($contactData);
+        $agent->contact->update($contactData);
 
         $res->changes = array_merge($res->changes, $agent->contact->getChanges());
 

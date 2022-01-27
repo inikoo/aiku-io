@@ -53,6 +53,14 @@ class Employee extends Model implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::updated(function ($employee) {
+            if ($employee->wasChanged('name')) {
+                $employee->user?->update(['name' => $employee->name]);
+            }
+        });
+    }
 
     public function contact(): MorphOne
     {
@@ -66,12 +74,12 @@ class Employee extends Model implements Auditable
 
     public function supervisors(): BelongsToMany
     {
-        return $this->belongsToMany(Employee::class,'supervisors','employee_id','supervisor_id')->using(Supervisor::class)->withTimestamps();
+        return $this->belongsToMany(Employee::class, 'supervisors', 'employee_id', 'supervisor_id')->using(Supervisor::class)->withTimestamps();
     }
 
     public function team(): BelongsToMany
     {
-        return $this->belongsToMany(Employee::class,'supervisors','supervisor_id','employee_id')->using(Supervisor::class)->withTimestamps();
+        return $this->belongsToMany(Employee::class, 'supervisors', 'supervisor_id', 'employee_id')->using(Supervisor::class)->withTimestamps();
     }
 
     public function jobPositions(): BelongsToMany
@@ -83,6 +91,7 @@ class Employee extends Model implements Auditable
     {
         return $this->morphMany(Image::class, 'image_model', 'imageable_type', 'imageable_id');
     }
+
     public function attachments(): MorphMany
     {
         return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');

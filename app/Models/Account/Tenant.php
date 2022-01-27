@@ -31,13 +31,26 @@ use Spatie\Sluggable\SlugOptions;
 class Tenant extends SpatieTenant
 {
     use HasSlug;
-    protected $guarded = [];
+
     protected $attributes = [
         'data' => '{}',
     ];
     protected $casts = [
         'data' => 'array'
     ];
+
+    protected $guarded = [];
+
+    protected static function booted()
+    {
+        static::updated(function ($tenant) {
+            if ($tenant->wasChanged('language_id')) {
+                $tenant->user->update([
+                                          'language_id' => $tenant->language_id
+                                      ]);
+            }
+        });
+    }
 
     public function getSlugOptions(): SlugOptions
     {
@@ -99,7 +112,7 @@ class Tenant extends SpatieTenant
 
     public function getCodeAttribute(): string
     {
-        return Str::snake(app('currentTenant')->name,'-');
+        return Str::snake(app('currentTenant')->name, '-');
     }
 
 

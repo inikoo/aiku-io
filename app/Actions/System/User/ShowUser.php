@@ -88,6 +88,10 @@ class ShowUser
                                     'route'=>'human_resources.employees.show',
                                     'routeParameters'=>$this->user->userable_id
                                 ],
+                                'Guest'=>[
+                                    'route'=>'account.guests.show',
+                                    'routeParameters'=>$this->user->userable_id
+                                ],
                                 default => null
                             }
                         ],

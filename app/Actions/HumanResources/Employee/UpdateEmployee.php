@@ -36,7 +36,6 @@ class UpdateEmployee
 
 
         $contact = $employee->contact;
-
         $contact->update(Arr::except($contactData, ['data']));
         $contact->update($this->extractJson($contactData));
 
@@ -89,9 +88,7 @@ class UpdateEmployee
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit') ||
-            $request->user()->hasPermissionTo("employees.edit")
-
-            ;
+            $request->user()->hasPermissionTo("employees.edit");
     }
 
     public function rules(): array
@@ -125,9 +122,7 @@ class UpdateEmployee
             $request->merge(
                 [
                     'salary' => json_decode($request->get('salary'), true),
-
                 ]
-
             );
         }
         if ($request->exists('working_hours')) {
@@ -223,6 +218,7 @@ class UpdateEmployee
                 $employee,
                 $contact,
                 $request->only(
+                    'name', 'email', 'phone',
                     'nickname',
                     'worker_number',
                     'emergency_contact',
