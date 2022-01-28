@@ -101,9 +101,11 @@ return [
                 'sections'     => [
                     'ecommerce_shops.customers.index' => [
                         'name' => 'Customers',
+                        'icon' => ['fal', 'layer-group'],
                     ],
                     'ecommerce_shops.orders.index'    => [
                         'name' => 'Orders',
+                        'icon' => ['fal', 'layer-group'],
                     ],
 
 
@@ -210,9 +212,11 @@ return [
                 'sections'     => [
                     'warehouses.locations.index' => [
                         'name' => 'Locations',
+                        'icon' => ['fal', 'layer-group'],
                     ],
                     'warehouses.areas.index'     => [
                         'name' => 'WH Areas',
+                        'icon' => ['fal', 'layer-group'],
                     ],
                 ]
 

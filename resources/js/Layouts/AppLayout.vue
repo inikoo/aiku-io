@@ -96,11 +96,14 @@
                                 </div>
                             </nav>
                         </div>
-                        <div v-if="$page.props.auth.user.userable_type!=='Tenant'" class="flex-shrink-0 flex border-t border-gray-200 p-4">
+                        <div
+                            v-if="$page.props.auth.user.userable_type !== 'Tenant'"
+                            class="flex-shrink-0 flex border-t border-gray-200 p-4"
+                        >
                             <Link :href="route('profile.show')" class="flex-shrink-0 group block">
                                 <div class="flex items-center">
                                     <div>
-                                       <Avatar variant="pixel" name="$page.props.auth.user.name" />
+                                        <Avatar variant="pixel" name="$page.props.auth.user.name" />
                                     </div>
                                     <div class="ml-3">
                                         <p
@@ -164,7 +167,7 @@
                                 <div
                                     v-for="item in navigation"
                                     key="item.name"
-                                    v-show=" getLeftMenuVisibility(item)"
+                                    v-show="getLeftMenuVisibility(item)"
                                 >
                                     <Link
                                         v-for="section in item['sections']"
@@ -200,16 +203,25 @@
                         </nav>
                     </div>
                     <div class="flex-shrink-0 w-full flex border-t border-gray-200 p-4">
-                        <Link v-if="$page.props.auth.user.userable_type!=='Tenant'"  :href="route('profile.show')">
+                        <Link
+                            v-if="$page.props.auth.user.userable_type !== 'Tenant'"
+                            :href="route('profile.show')"
+                        >
                             <div>
                                 <Avatar variant="pixel" name="$page.props.auth.user.name" />
                             </div>
                         </Link>
                         <div class="ml-3 w-full">
-                            <p v-if="$page.props.auth.user.userable_type!=='Tenant'" class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ $page.props.auth.user.name }}</p>
+                            <p
+                                v-if="$page.props.auth.user.userable_type !== 'Tenant'"
+                                class="text-sm font-medium text-gray-700 group-hover:text-gray-900"
+                            >{{ $page.props.auth.user.name }}</p>
                             <div class="flex text-xs font-medium text-gray-500">
                                 <div class="flex-1">
-                                    <Link  v-if="$page.props.auth.user.userable_type!=='Tenant'" :href="route('profile.show')">{{ translations.see_profile }}</Link>
+                                    <Link
+                                        v-if="$page.props.auth.user.userable_type !== 'Tenant'"
+                                        :href="route('profile.show')"
+                                    >{{ translations.see_profile }}</Link>
                                     <span v-else>{{ $page.props.auth.user.name }}</span>
                                 </div>
                                 <div class="flex-1 text-right">
@@ -327,7 +339,7 @@
 
 
 <script>
-import {ref} from 'vue';
+import { ref } from 'vue';
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -343,12 +355,12 @@ import { faDiceD10 } from '@/private/pro-duotone-svg-icons';
 library.add(faDiceD10);
 
 // App icons
-import { faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown } from '@/private/pro-light-svg-icons';
-library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown);
+import { faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup } from '@/private/pro-light-svg-icons';
+library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup);
 
 import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
 library.add(faBirthdayCake, faMars, faVenus);
-import { provide ,computed} from 'vue'
+import { provide, computed } from 'vue'
 
 import TopMenu from '@/Layouts/TopMenu';
 import Avatar from "vue-boring-avatars";
@@ -360,22 +372,22 @@ let initTranslations;
 export default {
     components: {
         TopMenu,
-        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header,Avatar
+        Dialog, DialogOverlay, TransitionChild, TransitionRoot, Link, FontAwesomeIcon, MenuIcon, XIcon, LogoutIcon, SearchIcon, BellIcon, MenuAlt2Icon, Header, Avatar
 
     },
     setup() {
 
-        initTranslations=usePage().props.value.translations;
+        initTranslations = usePage().props.value.translations;
 
-        const translations = computed(() =>  {
+        const translations = computed(() => {
 
-            if(usePage().props.value.translations){
-                initTranslations=usePage().props.value.translations;
+            if (usePage().props.value.translations) {
+                initTranslations = usePage().props.value.translations;
                 return usePage().props.value.translations
-            }else{
+            } else {
                 return initTranslations
             }
-        } )
+        })
 
 
 
@@ -438,7 +450,7 @@ export default {
         }
         console.log(navigation)
         return {
-            navigation, secondaryNavigation, sidebarOpen, tenantName, currentModels, modelsToWatch,translations
+            navigation, secondaryNavigation, sidebarOpen, tenantName, currentModels, modelsToWatch, translations
         };
     }, methods: {
         logout() {
@@ -448,7 +460,7 @@ export default {
 
             if (route().current(model + 's.*')) {
                 let actualModel = model;
-                if (model === 'fulfilment_house' || model==='ecommerce_shop') {
+                if (model === 'fulfilment_house' || model === 'ecommerce_shop') {
                     actualModel = 'shop';
                 }
 
@@ -463,7 +475,7 @@ export default {
             if (moduleName === 'inventory')
                 moduleName = 'warehouse';
 
-            if (['warehouse','ecommerce_shop','website','fulfilment_house','workshop'].includes(moduleName)) {
+            if (['warehouse', 'ecommerce_shop', 'website', 'fulfilment_house', 'workshop'].includes(moduleName)) {
                 return currentModels[moduleName] ?? fallbackModel ?? 1;
             }
 
@@ -477,6 +489,13 @@ export default {
             if (module.type === 'modelIndex') {
                 return route().current().startsWith(prefix) && !route().current().startsWith(prefix + '.show')
             } else {
+
+                // Dont show left menu if is a single shop and navigate to shops index via breadcrumbs
+                if (module.type === 'standard' && route().current() === prefix + 's.index') {
+                    return false;
+                }
+
+
                 return route().current().startsWith(prefix)
             }
 
