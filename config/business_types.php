@@ -88,40 +88,40 @@ return [
                 ]
             ],
 
-            'shops' => [
-                'id'           => 'shops',
+            'ecommerce_shops' => [
+                'id'           => 'ecommerce_shops',
                 'bgColor'      => 'pink',
                 'type'         => 'modelIndex',
                 'with_options' => true,
-                'route'        => 'shops.index',
+                'route'        => 'ecommerce_shops.index',
                 'permissions'  => ['shops.view'],
-                'name'         => 'Stores',
-                'code'         => 'Stores',
+                'name'         => 'Ecommerce shops',
+                'code'         => 'Shops',
                 'icon'         => ['fal', 'store-alt'],
                 'sections'     => [
-                    'shops.customers.index' => [
+                    'ecommerce_shops.customers.index' => [
                         'name' => 'Customers',
                     ],
-                    'shops.orders.index'    => [
+                    'ecommerce_shops.orders.index'    => [
                         'name' => 'Orders',
                     ],
 
 
                 ]
             ],
-            'shop'  => [
-                'id'         => 'shop',
+            'ecommerce_shop'  => [
+                'id'         => 'ecommerce_shop',
                 'bgColor'    => 'pink',
-                'modelIndex' => 'shops.index',
+                'modelIndex' => 'ecommerce_shops.index',
                 'icon'       => ['fal', 'store-alt'],
                 'type'       => 'modelOptions',
-                'name'       => 'Store',
-                'code'       => 'Store',
+                'name'       => 'Ecommerce shop',
+                'code'       => 'Shop',
                 'sections'   => [
-                    'shops.show.customers.index' => [
+                    'ecommerce_shops.show.customers.index' => [
                         'name' => 'Customers',
                     ],
-                    'shops.show.orders.index'    => [
+                    'ecommerce_shops.show.orders.index'    => [
                         'name' => 'Orders',
                     ],
                 ]

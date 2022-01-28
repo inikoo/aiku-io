@@ -38,11 +38,9 @@ class IndexCustomer
 
 
         return QueryBuilder::for(Customer::class)
-            ->when($this->get('routeName'), function ($query, $routeName) {
-
-
-                switch ($routeName){
-                    case 'inventory.stocks.index':
+            ->when($this->routeName, function ($query, $routeName) {
+                switch ($routeName) {
+                    case 'ecommerce_shops.show.customers.index':
                         return $query->where(
                             'owner_type','Tenant'
                         );
@@ -115,7 +113,10 @@ class IndexCustomer
 
         $request->merge(
             [
-                'title' => __('Customers'),
+                'title' => match ($this->routeName) {
+                    'ecommerce_shops.show.customers.index' => __('Customers',['store'=>$this->parent->code]),
+                    default => __('Customers'),
+                }
 
 
             ]

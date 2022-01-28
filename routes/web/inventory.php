@@ -23,4 +23,4 @@ Route::get('/warehouses/{warehouse}/locations/{location}', [LocationController::
 
 
 Route::get('/warehouses/{warehouse}/areas', [WarehouseAreaController::class, 'index'])->name('warehouses.show.areas.index');
-Route::get('/warehouses/{warehouse}/areas/{area}', [WarehouseAreaController::class, 'index'])->name('warehouses.show.areas.index');
+Route::get('/warehouses/{warehouse}/areas/{area}', [WarehouseAreaController::class, 'index'])->name('warehouses.show.areas.show');

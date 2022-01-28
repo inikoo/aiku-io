@@ -24,7 +24,7 @@ class GetUserLayoutB2B extends GetUserLayout
 
     private array $models;
 
-    private Collection $shops;
+    private Collection $ecommerce_shops;
     private Collection $fulfilment_houses;
     private Collection $websites;
     private Collection $warehouses;
@@ -35,9 +35,9 @@ class GetUserLayoutB2B extends GetUserLayout
         $this->user   = $user;
         $this->models = [];
 
-        $this->shops = Shop::withTrashed()->where('type', 'shop')->get();
+        $this->ecommerce_shops = Shop::withTrashed()->where('type', 'shop')->get();
 
-        $this->models['shop']             = $this->shops->filter(function ($shop) use ($user) {
+        $this->models['ecommerce_shop']   = $this->ecommerce_shops->filter(function ($shop) use ($user) {
             return $user->hasPermissionTo("shops.$shop->id.view");
         });
         $this->fulfilment_houses          = Shop::withTrashed()->where('type', 'fulfilment_house')->get();
@@ -61,8 +61,8 @@ class GetUserLayoutB2B extends GetUserLayout
     #[Pure] protected function canShow($moduleKey): bool
     {
         return match ($moduleKey) {
-            'shops' => $this->shops->count() > 1 and $this->models['shop']->count(),
-            'shop' => $this->models['shop']->count() > 0,
+            'ecommerce_shops' => $this->ecommerce_shops->count() > 1 and $this->models['ecommerce_shop']->count(),
+            'ecommerce_shop' => $this->models['ecommerce_shop']->count() > 0,
             'fulfilment_houses' => $this->fulfilment_houses->count() > 1 and $this->models['fulfilment_house']->count(),
             'fulfilment_house' => $this->models['fulfilment_house']->count() > 0,
 
@@ -82,7 +82,7 @@ class GetUserLayoutB2B extends GetUserLayout
     protected function prepareModule($module)
     {
         return match ($module['id']) {
-            'shop',
+            'ecommerce_shop',
             'fulfilment_house',
             'website',
             'warehouse',

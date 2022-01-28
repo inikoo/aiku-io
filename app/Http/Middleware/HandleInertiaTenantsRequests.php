@@ -54,12 +54,12 @@ class HandleInertiaTenantsRequests extends Middleware
                 return $businessType->getUserLayout($request->user());
             },
             'currentModels' => fn() => [
-                'shop'             => session('currentShop'),
+                'ecommerce_shop'   => session('currentEcommerceShop'),
                 'fulfilment_house' => session('currentFulfilmentHouse'),
                 'warehouse'        => session('currentWarehouse'),
                 'website'          => session('currentWebsite')
             ],
-            'translations'  => fn () =>GetUITranslations::run()
+            'translations'  => fn() => GetUITranslations::run()
         ] : [];
 
         Session::forget('redirectFromLogin');
@@ -67,7 +67,7 @@ class HandleInertiaTenantsRequests extends Middleware
         return array_merge(parent::share($request), $firstLoadOnlyProps, [
 
             'auth.user' => fn() => $request->user()
-                ? $request->user()->only('id', 'name', 'email','userable_type')
+                ? $request->user()->only('id', 'name', 'email', 'userable_type')
                 : null,
 
 

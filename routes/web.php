@@ -52,9 +52,9 @@ Route::prefix('account')->name('account.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/account.php');
 
-Route::prefix('shops')->name('shops.')
+Route::prefix('ecommerce')->name('ecommerce_shops.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__.'/web/shops.php');
+    ->group(__DIR__.'/web/ecommerce_shops.php');
 
 Route::prefix('fulfilment_houses')->name('fulfilment_houses.')
     ->middleware(['auth', 'verified'])

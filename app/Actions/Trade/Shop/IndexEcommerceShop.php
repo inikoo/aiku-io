@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 13 Jan 2022 03:06:51 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Fri, 28 Jan 2022 16:03:09 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
@@ -9,6 +9,7 @@
 namespace App\Actions\Trade\Shop;
 
 
+use App\Http\Resources\Trade\ShopInertiaResource;
 use App\Models\Trade\Shop;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\Rule;
@@ -25,48 +26,28 @@ use function data_set;
 
 /**
  * @property Shop $shop
- * @property string $module
+ * @property array $breadcrumbs
  */
-class IndexShop
+class IndexEcommerceShop
 {
     use AsAction;
     use WithInertia;
 
 
-
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Shop::class)
-            ->when($this->get('type'), function ($query, $type) {
-                return $query->where(
-                    'type',$type
-
-                );
-            })
+            ->where('type', 'shop')
             ->allowedSorts(['code', 'name'])
             ->paginate()
             ->withQueryString();
     }
 
-    public function rules(): array
+
+
+
+    public function asInertia()
     {
-        return [
-            'module' => [
-                'required',
-                Rule::in(['shops', 'fulfilment_houses']),
-            ],
-
-
-        ];
-    }
-
-
-
-    public function asInertia($module = false)
-    {
-
-
-        $this->set('module', $module);
         $this->validateAttributes();
 
         $breadcrumbs = $this->get('breadcrumbs');
@@ -75,26 +56,23 @@ class IndexShop
             'Common/IndexModel',
             [
                 'headerData' => [
-                    'module'      => 'shops',
+                    'module'      => 'ecommerce',
                     'title'       => $this->get('title'),
                     'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
 
                 ],
                 'dataTable'  => [
-                    'records' => $this->handle(),
+                    'records' => ShopInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'code'      => [
+                        'code' => [
                             'sort'  => 'code',
                             'label' => __('Code'),
                             'href'  => [
-                                'route'  =>  match ($this->module) {
-                                    'fulfilment_houses' => 'fulfilment_houses.show',
-                                    default => 'ecommerce_shops.show',
-                                },
+                                'route'  => 'ecommerce_shops.show',
                                 'column' => 'id'
                             ],
                         ],
-                        'name'          => [
+                        'name' => [
                             'sort'  => 'name',
                             'label' => __('Name')
                         ],
@@ -115,47 +93,35 @@ class IndexShop
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
-
         $request->merge(
             [
-                'title' => match ($this->module) {
-                    'fulfilment_houses' => __('Fulfilment houses'),
-                    default => __('Stores'),
-                },
-                'type'=>match ($this->module) {
-                    'fulfilment_houses' => 'fulfilment_house',
-                    default => 'shop'
-                }
+                'title' => __('Ecommerce shops')
+
 
             ]
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs',$this->breadcrumbs());
-
-
+        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
 
     private function breadcrumbs(): array
     {
-
         return [
             'index' => [
-                'route'   => $this->module.'.index',
+                'route'   => 'ecommerce_shops.index',
                 'name'    => $this->get('title'),
                 'current' => false
             ],
         ];
     }
 
-    public function getBreadcrumbs($module): array
+    public function getBreadcrumbs(): array
     {
-        $this->set('module', $module);
         $this->validateAttributes();
-        return $this->breadcrumbs();
 
+        return $this->breadcrumbs;
     }
 
 

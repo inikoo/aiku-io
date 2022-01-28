@@ -327,7 +327,7 @@
 
 
 <script>
-import {ref, watchEffect} from 'vue';
+import {ref} from 'vue';
 import { Dialog, DialogOverlay, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -449,7 +449,7 @@ export default {
 
             if (route().current(model + 's.*')) {
                 let actualModel = model;
-                if (model === 'fulfilment_house') {
+                if (model === 'fulfilment_house' || model==='ecommerce_shop') {
                     actualModel = 'shop';
                 }
 
@@ -464,7 +464,7 @@ export default {
             if (moduleName === 'inventory')
                 moduleName = 'warehouse';
 
-            if (['warehouse','shop','website','fulfilment_house','workshop'].includes(moduleName)) {
+            if (['warehouse','ecommerce_shop','website','fulfilment_house','workshop'].includes(moduleName)) {
                 return currentModels[moduleName] ?? fallbackModel ?? 1;
             }
 
