@@ -9,6 +9,7 @@
 namespace App\Actions\Inventory\Warehouse;
 
 
+use App\Http\Resources\Inventory\WarehouseInertiaResource;
 use App\Models\Inventory\Warehouse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
@@ -35,6 +36,7 @@ class IndexWarehouse
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Warehouse::class)
+            ->select('id','code','name')
             ->allowedSorts(['code', 'name'])
             ->paginate()
             ->withQueryString();
@@ -60,14 +62,15 @@ class IndexWarehouse
 
                 ],
                 'dataTable'  => [
-                    'records' => $this->handle(),
+                    'records' => WarehouseInertiaResource::collection($this->handle()),
                     'columns' => [
                         'code' => [
                             'sort'  => 'code',
                             'label' => __('Code'),
                             'href'  => [
                                 'route'  => 'warehouses.show',
-                                'column' => 'id'
+                                'column' => 'id',
+                                'with_permission'=>'can_view'
                             ],
                         ],
                         'name' => [
@@ -80,12 +83,7 @@ class IndexWarehouse
 
             ]
         )->table(function (InertiaTable $table) {
-            $table->addSearchRows(
-                [
 
-
-                ]
-            );
         });
     }
 

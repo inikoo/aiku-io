@@ -28,7 +28,18 @@
         <template #body>
             <tr v-for="(record,recordIdx) in dataTable.records.data" v-bind:key="recordIdx">
                 <td  v-for="(column,columnIdx) in dataTable.columns" v-bind:key="columnIdx">
-                    <Link v-if="column.href" :href="route(column.href.route,record[column.href.column])">{{record[columnIdx]}}</Link>
+                    <template  v-if="column.href">
+                    <span v-if="column.href.with_permission && !record[column.href.with_permission]  ">   
+                         
+                         <font-awesome-icon
+                                            fixed-width
+                                            :icon="['fal','lock-alt']"
+                                            aria-hidden="true"
+                                        />
+                                        {{record[columnIdx]}}
+                    </span>
+                    <Link v-else :href="route(column.href.route,record[column.href.column])">{{record[columnIdx]}}</Link>
+                    </template>
                     <span v-else-if="column.transformations" >
                         {{column.transformations[record[columnIdx]]}} x {{column.transformations}}
                     </span>
@@ -49,11 +60,15 @@ import {InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tabl
 import {Link} from '@inertiajs/inertia-vue3';
 import Cell from '@/Components/Tables/Cell';
 import EmptyState from '@/Components/Tables/EmptyState';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faLockAlt } from '@/private/pro-light-svg-icons';
+library.add(faLockAlt);
 
 export default {
     mixins: [InteractsWithQueryBuilder],
     components: {
-        PageHeader,Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link,Cell,EmptyState
+        PageHeader,Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link,Cell,EmptyState,FontAwesomeIcon
     },
     props     : ['headerData','dataTable'],
     methods:  {

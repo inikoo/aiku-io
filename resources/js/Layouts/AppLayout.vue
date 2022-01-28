@@ -344,10 +344,9 @@ library.add(faDiceD10);
 
 // App icons
 import { faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown } from '@/private/pro-light-svg-icons';
-
 library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown);
-import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
 
+import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
 library.add(faBirthdayCake, faMars, faVenus);
 import { provide ,computed} from 'vue'
 
