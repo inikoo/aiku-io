@@ -46,7 +46,7 @@ class MigrateFulfilmentCustomer extends MigrateModel
 
     public function getParent(): Customer
     {
-        return Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Customer Fulfilment Customer Key'});
+        return Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Fulfilment Customer Key'});
     }
 
     public function setModel()

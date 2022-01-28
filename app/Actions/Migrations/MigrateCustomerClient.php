@@ -8,9 +8,14 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\CRM\Customer\StoreCustomer;
 
+use App\Actions\CRM\CustomerClient\StoreCustomerClient;
+use App\Actions\CRM\CustomerClient\UpdateCustomerClient;
+use App\Actions\Helpers\Address\DeleteAddress;
+use App\Actions\Helpers\Address\StoreAddress;
+use App\Actions\Helpers\Address\UpdateAddress;
 use App\Models\CRM\Customer;
+use App\Models\CRM\CustomerClient;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
@@ -36,15 +41,13 @@ class MigrateCustomerClient extends MigrateModel
 
     public function parseModelData()
     {
-        $status = 'approved';
-
         if ($this->auModel->data->{'Customer Client Status'} == 'Active') {
-            $state      = 'active';
-            $deleted_at = null;
+            $status         = true;
+            $deactivated_at = null;
         } else {
-            $state      = 'lost';
-            $metadata   = json_decode($this->auModel->data->{'Customer Client Metadata'} ?? '{}');
-            $deleted_at = $metadata->deactivated_date;
+            $status         = false;
+            $metadata       = json_decode($this->auModel->data->{'Customer Client Metadata'} ?? '{}');
+            $deactivated_at = $metadata->deactivated_date;
         }
 
         $this->modelData['contact'] = $this->sanitizeData(
@@ -60,13 +63,11 @@ class MigrateCustomerClient extends MigrateModel
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
-                'shop_id'                   => $this->parent->shop_id,
                 'name'                      => $this->auModel->data->{'Customer Client Code'},
-                'state'                     => $state,
                 'status'                    => $status,
-                'aurora_customer_client_id' => $this->auModel->data->{'Customer Client Key'},
+                'aurora_id' => $this->auModel->data->{'Customer Client Key'},
                 'created_at'                => $this->auModel->data->{'Customer Client Creation Date'},
-                'deleted_at'                => $deleted_at,
+                'deactivated_at'            => $deactivated_at,
             ]
         );
 
@@ -87,26 +88,61 @@ class MigrateCustomerClient extends MigrateModel
 
     public function getParent(): Customer
     {
-        return Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Customer Client Customer Key'});
+        return Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Client Customer Key'});
     }
 
     public function setModel()
     {
-        $this->model = Customer::withTrashed()->find($this->auModel->data->aiku_id);
+        $this->model = CustomerClient::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
     public function updateModel(): ActionResult
     {
-        return $this->updateCustomer($this->auModel->data);
+        /** @var \App\Models\CRM\Customer $customerClient */
+        $customerClient = $this->model;
+
+        $result = UpdateCustomerClient::run(
+            customerClient:     $customerClient,
+            customerClientData: $this->modelData['customer'],
+            contactData:        $this->modelData['contact'],
+
+        );
+
+
+        if (isset($this->modelData['addresses']['delivery']) and count($this->modelData['addresses']['delivery']) > 0) {
+            if ($result->model->deliveryAddress) {
+                UpdateAddress::run($result->model->deliveryAddress, $this->modelData['addresses']['delivery'][0]);
+            } else {
+                $address = StoreAddress::run($this->modelData['addresses']['delivery'][0]);
+                $result->model->addresses()->associate(
+                    [
+                        $address->id => ['scope' => 'delivery']
+                    ]
+                );
+                $result->model->delivery_address_id = $address->id;
+                $result->model->save();
+            }
+        } else {
+            if ($result->model->deliveryAddress and $result->model->deliveryAddress->id != $result->model->billingAddress->id) {
+                DeleteAddress::run($result->model->deliveryAddress);
+            }
+
+            $result->model->delivery_address_id = null;
+
+            $result->model->save();
+        }
+
+
+        return $result;
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreCustomer::run(
-            vendor:                $this->parent,
-            customerData:          $this->modelData['customer'],
-            contactData:           $this->modelData['contact'],
-            customerAddressesData: $this->modelData['addresses']
+        return StoreCustomerClient::run(
+            customer:                    $this->parent,
+            customerClientData:          $this->modelData['customer'],
+            contactData:                 $this->modelData['contact'],
+            customerClientAddressesData: $this->modelData['addresses']
         );
     }
 

@@ -71,13 +71,13 @@ class MigrateDeletedCustomer extends MigrateModel
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
-                'shop_id'            => $this->parent->id,
-                'name'               => $auroraDeletedData->{'Customer Name'},
-                'state'              => $state,
-                'status'             => $status,
-                'aurora_customer_id' => $auroraDeletedData->{'Customer Key'},
-                'created_at'         => $auroraDeletedData->{'Customer First Contacted Date'},
-                'deleted_at'         => $this->auModel->data->{'Customer Deleted Date'}
+                'shop_id'    => $this->parent->id,
+                'name'       => $auroraDeletedData->{'Customer Name'},
+                'state'      => $state,
+                'status'     => $status,
+                'aurora_id'  => $auroraDeletedData->{'Customer Key'},
+                'created_at' => $auroraDeletedData->{'Customer First Contacted Date'},
+                'deleted_at' => $this->auModel->data->{'Customer Deleted Date'}
 
             ]
         );
@@ -127,7 +127,7 @@ class MigrateDeletedCustomer extends MigrateModel
         );
 
         return StoreCustomer::run(
-            vendor:                $this->parent,
+            shop:                  $this->parent,
             customerData:          $this->modelData['customer'],
             contactData:           $this->modelData['contact'],
             customerAddressesData: $this->modelData['addresses']
@@ -136,37 +136,24 @@ class MigrateDeletedCustomer extends MigrateModel
 
     public function postMigrateActions(ActionResult $res): ActionResult
     {
-
-
         /** @var Customer $customer */
         $customer = $this->model;
 
-        if ($customer->vendor_type == 'Shops') {
 
-            if($customer->shop->type=='fulfilment_house'){
-
-                if($res->status=='inserted'){
-
-                    DB::connection('aurora')->table('Customer Fulfilment Dimension')
-                        ->where('Customer Fulfilment Customer Key', $this->auModel->id)
-                        ->update(['aiku_id' => $customer->fulfilmentCustomer->id]);
-
-                }
-
-                foreach (
-                    DB::connection('aurora')
-                        ->table('Customer Fulfilment Dimension')
-                        ->where('Customer Fulfilment Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFulfilmentCustomer
-                ) {
-                    MigrateFulfilmentCustomer::run($auroraFulfilmentCustomer);
-
-                }
-
-
+        if ($customer->shop->type == 'fulfilment_house') {
+            if ($res->status == 'inserted') {
+                DB::connection('aurora')->table('Customer Fulfilment Dimension')
+                    ->where('Customer Fulfilment Customer Key', $this->auModel->id)
+                    ->update(['aiku_id' => $customer->fulfilmentCustomer->id]);
             }
 
-
-
+            foreach (
+                DB::connection('aurora')
+                    ->table('Customer Fulfilment Dimension')
+                    ->where('Customer Fulfilment Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFulfilmentCustomer
+            ) {
+                MigrateFulfilmentCustomer::run($auroraFulfilmentCustomer);
+            }
         }
 
 

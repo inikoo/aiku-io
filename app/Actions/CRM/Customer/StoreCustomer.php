@@ -19,44 +19,41 @@ class StoreCustomer
     use AsAction;
 
     public function handle(
-        Shop|Customer $vendor,
+        Shop $shop,
         array $customerData,
         array $contactData,
         array $customerAddressesData = []
     ): ActionResult {
-
-        $res  = new ActionResult();
+        $res = new ActionResult();
 
         /** @var Customer $customer */
-        $customer = $vendor->customers()->create($customerData);
+        $customer = $shop->customers()->create($customerData);
         $customer->contact()->create($contactData);
         $addresses = [];
 
-        $billing_address_id=null;
-        $delivery_address_id=null;
+        $billing_address_id  = null;
+        $delivery_address_id = null;
 
         foreach ($customerAddressesData as $scope => $addressesData) {
             foreach ($addressesData as $addressData) {
                 $address                 = StoreAddress::run($addressData);
                 $addresses[$address->id] = ['scope' => $scope];
-                if($scope=='billing'){
-                    $billing_address_id=$address->id;
-                }elseif($scope=='delivery'){
-                    $delivery_address_id=$address->id;
+                if ($scope == 'billing') {
+                    $billing_address_id = $address->id;
+                } elseif ($scope == 'delivery') {
+                    $delivery_address_id = $address->id;
                 }
             }
         }
 
-        if (class_basename($vendor::class) == 'Shops'   ) {
-            if(!$delivery_address_id and $vendor->type=='shop'){
-                $delivery_address_id=$billing_address_id;
-            }
+        if (!$delivery_address_id and $shop->type == 'shop') {
+            $delivery_address_id = $billing_address_id;
         }
 
 
         $customer->addresses()->sync($addresses);
-        $customer->billing_address_id=$billing_address_id;
-        $customer->delivery_address_id=$delivery_address_id;
+        $customer->billing_address_id  = $billing_address_id;
+        $customer->delivery_address_id = $delivery_address_id;
         $customer->save();
 
         $res->model    = $customer;

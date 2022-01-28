@@ -69,12 +69,12 @@ class MigrateCustomer extends MigrateModel
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
-                'shop_id'            => $this->parent->id,
-                'name'               => $this->auModel->data->{'Customer Name'},
-                'state'              => $state,
-                'status'             => $status,
-                'aurora_customer_id' => $this->auModel->data->{'Customer Key'},
-                'created_at'         => $this->auModel->data->{'Customer First Contacted Date'}
+                'shop_id'    => $this->parent->id,
+                'name'       => $this->auModel->data->{'Customer Name'},
+                'state'      => $state,
+                'status'     => $status,
+                'aurora_id'  => $this->auModel->data->{'Customer Key'},
+                'created_at' => $this->auModel->data->{'Customer First Contacted Date'}
             ]
         );
 
@@ -124,7 +124,7 @@ class MigrateCustomer extends MigrateModel
 
 
         return StoreCustomer::run(
-            vendor:                $this->parent,
+            shop:                  $this->parent,
             customerData:          $this->modelData['customer'],
             contactData:           $this->modelData['contact'],
             customerAddressesData: $this->modelData['addresses']
@@ -139,92 +139,85 @@ class MigrateCustomer extends MigrateModel
         /** @var Customer $customer */
         $customer = $this->model;
 
-        if ($customer->vendor_type == 'Shops') {
 
-            if($customer->shop->type=='fulfilment_house'){
-
-                if($res->status=='inserted'){
-
-                    DB::connection('aurora')->table('Customer Fulfilment Dimension')
-                        ->where('Customer Fulfilment Customer Key', $this->auModel->id)
-                        ->update(['aiku_id' => $customer->fulfilmentCustomer->id]);
-
-                }
-
-                foreach (
-                    DB::connection('aurora')
-                        ->table('Customer Fulfilment Dimension')
-                        ->where('Customer Fulfilment Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFulfilmentCustomer
-                ) {
-                    MigrateFulfilmentCustomer::run($auroraFulfilmentCustomer);
-
-                }
-
-
-            }
-
-
-            foreach (
-                DB::connection('aurora')
-                    ->table('Customer Favourite Product Fact')
-                    ->where('Customer Favourite Product Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFavourites
-            ) {
-                if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraFavourites->{'Customer Favourite Product Product ID'})) {
-                    $products[$product->id] =
-                        [
-                            'type'       => 'favourite',
-                            'created_at' => $auroraFavourites->{'Customer Favourite Product Creation Date'},
-                            'data'       => [],
-                            'settings'   => [],
-                            'aurora_id'  => $auroraFavourites->{'Customer Favourite Product Key'},
-
-                        ];
-                }
+        if ($customer->shop->type == 'fulfilment_house') {
+            if ($res->status == 'inserted') {
+                DB::connection('aurora')->table('Customer Fulfilment Dimension')
+                    ->where('Customer Fulfilment Customer Key', $this->auModel->id)
+                    ->update(['aiku_id' => $customer->fulfilmentCustomer->id]);
             }
 
             foreach (
                 DB::connection('aurora')
-                    ->table('Back in Stock Reminder Fact')
-                    ->where('Back in Stock Reminder Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
+                    ->table('Customer Fulfilment Dimension')
+                    ->where('Customer Fulfilment Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFulfilmentCustomer
             ) {
-                if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Back in Stock Reminder Product ID'})) {
-                    $products[$product->id] =
-                        [
-                            'type'       => 'notify-stock',
-                            'created_at' => $auroraReminders->{'Back in Stock Reminder Creation Date'},
-                            'data'       => [],
-                            'settings'   => [],
-                            'aurora_id'  => $auroraReminders->{'Back in Stock Reminder Key'},
-                        ];
-                }
-            }
-
-            foreach (
-                DB::connection('aurora')
-                    ->table('Customer Portfolio Fact')
-                    ->where('Customer Portfolio Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
-            ) {
-                if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Customer Portfolio Product ID'})) {
-                    $products[$product->id] =
-                        [
-                            'type'       => 'portfolio',
-                            'status'     => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
-                                'Active' => true,
-                                default => false
-                            },
-                            'created_at' => $auroraReminders->{'Customer Portfolio Creation Date'},
-                            'deleted_at' => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
-                                'Removed' => $auroraReminders->{'Customer Portfolio Removed Date'},
-                                default => null
-                            },
-                            'nickname'   => $auroraReminders->{'Customer Portfolio Reference'},
-                            'data'       => [],
-                            'settings'   => [],
-                            'aurora_id'  => $auroraReminders->{'Customer Portfolio Key'},
-                        ];
-                }
+                MigrateFulfilmentCustomer::run($auroraFulfilmentCustomer);
             }
         }
+
+
+        foreach (
+            DB::connection('aurora')
+                ->table('Customer Favourite Product Fact')
+                ->where('Customer Favourite Product Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFavourites
+        ) {
+            if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraFavourites->{'Customer Favourite Product Product ID'})) {
+                $products[$product->id] =
+                    [
+                        'type'       => 'favourite',
+                        'created_at' => $auroraFavourites->{'Customer Favourite Product Creation Date'},
+                        'data'       => [],
+                        'settings'   => [],
+                        'aurora_id'  => $auroraFavourites->{'Customer Favourite Product Key'},
+
+                    ];
+            }
+        }
+
+        foreach (
+            DB::connection('aurora')
+                ->table('Back in Stock Reminder Fact')
+                ->where('Back in Stock Reminder Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
+        ) {
+            if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Back in Stock Reminder Product ID'})) {
+                $products[$product->id] =
+                    [
+                        'type'       => 'notify-stock',
+                        'created_at' => $auroraReminders->{'Back in Stock Reminder Creation Date'},
+                        'data'       => [],
+                        'settings'   => [],
+                        'aurora_id'  => $auroraReminders->{'Back in Stock Reminder Key'},
+                    ];
+            }
+        }
+
+        foreach (
+            DB::connection('aurora')
+                ->table('Customer Portfolio Fact')
+                ->where('Customer Portfolio Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
+        ) {
+            if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Customer Portfolio Product ID'})) {
+                $products[$product->id] =
+                    [
+                        'type'       => 'portfolio',
+                        'status'     => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
+                            'Active' => true,
+                            default => false
+                        },
+                        'created_at' => $auroraReminders->{'Customer Portfolio Creation Date'},
+                        'deleted_at' => match ($auroraReminders->{'Customer Portfolio Customers State'}) {
+                            'Removed' => $auroraReminders->{'Customer Portfolio Removed Date'},
+                            default => null
+                        },
+                        'nickname'   => $auroraReminders->{'Customer Portfolio Reference'},
+                        'data'       => [],
+                        'settings'   => [],
+                        'aurora_id'  => $auroraReminders->{'Customer Portfolio Key'},
+                    ];
+            }
+        }
+
 
         $customer->products()->sync($products);
 
@@ -257,7 +250,7 @@ class MigrateCustomer extends MigrateModel
         /** @var \App\Models\CRM\Customer $customer */
         $customer = $this->model;
 
-        $auroraAttachmentsCollection               = $this->getModelAttachmentsCollection('Customer', $customer->aurora_customer_id);
+        $auroraAttachmentsCollection               = $this->getModelAttachmentsCollection('Customer', $customer->aurora_id);
         $auroraAttachmentsCollectionWithAttachment = $auroraAttachmentsCollection->each(function ($auroraAttachment) {
             if ($attachment = MigrateCommonAttachment::run($auroraAttachment)) {
                 return $auroraAttachment->common_attachment_id = $attachment->id;

@@ -18,14 +18,13 @@ class CreateCustomersTable extends Migration
             $table->unsignedMediumInteger('shop_id')->index()->nullable();
             $table->foreign('shop_id')->references('id')->on('shops');
 
-            $table->morphs('vendor');
 
             $table->string('name', 256)->nullable();
             $table->enum('status',['pending-approval','approved','rejected','banned'])->index();
             $table->enum('state',['in-process','active','losing','lost','registered'])->index()->nullable();
             $table->unsignedBigInteger('billing_address_id')->nullable()->index();
             $table->foreign('billing_address_id')->references('id')->on('addresses');
-            $table->unsignedBigInteger('delivery_address_id')->nullable()->index()->comment('null for fulfilment customers');
+            $table->unsignedBigInteger('delivery_address_id')->nullable()->index()->comment('null for customers in fulfilment shops');
             $table->foreign('delivery_address_id')->references('id')->on('addresses');
 
 
@@ -33,8 +32,7 @@ class CreateCustomersTable extends Migration
             $table->timestampsTz();
             $table->softDeletesTz();
 
-            $table->unsignedBigInteger('aurora_customer_id')->nullable()->unique();
-            $table->unsignedBigInteger('aurora_customer_client_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
             $table->index([DB::raw('name(64)')]);
         });

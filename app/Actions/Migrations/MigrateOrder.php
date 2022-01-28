@@ -13,6 +13,7 @@ use App\Actions\Sales\Order\DestroyOrder;
 use App\Actions\Sales\Order\StoreOrder;
 use App\Actions\Sales\Order\UpdateOrder;
 use App\Models\CRM\Customer;
+use App\Models\CRM\CustomerClient;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use Illuminate\Support\Facades\DB;
@@ -39,9 +40,9 @@ class MigrateOrder extends MigrateModel
     {
         //return Shops::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Store Key'});
         if ($this->auModel->data->{'Order Customer Client Key'} != '') {
-            $parent = Customer::withTrashed()->firstWhere('aurora_customer_client_id', $this->auModel->data->{'Order Customer Client Key'});
+            $parent = CustomerClient::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Customer Client Key'});
         } else {
-            $parent = Customer::withTrashed()->firstWhere('aurora_customer_id', $this->auModel->data->{'Order Customer Key'});
+            $parent = Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Customer Key'});
         }
 
         if (!$parent) {

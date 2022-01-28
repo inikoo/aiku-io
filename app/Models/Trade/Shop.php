@@ -64,9 +64,9 @@ class Shop extends Model implements Auditable
         return $this->morphOne(Contact::class, 'contactable');
     }
 
-    public function customers(): MorphMany
+    public function customers(): HasMany
     {
-        return $this->morphMany(Customer::class, 'vendor');
+        return $this->hasMany(Customer::class);
     }
 
     public function products(): MorphMany
