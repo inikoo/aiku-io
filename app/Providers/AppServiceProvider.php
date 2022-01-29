@@ -48,7 +48,7 @@ class AppServiceProvider extends ServiceProvider
                 'Product'        => 'App\Models\Trade\Product',
                 'Agent'          => 'App\Models\Procurement\Agent',
                 'Supplier'       => 'App\Models\Procurement\Supplier',
-                'Shops'           => 'App\Models\Trade\Shop',
+                'Shop'           => 'App\Models\Trade\Shop',
                 'Adjust'         => 'App\Models\Sales\Adjust',
                 'Shipper'        => 'App\Models\Delivery\Shipper',
                 'DeliveryNote'   => 'App\Models\Delivery\DeliveryNote',
@@ -79,8 +79,8 @@ class AppServiceProvider extends ServiceProvider
         );
 
         //todo Make the actual translation
-        Collection::macro('translateElement', function ($index,$locale) {
-            return $this->map(function ($item) use ($index,$locale) {
+        Collection::macro('translateElement', function ($index, $locale) {
+            return $this->map(function ($item) use ($index, $locale) {
                 //$item['name']=Lang::get($item[$index]);
 
 

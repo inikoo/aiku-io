@@ -113,7 +113,7 @@ class MigrateUser extends MigrateModel
         $diff = $activeShops->diff($authorisedShops);
 
 
-        if (count($diff)) {
+        if (count($diff) ) {
             $roles = [];
             foreach ($authorisedShops as $aurora_id) {
                 /** @var Shop $shop */

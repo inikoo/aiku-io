@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 20 Jan 2022 22:48:06 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Fri, 28 Jan 2022 15:17:43 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
@@ -9,11 +9,11 @@
 namespace App\Actions\CRM\Customer;
 
 
+use App\Actions\Trade\Shop\ShowEcommerceShop;
+use App\Http\Resources\CRM\CustomerInertiaResource;
 use App\Models\CRM\Customer;
-use App\Models\Inventory\Stock;
-use App\Models\Inventory\Warehouse;
+use App\Models\Trade\Shop;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,36 +26,36 @@ use function __;
 use function data_set;
 
 
-class IndexCustomer
+/**
+ * @property \App\Models\Trade\Shop $shop
+ * @property string $title
+ */
+class IndexCustomerInShop
 {
     use AsAction;
     use WithInertia;
+
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->hasPermissionTo("shops.customers.view") || $request->user()->hasPermissionTo("shops.customers.{$this->shop->id}.view");
+    }
 
 
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Customer::class)
-            ->when($this->routeName, function ($query, $routeName) {
-                switch ($routeName) {
-                    case 'ecommerce_shops.show.customers.index':
-                        return $query->where(
-                            'owner_type',
-                            'Tenant'
-                        );
-                    default:
-                        return false;
-                }
-            })
-            ->allowedSorts(['code'])
+            ->select('id', 'name', 'shop_id')
+            ->where('shop_id', $this->shop->id)
+            ->defaultSorts('-id')
+            ->allowedSorts(['name', 'id'])
             ->paginate()
             ->withQueryString();
     }
 
 
-    public function asInertia(Request $request)
+    public function asInertia(Shop $shop)
     {
-        $this->set('routeName', $request->route()->getName());
-        $this->set('routeParameters', $request->route()->parameters());
+        $this->set('shop', $shop);
 
 
         $this->validateAttributes();
@@ -72,19 +72,19 @@ class IndexCustomer
 
                 ],
                 'dataTable'  => [
-                    'records' => $this->handle(),
+                    'records' => CustomerInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'code' => [
-                            'sort'  => 'code',
-                            'label' => __('Code'),
+                        'customer_number' => [
+                            'sort'  => 'id',
+                            'label' => __('Number'),
                             'href'  => [
-                                'route'  => 'inventory.stocks.show',
-                                'column' => 'id'
+                                'route'  => 'ecommerce_shops.show.customers.show',
+                                'column' => ['shop_id', 'id']
                             ],
                         ],
-                        'name' => [
-                            'sort'  => 'description',
-                            'label' => __('Description')
+                        'name'            => [
+                            'sort'  => 'name',
+                            'label' => __('Name')
                         ]
                     ]
                 ]
@@ -105,10 +105,7 @@ class IndexCustomer
     {
         $request->merge(
             [
-                'title' => match ($this->routeName) {
-                    'ecommerce_shops.show.customers.index' => __('Customers',['store'=>$this->parent->code]),
-                    default => __('Customers'),
-                }
+                'title' => __('Customers in :shop', ['shop' => $this->shop->code])
 
 
             ]
@@ -121,13 +118,17 @@ class IndexCustomer
 
     private function breadcrumbs(): array
     {
-        return [
-            'index' => [
-                'route'   => 'warehouses.index',
-                'name'    => $this->get('title'),
-                'current' => false
-            ],
-        ];
+        return array_merge(
+            (new ShowEcommerceShop())->getBreadcrumbs(),
+            [
+                'ecommerce_shops.show.customers.index' => [
+                    'route'           => 'ecommerce_shops.show.customers.index',
+                    'routeParameters' => $this->shop->id,
+                    'name'            => $this->title,
+                    'current'         => false
+                ],
+            ]
+        );
     }
 
     public function getBreadcrumbs(): array

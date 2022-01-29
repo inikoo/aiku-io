@@ -40,13 +40,13 @@ $account = [
     'icon'     => ['fal', 'dice-d4'],
     'sections' => [
 
-        'account.users.index' => [
+        'account.users.index'  => [
             'name' => 'Users',
         ],
         'account.guests.index' => [
             'name' => 'Guests',
         ],
-        'account.roles.index' => [
+        'account.roles.index'  => [
             'name' => 'Roles',
         ],
 
@@ -75,7 +75,7 @@ return [
                 'icon'     => ['fal', 'tachometer-alt-fast'],
                 'sections' => []
             ],
-            'profile' => [
+            'profile'   => [
                 'id'       => 'profile',
                 'type'     => 'profile',
                 'route'    => 'profile.show',
@@ -396,31 +396,31 @@ return [
         'model_permissions' => [
             'Shop' => [
                 'shops.#',
-                'shops.#.view',
-                'shops.#.edit',
-                'shops.#.delete',
+                'shops.view.#',
+                'shops.edit.#',
+                'shops.delete.#',
 
-                'shops.#.products',
-                'shops.#.products.view',
-                'shops.#.products.edit',
-                'shops.#.products.delete',
+                'shops.products.#',
+                'shops.products.view.#',
+                'shops.products.edit.#',
+                'shops.products.delete.#',
 
-                'shops.#.customers',
-                'shops.#.customers.view',
-                'shops.#.customers.edit',
-                'shops.#.customers.delete',
+                'shops.customers.#',
+                'shops.customers.view.#',
+                'shops.customers.edit.#',
+                'shops.customers.delete.#',
 
-                'shops.#.broadcasting',
-                'shops.#.broadcasting.view',
-                'shops.#.broadcasting.edit',
-                'shops.#.broadcasting.send',
-                'shops.#.broadcasting.delete',
+                'shops.broadcasting.#',
+                'shops.broadcasting.view.#',
+                'shops.broadcasting.edit.#',
+                'shops.broadcasting.send.#',
+                'shops.broadcasting.delete.#',
 
-                'shops.#.website',
-                'shops.#.website.view',
-                'shops.#.website.edit',
-                'shops.#.website.publish',
-                'shops.#.website.delete',
+                'shops.website.#',
+                'shops.website.view.#',
+                'shops.website.edit.#',
+                'shops.website.publish.#',
+                'shops.website.delete.#',
 
 
             ],
@@ -429,10 +429,10 @@ return [
 
 
                 'websites.#',
-                'websites.#.view',
-                'websites.#.edit',
-                'websites.#.publish',
-                'websites.#.delete',
+                'websites.view.#',
+                'websites.edit.#',
+                'websites.publish.#',
+                'websites.delete.#',
 
 
             ],
@@ -440,22 +440,22 @@ return [
 
             'Warehouse' => [
                 'warehouse.#',
-                'warehouse.#.view',
-                'warehouse.#.edit',
-                'warehouse.#.delete',
-                'warehouse.#.stock',
-                'warehouse.#.lost_stock',
-                'warehouse.#.dispatching',
-                'warehouse.#.dispatching.pick',
-                'warehouse.#.dispatching.pack',
+                'warehouse.view.#',
+                'warehouse.edit.#',
+                'warehouse.delete.#',
+                'warehouse.stock.#',
+                'warehouse.lost_stock.#',
+                'warehouse.dispatching.#',
+                'warehouse.dispatching.pick.#',
+                'warehouse.dispatching.pack.#',
             ],
             'Workshop'  => [
                 'workshop.#',
-                'workshop.#.view',
-                'workshop.#.stock',
-                'workshop.#.dispatcher',
-                'workshop.#.edit',
-                'workshop.#.delete',
+                'workshop.view.#',
+                'workshop.stock.#',
+                'workshop.dispatcher.#',
+                'workshop.edit.#',
+                'workshop.delete.#',
             ]
 
         ],
@@ -619,21 +619,21 @@ return [
             'buyer-admin'           => [
                 'procurement',
             ],
-            'workshop-operative'   => [
+            'workshop-operative'    => [
                 'workshops.view',
             ],
             'workshops-admin'       => [
                 'workshops',
             ],
 
-            'shops-admin'               => [
+            'shops-admin'             => [
                 'shops',
             ],
-            'shops-clerk'               => [
+            'shops-clerk'             => [
                 'shops.view',
                 'shops.edit',
             ],
-            'shops-broadcaster'               => [
+            'shops-broadcaster'       => [
                 'shops.view',
                 'shops.broadcasting',
             ],
@@ -649,55 +649,55 @@ return [
                     'shops.customers.edit',
                 ],
 
-            'distribution-admin'        => [
+            'distribution-admin'             => [
                 'inventory',
                 'warehouses',
             ],
-            'distribution-clerk'        => [
+            'distribution-clerk'             => [
                 'inventory.stocks',
                 'warehouses.view',
                 'warehouses.stock',
             ],
-            'distribution-dispatcher-admin'   => [
+            'distribution-dispatcher-admin'  => [
 
                 'inventory.stocks.view',
                 'warehouses.view',
                 'warehouses.dispatching',
             ],
-            'distribution-dispatcher-picker'   => [
+            'distribution-dispatcher-picker' => [
 
                 'inventory.stocks.view',
                 'warehouses.view',
                 'warehouses.dispatching.pick',
             ],
-            'distribution-dispatcher-packer'   => [
+            'distribution-dispatcher-packer' => [
 
                 'inventory.stocks.view',
                 'warehouses.view',
                 'warehouses.dispatching.pack',
             ],
-            'accounts-admin'            => [
+            'accounts-admin'                 => [
                 'financials',
             ],
-            'accounts-clerk'            => [
+            'accounts-clerk'                 => [
                 'financials.view',
                 'financials.edit',
             ],
-            'accounts-receivable-admin' => [
+            'accounts-receivable-admin'      => [
                 'financials.accounts_receivable',
             ],
-            'accounts-receivable-clerk' => [
+            'accounts-receivable-clerk'      => [
                 'financials.accounts_receivable.view',
                 'financials.accounts_receivable.edit',
             ],
-            'accounts-payable-admin'    => [
+            'accounts-payable-admin'         => [
                 'financials.accounts_payable',
             ],
-            'accounts-payable-clerk'    => [
+            'accounts-payable-clerk'         => [
                 'financials.accounts_payable.view',
                 'financials.accounts_payable.edit',
             ],
-            'business-intelligence-analyst' =>[
+            'business-intelligence-analyst'  => [
                 'financials.view',
                 'shops.view',
                 'websites.view',
@@ -709,25 +709,25 @@ return [
         ],
         'model_roles' => [
             'Shop'      => [
-                'shop-#-admin'             =>
+                'shop-#-admin'              =>
                     [
                         'shops.#',
                     ],
-                'shop-#-clerk'             =>
+                'shop-#-clerk'              =>
                     [
-                        'shops.#.view',
-                        'shops.#.products',
+                        'shops.view.#',
+                        'shops.products.#',
                     ],
                 'customer-services-#-admin' =>
                     [
-                        'shops.#.view',
-                        'shops.#.customers',
+                        'shops.view.#',
+                        'shops.customers.#',
                     ],
                 'customer-services-#-clerk' =>
                     [
-                        'shops.#.view',
-                        'shops.#.customers.view',
-                        'shops.#.customers.edit',
+                        'shops.view.#',
+                        'shops.customers.view.#',
+                        'shops.customers.edit.#',
                     ]
             ],
             'Website'   => [
@@ -737,47 +737,47 @@ return [
                     ],
                 'websites-#-clerk' =>
                     [
-                        'websites.#.edit',
-                        'websites.#.view',
-                        'websites.#.publish',
+                        'websites.edit.#',
+                        'websites.view.#',
+                        'websites.publish.#',
                     ],
 
             ],
             'Warehouse' => [
-                'distribution-#-admin' =>
+                'distribution-#-admin'             =>
                     [
                         'warehouse.#',
                     ],
-                'distribution-#-clerk' =>
+                'distribution-#-clerk'             =>
                     [
-                        'warehouse.#.view',
-                        'warehouse.#.stock',
+                        'warehouse.view.#',
+                        'warehouse.stock.#',
                     ],
-                'distribution-dispatcher-#-admin' =>
+                'distribution-dispatcher-#-admin'  =>
                     [
-                        'warehouse.#.view',
-                        'warehouse.#.dispatching',
+                        'warehouse.view.#',
+                        'warehouse.dispatching.#',
                     ],
                 'distribution-dispatcher-#-picker' =>
                     [
-                        'warehouse.#.view',
-                        'warehouse.#.dispatching.pick',
+                        'warehouse.view.#',
+                        'warehouse.dispatching.pick.#',
                     ],
                 'distribution-dispatcher-#-packer' =>
                     [
-                        'warehouse.#.view',
-                        'warehouse.#.dispatching.packer',
+                        'warehouse.view.#',
+                        'warehouse.dispatching.packer.#',
                     ]
             ],
-            'Workshop' => [
-                'workshop-#-admin' =>
+            'Workshop'  => [
+                'workshop-#-admin'     =>
                     [
                         'workshop.#',
                     ],
                 'workshop-#-operative' =>
                     [
-                        'workshop.#.view',
-                        'workshop.#.stock',
+                        'workshop.view.#',
+                        'workshop.stock.#',
                     ]
             ]
         ]
@@ -821,7 +821,7 @@ return [
         'roles'       => [
 
             'super-admin'            => [],
-            'account-admin'           => [
+            'account-admin'          => [
                 'users',
                 'look-and-field',
             ],

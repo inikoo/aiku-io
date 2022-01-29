@@ -41,7 +41,7 @@ class ShowEcommerceShop
     public function afterValidator(): void
     {
         if ($this->shop->type != $this->type) {
-            abort(422, "Store is not the correct type $this->type, has {$this->shop->type} ");
+            abort(422, "Store is not the correct type $this->type, has {$this->shop->type} must be $this->type");
         }
     }
 
@@ -49,7 +49,7 @@ class ShowEcommerceShop
     public function asInertia(Shop $shop,  array $attributes = []): Response
     {
         $this->set('shop', $shop)->fill($attributes);
-        $this->set('type', 'shop');
+
         $this->validateAttributes();
 
 
@@ -73,6 +73,8 @@ class ShowEcommerceShop
 
     public function prepareForValidation(ActionRequest $request): void
     {
+
+        $this->set('type', 'shop');
 
         $this->fillFromRequest($request);
 

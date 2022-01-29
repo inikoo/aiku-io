@@ -8,101 +8,35 @@
 
 namespace App\Actions\Trade\Shop;
 
-
-use App\Actions\UI\WithInertia;
 use App\Models\Trade\Shop;
-use Illuminate\Support\Str;
-use Inertia\Inertia;
-use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\WithAttributes;
 
 
 /**
  * @property Shop $shop
- * @property string $module
- * @property string $type
  */
 class ShowShop
 {
     use AsAction;
-    use WithInertia;
-
+    use WithAttributes;
 
     public function handle()
     {
     }
-
 
     public function authorize(ActionRequest $request): bool
     {
         return $request->user()->hasPermissionTo("shops.{$this->shop->id}.view");
     }
 
-    public function afterValidator(): void
+    public function asController(Shop $shop): Shop
     {
-        if ($this->shop->type != $this->type) {
-            abort(422, "Store is not the correct type $this->type, has {$this->shop->type} ");
-        }
-    }
-
-
-    public function asInertia(Shop $shop, string $module, array $attributes = []): Response
-    {
-        $this->set('shop', $shop)->set('module', $module)->fill($attributes);
-
+        $this->set('Shop', $shop);
         $this->validateAttributes();
 
-
-        session(['current'.ucfirst($module) => $shop->id]);
-
-
-        return Inertia::render(
-           'Common/ShowModel',
-            [
-                'headerData' => [
-                    'module'      => $this->module,
-                    'title'       => $shop->name,
-                    'breadcrumbs' => $this->get('breadcrumbs'),
-
-                ],
-                'model'       => $shop
-            ]
-
-        );
-    }
-
-    public function prepareForValidation(ActionRequest $request): void
-    {
-        $request->merge(
-            [
-                'type' => $this->module
-
-            ]
-        );
-        $this->fillFromRequest($request);
-
-        $this->set('breadcrumbs', $this->breadcrumbs());
-    }
-
-
-    private function breadcrumbs(): array
-    {
-        /** @var Shop $shop */
-        $shop = $this->get('shop');
-
-
-        return array_merge(
-            (new IndexShop())->getBreadcrumbs($this->module.'s'),
-            [
-                'shop' => [
-                    'route'           => Str::plural($this->module).'.index',
-                    'routeParameters' => $shop->id,
-                    'name'            => $shop->code,
-                    'current'         => false
-                ],
-            ]
-        );
+        return $shop;
     }
 
 

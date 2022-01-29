@@ -25,9 +25,9 @@ class GetUserLayout
 
         $this->initialize($user);
 
-
         foreach ($modulesScaffolding as $moduleKey => $module) {
             $modulePermissions = $module['permissions'] ?? false;
+
 
             if (
 
@@ -43,16 +43,23 @@ class GetUserLayout
 
 
             ) {
+
                 $module = $this->prepareModule($module);
 
 
+
                 $sections = [];
+
                 foreach (Arr::get($module, 'sections', []) as $sectionRoute => $section) {
+
                     $sectionPermissions = $section['permissions'] ?? false;
 
                     if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
+
+
+
                         $sections[$sectionRoute] = [
-                            'icon' => Arr::get($section, 'fa', ['fal', 'angle-right']),
+                            'icon' => Arr::get($section, 'icon', ['fal', 'angle-right']),
                             'name' => Arr::get($section, 'name'),
                         ];
                     }
@@ -66,6 +73,7 @@ class GetUserLayout
                 );
             }
         }
+
 
         return $layout;
     }

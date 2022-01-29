@@ -6,10 +6,9 @@
   -->
 
 <template>
-    <page-header :headerData="headerData"/>
+    <page-header :headerData="headerData" />
     <Table
-         v-if="dataTable.records.meta.total>0"
-
+        v-if="dataTable.records.meta.total > 0"
         :filters="queryBuilderProps.filters"
         :search="queryBuilderProps.search"
         :columns="queryBuilderProps.columns"
@@ -18,46 +17,52 @@
     >
         <template #head>
             <tr>
-                <HeaderCell :cell="header.sort?sortableHeader(header.sort):staticHeader(headerIdx)"
-                            v-for="(header,headerIdx) in dataTable.columns" v-bind:key="headerIdx">
-                    {{header.label}}
-                </HeaderCell>
+                <HeaderCell
+                    :cell="header.sort ? sortableHeader(header.sort) : staticHeader(headerIdx)"
+                    v-for="(header,headerIdx) in dataTable.columns"
+                    v-bind:key="headerIdx"
+                >{{ header.label }}</HeaderCell>
             </tr>
         </template>
 
         <template #body>
             <tr v-for="(record,recordIdx) in dataTable.records.data" v-bind:key="recordIdx">
-                <td  v-for="(column,columnIdx) in dataTable.columns" v-bind:key="columnIdx">
-                    <template  v-if="column.href">
-                    <span v-if="column.href.with_permission && !record[column.href.with_permission]  ">   
-                         
-                         <font-awesome-icon
-                                            fixed-width
-                                            :icon="['fal','lock-alt']"
-                                            aria-hidden="true"
-                                        />
-                                        {{record[columnIdx]}}
-                    </span>
-                    <Link v-else :href="route(column.href.route,record[column.href.column])">{{record[columnIdx]}}</Link>
+                <td v-for="(column,columnIdx) in dataTable.columns" v-bind:key="columnIdx">
+                    <template v-if="column.href">
+                        <span
+                            v-if="column.href.with_permission && !record[column.href.with_permission]"
+                        >
+                            <font-awesome-icon
+                                fixed-width
+                                :icon="['fal', 'lock-alt']"
+                                aria-hidden="true"
+                            />
+                            {{ record[columnIdx] }}
+                        </span>
+                        <Link
+                            v-else
+                            :href="route(column.href.route, processRouteParemeters(record, column.href.column))"
+                        >{{ record[columnIdx] }}  </Link>
                     </template>
-                    <span v-else-if="column.transformations" >
-                        {{column.transformations[record[columnIdx]]}} x {{column.transformations}}
-                    </span>
-                    <Cell v-else-if="column.toggle" :data="record[columnIdx]?column.toggle[0]:column.toggle[1]" />
-                    <span v-else>{{record[columnIdx]}}</span>
+                    <span
+                        v-else-if="column.transformations"
+                    >{{ column.transformations[record[columnIdx]] }} x {{ column.transformations }}</span>
+                    <Cell
+                        v-else-if="column.toggle"
+                        :data="record[columnIdx] ? column.toggle[0] : column.toggle[1]"
+                    />
+                    <span v-else>{{ record[columnIdx] }}</span>
                 </td>
-
-
             </tr>
         </template>
     </Table>
-    <EmptyState v-else :data="dataTable.empty??{}"></EmptyState>
+    <EmptyState v-else :data="dataTable.empty ?? {}"></EmptyState>
 </template>
 
 <script>
 import PageHeader from '@/Layouts/PageHeader';
-import {InteractsWithQueryBuilder, Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder';
-import {Link} from '@inertiajs/inertia-vue3';
+import { InteractsWithQueryBuilder, Tailwind2 } from '@protonemedia/inertiajs-tables-laravel-query-builder';
+import { Link } from '@inertiajs/inertia-vue3';
 import Cell from '@/Components/Tables/Cell';
 import EmptyState from '@/Components/Tables/EmptyState';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -68,11 +73,21 @@ library.add(faLockAlt);
 export default {
     mixins: [InteractsWithQueryBuilder],
     components: {
-        PageHeader,Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell,Link,Cell,EmptyState,FontAwesomeIcon
+        PageHeader, Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell, Link, Cell, EmptyState, FontAwesomeIcon
     },
-    props     : ['headerData','dataTable'],
-    methods:  {
-        toggle(value,blueprint) {
+    props: ['headerData', 'dataTable'],
+    methods: {
+        toggle(value, blueprint) {
+
+        },
+        processRouteParemeters(record, indices) {
+            if (typeof indices === 'string') {
+                indices = [indices];
+            }
+
+            return indices.map(function (index) {
+                return record[index];
+            })
 
         }
     }
