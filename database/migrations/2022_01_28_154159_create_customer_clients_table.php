@@ -16,6 +16,8 @@ class CreateCustomerClientsTable extends Migration
         Schema::create('customer_clients', function (Blueprint $table) {
             $table->id();
             $table->boolean('status')->default(true)->index();
+            $table->unsignedMediumInteger('shop_id')->index()->nullable();
+            $table->foreign('shop_id')->references('id')->on('shops');
             $table->unsignedMediumInteger('customer_id')->index()->nullable();
             $table->foreign('customer_id')->references('id')->on('customers');
 

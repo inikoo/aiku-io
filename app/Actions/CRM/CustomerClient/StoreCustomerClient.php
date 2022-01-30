@@ -27,6 +27,8 @@ class StoreCustomerClient
 
         $res  = new ActionResult();
 
+        $customerClientData['shop_id']=$customer->shop_id;
+
         /** @var CustomerClient $customerClient */
         $customerClient = $customer->clients()->create($customerClientData);
         $customerClient->contact()->create($contactData);

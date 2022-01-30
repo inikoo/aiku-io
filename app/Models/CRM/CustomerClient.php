@@ -10,6 +10,7 @@ namespace App\Models\CRM;
 
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Contact;
+use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,11 @@ class CustomerClient extends Model implements Auditable
     protected $guarded = [];
 
     public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }

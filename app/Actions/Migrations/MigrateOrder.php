@@ -36,7 +36,7 @@ class MigrateOrder extends MigrateModel
         $this->aiku_id_field     = 'aiku_id';
     }
 
-    public function getParent(): Customer
+    public function getParent(): Customer|CustomerClient
     {
         //return Shops::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Store Key'});
         if ($this->auModel->data->{'Order Customer Client Key'} != '') {
@@ -121,7 +121,7 @@ class MigrateOrder extends MigrateModel
     {
         if (!$this->ignore) {
             return StoreOrder::run(
-                customer:        $this->parent,
+                parent:        $this->parent,
                 modelData:       $this->modelData['order'],
                 billingAddress:  $this->modelData['billing_address'],
                 deliveryAddress: $this->modelData['delivery_address']

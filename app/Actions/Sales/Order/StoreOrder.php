@@ -9,6 +9,7 @@
 namespace App\Actions\Sales\Order;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
+use App\Models\CRM\CustomerClient;
 use App\Models\Utils\ActionResult;
 use App\Models\CRM\Customer;
 use App\Models\Helpers\Address;
@@ -19,7 +20,7 @@ class StoreOrder
     use AsAction;
 
     public function handle(
-        Customer $customer,
+        Customer|CustomerClient $parent,
         array $modelData,
         Address $billingAddress,
         Address $deliveryAddress
@@ -30,17 +31,18 @@ class StoreOrder
 
 
 
-        if($customer->vendor_type=='Customer'){
-            $modelData['customer_id']=$customer->vendor_id;
-            $modelData['customer_client_id']=$customer->id;
+        if( class_basename($parent)=='Customer'){
+            $modelData['customer_id']=$parent->id;
 
         }else{
-            $modelData['customer_id']=$customer->id;
+
+            $modelData['customer_id']=$parent->customer_id;
+            $modelData['customer_client_id']=$parent->id;
 
         }
 
-        $modelData['currency_id']=$customer->shop->currency_id;
-        $modelData['shop_id']=$customer->shop_id;
+        $modelData['currency_id']=$parent->shop->currency_id;
+        $modelData['shop_id']=$parent->shop_id;
 
         $billingAddress=StoreImmutableAddress::run($billingAddress);
         $deliveryAddress=StoreImmutableAddress::run($deliveryAddress);
@@ -50,7 +52,7 @@ class StoreOrder
 
 
         /** @var \App\Models\Sales\Order $order */
-        $order = $customer->shop->orders()->create($modelData);
+        $order = $parent->shop->orders()->create($modelData);
 
 
         $res->model    = $order;
