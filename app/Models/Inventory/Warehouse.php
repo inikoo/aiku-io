@@ -11,6 +11,7 @@ namespace App\Models\Inventory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -30,12 +31,12 @@ class Warehouse extends Model implements Auditable
     use HasFactory;
 
     protected $casts = [
-        'data' => 'array',
+        'data'     => 'array',
         'settings' => 'array'
     ];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'     => '{}',
         'settings' => '{}',
     ];
 
@@ -52,11 +53,19 @@ class Warehouse extends Model implements Auditable
 
     public function areas(): HasMany
     {
-        return $this->hasMany('App\Models\Inventory\WarehouseArea');
+        return $this->hasMany(WarehouseArea::class);
     }
 
     public function locations(): HasMany
     {
-        return $this->hasMany('App\Models\Inventory\Location');
+        return $this->hasMany(Location::class);
     }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(WarehouseStats::class);
+    }
+
+
+
 }

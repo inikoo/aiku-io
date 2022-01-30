@@ -368,6 +368,7 @@ import Avatar from "vue-boring-avatars";
 // Section icons
 let currentModels;
 let initTranslations;
+let initLocale;
 
 export default {
     components: {
@@ -378,6 +379,7 @@ export default {
     setup() {
 
         initTranslations = usePage().props.value.translations;
+        initLocale = usePage().props.value.locale;
 
         const translations = computed(() => {
 
@@ -388,10 +390,19 @@ export default {
                 return initTranslations
             }
         })
+        const locale = computed(() => {
 
+            if (usePage().props.value.locale) {
+                initLocale = usePage().props.value.locale;
+                return usePage().props.value.locale
+            } else {
+                return initLocale
+            }
+        })
 
 
         provide('translations', translations)
+        provide('locale', locale.value)
 
 
 
@@ -408,7 +419,7 @@ export default {
         let modelsToWatch = [];
         for (const module in modules) {
 
-            if (module !== 'dashboard') {
+            if (!(module === 'dashboard' || module === 'profile')) {
 
                 if (modules[module].type === 'modelOptions') {
                     modelsToWatch.push(module);

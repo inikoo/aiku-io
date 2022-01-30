@@ -13,6 +13,7 @@ use App\Actions\UI\Localisation\GetUITranslations;
 use App\Actions\UI\WithInertia;
 use App\Models\System\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -57,6 +58,7 @@ class ShowEditProfile
             'Common/EditModel',
             [
                 'translations'  => GetUITranslations::run(),
+                'locale'        => App::currentLocale(),
                 'headerData' => [
                     'module'      => 'users',
                     'title'       => __('Editing profile'),

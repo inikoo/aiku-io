@@ -26,6 +26,7 @@ class StoreWarehouse
         $res = new ActionResult();
 
         $warehouse = Warehouse::create($data);
+        $warehouse->stats()->create();
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */

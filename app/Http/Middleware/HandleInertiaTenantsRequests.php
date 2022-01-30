@@ -10,6 +10,7 @@ namespace App\Http\Middleware;
 
 use App\Actions\UI\Localisation\GetUITranslations;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
 
@@ -59,6 +60,7 @@ class HandleInertiaTenantsRequests extends Middleware
                 'warehouse'        => session('currentWarehouse'),
                 'website'          => session('currentWebsite')
             ],
+            'locale'        => App::currentLocale(),
             'translations'  => fn() => GetUITranslations::run()
         ] : [];
 

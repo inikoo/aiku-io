@@ -22,6 +22,7 @@ class StoreWarehouseArea
 
         /** @var \App\Models\Inventory\WarehouseArea $warehouseArea */
         $warehouseArea= $warehouse->areas()->create($data);
+        $warehouseArea->stats()->create();
         $res->model    = $warehouseArea;
         $res->model_id = $warehouseArea->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';

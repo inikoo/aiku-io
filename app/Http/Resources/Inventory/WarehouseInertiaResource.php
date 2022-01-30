@@ -18,15 +18,17 @@ class WarehouseInertiaResource extends JsonResource
 
     public function toArray($request): array|Arrayable|JsonSerializable
     {
-        /** @var \App\Models\Inventory\Warehouse $warehouse */
-        $warehouse = $this;
+
 
 
         return [
-            'id'       => $warehouse->id,
-            'code'     => $warehouse->code,
-            'name'     => $warehouse->name,
-            'can_view' => $request->user()->hasPermissionTo("warehouses.$warehouse->id.view")
+            'id'       => $this->id,
+            'code'     => $this->code,
+            'name'     => $this->name,
+            'can_view' => $request->user()->hasPermissionTo("warehouses.view.$this->id"),
+            'number_locations'=>$this->number_locations,
+            'number_warehouse_areas'=>$this->number_warehouse_areas
+
         ];
     }
 }

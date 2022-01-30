@@ -21,7 +21,7 @@ class StoreLocation
         }
         /** @var \App\Models\Inventory\Location $location */
         $location = $parent->locations()->create($data);
-
+        $location->stats()->create();
         $res->model    = $location;
         $res->model_id = $location->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';

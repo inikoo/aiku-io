@@ -25,10 +25,20 @@ class CreateWarehouseAreasTable extends Migration
             $table->foreign('warehouse_id')->references('id')->on('warehouses');
             $table->string('code')->index();
             $table->string('name');
-            $table->json('data');
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+        });
+
+        Schema::create('warehouse_area_stats', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->unsignedSmallInteger('warehouse_area_id')->index();
+            $table->foreign('warehouse_area_id')->references('id')->on('warehouse_areas');
+
+            $table->unsignedSmallInteger('number_locations')->default(0);
+            $table->unsignedSmallInteger('number_empty_locations')->default(0);
+            $table->decimal('stock_value',16)->default(0);
+            $table->timestampsTz();
         });
     }
 
@@ -39,6 +49,7 @@ class CreateWarehouseAreasTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('warehouse_area_stats');
         Schema::dropIfExists('warehouse_areas');
     }
 }

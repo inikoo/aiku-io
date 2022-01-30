@@ -16,6 +16,7 @@ use App\Actions\UI\Localisation\GetUITranslations;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\Account\TenantResource;
 use App\Models\Account\Tenant;
+use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Inertia\Response;
 use JetBrains\PhpStorm\Pure;
@@ -54,7 +55,7 @@ class ShowEditAccount
             'Common/EditModel',
             [
                 'translations' => GetUITranslations::run(),
-
+                'locale'        => App::currentLocale(),
                 'headerData' => [
                     'module'      => 'account',
                     'title'       => __('Account settings', ['name' => $this->account->name]),

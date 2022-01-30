@@ -35,8 +35,11 @@ class IndexWarehouse
 
     public function handle(): LengthAwarePaginator
     {
+
+
         return QueryBuilder::for(Warehouse::class)
-            ->select('id','code','name')
+            ->select('warehouses.id','code','name','number_locations','number_warehouse_areas')
+            ->leftJoin('warehouse_stats','warehouses.id','=','warehouse_stats.warehouse_id')
             ->allowedSorts(['code', 'name'])
             ->paginate()
             ->withQueryString();
@@ -76,7 +79,21 @@ class IndexWarehouse
                         'name' => [
                             'sort'  => 'name',
                             'label' => __('Name')
-                        ]
+                        ],
+                        'number_warehouse_areas' => [
+                            'sort'  => 'number_warehouse_areas',
+                            'label' => __('Areas')
+                        ],
+                        'number_locations' => [
+                            'sort'  => 'number_locations',
+                            'label' => __('Locations'),
+                            'href'  => [
+                                'route'  => 'warehouses.show.locations.index',
+                                'column' => 'id',
+                            ],
+
+                        ],
+
                     ]
                 ]
 

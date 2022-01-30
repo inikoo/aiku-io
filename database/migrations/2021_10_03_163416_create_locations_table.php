@@ -29,11 +29,27 @@ class CreateLocationsTable extends Migration
 
             $table->enum('state', ['operational', 'broken', 'deleted'])->index()->default('operational');
             $table->string('code', 64)->index();
+            $table->boolean('is_empty')->default(true);
 
             $table->jsonb('data');
+
+
+
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+        });
+
+        Schema::create('location_stats', function (Blueprint $table) {
+            $table->mediumIncrements('id');
+            $table->unsignedMediumInteger('location_id')->index();
+            $table->foreign('location_id')->references('id')->on('locations');
+
+            $table->unsignedSmallInteger('number_stock_slots')->default(0);
+            $table->unsignedSmallInteger('number_empty_stock_slots')->default(0);
+            $table->decimal('stock_value',16)->default(0);
+            $table->timestampsTz();
+
         });
     }
 
@@ -44,6 +60,7 @@ class CreateLocationsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('location_stats');
         Schema::dropIfExists('locations');
     }
 }

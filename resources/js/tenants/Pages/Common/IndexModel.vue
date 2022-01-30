@@ -37,12 +37,13 @@
                                 :icon="['fal', 'lock-alt']"
                                 aria-hidden="true"
                             />
-                            {{ record[columnIdx] }}
+                            {{ getCellValue(record, columnIdx) }}
                         </span>
                         <Link
-                            v-else
+                            v-else-if="record[column.href.if] || checkRouteParemetersIntegrity(record, column.href.column)"
                             :href="route(column.href.route, processRouteParemeters(record, column.href.column))"
-                        >{{ record[columnIdx] }}  </Link>
+                        >{{ getCellValue(record, columnIdx) }}</Link>
+                        <span v-else class="text-gray-300">{{ column.href.notSetLabel }}</span>
                     </template>
                     <span
                         v-else-if="column.transformations"
@@ -51,7 +52,7 @@
                         v-else-if="column.toggle"
                         :data="record[columnIdx] ? column.toggle[0] : column.toggle[1]"
                     />
-                    <span v-else>{{ record[columnIdx] }}</span>
+                    <span v-else>{{ getCellValue(record, columnIdx) }}</span>
                 </td>
             </tr>
         </template>
@@ -69,17 +70,49 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faLockAlt } from '@/private/pro-light-svg-icons';
 library.add(faLockAlt);
+import { inject } from 'vue'
 
 export default {
+
+
     mixins: [InteractsWithQueryBuilder],
     components: {
         PageHeader, Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell, Link, Cell, EmptyState, FontAwesomeIcon
     },
     props: ['headerData', 'dataTable'],
     methods: {
+
+        getCellValue(record, columnIdx) {
+
+            let value = record[columnIdx];
+            if (Number.isFinite(value)) {
+                return new Intl.NumberFormat(this.locale).format(value)
+            }
+            return value
+        },
+
+
+
         toggle(value, blueprint) {
 
         },
+        checkRouteParemetersIntegrity(record, indices) {
+
+            if (typeof indices === 'string') {
+                indices = [indices];
+            }
+            let pass = true;
+            for (let index of indices) {
+                if (!record[index]) {
+                    pass = false
+                    break;
+                }
+            }
+            return pass;
+
+
+        },
+
         processRouteParemeters(record, indices) {
             if (typeof indices === 'string') {
                 indices = [indices];
@@ -90,6 +123,13 @@ export default {
             })
 
         }
+    },
+     setup() {
+
+        const locale = inject('locale')
+        return {
+          locale
+        };
     }
 
 };
