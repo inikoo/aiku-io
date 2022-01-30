@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function userable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function images(): MorphMany

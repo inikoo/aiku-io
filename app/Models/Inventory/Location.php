@@ -8,6 +8,8 @@
 
 namespace App\Models\Inventory;
 
+use App\Actions\Hydrators\HydrateWarehouse;
+use App\Actions\Hydrators\HydrateWarehouseArea;
 use App\Models\LocationStock;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +35,21 @@ class Location extends Model implements Auditable
         'audited_at' => 'array'
     ];
 
+    protected static function booted()
+    {
+        static::created(
+            function (Location $location) {
+                HydrateWarehouse::run($location->warehouse);
+                HydrateWarehouseArea::run($location->warehouseArea);
+            }
+        );
+        static::deleted(
+            function (Location $location) {
+                HydrateWarehouse::run($location->warehouse);
+                HydrateWarehouseArea::run($location->warehouseArea);
+            }
+        );
+    }
 
     protected $attributes = [
         'data' => '{}',

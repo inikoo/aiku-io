@@ -19,16 +19,25 @@ class HydrateModels extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->models=['user','employee','guest'];
+        $this->models=['user','employee','guest','warehouse','warehouse_area'];
     }
 
     public function handle(): int
     {
-        foreach(array_intersect($this->models,$this->option('model')) as $model){
+
+
+        foreach(
+
+            count($this->option('model'))?
+                array_intersect($this->models,$this->option('model')):
+                $this->models
+
+            as $model){
             $this->line("Hydrating $model");
+
             Artisan::call("hydrate:$model",
                           [
-                              $model.'_id' => 'all',
+                              'id' => 'all',
                               '--tenant'  => $this->option('tenant')
                           ]
             );

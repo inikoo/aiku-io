@@ -2,8 +2,11 @@
 
 namespace App\Console;
 
-use App\Actions\HumanResources\Employee\HydrateEmployee;
-use App\Actions\System\User\HydrateUser;
+use App\Actions\Hydrators\HydrateEmployee;
+use App\Actions\Hydrators\HydrateGuest;
+use App\Actions\Hydrators\HydrateUser;
+use App\Actions\Hydrators\HydrateWarehouse;
+use App\Actions\Hydrators\HydrateWarehouseArea;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +19,10 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         HydrateUser::class,
-        HydrateEmployee::class
+        HydrateEmployee::class,
+        HydrateGuest::class,
+        HydrateWarehouse::class,
+        HydrateWarehouseArea::class
 
     ];
 
