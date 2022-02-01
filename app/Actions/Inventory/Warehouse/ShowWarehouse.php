@@ -47,6 +47,16 @@ class ShowWarehouse
         session(['currentWarehouse' => $warehouse->id]);
 
 
+        $actionIcons = [];
+        if ($this->get('canEdit')) {
+            $actionIcons['warehouses.edit'] = [
+                'routeParameters' => $this->warehouse->id,
+                'name'            => __('Edit'),
+                'icon'            => ['fal', 'edit']
+            ];
+        }
+
+
         return Inertia::render(
             'Common/ShowModel',
             [
@@ -54,6 +64,7 @@ class ShowWarehouse
                     'module'      => 'warehouses',
                     'title'       => $warehouse->name,
                     'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
+                    'actionIcons' => $actionIcons,
 
                 ],
                 'model'      => $warehouse
@@ -65,6 +76,8 @@ class ShowWarehouse
     public function prepareForValidation(ActionRequest $request): void
     {
         $this->fillFromRequest($request);
+        $this->set('canEdit', $request->user()->can("warehouses.edit.{$this->warehouse->id}"));
+
     }
 
 

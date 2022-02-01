@@ -68,7 +68,7 @@ class UpdateWarehouseArea
             $this->handle(
                 $warehouseArea,
                 $request->only(
-                    'code',
+                    'code','name'
                 )
             )
         );
@@ -84,7 +84,7 @@ class UpdateWarehouseArea
         $this->handle(
             $warehouseArea,
             $request->only(
-                'code',
+                'code','name'
             )
         );
 

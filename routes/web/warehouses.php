@@ -12,6 +12,16 @@ use App\Http\Controllers\Inventory\WarehouseAreaController;
 use App\Http\Controllers\Inventory\WarehouseController;
 
 Route::get('/', [WarehouseController::class, 'index'])->name('index');
+Route::get('/{warehouse}', [WarehouseController::class, 'show'])->name('show');
+Route::get('/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('edit');
+Route::post('/{warehouse}', [WarehouseController::class, 'update'])->name('update');
+
+Route::get('/{warehouse}/locations', [LocationController::class, 'indexInWarehouse'])->name('show.locations.index');
+Route::get('/{warehouse}/areas', [WarehouseAreaController::class, 'indexInWarehouse'])->name('show.areas.index');
+
+
+
+
 Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
 Route::get('/locations/{location}', [LocationController::class, 'show'])->name('locations.show');
 Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
@@ -23,13 +33,9 @@ Route::get('/areas/{warehouseArea}/edit', [WarehouseAreaController::class, 'edit
 Route::post('/areas/{warehouseArea}', [WarehouseAreaController::class, 'update'])->name('areas.update');
 
 
-Route::get('/{warehouse}', [WarehouseController::class, 'show'])->name('show');
-Route::get('/areas/{warehouse}/edit', [WarehouseController::class, 'edit'])->name('edit');
-Route::post('/areas/{warehouse}', [WarehouseController::class, 'update'])->name('update');
 
 
-Route::get('/{warehouse}/locations', [LocationController::class, 'indexInWarehouse'])->name('show.locations.index');
-Route::get('/{warehouse}/areas', [WarehouseAreaController::class, 'indexInWarehouse'])->name('show.areas.index');
+
 
 Route::scopeBindings()->group(function () {
 
@@ -46,3 +52,5 @@ Route::scopeBindings()->group(function () {
     Route::get('/{warehouse}/areas/{warehouseArea}/locations/{location}/edit', [LocationController::class, 'editInArea'])->name('show.areas.show.locations.edit');
 
 });
+
+
