@@ -145,9 +145,7 @@ export default {
     props: ['items', 'currentModels'],
     components: { TopMenuLink, FontAwesomeIcon, Link, Menu, MenuButton, MenuItems, MenuItem },
 
-    setup(props) {
-
-
+    setup() {
         const sidebarOpen = ref(false);
         return { sidebarOpen };
     },
