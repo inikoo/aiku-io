@@ -191,12 +191,10 @@ return [
                     'inventory.stocks.index'                    => [
                         'name' => 'Stocks',
                     ],
-                    'inventory.warehouses.show.locations.index' => [
-                        'name' => 'Locations',
+                    'inventory.stock_locations.index' => [
+                        'name' => 'Stock-Locations',
                     ],
-                    'inventory.warehouses.show.areas.index'     => [
-                        'name' => 'WH Areas',
-                    ],
+
                 ]
             ],
 

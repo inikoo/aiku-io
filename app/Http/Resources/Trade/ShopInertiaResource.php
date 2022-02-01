@@ -23,9 +23,11 @@ class ShopInertiaResource extends JsonResource
 
 
         return [
-            'id'            => $shop->id,
-            'code'          => $shop->code,
-            'name'          => $shop->name
+            'id'       => $shop->id,
+            'code'     => $shop->code,
+            'name'     => $shop->name,
+            'can_view' => $request->user()->hasPermissionTo("shops.view.$shop->id")
+
         ];
     }
 }

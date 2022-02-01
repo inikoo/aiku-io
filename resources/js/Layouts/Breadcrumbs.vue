@@ -10,13 +10,20 @@
         <ol role="list" class="flex items-center space-x-2">
             <li>
                 <div>
-                    <Link :href="route('dashboard.index')" class="text-gray-400 hover:text-gray-500">
-                        <font-awesome-icon :icon="['fal', 'tachometer-alt-fast']" class="flex-shrink-0 h-4 w-4" aria-hidden="true"/>
+                    <Link
+                        :href="route('dashboard.index')"
+                        class="text-gray-400 hover:text-gray-500"
+                    >
+                        <font-awesome-icon
+                            :icon="['fal', 'tachometer-alt-fast']"
+                            class="flex-shrink-0 h-4 w-4"
+                            aria-hidden="true"
+                        />
                         <span class="sr-only">{{ translations.dashboard }}</span>
                     </Link>
                 </div>
             </li>
-            <li v-for="breadcrumb in  breadcrumbs" :key="breadcrumb.name">
+            <li v-for="(breadcrumb,breadcrumbIdx) in  breadcrumbs" :key="breadcrumbIdx">
                 <div class="flex items-center">
                     <ChevronRightIcon
                         class="flex-shrink-0 h-5 w-5 text-gray-400"
@@ -57,14 +64,14 @@
 </template>
 
 <script>
-import {ChevronRightIcon, HomeIcon} from '@heroicons/vue/solid';
-import {Link} from '@inertiajs/inertia-vue3';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import { ChevronRightIcon, HomeIcon } from '@heroicons/vue/solid';
+import { Link } from '@inertiajs/inertia-vue3';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { inject } from 'vue'
 
 
 export default {
-    props     : ['breadcrumbs'],
+    props: ['breadcrumbs'],
     components: {
         ChevronRightIcon,
         HomeIcon,

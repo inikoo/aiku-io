@@ -37,6 +37,7 @@ class CreateLocationsTable extends Migration
 
             $table->timestampsTz();
             $table->softDeletesTz();
+
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         });
 

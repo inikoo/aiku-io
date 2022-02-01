@@ -69,7 +69,8 @@ class IndexEcommerceShop
                             'label' => __('Code'),
                             'href'  => [
                                 'route'  => 'ecommerce_shops.show',
-                                'column' => 'id'
+                                'column' => 'id',
+                                'with_permission'=>'can_view'
                             ],
                         ],
                         'name' => [

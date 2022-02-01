@@ -17,10 +17,4 @@ Route::get('/stocks/{stock}', [StockController::class, 'show'])->name('stocks.sh
 Route::get('/stocks/{stock}/edit', [StockController::class, 'edit'])->name('stocks.edit');
 Route::post('/stocks/{stock}', [StockController::class, 'update'])->name('stocks.update');
 
-Route::get('/warehouses/{warehouse}', [WarehouseController::class, 'show'])->name('warehouses.show');
-Route::get('/warehouses/{warehouse}/locations', [LocationController::class, 'index'])->name('warehouses.show.locations.index');
-Route::get('/warehouses/{warehouse}/locations/{location}', [LocationController::class, 'show'])->name('warehouses.show.locations.show');
-
-
-Route::get('/warehouses/{warehouse}/areas', [WarehouseAreaController::class, 'index'])->name('warehouses.show.areas.index');
-Route::get('/warehouses/{warehouse}/areas/{area}', [WarehouseAreaController::class, 'index'])->name('warehouses.show.areas.show');
+Route::get('/stock_locations/', [StockLocationController::class, 'show'])->name('stock_locations.index');

@@ -29,7 +29,17 @@ class LocationController extends Controller
         return IndexLocation::make()->asInertia();
     }
 
-    public function show(Warehouse $warehouse,Location $location): Response
+    public function indexInWarehouse(Warehouse $warehouse): Response
+    {
+        return IndexLocationInWarehouse::make()->asInertia($warehouse);
+    }
+
+    public function indexInArea(Warehouse $warehouse, WarehouseArea $warehouseArea): Response
+    {
+        return IndexLocationInWarehouseArea::make()->asInertia(warehouse: $warehouse, warehouseArea: $warehouseArea);
+    }
+
+    public function showInWarehouse(Warehouse $warehouse, Location $location): Response
     {
         return ShowLocation::make()->asInertia(parent: 'warehouse', warehouse: $warehouse, warehouseArea: null, location: $location);
     }

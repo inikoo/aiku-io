@@ -53,7 +53,7 @@ class ShowWarehouse
                 'headerData' => [
                     'module'      => 'warehouses',
                     'title'       => $warehouse->name,
-                    'breadcrumbs' => $this->get('breadcrumbs'),
+                    'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
 
                 ],
                 'model'      => $warehouse
@@ -65,17 +65,11 @@ class ShowWarehouse
     public function prepareForValidation(ActionRequest $request): void
     {
         $this->fillFromRequest($request);
-
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(Warehouse $warehouse): array
     {
-        /** @var Warehouse $warehouse */
-        $warehouse = $this->get('warehouse');
-
-
         return array_merge(
             (new IndexWarehouse())->getBreadcrumbs(),
             [
