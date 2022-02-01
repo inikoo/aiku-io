@@ -7,8 +7,12 @@
 
 <template>
     <page-header :headerData="headerData" />
-    <Table
-        v-if="dataTable.records.meta.total > 0"
+    
+     <EmptyState v-if="dataTable.records.meta.total === 0 && queryBuilderProps.search.global.value==null " 
+     :data="dataTable.empty ?? {}"></EmptyState>
+    <Table v-else
+        
+        
         :filters="queryBuilderProps.filters"
         :search="queryBuilderProps.search"
         :columns="queryBuilderProps.columns"
@@ -57,7 +61,7 @@
             </tr>
         </template>
     </Table>
-    <EmptyState v-else :data="dataTable.empty ?? {}"></EmptyState>
+   
 </template>
 
 <script>

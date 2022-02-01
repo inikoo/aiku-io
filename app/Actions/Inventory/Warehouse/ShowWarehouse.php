@@ -33,7 +33,7 @@ class ShowWarehouse
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("warehouses.{$this->warehouse->id}.view");
+        return $request->user()->hasPermissionTo("warehouses.view.{$this->warehouse->id}");
     }
 
 
@@ -56,7 +56,7 @@ class ShowWarehouse
                     'breadcrumbs' => $this->get('breadcrumbs'),
 
                 ],
-                'model'       => $warehouse
+                'model'      => $warehouse
             ]
 
         );
@@ -64,7 +64,6 @@ class ShowWarehouse
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
         $this->fillFromRequest($request);
 
         $this->set('breadcrumbs', $this->breadcrumbs());
@@ -80,11 +79,15 @@ class ShowWarehouse
         return array_merge(
             (new IndexWarehouse())->getBreadcrumbs(),
             [
-                'warehouse' => [
+                'warehouses.show' => [
                     'route'           => 'warehouses.show',
                     'routeParameters' => $warehouse->id,
                     'name'            => $warehouse->code,
-                    'current'         => false
+                    'model'           => [
+                        'label' => __('Warehouse'),
+                        'icon'  => ['fal', 'warehouse-alt'],
+                    ],
+
                 ],
             ]
         );

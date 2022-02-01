@@ -21,7 +21,7 @@ class StoreWarehouseArea
         $res  = new ActionResult();
 
         /** @var \App\Models\Inventory\WarehouseArea $warehouseArea */
-        $warehouseArea= $warehouse->areas()->create($data);
+        $warehouseArea= $warehouse->warehouseAreas()->create($data);
         $warehouseArea->stats()->create();
         $res->model    = $warehouseArea;
         $res->model_id = $warehouseArea->id;

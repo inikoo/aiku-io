@@ -14,6 +14,9 @@ use App\Actions\Inventory\Warehouse\ShowWarehouse;
 use App\Http\Controllers\Controller;
 use App\Models\Inventory\Location;
 use App\Models\Inventory\Warehouse;
+use App\Models\Inventory\WarehouseArea;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Response;
 
 
@@ -28,7 +31,27 @@ class LocationController extends Controller
 
     public function show(Warehouse $warehouse,Location $location): Response
     {
-        return ShowLocation::make()->asInertia($warehouse,$location);
+        return ShowLocation::make()->asInertia(parent: 'warehouse', warehouse: $warehouse, warehouseArea: null, location: $location);
+    }
+
+    public function showInArea(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
+    {
+        return ShowLocation::make()->asInertia(parent: 'warehouseArea', warehouse: $warehouse, warehouseArea: $warehouseArea, location: $location);
+    }
+
+    public function editInWarehouse(Warehouse $warehouse, Location $location): Response
+    {
+        return ShowEditLocation::make()->asInertia(parent: 'warehouse',  location: $location);
+    }
+
+    public function editInArea(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
+    {
+        return ShowEditLocation::make()->asInertia(parent: 'warehouseArea', location: $location);
+    }
+
+    public function update(Location $location, Request $request): RedirectResponse
+    {
+        return UpdateLocation::make()->asInertia($location, $request);
     }
 
 

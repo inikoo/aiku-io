@@ -13,6 +13,7 @@ use App\Actions\Inventory\WarehouseArea\UpdateWarehouseArea;
 use App\Models\Inventory\Warehouse;
 use App\Models\Inventory\WarehouseArea;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use App\Models\Utils\ActionResult;
@@ -31,7 +32,7 @@ class MigrateWarehouseArea extends MigrateModel
         $this->modelData   = $this->sanitizeData(
             [
                 'name'      => $this->auModel->data->{'Warehouse Area Name'} ?? 'Name not set',
-                'code'      => $this->auModel->data->{'Warehouse Area Code'},
+                'code'      => Str::snake(strtolower($this->auModel->data->{'Warehouse Area Code'}), '-'),
                 'aurora_id' => $this->auModel->data->{'Warehouse Area Key'},
             ]
         );
@@ -56,7 +57,6 @@ class MigrateWarehouseArea extends MigrateModel
     public function storeModel(): ActionResult
     {
         return StoreWarehouseArea::run($this->parent, $this->modelData);
-
     }
 
     public function authorize(ActionRequest $request): bool

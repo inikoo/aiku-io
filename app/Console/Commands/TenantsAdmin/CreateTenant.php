@@ -41,13 +41,16 @@ class CreateTenant extends Command
     {
         $database = strtolower(preg_replace('/\..*/i', '', $this->argument('domain'))).'_aiku';
 
-        //todo make this database engine aware
+        //todo make this database engine aware this only works with psql
         if (DB::connection('scaffolding')->table('pg_catalog.pg_database')->select('datname')->where('datname', $database)->first()) {
             $this->error("Database $database already exists");
             //return 0;
         } else {
-            DB::connection('scaffolding')->statement("CREATE DATABASE $database ENCODING 'UTF8' LC_COLLATE = 'en_GB.UTF-8' LC_CTYPE = 'en_GB.UTF-8' TEMPLATE template0");
+            DB::connection('scaffolding')
+                ->statement("CREATE DATABASE $database ENCODING 'UTF8' LC_COLLATE = 'en_GB.UTF-8' LC_CTYPE = 'en_GB.UTF-8' TEMPLATE template0");
+
         }
+
 
 
         $tenant = Tenant::where('domain', $this->argument('domain'))->where('database', $database)->first();
@@ -136,6 +139,9 @@ class CreateTenant extends Command
 
 
         $tenant->makeCurrent();
+
+        DB::connection('tenant')->statement("CREATE COLLATION ci  (provider = icu, locale = 'und-u-ks-level2', deterministic = false)");
+
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=JobPositionSeeder" --tenant='.$tenant->id);

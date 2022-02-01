@@ -30,7 +30,7 @@ class HydrateWarehouse extends HydrateModel
         $warehouse->stats->update(
             [
                 'number_locations'=>$warehouse->locations->count(),
-                'number_warehouse_areas'=>$warehouse->areas->count()
+                'number_warehouse_areas'=>$warehouse->warehouseAreas()->count()
 
             ]
         );

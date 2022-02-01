@@ -20,7 +20,6 @@ class WarehouseInertiaResource extends JsonResource
     {
 
 
-
         return [
             'id'       => $this->id,
             'code'     => $this->code,

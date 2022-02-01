@@ -51,7 +51,7 @@ class IndexEmployee
                        }
                    ])
             ->allowedSorts(['nickname', 'worker_number', 'name'])
-            ->allowedFilters(['state', 'nickname', 'name', $globalSearch])
+
             ->paginate()
             ->withQueryString();
     }

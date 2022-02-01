@@ -40,7 +40,7 @@ class IndexWarehouse
         return QueryBuilder::for(Warehouse::class)
             ->select('warehouses.id','code','name','number_locations','number_warehouse_areas')
             ->leftJoin('warehouse_stats','warehouses.id','=','warehouse_stats.warehouse_id')
-            ->allowedSorts(['code', 'name'])
+            ->allowedSorts(['code', 'name','number_warehouse_areas','number_locations'])
             ->paginate()
             ->withQueryString();
     }

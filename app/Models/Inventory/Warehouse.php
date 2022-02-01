@@ -51,7 +51,7 @@ class Warehouse extends Model implements Auditable
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function areas(): HasMany
+    public function warehouseAreas(): HasMany
     {
         return $this->hasMany(WarehouseArea::class);
     }
