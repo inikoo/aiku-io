@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
+
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
  *  Created: Thu, 20 Jan 2022 17:53:16 Malaysia Time, Kuala Lumpur, Malaysia
@@ -9,8 +10,13 @@
 namespace App\Http\Controllers\Inventory;
 
 
-use App\Actions\Inventory\Warehouse\IndexWarehouse;
-use App\Actions\Inventory\Warehouse\ShowWarehouse;
+use App\Actions\Inventory\Location\IndexLocationInWarehouse;
+
+use App\Actions\Inventory\Location\IndexLocationInWarehouseArea;
+use App\Actions\Inventory\Location\ShowLocation;
+use App\Actions\Inventory\Location\ShowEditLocation;
+
+use App\Actions\Inventory\Location\UpdateLocation;
 use App\Http\Controllers\Controller;
 use App\Models\Inventory\Location;
 use App\Models\Inventory\Warehouse;
@@ -23,11 +29,12 @@ use Inertia\Response;
 class LocationController extends Controller
 {
 
-
+    /*
     public function index(): Response
     {
         return IndexLocation::make()->asInertia();
     }
+    */
 
     public function indexInWarehouse(Warehouse $warehouse): Response
     {
