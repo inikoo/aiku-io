@@ -23,24 +23,30 @@ class CreateAgentsTable extends Migration
 
             $table->mediumIncrements('id');
             $table->string('code')->index();
-
             $table->morphs('owner');
             $table->string('name');
 
-
-
-
             $table->unsignedSmallInteger('currency_id');
             //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
-
-
-
-
             $table->jsonb('settings');
             $table->jsonb('data');
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id');
+        });
+
+        Schema::create('agent_stats', function (Blueprint $table) {
+
+            $table->mediumIncrements('id');
+            $table->unsignedMediumInteger('agent_id')->index();
+            $table->foreign('agent_id')->references('id')->on('agents');
+            $table->unsignedSmallInteger('number_suppliers')->default(0);
+            $table->unsignedSmallInteger('number_products')->default(0);
+            $table->unsignedSmallInteger('number_purchase_orders')->default(0);
+            $table->unsignedSmallInteger('number_deliveries')->default(0);
+
+            $table->timestampsTz();
+
         });
     }
 
@@ -51,6 +57,7 @@ class CreateAgentsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('agent_stats');
         Schema::dropIfExists('agents');
     }
 }

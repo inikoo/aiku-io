@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use Spatie\Sluggable\SlugOptions;
@@ -33,6 +34,7 @@ class Stock extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
     use HasFactory;
+    use Searchable;
 
     protected $casts = [
         'data' => 'array',

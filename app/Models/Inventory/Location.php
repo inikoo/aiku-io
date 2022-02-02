@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
@@ -31,6 +32,9 @@ class Location extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
     use HasFactory;
+    use Searchable;
+
+
     protected $casts = [
         'data' => 'array',
         'audited_at' => 'array'

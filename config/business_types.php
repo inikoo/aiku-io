@@ -268,6 +268,18 @@ return [
                 'code'        => 'Buy',
                 'icon'        => ['fal', 'apple-crate'],
                 'sections'    => [
+                    'procurement.agents.index' => [
+                        'name' => 'Agents',
+                    ],
+                    'procurement.suppliers.index'     => [
+                        'name' => 'Suppliers',
+                    ],
+                    'procurement.purchase_orders.index' => [
+                        'name' => 'Purchase orders',
+                    ],
+                    'procurement.deliveries.index'     => [
+                        'name' => 'Deliveries',
+                    ],
                 ]
             ],
             'financials'  => [

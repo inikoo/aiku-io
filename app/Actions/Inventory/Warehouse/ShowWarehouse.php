@@ -39,7 +39,7 @@ class ShowWarehouse
 
     public function asInertia(Warehouse $warehouse, array $attributes = []): Response
     {
-        $this->set('warehouse', $warehouse)->set('module', 'warehouse')->fill($attributes);
+        $this->set('warehouse', $warehouse)->fill($attributes);
 
         $this->validateAttributes();
 

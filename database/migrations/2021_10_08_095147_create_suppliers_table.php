@@ -26,6 +26,19 @@ class CreateSuppliersTable extends Migration
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id');
         });
+
+        Schema::create('supplier_stats', function (Blueprint $table) {
+
+            $table->mediumIncrements('id');
+            $table->unsignedMediumInteger('supplier_id')->index();
+            $table->foreign('supplier_id')->references('id')->on('suppliers');
+            $table->unsignedSmallInteger('number_products')->default(0);
+            $table->unsignedSmallInteger('number_purchase_orders')->default(0);
+            $table->unsignedSmallInteger('number_deliveries')->default(0);
+
+            $table->timestampsTz();
+
+        });
     }
 
     /**
@@ -35,6 +48,7 @@ class CreateSuppliersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('supplier_stats');
         Schema::dropIfExists('suppliers');
     }
 }

@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sun, 16 Jan 2022 12:31:52 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Wed, 02 Feb 2022 01:41:37 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Inventory;
+namespace App\Actions\Procurement;
 
 
 use App\Actions\UI\WithInertia;
@@ -16,7 +16,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
-class ShowInventoryDashboard
+class ShowProcurementDashboard
 {
     use AsAction;
     use WithInertia;
@@ -29,7 +29,10 @@ class ShowInventoryDashboard
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("inventory.view");
+        return
+            $request->user()->hasPermissionTo("procurement.agents.view") ||
+            $request->user()->hasPermissionTo("procurement.suppliers.view")
+            ;
     }
 
 
@@ -44,8 +47,8 @@ class ShowInventoryDashboard
             'Common/ShowDashboard',
             [
                 'headerData' => [
-                    'module'      => 'inventory',
-                    'title'       => __('Inventory dashboard'),
+                    'module'      => 'procurement',
+                    'title'       => __('Procurement dashboard'),
                     'breadcrumbs' => $this->getBreadcrumbs(),
 
                 ]
@@ -60,13 +63,13 @@ class ShowInventoryDashboard
     }
 
 
-    private function getBreadcrumbs(): array
+    public function getBreadcrumbs(): array
     {
 
         return [
             'warehouse' => [
-                'route'           => 'inventory.dashboard',
-                'name'            => __('Inventory'),
+                'route'           => 'procurement.dashboard',
+                'name'            => __('Procurement'),
                 'current'         => false
             ]
         ];

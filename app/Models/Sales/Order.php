@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
@@ -33,6 +34,7 @@ class Order extends Model implements Auditable
     use UsesTenantConnection;
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
+    use Searchable;
 
     protected $casts = [
         'data' => 'array'

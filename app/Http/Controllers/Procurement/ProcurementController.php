@@ -9,10 +9,9 @@
 namespace App\Http\Controllers\Procurement;
 
 
+use App\Actions\Procurement\ShowProcurementDashboard;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Procurement\IndexWarehouse;
-use App\Http\Controllers\Procurement\ShowWarehouse;
-use App\Http\Controllers\Procurement\Warehouse;
+
 use Inertia\Response;
 
 
@@ -22,7 +21,7 @@ class ProcurementController extends Controller
 
     public function dashboard(): Response
     {
-        return DashboardProcurement::make()->asInertia();
+        return ShowProcurementDashboard::make()->asInertia();
     }
 
 

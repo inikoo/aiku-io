@@ -21,7 +21,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use App\Actions\UI\WithInertia;
 
 use function __;
-use function data_set;
 
 /**
  * @property Warehouse $warehouse
@@ -53,7 +52,6 @@ class IndexWarehouse
 
         $this->validateAttributes();
 
-        $breadcrumbs = $this->get('breadcrumbs');
 
         return Inertia::render(
             'Common/IndexModel',
@@ -61,7 +59,7 @@ class IndexWarehouse
                 'headerData' => [
                     'module'      => 'warehouses',
                     'title'       => $this->get('title'),
-                    'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
+                    'breadcrumbs' => $this->getBreadcrumbs(),
 
                 ],
                 'dataTable'  => [
@@ -107,38 +105,25 @@ class IndexWarehouse
     public function prepareForValidation(ActionRequest $request): void
     {
 
-
         $request->merge(
             [
                 'title' => __('Warehouses'),
-
-
             ]
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs',$this->breadcrumbs());
-
-
     }
 
-
-    private function breadcrumbs(): array
-    {
-
-        return [
-            'index' => [
-                'route'   => 'warehouses.index',
-                'name'    => $this->get('title'),
-                'current' => false
-            ],
-        ];
-    }
 
     public function getBreadcrumbs(): array
     {
-        $this->validateAttributes();
-        return $this->breadcrumbs();
+        return [
+            'index' => [
+                'route'   => 'warehouses.index',
+                'name'    => __('Warehouses'),
+                'current' => false
+            ],
+        ];
 
     }
 

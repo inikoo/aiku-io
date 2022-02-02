@@ -26,6 +26,9 @@ class StoreSupplier
 
         /** @var Supplier $supplier */
         $supplier = $parent->suppliers()->create($data);
+        $supplier->stats()->create();
+
+
         $supplier->contact()->create($contactData);
         $addresses               = [];
         $address                 = StoreAddress::run($addressData);

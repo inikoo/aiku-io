@@ -115,11 +115,13 @@ library.add(faAngleDown, faBars);
 // Module icons
 import {
     faTachometerAltFast, faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
-    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt
+    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
+    faUserSecret,faHandHoldingBox
 } from '@/private/pro-light-svg-icons';
 
 library.add(faTachometerAltFast, faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
-    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt);
+    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
+    faUserSecret,faHandHoldingBox);
 
 // For employee model
 import { faTasks } from '@/private/pro-light-svg-icons';

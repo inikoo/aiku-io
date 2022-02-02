@@ -13,10 +13,12 @@ use App\Models\Media\Image;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
@@ -29,6 +31,7 @@ class Agent extends Model implements Auditable
     use UsesTenantConnection;
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
+    use Searchable;
 
     protected $casts = [
         'data'     => 'array',
@@ -71,6 +74,11 @@ class Agent extends Model implements Auditable
     public function purchaseOrders(): MorphMany
     {
         return $this->morphMany(PurchaseOrder::class, 'vendor');
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(AgentStats::class);
     }
 
 }

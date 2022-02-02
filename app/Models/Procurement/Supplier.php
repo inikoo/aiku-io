@@ -8,6 +8,7 @@
 
 namespace App\Models\Procurement;
 
+use App\Actions\Hydrators\HydrateAgent;
 use App\Models\Helpers\Attachment;
 use App\Models\Helpers\Contact;
 use App\Models\Media\Image;
@@ -15,11 +16,13 @@ use App\Models\System\User;
 use App\Models\Trade\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
@@ -33,6 +36,7 @@ class Supplier extends Model implements Auditable
     use UsesTenantConnection;
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
+    use Searchable;
 
     protected $casts = [
         'data'     => 'array',
@@ -43,6 +47,25 @@ class Supplier extends Model implements Auditable
         'data'     => '{}',
         'settings' => '{}',
     ];
+
+    protected static function booted()
+    {
+        static::created(
+            function (Supplier $supplier) {
+                if ($supplier->owner_type == 'Agent') {
+                    HydrateAgent::run($supplier->owner);
+                }
+            }
+        );
+        static::deleted(
+            function (Supplier $supplier) {
+                if ($supplier->owner_type == 'Agent') {
+                    HydrateAgent::run($supplier->owner);
+                }
+            }
+        );
+    }
+
 
     protected $guarded = [];
 
@@ -84,5 +107,10 @@ class Supplier extends Model implements Auditable
     public function purchaseOrders(): MorphMany
     {
         return $this->morphMany(PurchaseOrder::class, 'vendor');
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(SupplierStats::class);
     }
 }

@@ -19,12 +19,14 @@ class StoreAgent
 {
     use AsAction;
 
-    public function handle(Tenant|Aiku $parent,  array $data, array $addressData, array $contactData): ActionResult
+    public function handle(Tenant|Aiku $parent, array $data, array $addressData, array $contactData): ActionResult
     {
-        $res  = new ActionResult();
+        $res = new ActionResult();
 
         /** @var Agent $agent */
-        $agent                   = $parent->agents()->create($data);
+        $agent = $parent->agents()->create($data);
+        $agent->stats()->create();
+
         $agent->contact()->create($contactData);
 
         $addresses               = [];
