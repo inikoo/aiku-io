@@ -9,7 +9,6 @@
 namespace App\Actions\Hydrators;
 
 use App\Models\Procurement\Agent;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 
@@ -19,22 +18,31 @@ class HydrateAgent extends HydrateModel
     public string $commandSignature = 'hydrate:agent {id} {--t|tenant=* : Tenant nickname}';
 
 
-    public function handle(?Model $model): void
+    public function handle(Agent $agent): void
     {
-        if (!$model) {
-            return;
-        }
-        /** @var Agent $agent */
-        $agent = $model;
+        $this->contact($agent);
+        $this->stats($agent);
+    }
 
-        $agent->stats->update(
+    public function contact(Agent $agent)
+    {
+        $agent->update(
             [
-                'number_suppliers' => $agent->suppliers->count(),
-                'number_purchase_orders' => $agent->purchaseOrders()->count()
-
+                'location' => $agent->getLocation()
             ]
         );
     }
+
+    public function stats(Agent $agent)
+    {
+        $agent->stats->update(
+            [
+                'number_suppliers'       => $agent->suppliers->count(),
+                'number_purchase_orders' => $agent->purchaseOrders()->count()
+            ]
+        );
+    }
+
 
     protected function getModel(int $id): Agent
     {

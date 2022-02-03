@@ -23,6 +23,7 @@ class StoreAgent
     {
         $res = new ActionResult();
 
+
         /** @var Agent $agent */
         $agent = $parent->agents()->create($data);
         $agent->stats()->create();

@@ -25,9 +25,17 @@ class CreateAgentsTable extends Migration
             $table->string('code')->index();
             $table->morphs('owner');
             $table->string('name');
+            $table->string('company_name',256)->nullable();
+            $table->string('contact_name',256)->nullable()->index();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->unsignedBigInteger('address_id')->nullable()->index();
+            $table->foreign('address_id')->references('id')->on('addresses');
+            $table->jsonb('location');
 
             $table->unsignedSmallInteger('currency_id');
             //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
+
             $table->jsonb('settings');
             $table->jsonb('data');
             $table->timestampsTz();

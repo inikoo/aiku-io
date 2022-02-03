@@ -42,11 +42,13 @@ class Supplier extends Model implements Auditable
     protected $casts = [
         'data'     => 'array',
         'settings' => 'array',
+        'location' => 'array',
     ];
 
     protected $attributes = [
         'data'     => '{}',
         'settings' => '{}',
+        'location' => '{}',
     ];
 
     protected static function booted()

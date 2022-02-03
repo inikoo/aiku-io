@@ -11,6 +11,7 @@ namespace App\Models\Traits;
 
 use App\Models\Helpers\Address;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use JetBrains\PhpStorm\Pure;
 
 trait HasAddress
 {
@@ -20,7 +21,6 @@ trait HasAddress
         return $this->belongsTo(Address::class);
     }
 
-    /** @noinspection PhpUnused */
     public function getFormattedAddressAttribute(): string
     {
         if ($this->address) {
@@ -28,6 +28,11 @@ trait HasAddress
         } else {
             return '';
         }
+    }
+
+    #[Pure] public function getLocation(): array
+    {
+        return $this->address->getLocation()??[null,'',''];
     }
 
 }

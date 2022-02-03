@@ -39,7 +39,7 @@ class IndexSupplier
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Supplier::class)
-            ->select('suppliers.id', 'code', 'name', 'number_purchase_orders')
+            ->select('suppliers.id', 'code', 'name', 'number_purchase_orders','location')
             ->leftJoin('supplier_stats', 'suppliers.id', '=', 'supplier_stats.supplier_id')
             ->when(class_basename($this->parent::class)=='Tenant', function ($query) {
                 return $query->where('owner_type', 'Tenant');
@@ -83,7 +83,10 @@ class IndexSupplier
                             'sort'  => 'name',
                             'label' => __('Name')
                         ],
-
+                        'location'                   => [
+                            'label' => __('Location'),
+                            'location'=>true,
+                        ],
                         'number_purchase_orders' => [
                             'sort'  => 'number_purchase_orders',
                             'label' => __('Purchase orders'),

@@ -9,7 +9,6 @@
 namespace App\Actions\Hydrators;
 
 use App\Models\Procurement\Supplier;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 
@@ -19,14 +18,25 @@ class HydrateSupplier extends HydrateModel
     public string $commandSignature = 'hydrate:supplier {id} {--t|tenant=* : Tenant nickname}';
 
 
-    public function handle(?Model $model): void
+    public function handle(Supplier $supplier): void
     {
-        if (!$model) {
-            return;
-        }
-        /** @var Supplier $supplier */
-        $supplier = $model;
+        $this->contact($supplier);
+        $this->stats($supplier);
+    }
 
+    public function contact(Supplier $supplier)
+    {
+        $supplier->update(
+            [
+
+                'location'     => $supplier->getLocation()
+
+            ]
+        );
+    }
+
+    public function stats(Supplier $supplier)
+    {
         $supplier->stats->update(
             [
                 'number_purchase_orders' => $supplier->purchaseOrders()->count()
@@ -34,6 +44,7 @@ class HydrateSupplier extends HydrateModel
             ]
         );
     }
+
 
     protected function getModel(int $id): Supplier
     {

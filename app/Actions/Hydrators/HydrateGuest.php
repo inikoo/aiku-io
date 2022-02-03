@@ -10,27 +10,16 @@ namespace App\Actions\Hydrators;
 
 use App\Models\System\Guest;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class HydrateGuest extends HydrateModel
 {
 
     public string $commandSignature = 'hydrate:guest {id} {--t|tenant=* : Tenant nickname}';
 
-    /**
-     * @param  Guest  $model
-     **/
-    public function handle(Model $model): void
+
+    public function handle(Guest $guest): void
     {
-        $model->update(
-            [
-                'name' => $model->contact->name,
-                'email' => $model->contact->email,
-                'phone' => $model->contact->phone,
 
-
-            ]
-        );
     }
 
 

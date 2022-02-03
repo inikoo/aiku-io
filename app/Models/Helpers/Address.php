@@ -54,8 +54,6 @@ class Address extends Model implements Auditable
     private function getAdr(): ImmutableAddressInterface|Adr
     {
         $address = new Adr();
-
-
         return $address
             ->withCountryCode($this->country_code)
             ->withAdministrativeArea($this->administrative_area)
@@ -67,7 +65,6 @@ class Address extends Model implements Auditable
             ->withAddressLine1($this->address_line_1);
     }
 
-    /** @noinspection PhpUnused */
     public function getFormattedAddressAttribute(): string
     {
         $addressFormatRepository = new AddressFormatRepository();
@@ -115,11 +112,34 @@ class Address extends Model implements Auditable
         );
     }
 
+
+    public function getCountryName(): string
+    {
+        if ($country = (new Country())->firstWhere('id', $this->country_id)) {
+            return  $country->code;
+
+        }
+        return '';
+
+    }
+
+
+    public function getLocation(): array
+    {
+
+        return[
+            $this->country_code,
+            $this->getCountryName(),
+            $this->locality??$this->administrative_area??$this->postal_code
+        ];
+
+    }
+
+
     public function customers(): MorphToMany
     {
         return $this->morphedByMany(Customer::class, 'addressable');
     }
-
 
     public function owner(): MorphTo
     {

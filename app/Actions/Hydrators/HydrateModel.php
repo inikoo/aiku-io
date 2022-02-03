@@ -28,9 +28,7 @@ class HydrateModel
        return new Collection();
     }
 
-    protected function handle(Model $model){
-        //
-    }
+
 
     public function asCommand(Command $command): void
     {

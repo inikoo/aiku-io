@@ -9,7 +9,6 @@
 namespace App\Actions\Hydrators;
 
 use App\Models\System\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 
@@ -18,17 +17,15 @@ class HydrateUser extends HydrateModel
 
     public string $commandSignature = 'hydrate:user {id} {--t|tenant=* : Tenant nickname}';
 
-    /**
-     * @param  User  $model
-     **/
-    public function handle(Model $model): void
+
+    public function handle(User $user): void
     {
-        $model->update(
+        $user->update(
             [
                 'name' =>
-                    match ($model->userable_type) {
+                    match ($user->userable_type) {
                         'Tenant' => 'Account Admin',
-                        default => $model->userable->name
+                        default => $user->userable->name
                     }
 
 

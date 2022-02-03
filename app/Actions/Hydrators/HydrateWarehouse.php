@@ -9,7 +9,6 @@
 namespace App\Actions\Hydrators;
 
 use App\Models\Inventory\Warehouse;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 
@@ -19,13 +18,11 @@ class HydrateWarehouse extends HydrateModel
     public string $commandSignature = 'hydrate:warehouse {id} {--t|tenant=* : Tenant nickname}';
 
 
-    public function handle(?Model $model): void
+    public function handle(?Warehouse $warehouse): void
     {
-        if (!$model) {
+        if (!$warehouse) {
             return;
         }
-        /** @var Warehouse $warehouse */
-        $warehouse=$model;
 
         $warehouse->stats->update(
             [

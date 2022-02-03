@@ -18,14 +18,13 @@ class AgentInertiaResource extends JsonResource
 
     public function toArray($request): array|Arrayable|JsonSerializable
     {
-
-
         return [
             'id'       => $this->id,
             'code'     => $this->code,
             'name'     => $this->name,
-            'number_suppliers'=>$this->number_suppliers,
-            'number_purchase_orders'=>$this->number_purchase_orders
+            'location' => $this->location,
+            'number_suppliers'       => $this->number_suppliers,
+            'number_purchase_orders' => $this->number_purchase_orders
 
         ];
     }

@@ -32,7 +32,7 @@ class IndexAgent
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Agent::class)
-            ->select('agents.id', 'code', 'name', 'number_suppliers', 'number_purchase_orders')
+            ->select('agents.id', 'code', 'name', 'number_suppliers', 'number_purchase_orders','location')
             ->leftJoin('agent_stats', 'agents.id', '=', 'agent_stats.agent_id')
             ->allowedSorts(['code', 'name', 'number_suppliers', 'number_purchase_orders'])
             ->paginate()
@@ -68,6 +68,10 @@ class IndexAgent
                         'name'                   => [
                             'sort'  => 'name',
                             'label' => __('Name')
+                        ],
+                        'location'                   => [
+                            'label' => __('Location'),
+                            'location'=>true,
                         ],
                         'number_suppliers'       => [
                             'sort'  => 'number_suppliers',

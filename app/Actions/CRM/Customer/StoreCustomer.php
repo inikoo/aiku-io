@@ -52,6 +52,10 @@ class StoreCustomer
         $customer->addresses()->sync($addresses);
         $customer->billing_address_id  = $billing_address_id;
         $customer->delivery_address_id = $delivery_address_id;
+
+        $customer->location=$customer->billingAddress->getLocation();
+
+
         $customer->save();
 
         $res->model    = $customer;

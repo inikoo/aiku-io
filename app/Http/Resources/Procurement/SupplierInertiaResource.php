@@ -24,6 +24,7 @@ class SupplierInertiaResource extends JsonResource
             'id'       => $this->id,
             'code'     => $this->code,
             'name'     => $this->name,
+            'location' => $this->location,
             'number_purchase_orders'=>$this->number_purchase_orders
 
         ];

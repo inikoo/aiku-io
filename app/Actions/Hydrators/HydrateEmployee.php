@@ -10,7 +10,6 @@ namespace App\Actions\Hydrators;
 
 use App\Models\HumanResources\Employee;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 
 class HydrateEmployee extends HydrateModel
@@ -18,20 +17,9 @@ class HydrateEmployee extends HydrateModel
 
     public string $commandSignature = 'hydrate:employee {id} {--t|tenant=* : Tenant nickname}';
 
-    /**
-     * @param  Employee  $model
-     **/
-    public function handle(Model $model): void
+    public function handle(Employee $employee): void
     {
-        $model->update(
-            [
-                'name' => $model->contact->name,
-                'email' => $model->contact->email,
-                'phone' => $model->contact->phone,
 
-
-            ]
-        );
     }
 
     protected function getModel(int $id): Employee

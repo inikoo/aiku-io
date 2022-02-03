@@ -76,13 +76,14 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faLockAlt } from '@/private/pro-light-svg-icons';
 library.add(faLockAlt);
 import { inject } from 'vue'
+import CountryFlag from 'vue-country-flag-next'
 
 export default {
 
 
     mixins: [InteractsWithQueryBuilder],
     components: {
-        PageHeader, Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell, Link, Cell, EmptyState, FontAwesomeIcon
+        PageHeader, Table: Tailwind2.Table, HeaderCell: Tailwind2.HeaderCell, Link, Cell, EmptyState, FontAwesomeIcon,CountryFlag
     },
     props: ['headerData', 'dataTable'],
     methods: {

@@ -41,11 +41,17 @@ class Customer extends Model implements Auditable
     use Searchable;
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'tax_number_data'=>'array',
+        'location' => 'array',
+
     ];
 
     protected $attributes = [
         'data' => '{}',
+        'location' => '{}',
+        'tax_number_data' => '{}',
+
     ];
 
     protected $guarded = [];
