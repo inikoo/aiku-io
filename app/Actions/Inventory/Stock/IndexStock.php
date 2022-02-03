@@ -9,10 +9,10 @@
 namespace App\Actions\Inventory\Stock;
 
 
+use App\Http\Resources\Inventory\StockInertiaResource;
 use App\Models\Inventory\Stock;
 use App\Models\Inventory\Warehouse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,7 +23,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use App\Actions\UI\WithInertia;
 
 use function __;
-use function data_set;
 
 /**
  * @property Warehouse $warehouse
@@ -32,7 +31,6 @@ class IndexStock
 {
     use AsAction;
     use WithInertia;
-
 
 
     public function handle(): LengthAwarePaginator
@@ -45,39 +43,19 @@ class IndexStock
         });
 
         return QueryBuilder::for(Stock::class)
-            ->when($this->get('routeName'), function ($query, $routeName) {
-
-
-                switch ($routeName){
-                    case 'shops.customers.index':
-                        return $query->where(
-                            'vendor_type','Shop'
-                        );
-                    default:
-                        return false;
-                }
-
-
-            })
+            ->select(['id','code','description'])
             ->allowedSorts(['code'])
             ->defaultSort('-id')
-            ->allowedFilters([ $globalSearch])
+            ->allowedFilters([$globalSearch])
             ->paginate()
             ->withQueryString();
     }
 
 
-
-    public function asInertia(Request $request)
+    public function asInertia()
     {
-
-        $this->set('routeName',$request->route()->getName());
-        $this->set('routeParameters',$request->route()->parameters());
-
-
         $this->validateAttributes();
 
-        $breadcrumbs = $this->get('breadcrumbs');
 
         return Inertia::render(
             'Common/IndexModel',
@@ -85,13 +63,13 @@ class IndexStock
                 'headerData' => [
                     'module'      => 'inventory',
                     'title'       => $this->get('title'),
-                    'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
+                    'breadcrumbs' => $this->getBreadcrumbs()
 
                 ],
                 'dataTable'  => [
-                    'records' => $this->handle(),
+                    'records' => StockInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'code' => [
+                        'code'        => [
                             'sort'  => 'code',
                             'label' => __('Code'),
                             'href'  => [
@@ -119,8 +97,6 @@ class IndexStock
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
-
         $request->merge(
             [
                 'title' => __('Stocks'),
@@ -130,29 +106,18 @@ class IndexStock
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs',$this->breadcrumbs());
-
-
     }
 
-
-    private function breadcrumbs(): array
-    {
-
-        return [
-            'index' => [
-                'route'   => 'warehouses.index',
-                'name'    => $this->get('title'),
-                'current' => false
-            ],
-        ];
-    }
 
     public function getBreadcrumbs(): array
     {
-        $this->validateAttributes();
-        return $this->breadcrumbs();
-
+        return [
+            'index' => [
+                'route'   => 'warehouses.index',
+                'name'    => __('Stocks'),
+                'current' => false
+            ],
+        ];
     }
 
 

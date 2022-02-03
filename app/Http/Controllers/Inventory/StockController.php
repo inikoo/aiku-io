@@ -20,9 +20,9 @@ class StockController extends Controller
 {
 
 
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        return IndexStock::make()->asInertia($request);
+        return IndexStock::make()->asInertia();
     }
 
     public function show(Stock $stock, Request $request): Response
