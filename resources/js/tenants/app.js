@@ -6,7 +6,8 @@
  *  Version 4.0
  */
 
-require('./bootstrap');
+import './bootstrap';
+import '../../css/tenants/app.css';
 
 import {createApp, h} from 'vue';
 import {createInertiaApp,Link} from '@inertiajs/inertia-vue3';
@@ -15,7 +16,7 @@ import AppLayout from '@/Layouts/AppLayout';
 
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText ||
-    'Laravel';
+    'aiku';
 
 createInertiaApp({
                      title  : (title) => `${title} - ${appName}`,
@@ -27,14 +28,8 @@ createInertiaApp({
                          return page;
                      },
 
-
-
                      setup({ el, app, props, plugin }) {
                          const VueApp = createApp({ render: () => h(app, props) });
-
-
-
-
 
                          VueApp.use(plugin)
                          .component('InertiaLink', Link)

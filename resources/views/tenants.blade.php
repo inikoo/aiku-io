@@ -7,9 +7,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-    <link rel="stylesheet" href="{{ mix('css/t/app.css') }}">
+
     @routes
-    <script src="{{ mix('js/t/app.js') }}" defer></script>
+    @vite(js/t/app.js)
 </head>
 <body class="font-sans antialiased h-full overflow-hidden">
 @inertia

@@ -32,6 +32,7 @@
         "laravel/tinker": "^2.5",
         "lorisleiva/laravel-actions": "^2.1",
         "meilisearch/meilisearch-php": "^0.21.0",
+        "ohseesoftware/laravel-vite-manifest": "^1.2",
         "owen-it/laravel-auditing": "^12.0",
         "phlak/semver": "^4.0",
         "protonemedia/inertiajs-tables-laravel-query-builder": "^1",

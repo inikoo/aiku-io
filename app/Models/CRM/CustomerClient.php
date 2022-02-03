@@ -29,6 +29,14 @@ class CustomerClient extends Model implements Auditable
     use SoftDeletes;
     use HasFactory;
 
+    protected $casts = [
+        'location' => 'array',
+    ];
+
+    protected $attributes = [
+        'location' => '{}',
+    ];
+
     protected $guarded = [];
 
     public function shop(): BelongsTo
