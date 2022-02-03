@@ -30,7 +30,7 @@ class StoreWorkshop
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = \Spatie\Multitenancy\Models\Tenant::current();
-        $permissions = collect(config("business_types.{$tenant->businessType->slug}.model_permissions.Workshop"))->map(function ($name) use ($workshop) {
+        $permissions = collect(config("division.{$tenant->division->slug}.model_permissions.Workshop"))->map(function ($name) use ($workshop) {
             return preg_replace('/#/', $workshop->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
@@ -40,7 +40,7 @@ class StoreWorkshop
             }
         });
 
-        $roles = collect(config("business_types.{$tenant->businessType->slug}.model_roles.Workshop"))->map(function ($name) use ($workshop) {
+        $roles = collect(config("division.{$tenant->division->slug}.model_roles.Workshop"))->map(function ($name) use ($workshop) {
             return preg_replace('/#/', $workshop->id, $name);
         });
 

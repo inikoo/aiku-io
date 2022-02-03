@@ -131,7 +131,7 @@ class CreateTenantTables extends Migration
             $table->timestampsTz();
         });
 
-        Schema::create('business_types', function (Blueprint $table) {
+        Schema::create('divisions', function (Blueprint $table) {
             $table->id();
             $table->string('slug')->unique();
             $table->string('name');
@@ -147,7 +147,7 @@ class CreateTenantTables extends Migration
             $table->string('database')->unique();
             $table->string('email')->unique();
 
-            $table->foreignId('business_type_id')->constrained();
+            $table->foreignId('division_id')->constrained();
             $table->unsignedSmallInteger('country_id')->nullable();
             $table->unsignedSmallInteger('currency_id')->nullable();
             $table->unsignedSmallInteger('language_id')->nullable();
@@ -171,7 +171,7 @@ class CreateTenantTables extends Migration
 
 
         Schema::dropIfExists('tenants');
-        Schema::dropIfExists('business_types');
+        Schema::dropIfExists('divisions');
         Schema::dropIfExists('user_agents');
         Schema::dropIfExists('ip_geolocations');
         Schema::table('countries', function (Blueprint $table) {

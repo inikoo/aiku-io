@@ -9,19 +9,19 @@
 namespace App\Actions\Account\Tenant;
 
 use App\Models\Utils\ActionResult;
-use App\Models\Account\BusinessType;
+use App\Models\Account\Division;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreTenant
 {
     use AsAction;
 
-    public function handle(BusinessType $businessType, array $tenantData): ActionResult
+    public function handle(Division $division, array $tenantData): ActionResult
     {
         $res = new ActionResult();
 
         /** @var \App\Models\Account\Tenant $tenant */
-        $tenant        = $businessType->tenants()->create($tenantData);
+        $tenant        = $division->tenants()->create($tenantData);
         $res->model    = $tenant;
         $res->model_id = $tenant->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';

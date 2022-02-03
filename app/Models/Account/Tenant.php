@@ -59,9 +59,9 @@ class Tenant extends SpatieTenant
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function businessType(): BelongsTo
+    public function division(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Account\BusinessType');
+        return $this->belongsTo('App\Models\Account\Division');
     }
 
 

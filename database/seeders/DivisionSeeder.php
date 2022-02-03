@@ -8,27 +8,25 @@
 
 namespace Database\Seeders;
 
-use App\Models\Account\BusinessType;
+use App\Models\Account\Division;
 use Illuminate\Database\Seeder;
 
-class BusinessTypeSeeder extends Seeder
+class DivisionSeeder extends Seeder
 {
 
     public function run()
     {
-        foreach (config('business_types') as $slug => $data) {
+        foreach (config('divisions') as $slug => $data) {
 
-
-
-            BusinessType::upsert([
+            Division::upsert([
                                      [
                                          'slug' => $slug,
                                          'name' => $data['name'],
                                          'data' => json_encode([])
                                      ],
                                  ],
-                                 ['slug'],
-                                 ['name']
+                             ['slug'],
+                             ['name']
             );
 
         }

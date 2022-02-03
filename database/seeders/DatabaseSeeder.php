@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-                        BusinessTypeSeeder::class,
+                        DivisionSeeder::class,
                         CountrySeeder::class,
                         CurrencySeeder::class,
                         TimezoneSeeder::class,

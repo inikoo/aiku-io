@@ -31,7 +31,7 @@ class StoreWarehouse
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = Tenant::current();
-        $permissions = collect(config("business_types.{$tenant->businessType->slug}.model_permissions.Warehouse"))->map(function ($name) use ($warehouse) {
+        $permissions = collect(config("division.{$tenant->division->slug}.model_permissions.Warehouse"))->map(function ($name) use ($warehouse) {
             return preg_replace('/#/', $warehouse->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
@@ -41,7 +41,7 @@ class StoreWarehouse
             }
         });
 
-        $roles = collect(config("business_types.{$tenant->businessType->slug}.model_roles.Warehouse"))->map(function ($name) use ($warehouse) {
+        $roles = collect(config("division.{$tenant->division->slug}.model_roles.Warehouse"))->map(function ($name) use ($warehouse) {
             return preg_replace('/#/', $warehouse->id, $name);
         });
 

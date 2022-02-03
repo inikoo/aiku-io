@@ -9,16 +9,14 @@
 namespace App\Models\Account;
 
 use App\Actions\UI\Layout\GetUserLayout;
-use App\Actions\UI\Layout\GetUserLayoutB2B;
+use App\Actions\UI\Layout\GetUserLayoutEcommerce;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
-/**
- * @mixin IdeHelperBusinessType
- */
-class BusinessType extends Model
+
+class Division extends Model
 {
     use UsesLandlordConnection;
 
@@ -35,9 +33,9 @@ class BusinessType extends Model
         return $this->hasMany('App\Models\Account\Tenant');
     }
 
-    public function getModules(): Array
+    public function getLayout(): Array
     {
-        return config('business_types.'.app('currentTenant')->businessType->slug.'.modules', []);
+        return config('division.'.app('currentTenant')->division->slug.'.layout', []);
     }
 
     public function getUserLayout(?User $user): array
@@ -47,8 +45,8 @@ class BusinessType extends Model
         }
 
         return match ($this->slug) {
-            'b2b' => GetUserLayoutB2B::run($user, $this->getModules()),
-            'health' => GetUserLayout::run($user, $this->getModules()),
+            'ecommerce' => GetUserLayoutEcommerce::run($user, $this->getLayout()),
+            'health' => GetUserLayout::run($user, $this->getLayout()),
             default => [],
         };
     }

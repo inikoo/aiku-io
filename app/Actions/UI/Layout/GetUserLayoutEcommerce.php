@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class GetUserLayoutB2B extends GetUserLayout
+class GetUserLayoutEcommerce extends GetUserLayout
 {
     use AsAction;
 

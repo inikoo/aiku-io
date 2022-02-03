@@ -22,11 +22,10 @@ class TenantResource extends JsonResource
         $tenant = $this;
 
         return [
-            'id'            => $tenant->id,
-            'nickname'      => $tenant->nickname,
-            'email'         => $tenant->email,
-            'business_type' => $tenant->businessType->only(['slug','name']),
-
+            'id'         => $tenant->id,
+            'nickname'   => $tenant->nickname,
+            'email'      => $tenant->email,
+            'division'   => $tenant->division->only(['slug', 'name']),
             'created_at' => $tenant->created_at,
             'updated_at' => $tenant->updated_at,
         ];

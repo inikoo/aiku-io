@@ -12,7 +12,7 @@ use App\Actions\Account\AccountUser\StoreAccountUser;
 use App\Actions\Account\Tenant\StoreTenant;
 use App\Actions\HumanResources\Workplace\StoreWorkplace;
 use App\Actions\System\User\StoreUser;
-use App\Models\Account\BusinessType;
+use App\Models\Account\Division;
 use App\Models\Account\Tenant;
 use App\Models\Assets\Country;
 use App\Models\Assets\Currency;
@@ -28,7 +28,7 @@ use Illuminate\Support\Str;
 class CreateTenant extends Command
 {
 
-    protected $signature = 'tenant:new {domain} {name} {email} {nickname?} {username?} {--type=b2b} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en} {--aurora_db=} {--aurora_account_code=} {--workplace=}  ';
+    protected $signature = 'tenant:new {domain} {name} {email} {nickname?} {username?} {--type=ecommerce} {--randomPassword} {--country=GB} {--timezone=Europe/London} {--currency=GBP} {--language=en} {--aurora_db=} {--aurora_account_code=} {--workplace=}  ';
 
     protected $description = 'Create new tenant';
 
@@ -70,8 +70,8 @@ class CreateTenant extends Command
         }
 
 
-        $businessType = BusinessType::where('slug', $this->option('type'))->first();
-        if (!$businessType) {
+        $division = Division::where('slug', $this->option('type'))->first();
+        if (!$division) {
             $this->error("Business type {$this->option('type')} not found");
 
             return 0;
@@ -109,7 +109,7 @@ class CreateTenant extends Command
         if ($this->argument('nickname')) {
             $tenantData['nickname'] = $this->argument('nickname');
         }
-        $res    = StoreTenant::run($businessType, $tenantData);
+        $res    = StoreTenant::run($division, $tenantData);
         $tenant = $res->model;
 
         if (Arr::get($tenant->data, 'aurora_db')) {

@@ -30,8 +30,8 @@ class PermissionSeeder extends Seeder
         $tenant = Tenant::current();
 
 
-        $permissions = collect(config("business_types.{$tenant->businessType->slug}.permissions"));
-        $roles       = collect(config("business_types.{$tenant->businessType->slug}.roles"));
+        $permissions = collect(config("division.{$tenant->division->slug}.permissions"));
+        $roles       = collect(config("division.{$tenant->division->slug}.roles"));
 
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
             Permission::create(['name' => $permission]);

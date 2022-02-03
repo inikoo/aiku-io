@@ -30,14 +30,14 @@ class StoreShop
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = Tenant::current();
-        $permissions = collect(config("business_types.{$tenant->businessType->slug}.model_permissions.Shop"))->map(function ($name) use ($shop) {
+        $permissions = collect(config("division.{$tenant->division->slug}.model_permissions.Shop"))->map(function ($name) use ($shop) {
             return preg_replace('/#/', $shop->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
             Permission::create(['name' => $permission]);
         });
 
-        $roles = collect(config("business_types.{$tenant->businessType->slug}.model_roles.Shop"))->map(function ($name) use ($shop) {
+        $roles = collect(config("division.{$tenant->division->slug}.model_roles.Shop"))->map(function ($name) use ($shop) {
             return preg_replace('/#/', $shop->id, $name);
         });
 
