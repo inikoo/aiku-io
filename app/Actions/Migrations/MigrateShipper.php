@@ -29,20 +29,16 @@ class MigrateShipper extends MigrateModel
 
     public function parseModelData()
     {
-        $this->modelData['contact'] = $this->sanitizeData(
-            [
-                'website' => $this->auModel->data->{'Shipper Website'},
-                'company' => $this->auModel->data->{'Shipper Fiscal Name'},
-                'name'    => $this->auModel->data->{'Shipper Name'},
-                'phone'   => $this->auModel->data->{'Shipper Telephone'},
-
-            ]
-        );
 
         $this->modelData['shipper'] = $this->sanitizeData(
             [
                 'code'         => Str::snake(strtolower($this->auModel->data->{'Shipper Code'}), '-'),
                 'name'         => $this->auModel->data->{'Shipper Name'},
+                'website' => $this->auModel->data->{'Shipper Website'},
+                'company_name' => $this->auModel->data->{'Shipper Fiscal Name'},
+                'contact_name'    => $this->auModel->data->{'Shipper Name'},
+                'phone'   => $this->auModel->data->{'Shipper Telephone'},
+
                 'status'       => $this->auModel->data->{'Shipper Active'} === 'Yes',
                 'tracking_url' => $this->auModel->data->{'Shipper Tracking URL'},
                 'aurora_id'    => $this->auModel->data->{'Shipper Key'},
@@ -61,12 +57,12 @@ class MigrateShipper extends MigrateModel
 
     public function updateModel(): ActionResult
     {
-        return UpdateShipper::run(shipper: $this->model, modelData: $this->modelData['shipper'], contactData: $this->modelData['contact']);
+        return UpdateShipper::run(shipper: $this->model, modelData: $this->modelData['shipper']);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreShipper::run(data: $this->modelData['shipper'], contactData: $this->modelData['contact']);
+        return StoreShipper::run(data: $this->modelData['shipper']);
     }
 
     public function authorize(ActionRequest $request): bool

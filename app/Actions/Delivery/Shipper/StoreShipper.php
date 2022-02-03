@@ -17,14 +17,10 @@ class StoreShipper
 {
     use AsAction;
 
-    public function handle(array $data, array $contactData): ActionResult
+    public function handle(array $data): ActionResult
     {
         $res  = new ActionResult();
         $shipper = Shipper::create($data);
-        $shipper->contact()->create($contactData);
-
-
-
         $res->model    = $shipper;
         $res->model_id = $shipper->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';

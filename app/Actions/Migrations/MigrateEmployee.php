@@ -38,20 +38,8 @@ class MigrateEmployee extends MigrateModel
 
     public function parseModelData()
     {
-        $dataContact = [];
-        if ($this->auModel->data->{'Staff Address'}) {
-            $dataContact['address'] = $this->auModel->data->{'Staff Address'};
-        }
-        $this->modelData['contact'] = $this->sanitizeData(
-            [
-                'name'                     => $this->auModel->data->{'Staff Name'},
-                'email'                    => $this->auModel->data->{'Staff Email'},
-                'phone'                    => $this->auModel->data->{'Staff Telephone'},
-                'identity_document_number' => $this->auModel->data->{'Staff Official ID'},
-                'date_of_birth'            => $this->auModel->data->{'Staff Birthday'},
-                'data'                     => $dataContact
-            ]
-        );
+
+
 
         $data   = [];
         $errors = [];
@@ -85,9 +73,17 @@ class MigrateEmployee extends MigrateModel
             $salary = array_change_key_case($salary, CASE_LOWER);
         }
 
+        if ($this->auModel->data->{'Staff Address'}) {
+            $data['address'] = $this->auModel->data->{'Staff Address'};
+        }
 
         $this->modelData['employee'] = $this->sanitizeData(
             [
+                'name'                     => $this->auModel->data->{'Staff Name'},
+                'email'                    => $this->auModel->data->{'Staff Email'},
+                'phone'                    => $this->auModel->data->{'Staff Telephone'},
+                'identity_document_number' => $this->auModel->data->{'Staff Official ID'},
+                'date_of_birth'            => $this->auModel->data->{'Staff Birthday'},
                 'worker_number'       => $this->auModel->data->{'Staff ID'},
                 'nickname'            => strtolower($this->auModel->data->{'Staff Alias'}),
                 'employment_start_at' => $this->getDate($this->auModel->data->{'Staff Valid From'}),
@@ -121,12 +117,12 @@ class MigrateEmployee extends MigrateModel
 
     public function updateModel(): ActionResult
     {
-        return UpdateEmployee::run($this->model, $this->modelData['contact'], $this->modelData['employee']);
+        return UpdateEmployee::run($this->model,  $this->modelData['employee']);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreEmployee::run(workplace: $this->parent, contactData: $this->modelData['contact'], employeeData: $this->modelData['employee']);
+        return StoreEmployee::run(workplace: $this->parent,  employeeData: $this->modelData['employee']);
     }
 
     protected function migrateImages()

@@ -26,9 +26,8 @@ trait WithSupplier{
         $res           = UpdateSupplier::run(
             supplier:    $supplier,
             modelData:        $this->modelData['supplier'],
-            contactData: $this->modelData['contact']
         );
-        $addressResult = UpdateAddress::run($res->model->contact->address, $this->modelData['address']);
+        $addressResult = UpdateAddress::run($res->model->address, $this->modelData['address']);
 
         $res->changes = array_merge($res->changes, $addressResult->changes);
         $res->status  = $res->changes ? 'updated' : 'unchanged';
@@ -45,7 +44,6 @@ trait WithSupplier{
         return StoreSupplier::run(
             parent:      $this->parent,
             data:        $this->modelData['supplier'],
-            contactData: $this->modelData['contact'],
             addressData: $this->modelData['address']
         );
     }

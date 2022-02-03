@@ -11,7 +11,6 @@ namespace App\Models\Account;
 use App\Models\Assets\Language;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
-use App\Models\Helpers\Contact;
 use App\Models\HumanResources\Workplace;
 use App\Models\Inventory\Stock;
 use App\Models\Production\Workshop;
@@ -65,10 +64,6 @@ class Tenant extends SpatieTenant
         return $this->belongsTo('App\Models\Account\BusinessType');
     }
 
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
 
     public function accountUser(): MorphOne
     {

@@ -39,17 +39,6 @@ class MigrateGuest extends MigrateModel
             }
         }
 
-
-        $this->modelData['contact'] = $this->sanitizeData(
-            [
-                'name'                     => $this->auModel->data->{'Staff Name'},
-                'email'                    => $this->auModel->data->{'Staff Email'},
-                'phone'                    => $this->auModel->data->{'Staff Telephone'},
-                'identity_document_number' => $this->auModel->data->{'Staff Official ID'},
-                'date_of_birth'            => $this->auModel->data->{'Staff Birthday'}
-            ]
-        );
-
         $data = [];
         if ($this->auModel->data->{'Staff Address'}) {
             $data['address'] = $this->auModel->data->{'Staff Address'};
@@ -70,6 +59,13 @@ class MigrateGuest extends MigrateModel
         $this->modelData['guest'] = $this->sanitizeData(
             [
                 'nickname'   => strtolower($this->auModel->data->{'Staff Alias'}),
+
+                'name'                     => $this->auModel->data->{'Staff Name'},
+                'email'                    => $this->auModel->data->{'Staff Email'},
+                'phone'                    => $this->auModel->data->{'Staff Telephone'},
+                'identity_document_number' => $this->auModel->data->{'Staff Official ID'},
+                'date_of_birth'            => $this->auModel->data->{'Staff Birthday'},
+
                 'status'     => $status,
                 'created_at' => $this->auModel->data->{'Staff Valid From'},
                 'aurora_id'  => $this->auModel->data->{'Staff Key'},
@@ -90,12 +86,12 @@ class MigrateGuest extends MigrateModel
 
     public function updateModel(): ActionResult
     {
-        return UpdateGuest::run($this->model, $this->modelData['contact'], $this->modelData['guest']);
+        return UpdateGuest::run($this->model, $this->modelData['guest']);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreGuest::run($this->modelData['contact'], $this->modelData['guest']);
+        return StoreGuest::run( $this->modelData['guest']);
     }
 
     public function authorize(ActionRequest $request): bool

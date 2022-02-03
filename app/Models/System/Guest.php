@@ -8,9 +8,9 @@
 
 namespace App\Models\System;
 
-use App\Models\Helpers\Contact;
 use App\Models\HumanResources\Clocking;
 use App\Models\HumanResources\Workplace;
+use App\Models\Traits\HasPersonalData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -30,16 +30,18 @@ class Guest extends Model implements Auditable
     use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
     use Searchable;
+    use HasPersonalData;
 
     protected $casts = [
-        'data' => 'array'
+        'data'          => 'array',
+        'date_of_birth' => 'datetime:Y-m-d',
     ];
 
     protected $attributes = [
         'data' => '{}',
     ];
 
-    protected $guarded =[];
+    protected $guarded = [];
 
     protected static function booted()
     {
@@ -51,10 +53,6 @@ class Guest extends Model implements Auditable
     }
 
 
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
 
     public function user(): MorphOne
     {

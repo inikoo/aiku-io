@@ -6,64 +6,18 @@
  *  Version 4.0
  */
 
-namespace App\Models\Helpers;
+namespace App\Models\Traits;
 
-use App\Models\Health\Patient;
 
-use App\Models\Traits\HasAddress;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
-use OwenIt\Auditing\Contracts\Auditable;
-use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 
-/**
- * @mixin IdeHelperContact
- */
-class Contact extends Model implements Auditable
+trait HasPersonalData
 {
-    use UsesTenantConnection;
-    use HasFactory;
-    use \OwenIt\Auditing\Auditable;
-    use HasAddress;
-
-    //protected $appends = ['age', 'formatted_address', 'formatted_dob'];
-    protected $touches = ['contactable'];
-
-    public function generateTags(): array
-    {
-        return [
-            //$this->patient->id??'xx',
-        ];
-    }
-
-    protected $guarded = [];
-
-    protected $casts = [
-        'data'          => 'array',
-        'date_of_birth' => 'datetime:Y-m-d',
-    ];
-
-    protected $attributes = [
-        'data' => '{}',
-    ];
 
 
-    public function contactable(): MorphTo
-    {
-        return $this->morphTo();
-    }
-
-
-    public function dependants(): BelongsToMany
-    {
-        return $this->belongsToMany(Patient::class)->withPivot('relation')->withTimestamps();
-    }
 
     public function getFormattedDobAttribute(): string
     {
@@ -116,7 +70,6 @@ class Contact extends Model implements Auditable
         }
     }
 
-    /** @noinspection PhpUnused */
     public function getAgeInYearsAttribute(): float|int
     {
         return Carbon::parse($this->date_of_birth)->floatDiffInYears();

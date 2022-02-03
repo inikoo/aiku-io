@@ -56,6 +56,7 @@
                         v-else-if="column.toggle"
                         :data="record[columnIdx] ? column.toggle[0] : column.toggle[1]"
                     />
+                    <span v-else-if="column.location" class="relative"><country-flag size="small" class="absolute bottom-[3px]  inline-block align-middle " :country="record[columnIdx][0]" :title="record[columnIdx][1]" /> <span class="ml-5">{{record[columnIdx][2]}}</span></span>
                     <span v-else>{{ getCellValue(record, columnIdx) }}</span>
                 </td>
             </tr>

@@ -21,7 +21,6 @@ class StoreCustomerClient
     public function handle(
         Customer $customer,
         array $customerClientData,
-        array $contactData,
         array $customerClientAddressesData = []
     ): ActionResult {
 
@@ -31,7 +30,6 @@ class StoreCustomerClient
 
         /** @var CustomerClient $customerClient */
         $customerClient = $customer->clients()->create($customerClientData);
-        $customerClient->contact()->create($contactData);
         $addresses = [];
 
         $delivery_address_id=null;
@@ -45,8 +43,6 @@ class StoreCustomerClient
 
             }
         }
-
-
 
 
         $customerClient->addresses()->sync($addresses);

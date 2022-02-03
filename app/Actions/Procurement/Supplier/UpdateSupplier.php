@@ -19,17 +19,15 @@ class UpdateSupplier
     use AsAction;
     use WithUpdate;
 
-    public function handle(Supplier $supplier, array $modelData, array $contactData): ActionResult
+    public function handle(Supplier $supplier, array $modelData): ActionResult
     {
         $res = new ActionResult();
-        $supplier->contact->update($contactData);
-        $res->changes = array_merge($res->changes, $supplier->contact->getChanges());
 
 
         $supplier->update( Arr::except($modelData, ['data','settings']));
         $supplier->update($this->extractJson($modelData,['data','settings']));
 
-        $res->changes = array_merge($res->changes, $supplier->getChanges());
+        $res->changes = $supplier->getChanges();
 
 
         $res->model    = $supplier;

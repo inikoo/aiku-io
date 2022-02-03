@@ -12,7 +12,6 @@ use App\Models\HumanResources\Workplace;
 use App\Models\Utils\ActionResult;
 use App\Models\HumanResources\Employee;
 use App\Rules\Phone;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,13 +22,10 @@ class StoreEmployee
     use AsAction;
 
 
-    public function handle(?Workplace $workplace, array $contactData, array $employeeData): ActionResult
+    public function handle(?Workplace $workplace, array $employeeData): ActionResult
     {
         $res = new ActionResult();
 
-
-        // no normal data
-        $employeeData=array_merge($employeeData,Arr::only($contactData,['name','email','phone']));
 
         /** @var Employee $employee */
         if ($workplace) {
@@ -40,7 +36,6 @@ class StoreEmployee
         }
 
 
-        $employee->contact()->create($contactData);
         $employee->save();
 
         $res->model    = $employee;
@@ -72,8 +67,7 @@ class StoreEmployee
     {
         return $this->handle(
             workplace:    null,
-            contactData:  $request->only('name', 'email', 'phone'),
-            employeeData: $request->only('status')
+            employeeData: $request->only('status','name', 'email', 'phone')
         );
     }
 }

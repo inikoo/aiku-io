@@ -47,10 +47,14 @@ class MigrateDeletedCustomer extends MigrateModel
         $taxNumberValid = $this->auModel->data->{'Customer Tax Number Valid'} ?? 'unknown';
 
 
-        $this->modelData['contact'] = $this->sanitizeData(
+        $this->modelData['customer'] = $this->sanitizeData(
             [
-                'name'                     => $this->auModel->data->{'Customer Main Contact Name'} ?? null,
-                'company'                  => $this->auModel->data->{'Customer Company Name'} ?? null,
+                'shop_id'                  => $this->parent->id,
+                'name'                     => $auroraDeletedData->{'Customer Name'},
+                'state'                    => $state,
+                'status'                   => $status,
+                'contact_name'             => $this->auModel->data->{'Customer Main Contact Name'} ?? null,
+                'company_name'          => $this->auModel->data->{'Customer Company Name'} ?? null,
                 'email'                    => $this->auModel->data->{'Customer Main Plain Email'} ?? null,
                 'phone'                    => $this->auModel->data->{'Customer Main Plain Mobile'} ?? null,
                 'identity_document_number' => $registrationNumber,
@@ -63,21 +67,9 @@ class MigrateDeletedCustomer extends MigrateModel
                         'No' => 'invalid',
                         default => 'unknown'
                     },
-                'created_at'               => $this->auModel->data->{'Customer First Contacted Date'} ?? null,
-
-            ]
-        );
-
-
-        $this->modelData['customer'] = $this->sanitizeData(
-            [
-                'shop_id'    => $this->parent->id,
-                'name'       => $auroraDeletedData->{'Customer Name'},
-                'state'      => $state,
-                'status'     => $status,
-                'aurora_id'  => $auroraDeletedData->{'Customer Key'},
-                'created_at' => $auroraDeletedData->{'Customer First Contacted Date'},
-                'deleted_at' => $this->auModel->data->{'Customer Deleted Date'}
+                'aurora_id'                => $auroraDeletedData->{'Customer Key'},
+                'created_at'               => $auroraDeletedData->{'Customer First Contacted Date'},
+                'deleted_at'               => $this->auModel->data->{'Customer Deleted Date'}
 
             ]
         );
@@ -119,17 +111,16 @@ class MigrateDeletedCustomer extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        $this->modelData['customer']['data'] = $this->parseCustomerMetadata(
+        $this->modelData['customer']['data']            = $this->parseCustomerMetadata(
             auData: $this->modelData['deleted']
         );
-        $this->modelData['contact']['data']  = $this->parseContactMetadata(
+        $this->modelData['customer']['tax_number_data'] = $this->parseTaxNumberMetadata(
             auData: $this->modelData['deleted']
         );
 
         return StoreCustomer::run(
             shop:                  $this->parent,
             customerData:          $this->modelData['customer'],
-            contactData:           $this->modelData['contact'],
             customerAddressesData: $this->modelData['addresses']
         );
     }

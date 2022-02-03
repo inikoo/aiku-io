@@ -8,6 +8,7 @@
 
 namespace App\Actions\Trade\Shop;
 
+use App\Actions\Helpers\Address\StoreAddress;
 use App\Models\Utils\ActionResult;
 use App\Models\Trade\Shop;
 use App\Models\System\Permission;
@@ -20,12 +21,11 @@ class StoreShop
 {
     use AsAction;
 
-    public function handle(array $data, array $contactData): ActionResult
+    public function handle(array $data,array $addressData=[]): ActionResult
     {
 
         $res  = new ActionResult();
         $shop = Shop::create($data);
-        $shop->contact()->create($contactData);
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
@@ -48,6 +48,11 @@ class StoreShop
             Role::where('name', preg_replace('/#/', $shop->id, $role_name))->first()->syncPermissions($permissions);
         });
 
+        $address                 = StoreAddress::run($addressData);
+
+        $shop->address_id = $address->id;
+        $shop->location=$shop->getLocation();
+        $shop->save();
 
         $res->model    = $shop;
         $res->model_id = $shop->id;

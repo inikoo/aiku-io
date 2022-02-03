@@ -19,6 +19,21 @@ class CreateShopsTable extends Migration
             $table->mediumIncrements('id');
             $table->string('code')->unique();
             $table->string('name');
+            $table->string('company_name',256)->nullable();
+            $table->string('contact_name',256)->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('website',256)->nullable();
+            $table->string('tax_number')->nullable()->index();
+            $table->enum('tax_number_status', ['valid', 'invalid', 'na', 'unknown'])->nullable()->default('na');
+            $table->string('identity_document_type')->nullable();
+            $table->string('identity_document_number')->nullable();
+            $table->unsignedBigInteger('address_id')->nullable()->index();
+            $table->foreign('address_id')->references('id')->on('addresses');
+            $table->jsonb('location');
+
+
+
             $table->enum('state', ['in-process', 'open', 'closing-down', 'closed'])->index();
             $table->enum('type', ['shop', 'fulfilment_house'])->index();
             $table->enum('subtype', ['b2b', 'b2c', 'storage', 'fulfilment', 'dropshipping'])->nullable();

@@ -28,32 +28,27 @@ class MigrateShop extends MigrateModel
 
     public function parseModelData()
     {
-        $this->modelData['contact'] = $this->sanitizeData(
+
+        $this->modelData['shop'] = $this->sanitizeData(
             [
+                'type'                     =>
+                    match ($this->auModel->data->{'Store Type'}) {
+                        'Dropshipping', 'Fulfilment' => 'fulfilment_house',
+                        default => 'shop'
+                    },
+                'subtype'                  => strtolower($this->auModel->data->{'Store Type'}),
+                'code'                     => strtolower($this->auModel->data->{'Store Code'}),
+                'name'                     => $this->auModel->data->{'Store Name'},
                 'website'                  => $this->auModel->data->{'Store URL'},
-                'company'                  => $this->auModel->data->{'Store Company Name'},
-                'name'                     => $this->auModel->data->{'Store Contact Name'},
+                'company_name'             => $this->auModel->data->{'Store Company Name'},
+                'contact_name'             => $this->auModel->data->{'Store Contact Name'},
                 'email'                    => $this->auModel->data->{'Store Email'},
                 'phone'                    => $this->auModel->data->{'Store Telephone'},
                 'tax_number'               => $this->auModel->data->{'Store VAT Number'},
                 'identity_document_number' => $this->auModel->data->{'Store Company Number'},
                 'tax_number_status'        => 'valid',
-                'created_at'               => $this->auModel->data->{'Store Valid From'},
-
-            ]
-        );
 
 
-        $this->modelData['shop'] = $this->sanitizeData(
-            [
-                'type'        =>
-                    match ($this->auModel->data->{'Store Type'}) {
-                        'Dropshipping', 'Fulfilment' => 'fulfilment_house',
-                        default => 'shop'
-                    },
-                'subtype'     => strtolower($this->auModel->data->{'Store Type'}),
-                'name'        => $this->auModel->data->{'Store Name'},
-                'code'        => strtolower($this->auModel->data->{'Store Code'}),
                 'language_id' => $this->parseLanguageID($this->auModel->data->{'Store Locale'}),
                 'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Store Currency Code'}),
                 'timezone_id' => $this->parseTimezoneID($this->auModel->data->{'Store Timezone'}),
@@ -65,7 +60,7 @@ class MigrateShop extends MigrateModel
 
             ]
         );
-        $this->auModel->id          = $this->auModel->data->{'Store Key'};
+        $this->auModel->id       = $this->auModel->data->{'Store Key'};
     }
 
 
@@ -76,12 +71,12 @@ class MigrateShop extends MigrateModel
 
     public function updateModel(): ActionResult
     {
-        return UpdateShop::run(shop: $this->model, modelData: $this->modelData['shop'], contactData: $this->modelData['contact']);
+        return UpdateShop::run(shop: $this->model, modelData: $this->modelData['shop']);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreShop::run(data: $this->modelData['shop'], contactData: $this->modelData['contact']);
+        return StoreShop::run(data: $this->modelData['shop']);
     }
 
     public function authorize(ActionRequest $request): bool

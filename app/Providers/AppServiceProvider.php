@@ -35,7 +35,6 @@ class AppServiceProvider extends ServiceProvider
             [
                 'AccountUser'    => 'App\Models\Account\AccountUser',
                 'AccountAdmin'   => 'App\Models\Account\AccountAdmin',
-                'Contact'        => 'App\Models\Helpers\Contact',
                 'Address'        => 'App\Models\Helpers\Address',
                 'Tenant'         => 'App\Models\Account\Tenant',
                 'User'           => 'App\Models\System\User',

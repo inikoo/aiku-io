@@ -21,13 +21,10 @@ class UpdateShop
 
     public function handle(
         Shop $shop,
-        array $contactData,
         array $modelData
     ): ActionResult {
         $res = new ActionResult();
 
-        $shop->contact->update($contactData);
-        $res->changes = array_merge($res->changes, $shop->contact->getChanges());
 
         $shop->update(Arr::except($modelData, ['data', 'settings']));
         $shop->update($this->extractJson($modelData, ['data', 'settings']));

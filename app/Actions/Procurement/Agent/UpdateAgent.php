@@ -19,19 +19,15 @@ class UpdateAgent
     use AsAction;
     use WithUpdate;
 
-    public function handle(Agent $agent,array $modelData, array $contactData): ActionResult
+    public function handle(Agent $agent, array $modelData): ActionResult
     {
         $res = new ActionResult();
 
-        $agent->contact->update($contactData);
 
-        $res->changes = array_merge($res->changes, $agent->contact->getChanges());
+        $agent->update(Arr::except($modelData, ['data', 'settings']));
+        $agent->update($this->extractJson($modelData, ['data', 'settings']));
 
-
-        $agent->update( Arr::except($modelData, ['data','settings']));
-        $agent->update($this->extractJson($modelData,['data','settings']));
-
-        $res->changes = array_merge($res->changes, $agent->getChanges());
+        $res->changes  = $agent->getChanges();
         $res->model    = $agent;
         $res->model_id = $agent->id;
         $res->status   = $res->changes ? 'updated' : 'unchanged';

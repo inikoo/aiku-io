@@ -30,16 +30,12 @@ class UpdateEmployee
     use WithUpdate;
     use WithAttributes;
 
-    public function handle(Employee $employee, array $contactData, array $employeeData): ActionResult
+    public function handle(Employee $employee,  array $employeeData): ActionResult
     {
         $res = new ActionResult();
 
 
-        $contact = $employee->contact;
-        $contact->update(Arr::except($contactData, ['data']));
-        $contact->update($this->extractJson($contactData));
 
-        $res->changes = array_merge($res->changes, $contact->getChanges());
         $employee->update(
             Arr::except($employeeData, [
                 'data',
@@ -52,7 +48,7 @@ class UpdateEmployee
         );
         $employee->update($this->extractJson($employeeData, ['data', 'salary', 'working_hours']));
 
-        $res->changes = array_merge($res->changes, $employee->getChanges());
+        $res->changes = $employee->getChanges();
 
         if (Arr::exists($employeeData, 'job_positions')) {
             $res          = UpdateEmployeeJobPositions::run(
@@ -207,28 +203,27 @@ class UpdateEmployee
 
         $request->validate();
 
-        $contact = $request->only('name', 'email', 'phone', 'identity_document_number', 'date_of_birth');
-        if ($contactData = $request->only('address')) {
-            $contact['data'] = $contactData;
+        $modelData=$request->only(
+            'name', 'email', 'phone', 'identity_document_number', 'date_of_birth',
+            'nickname',
+            'worker_number',
+            'emergency_contact',
+            'salary',
+            'job_title',
+            'working_hours',
+            'employee_relationships',
+            'job_positions'
+
+        );
+        if ($data = $request->only('address')) {
+            $modelData['data'] = $data;
         }
 
 
         return new ActionResultResource(
             $this->handle(
                 $employee,
-                $contact,
-                $request->only(
-                    'name', 'email', 'phone',
-                    'nickname',
-                    'worker_number',
-                    'emergency_contact',
-                    'salary',
-                    'job_title',
-                    'working_hours',
-                    'employee_relationships',
-                    'job_positions'
-
-                )
+                $modelData
             )
         );
     }
@@ -240,24 +235,27 @@ class UpdateEmployee
         $this->fillFromRequest($request);
         $this->validateAttributes();
 
-        $contact = $request->only('name', 'email', 'phone', 'identity_document_number', 'date_of_birth');
-        if ($contactData = $request->only('address')) {
-            $contact['data'] = $contactData;
+
+        $modelData=$request->only(
+            'name', 'email', 'phone', 'identity_document_number', 'date_of_birth',
+            'nickname',
+            'worker_number',
+            'emergency_contact',
+            'salary',
+            'job_title',
+            'working_hours',
+            'employee_relationships',
+            'job_positions'
+
+        );
+        if ($data = $request->only('address')) {
+            $modelData['data'] = $data;
         }
+
         $this->handle(
             $employee,
-            $contact,
-            $request->only(
-                'nickname',
-                'worker_number',
-                'emergency_contact',
-                'salary',
-                'job_title',
-                'working_hours',
-                'employee_relationships',
-                'job_positions'
+            $modelData
 
-            )
         );
 
         return Redirect::route('human_resources.employees.edit', $employee->id);

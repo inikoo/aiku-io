@@ -35,6 +35,10 @@ class CreateEmployeesTable extends Migration
             $table->string('name',256)->nullable()->index();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
+            $table->string('identity_document_type')->nullable();
+            $table->string('identity_document_number')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->enum('gender', ['Make', 'Female', 'Other'])->nullable();
             //=====
             $table->string('worker_number')->nullable();
             $table->string('job_title')->nullable();

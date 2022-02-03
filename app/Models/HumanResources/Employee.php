@@ -9,9 +9,9 @@
 namespace App\Models\HumanResources;
 
 use App\Models\Helpers\Attachment;
-use App\Models\Helpers\Contact;
 use App\Models\Media\Image;
 use App\Models\System\User;
+use App\Models\Traits\HasPersonalData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -34,13 +34,14 @@ class Employee extends Model implements Auditable
     use SoftDeletes;
     use \OwenIt\Auditing\Auditable;
     use Searchable;
-
+    use HasPersonalData;
 
     protected $casts = [
         'data'          => 'array',
         'errors'        => 'array',
         'salary'        => 'array',
         'working_hours' => 'array',
+        'date_of_birth' => 'datetime:Y-m-d',
 
     ];
 
@@ -62,10 +63,7 @@ class Employee extends Model implements Auditable
         });
     }
 
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
+
 
     public function user(): MorphOne
     {

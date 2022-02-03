@@ -32,17 +32,13 @@ class MigrateDeletedGuest extends MigrateModel
     {
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'Staff Deleted Metadata'}));
 
-        $this->modelData['contact']  = $this->sanitizeData(
-            [
-                'name'  => $auDeletedModel->data->{'Staff Name'},
-                'email' => $auDeletedModel->data->{'Staff Email'},
-                'phone' => $auDeletedModel->data->{'Staff Telephone'},
 
-            ]
-        );
         $this->modelData['guest'] = $this->sanitizeData(
             [
                 'nickname'  => strtolower($auDeletedModel->data->{'Staff Alias'}),
+                'name'  => $auDeletedModel->data->{'Staff Name'},
+                'email' => $auDeletedModel->data->{'Staff Email'},
+                'phone' => $auDeletedModel->data->{'Staff Telephone'},
                 'aurora_id' => $auDeletedModel->data->{'Staff Key'},
 
                 'data'       => [
@@ -62,12 +58,12 @@ class MigrateDeletedGuest extends MigrateModel
 
     public function updateModel(): ActionResult
     {
-        return UpdateGuest::run($this->model, $this->modelData['contact'], $this->modelData['guest']);
+        return UpdateGuest::run($this->model, $this->modelData['guest']);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreGuest::run($this->modelData['contact'], $this->modelData['guest']);
+        return StoreGuest::run( $this->modelData['guest']);
     }
 
 

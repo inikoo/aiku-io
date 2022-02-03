@@ -21,20 +21,16 @@ class UpdateCustomerClient
 
     public function handle(
         CustomerClient $customerClient,
-        array $contactData,
         array $customerClientData,
     ): ActionResult {
         $res = new ActionResult();
 
-        $customerClient->contact->update($contactData);
-        $res->changes = array_merge($res->changes, $customerClient->contact->getChanges());
 
-
-        $customerClient->update( Arr::except($customerClientData, ['data']));
+        $customerClient->update(Arr::except($customerClientData, ['data']));
         $customerClient->update($this->extractJson($customerClientData));
 
 
-        $res->changes = array_merge($res->changes, $customerClient->getChanges());
+        $res->changes = $customerClient->getChanges();
 
         $res->model    = $customerClient;
         $res->model_id = $customerClient->id;

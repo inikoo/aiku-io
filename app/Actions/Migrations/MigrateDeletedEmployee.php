@@ -39,15 +39,7 @@ class MigrateDeletedEmployee extends MigrateModel
     {
         $auDeletedModel = json_decode(gzuncompress($this->auModel->data->{'Staff Deleted Metadata'}));
 
-        $this->modelData['contact']  = $this->sanitizeData(
-            [
-                'name'                     => $auDeletedModel->data->{'Staff Name'},
-                'email'                    => $auDeletedModel->data->{'Staff Email'},
-                'phone'                    => $auDeletedModel->data->{'Staff Telephone'},
-                'identity_document_number' => $auDeletedModel->data->{'Staff Official ID'},
-                'date_of_birth'            => $auDeletedModel->data->{'Staff Birthday'}
-            ]
-        );
+
         $this->modelData['employee'] = $this->sanitizeData(
             [
                 'nickname'            => strtolower($auDeletedModel->data->{'Staff Alias'}),
@@ -55,6 +47,11 @@ class MigrateDeletedEmployee extends MigrateModel
                 'employment_start_at' => $this->getDate($auDeletedModel->data->{'Staff Valid From'}),
                 'employment_end_at'   => $this->getDate($auDeletedModel->data->{'Staff Valid To'}),
                 'type'                => Str::snake($auDeletedModel->data->{'Staff Type'}, '-'),
+                'name'                     => $auDeletedModel->data->{'Staff Name'},
+                'email'                    => $auDeletedModel->data->{'Staff Email'},
+                'phone'                    => $auDeletedModel->data->{'Staff Telephone'},
+                'identity_document_number' => $auDeletedModel->data->{'Staff Official ID'},
+                'date_of_birth'            => $auDeletedModel->data->{'Staff Birthday'},
                 'aurora_id'           => $auDeletedModel->data->{'Staff Key'},
                 'state'               => match ($auDeletedModel->data->{'Staff Currently Working'}) {
                     'No' => 'left',
@@ -77,12 +74,12 @@ class MigrateDeletedEmployee extends MigrateModel
 
     public function updateModel(): ActionResult
     {
-        return UpdateEmployee::run($this->model, $this->modelData['contact'], $this->modelData['employee']);
+        return UpdateEmployee::run($this->model,  $this->modelData['employee']);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreEmployee::run(workplace: $this->parent, contactData: $this->modelData['contact'], employeeData: $this->modelData['employee']);
+        return StoreEmployee::run(workplace: $this->parent,  employeeData: $this->modelData['employee']);
     }
 
 

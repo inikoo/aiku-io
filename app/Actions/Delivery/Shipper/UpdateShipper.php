@@ -21,18 +21,16 @@ class UpdateShipper
 
     public function handle(
         Shipper $shipper,
-        array $contactData,
         array $modelData
     ): ActionResult {
         $res = new ActionResult();
 
-        $shipper->contact->update($contactData);
-        $res->changes = array_merge($res->changes, $shipper->contact->getChanges());
+
 
         $shipper->update(Arr::except($modelData, ['data']));
         $shipper->update($this->extractJson($modelData, ['data']));
 
-        $res->changes = array_merge($res->changes, $shipper->getChanges());
+        $res->changes = $shipper->getChanges();
 
         $res->model    = $shipper;
         $res->model_id = $shipper->id;

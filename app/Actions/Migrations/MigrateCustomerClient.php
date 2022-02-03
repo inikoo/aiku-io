@@ -34,7 +34,7 @@ class MigrateCustomerClient extends MigrateModel
     }
 
     /** @noinspection PhpUnusedParameterInspection */
-    private function parseContactMetadata($auData, array $metadataContact = []): array
+    private function parseTaxNumberMetadata($auData, array $metadataTaxNumber = []): array
     {
         return [];
     }
@@ -50,24 +50,18 @@ class MigrateCustomerClient extends MigrateModel
             $deactivated_at = $metadata->deactivated_date;
         }
 
-        $this->modelData['contact'] = $this->sanitizeData(
-            [
-                'name'       => $this->auModel->data->{'Customer Client Main Contact Name'},
-                'company'    => $this->auModel->data->{'Customer Client Company Name'},
-                'email'      => $this->auModel->data->{'Customer Client Main Plain Email'},
-                'phone'      => $this->auModel->data->{'Customer Client Main Plain Mobile'},
-                'created_at' => $this->auModel->data->{'Customer Client Creation Date'},
-
-            ]
-        );
 
         $this->modelData['customer'] = $this->sanitizeData(
             [
-                'name'                      => $this->auModel->data->{'Customer Client Code'},
-                'status'                    => $status,
-                'aurora_id' => $this->auModel->data->{'Customer Client Key'},
-                'created_at'                => $this->auModel->data->{'Customer Client Creation Date'},
-                'deactivated_at'            => $deactivated_at,
+                'name'           => $this->auModel->data->{'Customer Client Code'},
+                'status'         => $status,
+                'contact_name'   => $this->auModel->data->{'Customer Client Main Contact Name'},
+                'company_name'   => $this->auModel->data->{'Customer Client Company Name'},
+                'email'          => $this->auModel->data->{'Customer Client Main Plain Email'},
+                'phone'          => $this->auModel->data->{'Customer Client Main Plain Mobile'},
+                'aurora_id'      => $this->auModel->data->{'Customer Client Key'},
+                'created_at'     => $this->auModel->data->{'Customer Client Creation Date'},
+                'deactivated_at' => $deactivated_at,
             ]
         );
 
@@ -104,7 +98,6 @@ class MigrateCustomerClient extends MigrateModel
         $result = UpdateCustomerClient::run(
             customerClient:     $customerClient,
             customerClientData: $this->modelData['customer'],
-            contactData:        $this->modelData['contact'],
 
         );
 
@@ -141,7 +134,6 @@ class MigrateCustomerClient extends MigrateModel
         return StoreCustomerClient::run(
             customer:                    $this->parent,
             customerClientData:          $this->modelData['customer'],
-            contactData:                 $this->modelData['contact'],
             customerClientAddressesData: $this->modelData['addresses']
         );
     }

@@ -11,10 +11,10 @@ namespace App\Models\CRM;
 use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Attachment;
-use App\Models\Helpers\Contact;
 use App\Models\Media\Image;
 use App\Models\Trade\Product;
 use App\Models\Trade\Shop;
+use App\Models\Traits\HasAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
@@ -74,7 +73,6 @@ class Customer extends Model implements Auditable
     }
 
 
-
     public function addresses(): MorphToMany
     {
         return $this->morphToMany(Address::class, 'addressable')->withTimestamps();
@@ -99,12 +97,6 @@ class Customer extends Model implements Auditable
     {
         return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
-
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
-
 
 
     public function products(): BelongsToMany

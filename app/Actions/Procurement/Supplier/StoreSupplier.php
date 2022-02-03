@@ -20,7 +20,7 @@ class StoreSupplier
 {
     use AsAction;
 
-    public function handle(Tenant|Aiku|Agent $parent, array $data, array $addressData, array $contactData): ActionResult
+    public function handle(Tenant|Aiku|Agent $parent, array $data, array $addressData): ActionResult
     {
         $res  = new ActionResult();
 
@@ -29,13 +29,15 @@ class StoreSupplier
         $supplier->stats()->create();
 
 
-        $supplier->contact()->create($contactData);
+
         $addresses               = [];
         $address                 = StoreAddress::run($addressData);
         $addresses[$address->id] = ['scope' => 'contact'];
         $supplier->addresses()->sync($addresses);
-        $supplier->contact->address_id = $address->id;
-        $supplier->contact->save();
+
+
+        $supplier->address_id = $address->id;
+        $supplier->location=$supplier->getLocation();
         $supplier->save();
 
         $res->model    = $supplier;

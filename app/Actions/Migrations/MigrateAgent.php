@@ -42,9 +42,7 @@ class MigrateAgent extends MigrateModel
         data_set($settings, 'order.incoterm', $auData->{'Agent Default Incoterm'});
         data_set($settings, 'order.terms_and_conditions', $auData->{'Agent Default PO Terms and Conditions'});
         data_set($settings, 'order.id_format', $auData->{'Agent Order Public ID Format'});
-
         data_set($settings, 'products.origin', $this->parseCountryID($this->auModel->data->{'Agent Products Origin Country Code'}));
-
 
         return $settings;
     }
@@ -52,8 +50,6 @@ class MigrateAgent extends MigrateModel
     public function parseMetadata($data, $auData)
     {
         data_set($data, 'order_id_counter', $auData->{'Agent Order Last Order ID'});
-
-
         return $data;
     }
 
@@ -64,17 +60,6 @@ class MigrateAgent extends MigrateModel
             $phone = $this->auModel->data->{'Agent Main Plain Telephone'};
         }
 
-        $this->modelData['contact'] = $this->sanitizeData(
-            [
-                'company'    => $this->auModel->data->{'Agent Company Name'},
-                'name'       => $this->auModel->data->{'Agent Main Contact Name'},
-                'email'      => $this->auModel->data->{'Agent Main Plain Email'},
-                'phone'      => $phone,
-                'created_at' => $this->auModel->data->{'Agent Valid From'}
-
-            ]
-        );
-
 
         $this->modelData['agent'] = $this->sanitizeData(
             [
@@ -84,7 +69,10 @@ class MigrateAgent extends MigrateModel
                     ,
                     '-'
                 ),
-
+                'company_name'    => $this->auModel->data->{'Agent Company Name'},
+                'contact_name'       => $this->auModel->data->{'Agent Main Contact Name'},
+                'email'      => $this->auModel->data->{'Agent Main Plain Email'},
+                'phone'      => $phone,
 
                 'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Agent Default Currency Code'}),
                 'aurora_id'   => $this->auModel->data->{'Agent Key'},
@@ -115,10 +103,9 @@ class MigrateAgent extends MigrateModel
         $result = UpdateAgent::run(
             agent:       $agent,
             modelData:   $this->modelData['agent'],
-            contactData: $this->modelData['contact']
         );
 
-        $resultAddress = UpdateAddress::run($agent->contact->address, $this->modelData['address']);
+        $resultAddress = UpdateAddress::run($agent->address, $this->modelData['address']);
 
         $result->changes = array_merge($result->changes, $resultAddress->changes);
         $result->status  = $result->changes ? 'updated' : 'unchanged';
@@ -134,7 +121,6 @@ class MigrateAgent extends MigrateModel
         return StoreAgent::run(
             parent:      $this->parent,
             data:        $this->modelData['agent'],
-            contactData: $this->modelData['contact'],
             addressData: $this->modelData['address']
         );
     }

@@ -29,6 +29,11 @@ class CreateShippersTable extends Migration
             $table->boolean('status')->default('true')->index();
             $table->string('code')->index();
             $table->string('name')->index();
+            $table->string('contact_name',256)->nullable();
+            $table->string('company_name',256)->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('website',256)->nullable();
 
             $table->string('tracking_url')->nullable();
 

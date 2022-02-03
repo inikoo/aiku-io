@@ -10,10 +10,10 @@ namespace App\Models\Procurement;
 
 use App\Actions\Hydrators\HydrateAgent;
 use App\Models\Helpers\Attachment;
-use App\Models\Helpers\Contact;
 use App\Models\Media\Image;
 use App\Models\System\User;
 use App\Models\Trade\Product;
+use App\Models\Traits\HasAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -37,6 +37,7 @@ class Supplier extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
     use Searchable;
+    use HasAddress;
 
     protected $casts = [
         'data'     => 'array',
@@ -69,10 +70,6 @@ class Supplier extends Model implements Auditable
 
     protected $guarded = [];
 
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
 
     public function addresses(): MorphToMany
     {

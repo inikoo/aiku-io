@@ -24,6 +24,12 @@ class CreateCustomerClientsTable extends Migration
 
             $table->string('name', 256)->nullable();
 
+            $table->string('contact_name',256)->nullable()->index();
+            $table->string('company_name',256)->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->jsonb('location');
+
 
             $table->unsignedBigInteger('delivery_address_id')->nullable()->index();
             $table->foreign('delivery_address_id')->references('id')->on('addresses');

@@ -28,22 +28,16 @@ class UpdateGuest
     use WithUpdate;
     use WithAttributes;
 
-    public function handle(Guest $guest, array $contactData, array $modelData): ActionResult
+    public function handle(Guest $guest, array $modelData): ActionResult
     {
         $res = new ActionResult();
-
-
-
-        $guest->contact->update($contactData);
-
-        $res->changes = array_merge($res->changes, $guest->contact->getChanges());
 
         $guest->update($modelData);
 
         $guest->update(Arr::except($modelData, ['data']));
         $guest->update($this->extractJson($modelData));
 
-        $res->changes = array_merge($res->changes, $guest->getChanges());
+        $res->changes = $guest->getChanges();
 
         $res->model = $guest;
 
@@ -77,10 +71,21 @@ class UpdateGuest
     public function asController(Guest $guest, ActionRequest $request): ActionResult
     {
         $request->validate();
+
+        $modelData=$request->only('name', 'email', 'phone', 'identity_document_number',
+                                  'name','email', 'phone',
+                                  'nickname',
+                                  'emergency_contact',
+        );
+
+        if ($data = $request->only('address')) {
+            $modelData['data'] = $data;
+        }
+
+
         return $this->handle(
             $guest,
-            $request->only('name', 'email', 'phone'),
-            $request->only('nickname')
+            $modelData
         );
     }
 
@@ -91,18 +96,19 @@ class UpdateGuest
         $this->fillFromRequest($request);
         $this->validateAttributes();
 
-        $contact = $request->only('name', 'email', 'phone', 'identity_document_number');
-        if ($contactData = $request->only('address')) {
-            $contact['data'] = $contactData;
+        $modelData=$request->only('name', 'email', 'phone', 'identity_document_number',
+                                  'name','email', 'phone',
+                                  'nickname',
+                                  'emergency_contact',
+        );
+
+        if ($data = $request->only('address')) {
+            $modelData['data'] = $data;
         }
+
         $this->handle(
-            $guest,
-            $contact,
-            $request->only(
-                'name','email', 'phone',
-                'nickname',
-                'emergency_contact',
-            )
+            $guest,$modelData
+
         );
 
         UpdateUser::run($guest->user,$request->only('status', 'username','password'));

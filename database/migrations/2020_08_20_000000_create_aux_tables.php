@@ -176,8 +176,8 @@ class CreateAuxTables extends Migration
             $table->id();
             $table->morphs('contactable');
 
-            $table->string('name',256)->nullable();
-            $table->string('company',256)->nullable();
+            $table->string('contact_name',256)->nullable();
+            $table->string('company_name',256)->nullable();
 
             $table->date('date_of_birth')->nullable();
             $table->enum('gender', ['Make', 'Female', 'Other'])->nullable();

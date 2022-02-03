@@ -21,19 +21,18 @@ trait WithCustomer
         /** @var \App\Models\CRM\Customer $customer */
         $customer = $this->model;
 
-        $this->modelData['customer']['data'] = $this->parseCustomerMetadata(
+        $this->modelData['customer']['data']            = $this->parseCustomerMetadata(
             auData:           $auData,
             metadataCustomer: $customer->data,
         );
-        $this->modelData['contact']['data']  = $this->parseContactMetadata(
-            auData:          $auData,
-            metadataContact: $customer->contact->data,
+        $this->modelData['customer']['tax_number_data'] = $this->parseTaxNumberMetadata(
+            auData:            $auData,
+            metadataTaxNumber: $customer->tax_number_data,
         );
 
         $result = UpdateCustomer::run(
             customer:     $customer,
             customerData: $this->modelData['customer'],
-            contactData:  $this->modelData['contact'],
 
         );
 
@@ -63,7 +62,7 @@ trait WithCustomer
             }
 
             $result->model->delivery_address_id = null;
-            if ( $result->model->shop->type == 'shop') {
+            if ($result->model->shop->type == 'shop') {
                 $result->model->delivery_address_id = $result->model->billing_address_id;
             }
             $result->model->save();
@@ -92,33 +91,33 @@ trait WithCustomer
         return $metadataCustomer;
     }
 
-    private function parseContactMetadata($auData, array $metadataContact = []): array
+    private function parseTaxNumberMetadata($auData, array $metadataTaxNumber = []): array
     {
         if ($auData->{'Customer Tax Number'} != '') {
             if ($auData->{'Customer Tax Number Registered Name'}) {
-                data_set($metadataContact, 'tax_number.registered_name', $auData->{'Customer Tax Number Registered Name'});
+                data_set($metadataTaxNumber, 'registered_name', $auData->{'Customer Tax Number Registered Name'});
             }
             if ($auData->{'Customer Tax Number Registered Address'}) {
-                data_set($metadataContact, 'tax_number.registered_address', $auData->{'Customer Tax Number Registered Address'});
+                data_set($metadataTaxNumber, 'registered_address', $auData->{'Customer Tax Number Registered Address'});
             }
             if ($auData->{'Customer Tax Number Validation Source'}) {
-                data_set($metadataContact, 'tax_number.validation.registered_address', strtolower($auData->{'Customer Tax Number Validation Source'}));
+                data_set($metadataTaxNumber, 'validation.registered_address', strtolower($auData->{'Customer Tax Number Validation Source'}));
             }
             if ($auData->{'Customer Tax Number Validation Date'}) {
-                data_set($metadataContact, 'tax_number.validation.registered_address', $auData->{'Customer Tax Number Validation Date'});
+                data_set($metadataTaxNumber, 'validation.registered_address', $auData->{'Customer Tax Number Validation Date'});
             }
             if ($auData->{'Customer Tax Number Validation Message'}) {
-                data_set($metadataContact, 'tax_number.validation.message', $auData->{'Customer Tax Number Validation Message'});
+                data_set($metadataTaxNumber, 'validation.message', $auData->{'Customer Tax Number Validation Message'});
             }
             if ($auData->{'Customer Tax Number Valid'} == 'API_Down') {
-                data_set($metadataContact, 'tax_number.validation.last_error', 'vies_api_down');
+                data_set($metadataTaxNumber, 'validation.last_error', 'vies_api_down');
             } else {
-                Arr::forget($metadataContact, 'tax_number.validation.last_error');
+                Arr::forget($metadataTaxNumber, 'validation.last_error');
             }
         }
 
 
-        return $metadataContact;
+        return $metadataTaxNumber;
     }
 }
 

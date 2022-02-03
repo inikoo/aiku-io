@@ -21,14 +21,12 @@ class StoreCustomer
     public function handle(
         Shop $shop,
         array $customerData,
-        array $contactData,
         array $customerAddressesData = []
     ): ActionResult {
         $res = new ActionResult();
 
         /** @var Customer $customer */
         $customer = $shop->customers()->create($customerData);
-        $customer->contact()->create($contactData);
         $addresses = [];
 
         $billing_address_id  = null;

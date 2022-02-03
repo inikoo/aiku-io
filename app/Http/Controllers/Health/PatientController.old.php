@@ -17,7 +17,6 @@ use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Requests\UpdatePatientGuardianRequest;
 use App\Models\Assets\Country;
 use App\Models\Health\Patient;
-use App\Models\Helpers\Contact;
 use App\Http\Controllers\Traits\HasContact;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;

@@ -9,7 +9,6 @@
 namespace App\Models\CRM;
 
 use App\Models\Helpers\Address;
-use App\Models\Helpers\Contact;
 use App\Models\Trade\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -52,9 +51,6 @@ class CustomerClient extends Model implements Auditable
         return $this->belongsTo(Address::class);
     }
 
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
+
 
 }

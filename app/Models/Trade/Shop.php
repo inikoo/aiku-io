@@ -9,18 +9,17 @@
 namespace App\Models\Trade;
 
 use App\Models\CRM\Customer;
-use App\Models\Helpers\Contact;
 use App\Models\Sales\Adjust;
 use App\Models\Sales\Charge;
 use App\Models\Sales\Order;
 use App\Models\Sales\ShippingSchema;
+use App\Models\Traits\HasAddress;
 use App\Models\Web\Website;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -39,15 +38,18 @@ class Shop extends Model implements Auditable
     use SoftDeletes;
     use HasFactory;
     use Searchable;
+    use HasAddress;
 
     protected $casts = [
         'data'     => 'array',
-        'settings' => 'array'
+        'settings' => 'array',
+        'location' => 'array'
     ];
 
     protected $attributes = [
         'data'     => '{}',
         'settings' => '{}',
+        'location' => '{}',
     ];
 
     protected $guarded = [];
@@ -61,10 +63,7 @@ class Shop extends Model implements Auditable
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
+
 
     public function customers(): HasMany
     {
@@ -100,5 +99,6 @@ class Shop extends Model implements Auditable
     {
         return $this->hasOne(Website::class);
     }
+
 
 }

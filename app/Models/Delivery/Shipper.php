@@ -8,10 +8,8 @@
 
 namespace App\Models\Delivery;
 
-use App\Models\Helpers\Contact;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -37,9 +35,6 @@ class Shipper extends Model implements Auditable
 
     protected $guarded = [];
 
-    public function contact(): MorphOne
-    {
-        return $this->morphOne(Contact::class, 'contactable');
-    }
+
 
 }

@@ -11,7 +11,6 @@ namespace App\Actions\System\Guest;
 use App\Models\Utils\ActionResult;
 use App\Models\System\Guest;
 use App\Rules\Phone;
-use Illuminate\Support\Arr;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -21,14 +20,12 @@ class StoreGuest
     use AsAction;
 
 
-    public function handle(array $contactData, array $modelData): ActionResult
+    public function handle(array $modelData): ActionResult
     {
         $res  = new ActionResult();
 
-        $modelData=array_merge($modelData,Arr::only($contactData,['name','email','phone']));
 
         $guest = Guest::create($modelData);
-        $guest->contact()->create($contactData);
         $guest->save();
 
         $res->model    = $guest;
@@ -56,8 +53,7 @@ class StoreGuest
     public function asController(ActionRequest $request): ActionResult
     {
         return $this->handle(
-            $request->only('name', 'email', 'phone'),
-            $request->only('nickname')
+            $request->only('nickname','name', 'email', 'phone'),
         );
     }
 }

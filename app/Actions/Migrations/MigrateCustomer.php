@@ -46,10 +46,16 @@ class MigrateCustomer extends MigrateModel
             $state = 'lost';
         }
 
-        $this->modelData['contact'] = $this->sanitizeData(
+
+
+        $this->modelData['customer'] = $this->sanitizeData(
             [
-                'name'                     => $this->auModel->data->{'Customer Main Contact Name'},
-                'company'                  => $this->auModel->data->{'Customer Company Name'},
+                'shop_id'                  => $this->parent->id,
+                'name'                     => $this->auModel->data->{'Customer Name'},
+                'state'                    => $state,
+                'status'                   => $status,
+                'contact_name'             => $this->auModel->data->{'Customer Main Contact Name'},
+                'company_name'             => $this->auModel->data->{'Customer Company Name'},
                 'email'                    => $this->auModel->data->{'Customer Main Plain Email'},
                 'phone'                    => $this->auModel->data->{'Customer Main Plain Mobile'},
                 'identity_document_number' => Str::limit($this->auModel->data->{'Customer Registration Number'}),
@@ -62,19 +68,8 @@ class MigrateCustomer extends MigrateModel
                         'No' => 'invalid',
                         default => 'unknown'
                     },
+                'aurora_id'                => $this->auModel->data->{'Customer Key'},
                 'created_at'               => $this->auModel->data->{'Customer First Contacted Date'}
-
-            ]
-        );
-
-        $this->modelData['customer'] = $this->sanitizeData(
-            [
-                'shop_id'    => $this->parent->id,
-                'name'       => $this->auModel->data->{'Customer Name'},
-                'state'      => $state,
-                'status'     => $status,
-                'aurora_id'  => $this->auModel->data->{'Customer Key'},
-                'created_at' => $this->auModel->data->{'Customer First Contacted Date'}
             ]
         );
 
@@ -118,7 +113,7 @@ class MigrateCustomer extends MigrateModel
         $this->modelData['customer']['data'] = $this->parseCustomerMetadata(
             auData: $this->auModel->data,
         );
-        $this->modelData['contact']['data']  = $this->parseContactMetadata(
+        $this->modelData['customer']['tax_number_data']  = $this->parseTaxNumberMetadata(
             auData: $this->auModel->data,
         );
 
@@ -126,7 +121,6 @@ class MigrateCustomer extends MigrateModel
         return StoreCustomer::run(
             shop:                  $this->parent,
             customerData:          $this->modelData['customer'],
-            contactData:           $this->modelData['contact'],
             customerAddressesData: $this->modelData['addresses']
         );
     }

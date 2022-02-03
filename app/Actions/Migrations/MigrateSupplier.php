@@ -57,17 +57,6 @@ class MigrateSupplier extends MigrateModel
             $phone = $this->auModel->data->{'Supplier Main Plain Telephone'};
         }
 
-        //print_r($this->auModel->data);
-
-        $this->modelData['contact'] = $this->sanitizeData(
-            [
-                'company'    => $this->auModel->data->{'Supplier Company Name'},
-                'name'       => $this->auModel->data->{'Supplier Main Contact Name'},
-                'email'      => $this->auModel->data->{'Supplier Main Plain Email'},
-                'phone'      => $phone,
-                'created_at' => $this->auModel->data->{'Supplier Valid From'}
-            ]
-        );
 
         $this->modelData['supplier'] = $this->sanitizeData(
             [
@@ -77,7 +66,10 @@ class MigrateSupplier extends MigrateModel
                     ,
                     '-'
                 ),
-
+                'company_name'    => $this->auModel->data->{'Supplier Company Name'},
+                'contact_name'       => $this->auModel->data->{'Supplier Main Contact Name'},
+                'email'      => $this->auModel->data->{'Supplier Main Plain Email'},
+                'phone'      => $phone,
                 'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Supplier Default Currency Code'}),
                 'aurora_id'   => $this->auModel->data->{'Supplier Key'},
                 'created_at'  => $this->auModel->data->{'Supplier Valid From'},

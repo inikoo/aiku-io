@@ -27,8 +27,13 @@ class CreateGuestsTable extends Migration
             $table->boolean('status')->default(true)->index()->comment('linked to user status');
             //these are no normal, hydra-table from contact
             $table->string('name',256)->nullable()->index();
+
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
+            $table->string('identity_document_type')->nullable();
+            $table->string('identity_document_number')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->enum('gender', ['Make', 'Female', 'Other'])->nullable();
             //=====
             $table->jsonb('data');
             $table->timestampsTz();
