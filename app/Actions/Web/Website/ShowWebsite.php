@@ -49,7 +49,7 @@ class ShowWebsite
 
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'module'      => $this->module,

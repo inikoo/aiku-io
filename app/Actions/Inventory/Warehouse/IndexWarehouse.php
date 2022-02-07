@@ -54,7 +54,7 @@ class IndexWarehouse
 
 
         return Inertia::render(
-            'Common/IndexModel',
+            'index-model',
             [
                 'headerData' => [
                     'module'      => 'warehouses',

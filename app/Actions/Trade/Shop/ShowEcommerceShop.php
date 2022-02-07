@@ -35,20 +35,20 @@ class ShowEcommerceShop
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("shops.{$this->shop->id}.view");
+        return $request->user()->hasPermissionTo("shops.view.{$this->shop->id}");
     }
 
     public function afterValidator(): void
     {
         if ($this->shop->type != $this->type) {
-            abort(422, "Store is not the correct type $this->type, has {$this->shop->type} must be $this->type");
+            abort(422, "Shop is not the correct type $this->type, has {$this->shop->type} must be $this->type");
         }
     }
 
 
     public function asInertia(Shop $shop,  array $attributes = []): Response
     {
-        $this->set('shop', $shop)->fill($attributes);
+        $this->set('shop', $shop)->set('type','fulfilment_house')->fill($attributes);
 
         $this->validateAttributes();
 
@@ -57,7 +57,7 @@ class ShowEcommerceShop
 
 
         return Inertia::render(
-           'Common/ShowModel',
+           'show-model',
             [
                 'headerData' => [
                     'module'      => $this->module,
@@ -74,24 +74,20 @@ class ShowEcommerceShop
     public function prepareForValidation(ActionRequest $request): void
     {
 
-        $this->set('type', 'shop');
 
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(Shop $shop): array
     {
-        /** @var Shop $shop */
-        $shop = $this->get('shop');
 
 
         return array_merge(
             (new IndexEcommerceShop())->getBreadcrumbs(),
             [
-                'shop' => [
+                'ecommerce_shops.show' => [
                     'route'           => 'ecommerce_shops.show',
                     'routeParameters' => $shop->id,
                     'name'            => $shop->code,
@@ -102,11 +98,6 @@ class ShowEcommerceShop
     }
 
 
-    public function getBreadcrumbs(): array
-    {
-        $this->validateAttributes();
 
-        return $this->breadcrumbs();
-    }
 
 }

@@ -9,14 +9,12 @@
 namespace App\Http\Controllers\Shops;
 
 
-use App\Actions\CRM\Customer\IndexCustomer;
-use App\Actions\CRM\Customer\IndexCustomerInEcommerceShops;
 use App\Actions\CRM\Customer\IndexCustomerInShop;
+use App\Actions\CRM\Customer\IndexCustomerInTenant;
 use App\Actions\CRM\Customer\ShowCustomer;
 use App\Http\Controllers\Controller;
 use App\Models\CRM\Customer;
 use App\Models\Trade\Shop;
-use Illuminate\Http\Request;
 use Inertia\Response;
 
 
@@ -24,23 +22,24 @@ class CustomerController extends Controller
 {
 
 
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        return IndexCustomer::make()->asInertia($request);
+        return IndexCustomerInTenant::make()->asInertia(parent: 'tenant');
     }
 
-    public function indexInEcommerceShops(Request $request): Response
+    public function indexInEcommerceShops(): Response
     {
-        return indexCustomerInEcommerceShops::make()->asInertia();
+        return IndexCustomerInTenant::make()->asInertia(parent: 'ecommerce_shops');
     }
 
-    public function indexInShop(Shop $shop): Response
+
+    public function indexInShop(Shop $shop)
     {
         return IndexCustomerInShop::make()->asInertia($shop);
     }
 
 
-    public function show(Shop $shop,Customer $customer): Response
+    public function showInShop(Shop $shop, Customer $customer): Response
     {
         return ShowCustomer::make()->asInertia($customer);
     }

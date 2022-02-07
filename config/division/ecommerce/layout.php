@@ -241,7 +241,7 @@ return [
     'human_resources' => [
         'id'          => 'human_resources',
         'type'        => 'standard',
-        'route'       => 'human_resources.index',
+        'route'       => 'human_resources.dashboard',
         'permissions' => ['employees.view'],
         'name'        => 'Human resources',
         'code'        => 'HR',

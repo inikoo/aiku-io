@@ -11,7 +11,7 @@ use App\Http\Controllers\HumanResources\HumanResourcesController;
 use App\Http\Controllers\HumanResources\TimesheetsController;
 
 
-Route::get('/', [HumanResourcesController::class, 'index'])->name('index');
+Route::get('/', [HumanResourcesController::class, 'dashboard'])->name('dashboard');
 Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
 
 Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');

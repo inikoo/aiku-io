@@ -73,7 +73,7 @@ class ShowUser
         $userable = $this->user->userable;
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'module'      => 'users',

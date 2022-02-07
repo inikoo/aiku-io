@@ -8,48 +8,16 @@
 
 namespace App\Http\Controllers\HumanResources;
 
+use App\Actions\HumanResources\ShowHumanResourcesDashboard;
 use App\Http\Controllers\Controller;
-use Inertia\Inertia;
 use Inertia\Response;
 
 
 class HumanResourcesController extends Controller
 {
-
-    protected string $module;
-    protected array $breadcrumbs;
-
-    public function __construct()
+    public function dashboard(): Response
     {
-        $this->breadcrumbs = [
-            'index' => [
-                'route'   => 'human_resources.index',
-                'name'    => __('Employees'),
-                'current' => false
-            ],
-        ];
-
-
-
-        $this->module = 'human_resources';
+        return ShowHumanResourcesDashboard::make()->asInertia();
     }
 
-    public function index(): Response
-    {
-        return Inertia::render(
-            'HumanResources/Index',
-            [
-                'headerData' => [
-                    'module'      => $this->module,
-                    'title'       => __('Human resources'),
-                    'breadcrumbs' => data_set($this->breadcrumbs, "index.current", true),
-
-                ],
-
-
-
-            ]
-        );
-
-    }
 }

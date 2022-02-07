@@ -81,7 +81,7 @@ class IndexRole
 
 
         return Inertia::render(
-            'Common/IndexModel',
+            'index-model',
             [
                 'headerData' => [
                     'title'       => $this->title,

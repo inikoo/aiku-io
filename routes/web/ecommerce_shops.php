@@ -19,7 +19,7 @@ Route::get('/orders', [EcommerceController::class, 'index'])->name('orders.index
 Route::get('/{shop}', [EcommerceController::class, 'show'])->name('show');
 
 Route::get('/{shop}/customers', [CustomerController::class, 'indexInShop'])->name('show.customers.index');
-Route::get('/{shop}/customers/{customer}', [CustomerController::class, 'show'])->name('show.customers.show');
+Route::get('/{shop}/customers/{customer}', [CustomerController::class, 'showInShop'])->name('show.customers.show');
 
 Route::get('/{shop}/orders', [EcommerceController::class, 'index'])->name('show.orders.index');
 

@@ -60,7 +60,7 @@ class IndexSupplier
 
 
         return Inertia::render(
-            'Common/IndexModel',
+            'index-model',
             [
                 'headerData' => [
                     'module'      => 'procurement',

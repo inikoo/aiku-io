@@ -56,7 +56,7 @@ class ShowStock
 
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'module'      => 'stocks',

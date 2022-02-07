@@ -45,13 +45,9 @@ class IndexEmployee
         return QueryBuilder::for(Employee::class)
             ->defaultSort('-employees.id')
             ->select(['nickname', 'id', 'worker_number','name'])
-            ->with([
-                       'contact' => function ($query) {
-                           $query->select('contactable_id', 'contactable_type');
-                       }
-                   ])
-            ->allowedSorts(['nickname', 'worker_number', 'name'])
 
+            ->allowedSorts(['nickname', 'worker_number', 'name'])
+            ->allowedFilters([$globalSearch])
             ->paginate()
             ->withQueryString();
     }
@@ -98,7 +94,7 @@ class IndexEmployee
 
 
         return Inertia::render(
-            'Common/IndexModel',
+            'index-model',
             [
                 'headerData' => [
                     'module'      => 'human_resources',

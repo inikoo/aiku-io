@@ -57,7 +57,7 @@ class ShowProfile
 
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'title'       => __('My profile'),

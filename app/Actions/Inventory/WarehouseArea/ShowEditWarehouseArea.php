@@ -66,7 +66,7 @@ class ShowEditWarehouseArea
 
 
         return Inertia::render(
-            'Common/EditModel',
+            'edit-model',
             [
                 'headerData' => [
                     'module'      => 'warehouses',

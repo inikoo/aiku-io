@@ -12,7 +12,6 @@ namespace App\Actions\Trade\Shop;
 use App\Http\Resources\Trade\ShopInertiaResource;
 use App\Models\Trade\Shop;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,7 +21,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use App\Actions\UI\WithInertia;
 
 use function __;
-use function data_set;
 
 /**
  * @property Shop $shop
@@ -50,15 +48,14 @@ class IndexEcommerceShop
     {
         $this->validateAttributes();
 
-        $breadcrumbs = $this->get('breadcrumbs');
 
         return Inertia::render(
-            'Common/IndexModel',
+            'index-model',
             [
                 'headerData' => [
                     'module'      => 'ecommerce',
                     'title'       => $this->get('title'),
-                    'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
+                    'breadcrumbs' => $this->getBreadcrumbs(),
 
                 ],
                 'dataTable'  => [
@@ -97,33 +94,25 @@ class IndexEcommerceShop
         $request->merge(
             [
                 'title' => __('Ecommerce shops')
-
-
             ]
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(): array
     {
         return [
-            'index' => [
+            'ecommerce_shops.index' => [
                 'route'   => 'ecommerce_shops.index',
-                'name'    => $this->get('title'),
+                'name'    => __('Ecommerce shops'),
                 'current' => false
             ],
         ];
     }
 
-    public function getBreadcrumbs(): array
-    {
-        $this->validateAttributes();
 
-        return $this->breadcrumbs;
-    }
 
 
 }

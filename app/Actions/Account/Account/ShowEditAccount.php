@@ -52,7 +52,7 @@ class ShowEditAccount
 
 
         return Inertia::render(
-            'Common/EditModel',
+            'edit-model',
             [
                 'translations' => GetUITranslations::run(),
                 'locale'        => App::currentLocale(),

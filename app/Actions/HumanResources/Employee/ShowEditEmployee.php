@@ -73,7 +73,7 @@ class ShowEditEmployee
         ];
 
         return Inertia::render(
-            'Common/EditModel',
+            'edit-model',
             [
                 'headerData' => [
                     'module'      => 'human_resources',

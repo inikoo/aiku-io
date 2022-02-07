@@ -70,7 +70,7 @@ class ShowEmployee
 
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'module'        => 'users',

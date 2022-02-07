@@ -44,7 +44,7 @@ class ShowProcurementDashboard
 
 
         return Inertia::render(
-            'Common/ShowDashboard',
+            'show-dashboard',
             [
                 'headerData' => [
                     'module'      => 'procurement',

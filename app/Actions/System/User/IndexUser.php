@@ -76,7 +76,7 @@ class IndexUser
 
 
         return Inertia::render(
-            'Common/IndexModel',
+            'index-model',
             [
                 'headerData' => [
                     'module'      => 'tenant',

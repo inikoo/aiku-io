@@ -41,7 +41,7 @@ class ShowInventoryDashboard
 
 
         return Inertia::render(
-            'Common/ShowDashboard',
+            'show-dashboard',
             [
                 'headerData' => [
                     'module'      => 'inventory',
@@ -67,7 +67,6 @@ class ShowInventoryDashboard
             'warehouse' => [
                 'route'           => 'inventory.dashboard',
                 'name'            => __('Inventory'),
-                'current'         => false
             ]
         ];
     }

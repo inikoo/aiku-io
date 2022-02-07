@@ -55,7 +55,7 @@ class ShowEditProfile
         ];
 
         return Inertia::render(
-            'Common/EditModel',
+            'edit-model',
             [
                 'translations'  => GetUITranslations::run(),
                 'locale'        => App::currentLocale(),

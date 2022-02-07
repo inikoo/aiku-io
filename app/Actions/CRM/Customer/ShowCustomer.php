@@ -47,7 +47,7 @@ class ShowCustomer
 
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'module'      => 'customers',

@@ -72,7 +72,7 @@ class IndexShop
         $breadcrumbs = $this->get('breadcrumbs');
 
         return Inertia::render(
-            'Common/IndexModel',
+            'index-model',
             [
                 'headerData' => [
                     'module'      => 'shops',

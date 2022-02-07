@@ -52,7 +52,7 @@ class ShowTenant
         $this->validateAttributes();
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'module'      => $this->module,

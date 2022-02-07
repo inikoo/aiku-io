@@ -69,7 +69,7 @@ class ShowLocation
 
 
         return Inertia::render(
-            'Common/ShowModel',
+            'show-model',
             [
                 'headerData' => [
                     'module'      => 'warehouses',

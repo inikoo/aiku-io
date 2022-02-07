@@ -116,8 +116,7 @@ class Address extends Model implements Auditable
     public function getCountryName(): string
     {
         if ($country = (new Country())->firstWhere('id', $this->country_id)) {
-            return  $country->code;
-
+            return  $country->name;
         }
         return '';
 

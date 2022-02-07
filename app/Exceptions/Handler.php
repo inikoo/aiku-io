@@ -47,8 +47,36 @@ class Handler extends ExceptionHandler
     {
         $response = parent::render($request, $e);
 
+
+
+
         if (!app()->environment(['local', 'testing']) && in_array($response->status(), [500, 503, 404, 403, 422])) {
-            return Inertia::render('Error', ['status' => $response->status()])
+            return Inertia::render(
+                'error',
+                array_merge(['status'      => $response->status()],
+                    match ($response->status()) {
+                        403 => [
+                            'title'       => __('Forbidden'),
+                            'description' => __('Sorry, you are forbidden from accessing this page.')
+                        ],
+                        404 => [
+                            'title'       => __('Page Not Found'),
+                            'description' => __('Sorry, the page you are looking for could not be found.')
+                        ],
+                        422 => [
+                            'title'       => __('Unprocessable request'),
+                            'description' => __('Sorry, is impossible to process this page.')
+                        ],
+                        503 => [
+                            'title'       => __('Service Unavailable'),
+                            'description' => __('Sorry, we are doing some maintenance. Please check back soon.')
+                        ],
+                        default => [
+                            'title'       => __('Server Error'),
+                            'description' => __('Whoops, something went wrong on our servers.')
+                        ]
+                    })
+            )
                 ->toResponse($request)
                 ->setStatusCode($response->status());
         } elseif ($response->status() === 419) {

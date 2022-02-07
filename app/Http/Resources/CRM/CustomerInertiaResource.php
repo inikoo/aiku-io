@@ -26,8 +26,10 @@ class CustomerInertiaResource extends JsonResource
             'id'              => $customer->id,
             'shop_id'         => $customer->shop_id,
             'shop_code'       => $this->whenLoaded('shop', $customer->shop->code),
-            'customer_number' => sprintf('%04d', $customer->id),
-            'name'            => $customer->name
+            'customer_number' => sprintf('%05d', $customer->id),
+            'name'            => $customer->name,
+            'location'        => $customer->location
+
         ];
     }
 }

@@ -17,13 +17,10 @@ use Inertia\Response;
 class InventoryController extends Controller
 {
 
-
     public function dashboard(): Response
     {
         return ShowInventoryDashboard::make()->asInertia();
     }
-
-
 
 
 }
