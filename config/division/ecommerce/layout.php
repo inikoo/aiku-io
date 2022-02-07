@@ -6,6 +6,111 @@
  *  Version 4.0
  */
 
+
+return [
+    [
+        'id'        => 'dashboard',
+        'route'     => 'dashboard.index',
+        'name'      => 'Dashboard',
+        'shortName' => 'Dashboard',
+        'icon'      => ['fal', 'tachometer-alt-fast'],
+        'sections'  => []
+    ],
+    [
+        'id'        => 'shops',
+        'route'     => 'shops.dashboard',
+        'name'      => 'Shops',
+        'shortName' => 'Shops',
+        'icon'      => ['fal', 'store-alt'],
+        'sections'  => []
+    ],
+    [
+        'id'        => 'inventory',
+        'route'     => 'inventory.dashboard',
+        'name'      => 'Inventory',
+        'shortName' => 'Inventory',
+        'icon'      => ['fal', 'box'],
+        'sections'  => []
+    ],
+    [
+        'id'        => 'procurement',
+        'route'     => 'procurement.dashboard',
+        'name'      => 'Procurement',
+        'shortName' => 'Procurement',
+        'icon'      => ['fal', 'apple-crate'],
+        'sections'  => []
+    ],
+    [
+        'id'          => 'financials',
+        'route'       => 'financials.dashboard',
+        'permissions' => ['financials.view'],
+        'name'        => 'Financials',
+        'shortName'   => 'F$',
+        'icon'        => ['fal', 'abacus'],
+        'sections'    => [
+        ]
+    ],
+    [
+        'id'          => 'human_resources',
+        'route'       => 'human_resources.dashboard',
+        'permissions' => ['employees.view'],
+        'name'        => 'Human Resources',
+        'shortName'   => 'HR',
+        'icon'        => ['fal', 'clipboard-user'],
+        'sections'    => [
+            'human_resources.employees.index'  => [
+                'name' => 'Employees',
+            ],
+            'human_resources.timesheets.index' => [
+                'name' => 'Timesheets',
+            ],
+            'human_resources.logbook'          => [
+                'name' => 'Logbook',
+            ],
+
+        ]
+    ],
+    [
+        'id'        => 'reports',
+        'route'     => 'reports.index',
+        'name'      => 'Reports',
+        'shortName' => 'Reports',
+        'icon'      => ['fal', 'chart-line'],
+        'sections'  => [
+        ]
+    ],
+    'account'         => [
+        'id'          => 'account',
+        'route'       => 'account.show',
+        'permissions' => ['account.users.view'],
+        'name'        => 'Account',
+        'shortName'        => 'Acc',
+
+        'icon'     => ['fal', 'dice-d4'],
+        'sections' => [
+
+            'account.users.index'  => [
+                'name' => 'Users',
+            ],
+            'account.guests.index' => [
+                'name' => 'Guests',
+            ],
+            'account.roles.index'  => [
+                'name' => 'Roles',
+            ],
+
+            'account.billing' => [
+                'name' => 'Billing',
+            ],
+
+
+        ]
+    ]
+
+
+];
+
+
 return [
 
     'dashboard' => [

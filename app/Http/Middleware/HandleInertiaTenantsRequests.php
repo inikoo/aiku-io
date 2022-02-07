@@ -45,13 +45,18 @@ class HandleInertiaTenantsRequests extends Middleware
     public function share(Request $request): array
     {
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
-            'tenant' => app('currentTenant')->name,
+            'tenantName' => app('currentTenant')->name,
+            'tenantNickname' => app('currentTenant')->nickname,
 
             'appType'       => app('currentTenant')->division->slug,
             'modules'       => function () use ($request) {
                 /** @var \App\Models\Account\Division $division */
                 $division = app('currentTenant')->division;
-
+                return $division->getUserLayout($request->user());
+            },
+            'layout'       => function () use ($request) {
+                /** @var \App\Models\Account\Division $division */
+                $division = app('currentTenant')->division;
                 return $division->getUserLayout($request->user());
             },
             'currentModels' => fn() => [

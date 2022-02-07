@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Mon, 07 Feb 2022 14:24:56 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 08 Feb 2022 00:23:44 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\HumanResources;
+namespace App\Actions\Trade;
 
 
 use App\Actions\UI\WithInertia;
@@ -16,7 +16,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
-class ShowHumanResourcesDashboard
+class ShowTradeDashboard
 {
     use AsAction;
     use WithInertia;
@@ -29,7 +29,7 @@ class ShowHumanResourcesDashboard
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("employees.view");
+        return $request->user()->hasPermissionTo("shops.view");
     }
 
 
@@ -44,8 +44,8 @@ class ShowHumanResourcesDashboard
             'show-dashboard',
             [
                 'headerData' => [
-                    'module'      => 'human_resources',
-                    'title'       => __('Human resources dashboard'),
+                    'module'      => 'shops',
+                    'title'       => __('Shops dashboard'),
                     'breadcrumbs' => $this->getBreadcrumbs(),
 
                 ]
@@ -60,13 +60,13 @@ class ShowHumanResourcesDashboard
     }
 
 
-    public function getBreadcrumbs(): array
+    private function getBreadcrumbs(): array
     {
 
         return [
-            'human_resources.dashboard' => [
-                'route'           => 'human_resources.dashboard',
-                'name'            => __('Human resources'),
+            'warehouse' => [
+                'route'           => 'shops.dashboard',
+                'name'            => __('Shops dashboard'),
             ]
         ];
     }

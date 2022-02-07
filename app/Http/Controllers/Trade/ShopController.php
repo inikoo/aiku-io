@@ -10,14 +10,19 @@ namespace App\Http\Controllers\Trade;
 
 use App\Actions\Trade\Shop\IndexEcommerceShop;
 use App\Actions\Trade\Shop\ShowEcommerceShop;
+use App\Actions\Trade\ShowTradeDashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Trade\Shop;
 use Inertia\Response;
 
 
-class EcommerceController extends Controller
+class ShopController extends Controller
 {
 
+    public function dashboard(): Response
+    {
+        return ShowTradeDashboard::make()->asInertia();
+    }
 
     public function index(): Response
     {

@@ -64,7 +64,8 @@ class ShowEmployee
             $actionIcons['human_resources.employees.edit'] = [
                 'routeParameters' => $this->employee->id,
                 'name'            => __('Edit'),
-                'icon'            => ['fal', 'edit']
+                'icon'            => ['fal', 'edit'],
+                'primary'         => true,
             ];
         }
 
@@ -146,7 +147,7 @@ class ShowEmployee
 
 
                 ],
-                'model'       => $this->employee
+                'model'      => $this->employee
             ]
 
         );
@@ -167,7 +168,7 @@ class ShowEmployee
         return array_merge(
             (new IndexEmployee())->getBreadcrumbs(),
             [
-                'shop' => [
+                'human_resources.employees.show' => [
                     'route'           => 'human_resources.employees.show',
                     'routeParameters' => $this->employee->id,
                     'name'            => $this->employee->nickname,

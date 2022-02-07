@@ -9,6 +9,7 @@
 namespace App\Actions\HumanResources\Employee;
 
 use App\Actions\Account\Tenant\ShowTenant;
+use App\Actions\HumanResources\ShowHumanResourcesDashboard;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\HumanResources\EmployeeInertiaResource;
 use App\Http\Resources\HumanResources\EmployeeResource;
@@ -163,7 +164,7 @@ class IndexEmployee
     private function breadcrumbs(): array
     {
         return array_merge(
-            (new ShowTenant())->getBreadcrumbs(),
+            (new ShowHumanResourcesDashboard())->getBreadcrumbs(),
             [
                 'human_resources.employees.index' => [
                     'route'   => 'human_resources.employees.index',

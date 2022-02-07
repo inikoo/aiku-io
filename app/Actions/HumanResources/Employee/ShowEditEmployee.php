@@ -116,7 +116,7 @@ class ShowEditEmployee
         return array_merge(
             (new IndexEmployee())->getBreadcrumbs(),
             [
-                'employee' => [
+                'human_resources.employees.show' => [
                     'route'           => 'human_resources.employees.show',
                     'routeParameters' => $this->employee->id,
                     'name'            => $this->employee->nickname,

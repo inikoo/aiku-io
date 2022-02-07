@@ -12,6 +12,8 @@ use App\Http\Controllers\Trade\ShopController;
 
 
 Route::get('/', [ShopController::class, 'index'])->name('index');
+Route::get('/dashboard', [ShopController::class, 'dashboard'])->name('dashboard');
+
 Route::get('/customers', [CustomerController::class, 'indexInEcommerceShops'])->name('customers.index');
 Route::get('/orders', [ShopController::class, 'index'])->name('orders.index');
 

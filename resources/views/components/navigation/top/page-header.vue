@@ -8,42 +8,27 @@
 <template>
     <Head :title="headerData.pageTitle??headerData.title??''" />
     <div class="mb-6">
-        <div class="flex">
-            <div v-if="displayBreadcrumbs">
-                <nav class="sm:hidden" aria-label="Back">
-                    <a href="#" class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
-                        <ChevronLeftIcon class="flex-shrink-0 -ml-1 mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>
-                        {{ translations.back }}
-                    </a>
-                </nav>
-                <breadcrumbs :breadcrumbs="headerData['breadcrumbs']"/>
-            </div>
-            <div class="flex-grow ">
-                <div class="sm:hidden">
-                    <label for="tabs" class="sr-only">{{ translations.select_a_tab }}</label>
-                    <select id="tabs" name="tabs" class="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
-                        <option v-for="tab in sections" :key="tab.name" :selected="tab['current']">{{ tab.name }}</option>
-                    </select>
-                </div>
-                <div class="hidden sm:block">
-                    <nav class="flex space-x-4 justify-end" aria-label="Tabs">
-                        <Link v-for="tab in sections" :key="tab.name" :href="tab['href']"
-                              :class="[tab['current'] ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700', 'px-3 py-0 font-medium text-sm rounded-md']"
-                              :aria-current="tab['current'] ? 'page' : undefined">
-                            {{ tab.name }}
-                        </Link>
-                    </nav>
-                </div>
-            </div>
-        </div>
+
         <div class="mt-2 md:flex md:items-center md:justify-between">
             <div class="flex-1 min-w-0">
                 <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
                     <span v-bind:title="headerData.titleTitle">{{ headerData.title }}</span> <span v-bind:title="headerData.subTitleTitle" class="text-gray-700 text-lg sm:text-xl  ">{{ headerData.subTitle }}</span>
                 </h2>
 
-                <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-                    <div v-for="(meta,metaIdx) in headerData['meta']" :key="metaIdx" class="mt-2 flex items-center text-sm text-gray-500">
+
+                <div class="md:hidden mt-4 flex-shrink-0 flex ">
+                    <button v-for="(button,href) in headerData['actionIcons']" :key="button.name" type="button" :class="[button.primary ?
+                        'border-transparent text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' :
+                        'border-gray-300    text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+                        'mb-3 inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium']">
+                        <Link :href="route(href,button['routeParameters'])">{{ button.name }}</Link>
+                    </button>
+
+
+                </div>
+
+                <div class="mt-1 flex flex-row flex-wrap mt-0 -ml-6 ">
+                    <div v-for="(meta,metaIdx) in headerData['meta']" :key="metaIdx" class="mt-2 ml-6 flex items-center text-sm text-gray-500">
                         <Badge v-if="meta.badge" :data="meta" ></Badge>
                         <template v-else>
                             <span class="text-gray-400"><font-awesome-icon v-if="meta.icon" :icon="meta.icon"  :class="[meta.iconClass,'flex-shrink-0 mr-1.5 h-5 w-5']"  aria-hidden="true"/></span>
@@ -63,7 +48,10 @@
 
 
             </div>
-            <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+
+
+
+            <div class="hidden md:block mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
                 <span class="ml-2" v-for="(actionIcon,href) in headerData['actionIcons']" :key="actionIcon.name">
                     <Link :href="route(href,actionIcon['routeParameters'])" as="button">
                     <font-awesome-icon

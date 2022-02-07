@@ -25,45 +25,19 @@ class GetUserLayout
 
         $this->initialize($user);
 
+
         foreach ($modulesScaffolding as $moduleKey => $module) {
             $modulePermissions = $module['permissions'] ?? false;
 
 
-            if (
-
-                $this->canShow($moduleKey)
-                and (
-                    $module['type'] == 'modelOptions' or  $module['type'] == 'profile'  or  $module['type'] == 'dashboard'
-                    or
-                    (
-                        $modulePermissions and
-                        $user->hasAnyPermission($modulePermissions)
-                    )
-                )
-
-
-            ) {
+            if ($this->canShow($module)) {
+                /*
 
                 $module = $this->prepareModule($module);
 
 
 
-                $sections = [];
 
-                foreach (Arr::get($module, 'sections', []) as $sectionRoute => $section) {
-
-                    $sectionPermissions = $section['permissions'] ?? false;
-
-                    if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
-
-
-
-                        $sections[$sectionRoute] = [
-                            'icon' => Arr::get($section, 'icon', ['fal', 'angle-right']),
-                            'name' => Arr::get($section, 'name'),
-                        ];
-                    }
-                }
 
                 $layout[$moduleKey] = array_merge(
                     Arr::except($module, ['sections', 'id']),
@@ -71,6 +45,30 @@ class GetUserLayout
 
 
                 );
+                */
+
+
+                $sections = [];
+
+                foreach (Arr::get($module, 'sections', []) as $sectionRoute => $section) {
+                    $sectionPermissions = $section['permissions'] ?? false;
+
+                    if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
+                        $sections[$sectionRoute] = [
+                            'icon'      => Arr::get($section, 'icon', ['fal', 'angle-right']),
+                            'name'      => __(Arr::get($section, 'name')),
+                            'shortName' => __(Arr::get($section, 'shortName')),
+                        ];
+                    }
+                }
+
+
+                $layout[] = [
+                    'name'      => __($module['name']),
+                    'shortName' => __($module['shortName']),
+                    'route'     => $module['route'],
+                    'sections'  => $sections
+                ];
             }
         }
 

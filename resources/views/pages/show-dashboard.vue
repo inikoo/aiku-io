@@ -7,7 +7,7 @@
   -->
 
 <template layout="app">
-    <page-header :headerData="headerData" />
+    <PageHeader :headerData="headerData"/>
 </template>
 
 <script setup>

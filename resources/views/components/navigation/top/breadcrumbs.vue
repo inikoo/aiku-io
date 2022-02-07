@@ -6,84 +6,38 @@
   -->
 
 <template>
-    <nav class="hidden sm:flex" aria-label="Breadcrumb">
-        <ol role="list" class="flex items-center space-x-2">
-            <li>
-                <div>
-                    <Link
-                        :href="route('dashboard.index')"
-                        class="text-gray-400 hover:text-gray-500"
-                    >
-                        <font-awesome-icon
-                            :icon="['fal', 'tachometer-alt-fast']"
-                            class="flex-shrink-0 h-4 w-4"
-                            aria-hidden="true"
-                        />
-                        <span class="sr-only">{{ translations.dashboard }}</span>
-                    </Link>
-                </div>
-            </li>
-            <li v-for="(breadcrumb,breadcrumbIdx) in  breadcrumbs" :key="breadcrumbIdx">
-                <div class="flex items-center">
-                    <ChevronRightIcon
-                        class="flex-shrink-0 h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                    />
+    <div v-if="displayBreadcrumbs">
 
-
-
-                    <Link
-                        :href="route(breadcrumb.route, breadcrumb['routeParameters'])"
-                        class="ml-2 text-sm font-medium text-gray-500 hover:text-gray-700"
-                        :aria-current="(breadcrumbIdx !== Object.keys(breadcrumbs).length - 1)?'page':undefined"
-
-                    >
-                     <span v-if="breadcrumb.model">
-                       <font-awesome-icon
-                            v-if="breadcrumb.model.icon"
-                            :icon="breadcrumb.model.icon"
-                            class="flex-shrink-0 h-4 w-4 mr-1"
-                            :title="breadcrumb.model.label"
-                            aria-hidden="true"
-                        />
-                        <span v-else>
-                            {{breadcrumb.model.label}}:
-                        </span>
-                    </span>
-
-                    {{ breadcrumb.name }}</Link>
-
-                    <span
-                        class="ml-1 text-sm font-medium text-gray-400"
-                        v-if="breadcrumb.suffix"
-                    >{{ breadcrumb.suffix }}</span>
-                </div>
-            </li>
-        </ol>
-    </nav>
+    <nav class="hidden sm:flex  bg-white border-b h-8 border-gray-200 " aria-label="Breadcrumb">
+    <ol role="list" class=" w-full mx-auto px-4 flex space-x-4 sm:px-6 lg:px-8">
+      <li class="flex">
+        <div class="flex items-center">
+          <Link :href="route('dashboard.index')" class="text-gray-400 hover:text-gray-500">
+            <HomeIcon class="flex-shrink-0 h-5 w-5" aria-hidden="true" />
+            <span class="sr-only">Home</span>
+          </Link>
+        </div>
+      </li>
+      <li v-for="page in breadcrumbs" :key="page.name" class="flex">
+        <div class="flex items-center">
+            <ChevronRightIcon class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+            <Link :href="route(page.route,page.routeParameters)" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700" :aria-current="page.current ? 'page' : undefined">{{ page.name }}</Link>
+        </div>
+      </li>
+    </ol>
+  </nav>
+    </div>
 </template>
 
-<script>
-import { ChevronRightIcon, HomeIcon } from '@heroicons/vue/solid';
+<script setup>
+import { HomeIcon ,ChevronRightIcon} from '@heroicons/vue/solid'
 import { Link } from '@inertiajs/inertia-vue3';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { inject } from 'vue'
+import {inject} from 'vue';
+
+const props = defineProps(['breadcrumbs']);
+const translations = inject('translations')
+
+let displayBreadcrumbs = Object.keys(props.breadcrumbs).length > 0;
 
 
-export default {
-    props: ['breadcrumbs'],
-    components: {
-        ChevronRightIcon,
-        HomeIcon,
-        Link, FontAwesomeIcon,
-    },
-    setup() {
-
-        const translations = inject('translations')
-        return {
-            translations,
-        };
-    }
-
-};
 </script>

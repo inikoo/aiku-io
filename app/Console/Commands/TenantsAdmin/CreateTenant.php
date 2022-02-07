@@ -20,6 +20,7 @@ use App\Models\Assets\Language;
 use App\Models\Assets\Timezone;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -95,7 +96,7 @@ class CreateTenant extends Command
 
 
         $tenantData = [
-            'domain'      => $this->argument('domain'),
+            'domain'      => $this->argument('domain').(App::environment('local')?'.test':''),
             'database'    => $database,
             'name'        => $this->argument('name'),
             'email'       => $this->argument('email'),

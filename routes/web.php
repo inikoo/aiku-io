@@ -52,6 +52,10 @@ Route::prefix('account')->name('account.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/account.php');
 
+Route::prefix('shops')->name('shops.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__.'/web/shops.php');
+/*
 Route::prefix('ecommerce')->name('ecommerce_shops.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/ecommerce_shops.php');
@@ -59,6 +63,7 @@ Route::prefix('ecommerce')->name('ecommerce_shops.')
 Route::prefix('fulfilment_houses')->name('fulfilment_houses.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/fulfilment_houses.php');
+*/
 
 Route::prefix('websites')->name('websites.')
     ->middleware(['auth', 'verified'])
@@ -83,6 +88,10 @@ Route::prefix('procurement')->name('procurement.')
 Route::prefix('financials')->name('financials.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/financials.php');
+
+Route::prefix('reports')->name('reports.')
+    ->middleware(['auth', 'verified'])
+    ->group(__DIR__.'/web/reports.php');
 
 Route::middleware(['auth', 'verified'])->get('/profile', function () {
     return Inertia::render('Profile');
