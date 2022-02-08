@@ -8,8 +8,9 @@
 
 namespace App\Http\Controllers\Trade;
 
-use App\Actions\Trade\Shop\IndexEcommerceShop;
+use App\Actions\Trade\Shop\IndexShop;
 use App\Actions\Trade\Shop\ShowEcommerceShop;
+use App\Actions\Trade\Shop\ShowShop;
 use App\Actions\Trade\ShowTradeDashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Trade\Shop;
@@ -26,12 +27,12 @@ class ShopController extends Controller
 
     public function index(): Response
     {
-        return IndexEcommerceShop::make()->asInertia();
+        return IndexShop::make()->asInertia();
     }
 
     public function show(Shop $shop): Response
     {
-        return ShowEcommerceShop::make()->asInertia($shop);
+        return ShowShop::make()->asInertia($shop);
     }
 
 

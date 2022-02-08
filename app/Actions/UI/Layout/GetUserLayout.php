@@ -50,20 +50,24 @@ class GetUserLayout
 
                 $sections = [];
 
-                foreach (Arr::get($module, 'sections', []) as $sectionRoute => $section) {
+                foreach ($this->getSections($module) as $sectionRoute => $section) {
                     $sectionPermissions = $section['permissions'] ?? false;
 
                     if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
                         $sections[$sectionRoute] = [
                             'icon'      => Arr::get($section, 'icon', ['fal', 'angle-right']),
                             'name'      => __(Arr::get($section, 'name')),
-                            'shortName' => __(Arr::get($section, 'shortName')),
+                            'shortName' => __(Arr::get($section, 'shortName', Arr::get($section, 'name'))),
                         ];
+                        if (Arr::get($section, 'metaSection')) {
+                            $sections[$sectionRoute]['metaSection'] = Arr::get($section, 'metaSection');
+                        }
                     }
                 }
 
 
                 $layout[] = [
+                    'code'      => $module['code'],
                     'name'      => __($module['name']),
                     'shortName' => __($module['shortName']),
                     'route'     => $module['route'],
@@ -84,6 +88,11 @@ class GetUserLayout
     protected function prepareModule($module)
     {
         return $module;
+    }
+
+    protected function getSections($module)
+    {
+        return Arr::get($module, 'sections', []);
     }
 
 

@@ -12,6 +12,7 @@ use App\Models\Inventory\Warehouse;
 use App\Models\Production\Workshop;
 use App\Models\Trade\Shop;
 use App\Models\Web\Website;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
@@ -57,6 +58,57 @@ class GetUserLayoutEcommerce extends GetUserLayout
             return $user->hasPermissionTo("websites.$workshop->id.view");
         });
     }
+
+
+    protected function getSections($module)
+    {
+        if ($module['code'] == 'shops') {
+
+
+            return [
+
+
+                'shops.dashboard'       => [
+                    'metaSection' => 'shops',
+                    'name'  => __('Shops Dashboard'),
+                    'shortName'  => __('Dashboard'),
+                    'icon'  => ['fal', 'tachometer-alt-fast'],
+                ],
+                'shops.index'           => [
+                    'metaSection' => 'shops',
+                    'name'  => __('Shops Index'),
+                    'shortName'  => __('Shops'),
+                    'icon'  => ['fal', 'bars'],
+                ],
+                'shops.customers.index' => [
+                    'metaSection' => 'shops',
+                    'name'  => __('Customers'),
+                    'icon'  => ['fal', 'layer-group'],
+                ],
+                'shops.orders.index'    => [
+                    'metaSection' => 'shops',
+                    'name'  => __('Orders'),
+                    'icon'  => ['fal', 'layer-group'],
+                ],
+
+
+                'shops.show.customers.index' => [
+                    'metaSection' => 'shop',
+                    'name'  => __('Customers'),
+                    'icon'  => ['fal', 'user'],
+                ],
+                'shops.show.orders.index'    => [
+                    'metaSection' => 'shop',
+                    'name'  => __('Orders'),
+                    'icon'  => ['fal', 'shopping-cart'],
+                ],
+
+            ];
+        }
+
+        return Arr::get($module, 'sections', []);
+    }
+
 
     #[Pure] protected function canShow($moduleKey): bool
     {

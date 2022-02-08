@@ -108,34 +108,6 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-// Aux icons
-import { faAngleDown, faBars } from '@/private/pro-light-svg-icons';
-
-library.add(faAngleDown, faBars);
-// Module icons
-import {
-    faTachometerAltFast, faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
-    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
-    faUserSecret,faHandHoldingBox
-} from '@/private/pro-light-svg-icons';
-
-library.add(faTachometerAltFast, faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
-    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
-    faUserSecret,faHandHoldingBox);
-
-// For employee model
-import { faTasks } from '@/private/pro-light-svg-icons';
-library.add(faTasks);
-
-// For inventory
-import { faBox } from '@/private/pro-light-svg-icons';
-library.add(faBox);
-
-// For user model
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-library.add(faCheckCircle, faTimesCircle);
-import { faUserAlien } from '@/private/pro-light-svg-icons';
-library.add(faUserAlien);
 
 
 import { Link } from '@inertiajs/inertia-vue3';

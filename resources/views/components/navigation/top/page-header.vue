@@ -68,7 +68,6 @@
 
 <script>
 import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/vue/solid';
-import Breadcrumbs from './breadcrumbs.vue';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {Link} from '@inertiajs/inertia-vue3';
 import Badge from '../../elements/badge.vue';
@@ -80,7 +79,7 @@ export default {
     components: {
         Badge,
         ChevronLeftIcon,
-        ChevronRightIcon, Breadcrumbs, FontAwesomeIcon, Link,Head
+        ChevronRightIcon, FontAwesomeIcon, Link,Head
     },
     setup(props) {
 
@@ -101,9 +100,8 @@ export default {
         }
         */
 
-        let displayBreadcrumbs = Object.keys(props.headerData['breadcrumbs']).length > 0;
         return {
-            sections, displayBreadcrumbs,translations
+            sections,translations
         };
     }
 

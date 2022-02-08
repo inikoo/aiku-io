@@ -43,11 +43,10 @@ class ShowTradeDashboard
         return Inertia::render(
             'show-dashboard',
             [
-                'headerData' => [
-                    'module'      => 'shops',
-                    'title'       => __('Shops dashboard'),
-                    'breadcrumbs' => $this->getBreadcrumbs(),
-
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'navLocation' => ['module' => 'shops', 'metaSection' => 'shops', 'sectionRoot' => 'shops.dashboard'],
+                'headerData'  => [
+                    'title' => __('Shops dashboard'),
                 ]
             ]
 
@@ -62,11 +61,10 @@ class ShowTradeDashboard
 
     private function getBreadcrumbs(): array
     {
-
         return [
             'warehouse' => [
-                'route'           => 'shops.dashboard',
-                'name'            => __('Shops dashboard'),
+                'route' => 'shops.dashboard',
+                'name'  => __('Shops dashboard'),
             ]
         ];
     }

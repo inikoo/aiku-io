@@ -9,15 +9,15 @@
 
 return [
     [
-        'id'        => 'dashboard',
+        'code'        => 'dashboard',
         'route'     => 'dashboard.index',
-        'name'      => 'Dashboard',
-        'shortName' => 'Dashboard',
+        'name'      => 'Home',
+        'shortName' => 'Home',
         'icon'      => ['fal', 'tachometer-alt-fast'],
         'sections'  => []
     ],
     [
-        'id'        => 'shops',
+        'code'        => 'shops',
         'route'     => 'shops.dashboard',
         'name'      => 'Shops',
         'shortName' => 'Shops',
@@ -25,7 +25,7 @@ return [
         'sections'  => []
     ],
     [
-        'id'        => 'inventory',
+        'code'        => 'inventory',
         'route'     => 'inventory.dashboard',
         'name'      => 'Inventory',
         'shortName' => 'Inventory',
@@ -33,7 +33,7 @@ return [
         'sections'  => []
     ],
     [
-        'id'        => 'procurement',
+        'code'        => 'procurement',
         'route'     => 'procurement.dashboard',
         'name'      => 'Procurement',
         'shortName' => 'Procurement',
@@ -41,7 +41,7 @@ return [
         'sections'  => []
     ],
     [
-        'id'          => 'financials',
+        'code'          => 'financials',
         'route'       => 'financials.dashboard',
         'permissions' => ['financials.view'],
         'name'        => 'Financials',
@@ -51,7 +51,7 @@ return [
         ]
     ],
     [
-        'id'          => 'human_resources',
+        'code'          => 'human_resources',
         'route'       => 'human_resources.dashboard',
         'permissions' => ['employees.view'],
         'name'        => 'Human Resources',
@@ -71,7 +71,7 @@ return [
         ]
     ],
     [
-        'id'        => 'reports',
+        'code'        => 'reports',
         'route'     => 'reports.index',
         'name'      => 'Reports',
         'shortName' => 'Reports',
@@ -80,7 +80,7 @@ return [
         ]
     ],
     'account'         => [
-        'id'          => 'account',
+        'code'          => 'account',
         'route'       => 'account.show',
         'permissions' => ['account.users.view'],
         'name'        => 'Account',

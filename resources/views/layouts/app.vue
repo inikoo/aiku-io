@@ -145,11 +145,14 @@
             </TransitionRoot>
 
             <!-- Static sidebar for desktop -->
-            <sidebar :current-side-route="$page.props.currentSideRoute"></sidebar>
+            <sidebar 
+            :nav-location="$page.props.navLocation??[]" 
+            :current-route="route().current()" 
+            :currentModels="currentModels"></sidebar>
 
             <div class="flex flex-col min-w-0 flex-1 overflow-hidden">
 
-                <breadcrumbs :breadcrumbs="$page.props.headerData.breadcrumbs"></breadcrumbs>
+                <breadcrumbs :breadcrumbs="$page.props.breadcrumbs"></breadcrumbs>
 
 
 
@@ -204,8 +207,8 @@ import { faDiceD10 } from '@/private/pro-duotone-svg-icons';
 library.add(faDiceD10);
 
 // App icons
-import { faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup } from '@/private/pro-light-svg-icons';
-library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup);
+import { faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars } from '@/private/pro-light-svg-icons';
+library.add(faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars);
 
 import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
 library.add(faBirthdayCake, faMars, faVenus);
@@ -216,6 +219,34 @@ import Avatar from "vue-boring-avatars";
 import NavbarDark from '../components/navigation/top/navbar-dark.vue';
 import Sidebar from '../components/navigation/left/sidebar.vue';
 import Breadcrumbs from '../components/navigation/top/breadcrumbs.vue';
+
+
+// Module icons
+import {
+     faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
+    faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
+    faUserSecret,faHandHoldingBox,faUser,faShoppingCart
+} from '@/private/pro-light-svg-icons';
+
+library.add( faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
+            faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
+            faUserSecret,faHandHoldingBox,faUser,faShoppingCart);
+
+// For employee model
+import { faTasks } from '@/private/pro-light-svg-icons';
+library.add(faTasks);
+
+// For inventory
+import { faBox } from '@/private/pro-light-svg-icons';
+library.add(faBox);
+
+// For user model
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+library.add(faCheckCircle, faTimesCircle);
+import { faUserAlien } from '@/private/pro-light-svg-icons';
+library.add(faUserAlien);
+
+
 
 // Section icons
 let currentModels;

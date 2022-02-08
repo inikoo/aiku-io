@@ -13,10 +13,13 @@ Route::get('/', function () {
     return Inertia::render(
         'show-dashboard',
         [
+            'breadcrumbs' => [],
+            'navLocation' => ['module' => 'dashboard'],
+
             'headerData' => [
-                'module' => 'dashboard',
+
                 'title' => __('Dashboard'),
-                'breadcrumbs' => []
+
             ]
         ]
     );
