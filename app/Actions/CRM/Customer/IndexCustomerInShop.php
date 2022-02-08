@@ -9,49 +9,36 @@
 namespace App\Actions\CRM\Customer;
 
 
-use App\Models\CRM\Customer;
+use App\Actions\Trade\Shop\ShowShop;
 use App\Models\Trade\Shop;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
-use Spatie\QueryBuilder\QueryBuilder;
-
-use App\Actions\UI\WithInertia;
 
 use function __;
 
 
 /**
- * @property string $title
+ * @property Shop $shop
  */
 class IndexCustomerInShop extends IndexCustomer
 {
-    use AsAction;
-    use WithInertia;
+
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("shops.customers.view") || $request->user()->hasPermissionTo("shops.customers.{$this->parentParameters->id}.view");
+        return $request->user()->hasPermissionTo("shops.customers.view") || $request->user()->hasPermissionTo("shops.customers.{$this->shop->id}.view");
     }
 
 
-    public function handle(): LengthAwarePaginator
-    {
-        return QueryBuilder::for(Customer::class)
-            ->select($this->select)
-            ->where('shop_id', $this->parentParameters->id)
-            ->defaultSorts('-id')
-            ->allowedSorts(['name', 'id','location'])
-            ->paginate()
-            ->withQueryString();
+    public function queryConditions($query){
+        return $query->where('shop_id',$this->shop->id)->select($this->select);
     }
 
 
     public function asInertia(Shop $shop)
     {
-        $this->set('parentParameters', $shop)->set('parent','shop');
+        $this->set('shop', $shop)->set('parent','shop');
         $this->validateAttributes();
-
+        unset($this->columns['shop_code']);
         return $this->getInertia();
 
 
@@ -62,7 +49,10 @@ class IndexCustomerInShop extends IndexCustomer
     {
         $request->merge(
             [
-                'title' => __('Customers in :shop', ['shop' => $this->parentParameters->code])
+                'title' => __('Customers in :shop', ['shop' => $this->shop->code]),
+                'breadcrumbs'=>$this->getBreadcrumbs($this->shop),
+                'sectionRoot'=>'shops.show.customers.index',
+                'metaSection' => 'shop'
 
 
             ]
@@ -71,8 +61,18 @@ class IndexCustomerInShop extends IndexCustomer
 
     }
 
-
-
+    public function getBreadcrumbs(Shop $shop): array
+    {
+        return array_merge(
+            (new ShowShop())->getBreadcrumbs($shop),
+            [
+                'shop.customers.index' => [
+                    'route'   => 'shops.customers.index',
+                    'name'    => __('customers'),
+                ],
+            ]
+        );
+    }
 
 
 

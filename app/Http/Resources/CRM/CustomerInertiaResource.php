@@ -21,11 +21,10 @@ class CustomerInertiaResource extends JsonResource
         /** @var \App\Models\CRM\Customer $customer */
         $customer = $this;
 
-
         return [
             'id'              => $customer->id,
             'shop_id'         => $customer->shop_id,
-            'shop_code'       => $this->whenLoaded('shop', $customer->shop->code),
+            'shop_code'       => $customer->shop_code,
             'customer_number' => sprintf('%05d', $customer->id),
             'name'            => $customer->name,
             'location'        => $customer->location

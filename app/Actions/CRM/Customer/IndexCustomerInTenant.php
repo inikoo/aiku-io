@@ -9,127 +9,99 @@
 namespace App\Actions\CRM\Customer;
 
 
-use App\Models\CRM\Customer;
-use App\Models\Inventory\Stock;
-use App\Models\Inventory\Warehouse;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+use App\Actions\Trade\Shop\IndexShop;
+use App\Models\Trade\Shop;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Spatie\QueryBuilder\QueryBuilder;
+
 
 use App\Actions\UI\WithInertia;
 
 use function __;
-use function data_set;
 
-
-class IndexCustomerInTenant
+/**
+ * @property \Illuminate\Support\Collection $allowed_shops
+ * @property bool $canViewAll
+ */
+class IndexCustomerInTenant extends IndexCustomer
 {
     use AsAction;
     use WithInertia;
 
 
-    public function handle(): LengthAwarePaginator
+    public function authorize(ActionRequest $request): bool
     {
-        return QueryBuilder::for(Customer::class)
-            ->select('id', 'shop_id', 'name', 'location', '')
-            ->with('shop')
-            ->allowedSorts(['name', 'id', 'location'])
-            ->paginate()
-            ->withQueryString();
+        $canView = $request->user()->hasPermissionTo("shops.customers.view");
+        $this->canViewAll=$canView;
+        if (!$canView) {
+
+
+
+
+            $this->allowed_shops = Shop::withTrashed()->get()->pluck('id')->filter(function ($shopID) use ($request) {
+                $request->user()->can("shops.customers.$shopID.view");
+            });
+
+
+
+            $canView = $this->allowed_shops->count()>0;
+        }
+
+        return $canView;
+    }
+    public function queryConditions($query){
+
+
+
+
+        $select=array_merge(array_diff( $this->select, ['id','name'] ), ['customers.id as id', 'shops.code as shop_code','customers.name as name']);
+
+        if(!$this->canViewAll){
+            $query->whereIn('shop_id',$this->allowed_shops->all()) ;
+        }
+        $query->select($select)->leftJoin('shops','customers.shop_id','=','shops.id');
+
+        return $query;
     }
 
-
-    public function asInertia(string $parent)
+    public function asInertia()
     {
-        $this->set('parent',$parent);
-
+        $this->set('canViewAll',false);
+        $this->set('allowed_shops',[]);
         $this->validateAttributes();
 
-        $breadcrumbs = $this->get('breadcrumbs');
-
-        return Inertia::render(
-            'index-model',
-            [
-                'headerData' => [
-                    'module'      => 'shops',
-                    'title'       => $this->get('title'),
-                    'breadcrumbs' => data_set($breadcrumbs, "index.current", true),
-
-                ],
-                'dataTable'  => [
-                    'records' => $this->handle(),
-                    'columns' => [
-                        'code'     => [
-                            'sort'  => 'code',
-                            'label' => __('Code'),
-                            'href'  => [
-                                'route'  => 'inventory.stocks.show',
-                                'column' => 'id'
-                            ],
-                        ],
-                        'name'     => [
-                            'sort'  => 'description',
-                            'label' => __('Description')
-                        ],
-                        'location'                   => [
-                            'label' => __('Location'),
-                            'location'=>true,
-                        ],
-
-                    ]
-                ]
-
-
-            ]
-        )->table(function (InertiaTable $table) {
-            $table->addSearchRows(
-                [
-
-
-                ]
-            );
-        });
+        return $this->getInertia();
     }
+
 
     public function prepareForValidation(ActionRequest $request): void
     {
         $request->merge(
             [
-                'title' => match ($this->routeName) {
-                    'ecommerce_shops.show.customers.index' => __('Customers', ['store' => $this->parent->code]),
-                    default => __('Customers'),
-                }
-
-
+                'title' => __('Customers'),
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'sectionRoot' => 'shops.customers.index',
+                'metaSection' => 'shops'
             ]
         );
         $this->fillFromRequest($request);
-
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-
-    private function breadcrumbs(): array
-    {
-        return [
-            'index' => [
-                'route'   => 'warehouses.index',
-                'name'    => $this->get('title'),
-                'current' => false
-            ],
-        ];
-    }
 
     public function getBreadcrumbs(): array
     {
-        $this->validateAttributes();
-
-        return $this->breadcrumbs();
+        return array_merge(
+            (new IndexShop())->getBreadcrumbs(),
+            [
+                'shop.customers.index' => [
+                    'route' => 'shops.customers.index',
+                    'name'  => __('Customers'),
+                ],
+            ]
+        );
     }
+
+
 
 
 }

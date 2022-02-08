@@ -24,13 +24,9 @@ class CustomerController extends Controller
 
     public function index(): Response
     {
-        return IndexCustomerInTenant::make()->asInertia(parent: 'tenant');
+        return IndexCustomerInTenant::make()->asInertia();
     }
 
-    public function indexInEcommerceShops(): Response
-    {
-        return IndexCustomerInTenant::make()->asInertia(parent: 'ecommerce_shops');
-    }
 
 
     public function indexInShop(Shop $shop)
