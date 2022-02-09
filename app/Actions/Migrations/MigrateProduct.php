@@ -75,7 +75,7 @@ class MigrateProduct extends MigrateModel
                 'data'              => $data,
                 'settings'          => $settings,
                 'created_at'        => $created_at,
-                'aurora_product_id' => $this->auModel->data->{'Product ID'}
+                'aurora_id' => $this->auModel->data->{'Product ID'}
             ]
         );
 

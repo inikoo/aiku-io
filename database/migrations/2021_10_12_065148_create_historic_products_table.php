@@ -29,8 +29,7 @@ class CreateHistoricProductsTable extends Migration
             $table->unsignedDecimal('cbm',  18,4)->nullable()->comment('to be deleted');
             $table->unsignedSmallInteger('currency_id')->nullable();
             //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
-            $table->unsignedBigInteger('aurora_product_id')->nullable()->unique();
-            $table->unsignedBigInteger('aurora_supplier_product_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
         });
     }

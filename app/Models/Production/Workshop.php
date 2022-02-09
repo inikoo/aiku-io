@@ -8,10 +8,9 @@
 
 namespace App\Models\Production;
 
-use App\Models\Trade\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -44,9 +43,10 @@ class Workshop extends Model implements Auditable
         return $this->morphTo();
     }
 
-    public function products(): MorphMany
+
+    public function workshopProducts(): HasMany
     {
-        return $this->morphMany(Product::class, 'vendor');
+        return $this->hasMany(WorkshopProduct::class);
     }
 
 }

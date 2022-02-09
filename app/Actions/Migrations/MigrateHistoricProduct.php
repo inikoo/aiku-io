@@ -55,7 +55,7 @@ class MigrateHistoricProduct extends MigrateModel
 
                 'created_at'        => $this->auModel->data->{'Product History Valid From'},
                 'deleted_at'        => $deleted_at,
-                'aurora_product_id' => $this->auModel->data->{'Product Key'}
+                'aurora_id' => $this->auModel->data->{'Product Key'}
             ]
         );
 
@@ -81,7 +81,7 @@ class MigrateHistoricProduct extends MigrateModel
 
     public function getParent(): Product
     {
-        return Product::withTrashed()->firstWhere('aurora_product_id', $this->auModel->data->{'Product ID'});
+        return Product::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Product ID'});
     }
 
     public function authorize(ActionRequest $request): bool

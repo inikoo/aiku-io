@@ -70,9 +70,10 @@ class Shop extends Model implements Auditable
         return $this->hasMany(Customer::class);
     }
 
-    public function products(): MorphMany
+
+    public function products(): HasMany
     {
-        return $this->morphMany(Product::class, 'vendor');
+        return $this->hasMany(Product::class);
     }
 
     public function shippingSchema(): HasMany

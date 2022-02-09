@@ -12,10 +12,10 @@ use App\Actions\Hydrators\HydrateAgent;
 use App\Models\Helpers\Attachment;
 use App\Models\Media\Image;
 use App\Models\System\User;
-use App\Models\Trade\Product;
 use App\Models\Traits\HasAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -93,9 +93,9 @@ class Supplier extends Model implements Auditable
         return $this->morphTo();
     }
 
-    public function products(): MorphMany
+    public function supplierProducts(): HasMany
     {
-        return $this->morphMany(Product::class, 'vendor');
+        return $this->hasMany(SupplierProduct::class);
     }
 
     public function user(): MorphOne

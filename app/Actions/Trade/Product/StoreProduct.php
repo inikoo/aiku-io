@@ -18,17 +18,27 @@ class StoreProduct
 {
     use AsAction;
 
-    public function handle(Shop|Supplier|Workshop $vendor, array $data): ActionResult
+    public function handle(Shop $shop, array $data): ActionResult
     {
-        $res  = new ActionResult();
-        /** @var \App\Models\Trade\Product $product */
+        $res = new ActionResult();
 
-        $product= $vendor->products()->create($data);
+        /** @var \App\Models\Trade\Product $product */
+        $product = $shop->products()->create($data);
+
+        $product->salesStats()->create([
+                                           'scope' => 'sales'
+                                       ]);
+        if ($product->shop->currency_id != app('currentTenant')->currency_id) {
+            $product->salesStats()->create([
+                                               'scope' => 'sales-tenant-currency'
+                                           ]);
+        }
+
 
         $res->model    = $product;
         $res->model_id = $product->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';
-        return $res;
 
+        return $res;
     }
 }

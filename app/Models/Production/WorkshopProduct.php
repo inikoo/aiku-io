@@ -1,14 +1,16 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Fri, 29 Oct 2021 15:17:17 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Wed, 09 Feb 2022 03:06:36 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Trade;
+namespace App\Models\Production;
 
 use App\Models\Media\Image;
+use App\Models\SalesStats;
+use App\Models\Trade\TradeUnit;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,16 +18,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
-
 /**
- * @mixin IdeHelperProduct
+ * @mixin IdeHelperWorkshopProduct
  */
-class Product extends Model implements Auditable
+class WorkshopProduct extends Model implements Auditable
 {
     use HasSlug;
     use \OwenIt\Auditing\Auditable;
@@ -43,20 +44,17 @@ class Product extends Model implements Auditable
         'data' => '{}',
         'settings' => '{}',
     ];
+    protected $guarded = [];
+
+    public function workshop(): BelongsTo
+    {
+        return $this->belongsTo(Workshop::class)->withTrashed();
+    }
 
     public function getSlugSourceAttribute(): string
     {
-        return $this->code.'-shp-'.$this->shop->code;
+        return $this->code.'-prod-'.$this->workshop->code;
     }
-
-    protected $guarded = [];
-
-
-    public function shop(): BelongsTo
-    {
-        return $this->belongsTo(Shop::class);
-    }
-
 
     public function images(): MorphMany
     {
@@ -65,17 +63,18 @@ class Product extends Model implements Auditable
 
     public function historicRecords(): HasMany
     {
-        return $this->hasMany(HistoricProduct::class)->withTrashed();
-    }
-
-    public function setPriceAttribute($val)
-    {
-        $this->attributes['price'] = sprintf('%.2f', $val);
+        return $this->hasMany(HistoricWorkshopProduct::class)->withTrashed();
     }
 
     public function tradeUnits(): BelongsToMany
     {
         return $this->belongsToMany(TradeUnit::class)->withPivot('quantity')->withTimestamps();
     }
+
+    public function salesStats(): MorphOne
+    {
+        return $this->morphOne(SalesStats::class, 'model')->where('scope','sales-tenant-currency');
+    }
+
 
 }

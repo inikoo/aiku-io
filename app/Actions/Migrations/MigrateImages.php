@@ -8,6 +8,8 @@ use App\Models\HumanResources\Employee;
 use App\Models\Inventory\Stock;
 use App\Models\Media\CommunalImage;
 use App\Models\Media\Image;
+use App\Models\Procurement\SupplierProduct;
+use App\Models\Production\WorkshopProduct;
 use App\Models\System\User;
 use App\Models\Trade\Product;
 use Exception;
@@ -19,7 +21,7 @@ class MigrateImages
 {
     use AsAction;
 
-    public function handle(Product|User|Employee|Supplier|Agent|Stock $model, $imagesData)
+    public function handle(WorkshopProduct|SupplierProduct|Product|User|Employee|Supplier|Agent|Stock $model, $imagesData)
     {
         $old = [];
         $new = [];

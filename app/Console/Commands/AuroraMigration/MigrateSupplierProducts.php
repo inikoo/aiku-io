@@ -11,6 +11,8 @@ namespace App\Console\Commands\AuroraMigration;
 
 use App\Actions\Migrations\MigrateSupplierHistoricProduct;
 use App\Actions\Migrations\MigrateSupplierProduct;
+use App\Actions\Migrations\MigrateWorkshopHistoricProduct;
+use App\Actions\Migrations\MigrateWorkshopProduct;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -30,9 +32,21 @@ class MigrateSupplierProducts extends MigrateAurora
     protected function reset()
     {
         DB::connection('aurora')->table('Supplier Part Dimension')
-            ->update(['aiku_id' => null]);
+            ->update(
+                [
+                    'aiku_supplier_id' => null,
+                    'aiku_workshop_id' => null,
+
+                ]
+
+            );
         DB::connection('aurora')->table('Supplier Part Historic Dimension')
-            ->update(['aiku_id' => null]);
+            ->update(
+                [
+                    'aiku_supplier_historic_product_id' => null,
+                    'aiku_workshop_historic_product_id' => null
+                ]
+            );
         DB::connection('aurora')->table('Image Subject Bridge')->where('Image Subject Object', 'Supplier Part')
             ->update(['aiku_id' => null]);
     }
@@ -47,21 +61,35 @@ class MigrateSupplierProducts extends MigrateAurora
 
     protected function migrate(Tenant $tenant)
     {
-        DB::connection('aurora')
-            ->table('Supplier Part Dimension')
-            //  ->leftJoin('Part Dimension', 'Supplier Part Part SKU', '=', 'Part SKU')
-            ->orderBy('Supplier Part Key')
-            ->chunk(100, function ($chunk) use ($tenant) {
-                foreach ($chunk as $auroraData) {
-                    $result = MigrateSupplierProduct::run($auroraData);
-                    $this->recordAction($tenant, $result);
+        foreach (DB::connection('aurora')->table('Supplier Dimension')->get() as $auData) {
 
-                    foreach (DB::connection('aurora')->table('Supplier Part Historic Dimension')->where('Supplier Part Historic Supplier Part Key', '=', $auroraData->{'Supplier Part Key'})->get() as $auroraHistoricData) {
-                        $result = MigrateSupplierHistoricProduct::run($auroraHistoricData);
-                        $this->recordAction($tenant, $result);
+
+            DB::connection('aurora')
+                ->table('Supplier Part Dimension')
+                ->where('Supplier Part Supplier Key', $auData->{'Supplier Key'})
+                ->orderBy('Supplier Part Key')
+                ->chunk(100, function ($chunk) use ($tenant, $auData) {
+                    foreach ($chunk as $auroraData) {
+                        if ($auData->{'Supplier Production'} == 'Yes') {
+                            $result = MigrateWorkshopProduct::run($auroraData);
+                            $this->recordAction($tenant, $result);
+
+                            foreach (DB::connection('aurora')->table('Supplier Part Historic Dimension')->where('Supplier Part Historic Supplier Part Key', '=', $auroraData->{'Supplier Part Key'})->get() as $auroraHistoricData) {
+                                $result = MigrateWorkshopHistoricProduct::run($auroraHistoricData);
+                                $this->recordAction($tenant, $result);
+                            }
+                        } else {
+                            $result = MigrateSupplierProduct::run($auroraData);
+                            $this->recordAction($tenant, $result);
+
+                            foreach (DB::connection('aurora')->table('Supplier Part Historic Dimension')->where('Supplier Part Historic Supplier Part Key', '=', $auroraData->{'Supplier Part Key'})->get() as $auroraHistoricData) {
+                                $result = MigrateSupplierHistoricProduct::run($auroraHistoricData);
+                                $this->recordAction($tenant, $result);
+                            }
+                        }
                     }
-                }
-            });
+                });
+        }
     }
 
 

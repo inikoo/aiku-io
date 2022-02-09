@@ -24,7 +24,8 @@ class CreateProductsTable extends Migration
             $table->string('slug')->nullable()->index();
 
 
-            $table->morphs('vendor');
+            $table->unsignedMediumInteger('shop_id')->nullable();
+            $table->foreign('shop_id')->references('id')->on('shops');
 
             $table->enum('state', ['creating', 'active', 'no-available', 'discontinuing', 'discontinued'])->nullable()->index();
             $table->boolean('status')->nullable()->index();
@@ -46,8 +47,7 @@ class CreateProductsTable extends Migration
 
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_product_id')->nullable()->unique();
-            $table->unsignedBigInteger('aurora_supplier_product_id')->nullable()->unique();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
         }
         );
 

@@ -116,7 +116,7 @@ class MigrateDeletedInvoice extends MigrateModel
                 }
 
 
-                $product = (new Product())->firstWhere('aurora_product_id', $item->product_pid);
+                $product = (new Product())->firstWhere('aurora_id', $item->product_pid);
 
 
                 $itemData = [

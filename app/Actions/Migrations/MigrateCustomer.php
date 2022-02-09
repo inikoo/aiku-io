@@ -156,7 +156,7 @@ class MigrateCustomer extends MigrateModel
                 ->table('Customer Favourite Product Fact')
                 ->where('Customer Favourite Product Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFavourites
         ) {
-            if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraFavourites->{'Customer Favourite Product Product ID'})) {
+            if ($product = Product::withTrashed()->firstWhere('aurora_id', $auroraFavourites->{'Customer Favourite Product Product ID'})) {
                 $products[$product->id] =
                     [
                         'type'       => 'favourite',
@@ -174,7 +174,7 @@ class MigrateCustomer extends MigrateModel
                 ->table('Back in Stock Reminder Fact')
                 ->where('Back in Stock Reminder Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
         ) {
-            if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Back in Stock Reminder Product ID'})) {
+            if ($product = Product::withTrashed()->firstWhere('aurora_id', $auroraReminders->{'Back in Stock Reminder Product ID'})) {
                 $products[$product->id] =
                     [
                         'type'       => 'notify-stock',
@@ -191,7 +191,7 @@ class MigrateCustomer extends MigrateModel
                 ->table('Customer Portfolio Fact')
                 ->where('Customer Portfolio Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
         ) {
-            if ($product = Product::withTrashed()->firstWhere('aurora_product_id', $auroraReminders->{'Customer Portfolio Product ID'})) {
+            if ($product = Product::withTrashed()->firstWhere('aurora_id', $auroraReminders->{'Customer Portfolio Product ID'})) {
                 $products[$product->id] =
                     [
                         'type'       => 'portfolio',

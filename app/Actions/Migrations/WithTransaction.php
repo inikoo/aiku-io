@@ -96,7 +96,7 @@ trait WithTransaction
     {
         $taxBand = (new TaxBand())->firstWhere('aurora_id', $this->auModel->data->{'Order Transaction Tax Category Key'});
 
-        $product = (new Product())->firstWhere('aurora_product_id', $this->auModel->data->{'Product ID'});
+        $product = (new Product())->firstWhere('aurora_id', $this->auModel->data->{'Product ID'});
 
         $this->modelData   = [
             'item_type'   => 'Product',

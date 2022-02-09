@@ -1,26 +1,25 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Tue, 12 Oct 2021 00:23:21 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Wed, 09 Feb 2022 02:21:17 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
 namespace App\Actions\Migrations;
 
-
-use App\Actions\Procurement\SupplierProduct\StoreSupplierProduct;
-use App\Actions\Procurement\SupplierProduct\UpdateSupplierProduct;
-use App\Models\Procurement\SupplierProduct;
+use App\Actions\Production\WorkshopProduct\StoreWorkshopProduct;
+use App\Actions\Production\WorkshopProduct\UpdateWorkshopProduct;
+use App\Models\Production\Workshop;
+use App\Models\Production\WorkshopProduct;
 use App\Models\Trade\Product;
-use App\Models\Procurement\Supplier;
 use App\Models\Trade\TradeUnit;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use App\Models\Utils\ActionResult;
 
-class MigrateSupplierProduct extends MigrateModel
+class MigrateWorkshopProduct extends MigrateModel
 {
 
     #[Pure] public function __construct()
@@ -28,7 +27,8 @@ class MigrateSupplierProduct extends MigrateModel
         parent::__construct();
         $this->auModel->table    = 'Supplier Part Dimension';
         $this->auModel->id_field = 'Supplier Part Key';
-        $this->aiku_id_field     = 'aiku_supplier_id';
+        $this->aiku_id_field     = 'aiku_workshop_id';
+
     }
 
     public function parseModelData()
@@ -105,22 +105,22 @@ class MigrateSupplierProduct extends MigrateModel
 
     public function setModel()
     {
-        $this->model = SupplierProduct::withTrashed()->find($this->auModel->data->aiku_supplier_id);
+        $this->model = WorkshopProduct::withTrashed()->find($this->auModel->data->aiku_workshop_id);
     }
 
     public function updateModel(): ActionResult
     {
-        return UpdateSupplierProduct::run($this->model, $this->modelData);
+        return UpdateWorkshopProduct::run($this->model, $this->modelData);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreSupplierProduct::run(supplier: $this->parent, data: $this->modelData);
+        return StoreWorkshopProduct::run(workshop: $this->parent, data: $this->modelData);
     }
 
-    public function getParent(): Supplier
+    public function getParent(): Workshop
     {
-        return Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+        return Workshop::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
     }
 
     public function postMigrateActions(ActionResult $res): ActionResult
@@ -135,10 +135,10 @@ class MigrateSupplierProduct extends MigrateModel
         }
         $tradeUnit = TradeUnit::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Part SKU'});
 
-        /** @var Product $product */
-        $product = $this->model;
+        /** @var WorkshopProduct $workshopProduct */
+        $workshopProduct = $this->model;
 
-        $product->tradeUnits()->sync([$tradeUnit->id => ['quantity' => 1]]);
+        $workshopProduct->tradeUnits()->sync([$tradeUnit->id => ['quantity' => 1]]);
 
 
         return $res;
