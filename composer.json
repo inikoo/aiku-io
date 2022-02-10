@@ -2,64 +2,49 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": [
-        "framework",
-        "laravel"
-    ],
+    "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
-        "ext-curl": "*",
-        "ext-intl": "*",
-        "ext-mbstring": "*",
-        "ext-pdo": "*",
-        "ext-pgsql": "*",
-        "ext-zlib": "*",
+        "php": "^8.0",
         "commerceguys/addressing": "^1.2",
         "commerceguys/intl": "^1.1",
-        "doctrine/dbal": "^3.2",
-        "fakerphp/faker": "^1.15",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "fruitcake/laravel-cors": "^2.0.5",
+        "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
-        "inertiajs/inertia-laravel": "^0.4.3",
+        "inertiajs/inertia-laravel": "^0.5.4",
         "innocenzi/laravel-vite": "0.2.*",
         "itsgoingd/clockwork": "^5.1",
-        "kalnoy/nestedset": "^6.0",
-        "laravel/framework": "^8.54",
-        "laravel/horizon": "^5.7",
-        "laravel/sanctum": "^2.6",
+        "laravel/framework": "^9.0",
+        "laravel/horizon": "^5.9",
+        "laravel/sanctum": "^2.14",
         "laravel/scout": "^9.4",
-        "laravel/tinker": "^2.5",
-        "lorisleiva/laravel-actions": "^2.1",
+        "laravel/tinker": "^2.7",
+        "lorisleiva/laravel-actions": "^2.3",
         "meilisearch/meilisearch-php": "^0.21.0",
-        "owen-it/laravel-auditing": "^12.0",
+        "owen-it/laravel-auditing": "^12.2",
         "phlak/semver": "^4.0",
-        "protonemedia/inertiajs-tables-laravel-query-builder": "^1",
+        "protonemedia/inertiajs-tables-laravel-query-builder": "^1.4",
         "ralouphie/mimey": "^1.0",
-        "sentry/sentry-laravel": "^2",
+        "sentry/sentry-laravel": "^2.11",
         "spatie/laravel-multitenancy": "^2.3",
         "spatie/laravel-permission": "^5",
-        "spatie/laravel-query-builder": "^4",
+        "spatie/laravel-query-builder": "^5.0",
         "spatie/laravel-sluggable": "^3",
         "spatie/temporary-directory": "^2.0",
-        "symfony/process": "^5.3",
-        "tightenco/ziggy": "^1.0",
-        "twilio/sdk": "^6.28",
-        "vemcogroup/laravel-translation": "^3.0"
+        "symfony/process": "^6.0",
+        "tightenco/ziggy": "^1.4",
+        "twilio/sdk": "^6.34",
+        "vemcogroup/laravel-translation": "^3.0",
+        "wulfheart/laravel-actions-ide-helper": "dev-l9-compatibility"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2",
-        "facade/ignition": "^2.5",
-        "laravel/breeze": "^1.4",
-        "laravel/envoy": "^2.7",
+        "barryvdh/laravel-ide-helper": "^2.12",
+        "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
-        "pestphp/pest": "^1.21",
-        "pestphp/pest-plugin-laravel": "^1.2",
-        "phpunit/phpunit": "^9.3.3",
-        "wulfheart/laravel-actions-ide-helper": "^0.1.0"
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.5.10",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -79,7 +64,7 @@
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -96,11 +81,14 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        "sort-packages": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laravel-shift/laravel-actions-ide-helper.git"
+        }
+    ]
 }
