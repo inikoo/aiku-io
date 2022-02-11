@@ -83,7 +83,7 @@ class MigrateHR extends MigrateAurora
         $count += DB::connection('aurora')->table('Staff Deleted Dimension')->count();
         $count += DB::connection('aurora')->table('User Dimension')->whereIn('User Type', ['Staff', 'Contractor'])->count();
         $count += DB::connection('aurora')->table('User Deleted Dimension')->whereIn('User Deleted Type', ['Staff', 'Contractor'])->count();
-        $count += DB::connection('aurora')->table('Timesheet Dimension')->where('Timesheet Staff Key','>',0)->count();
+        $count += DB::connection('aurora')->table('Timesheet Dimension')->where('Timesheet Staff Key', '>', 0)->count();
 
         return $count;
     }
@@ -158,16 +158,14 @@ class MigrateHR extends MigrateAurora
         }
 
 
-        foreach (
-            DB::connection('aurora')
-                ->table('Timesheet Dimension')
-                ->where('Timesheet Staff Key','>',0)
-                ->get() as $auroraData
-        ) {
-            $result=MigrateWorkTarget::run($auroraData);
-            $this->recordAction($tenant, $result);
-
-        }
+        DB::connection('aurora')->table('Timesheet Dimension')
+            ->where('Timesheet Staff Key', '>', 0)
+            ->orderBy('Timesheet Date')->chunk(1000, function ($chunk) use ($tenant) {
+                foreach ($chunk as $auroraData) {
+                    $result = MigrateWorkTarget::run($auroraData);
+                    $this->recordAction($tenant, $result);
+                }
+            });
     }
 
 

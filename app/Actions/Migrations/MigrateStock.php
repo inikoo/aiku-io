@@ -43,6 +43,12 @@ class MigrateStock extends MigrateModel
                 'code'        => strtolower($this->auModel->data->{'Part Reference'}),
                 'aurora_id'   => $this->auModel->data->{'Part SKU'},
                 'created_at'  => $this->auModel->data->{'Part Valid From'} ?? null,
+                'state'       => match ($this->auModel->data->{'Part Status'}) {
+                    'In Use' => 'active',
+                    'Discontinuing' => 'discontinuing',
+                    'In Process' => 'in-process',
+                    'Not In Use' => 'discontinued'
+                }
             ]
         );
 
@@ -56,12 +62,13 @@ class MigrateStock extends MigrateModel
 
     public function updateModel(): ActionResult
     {
+
         return UpdateStock::run($this->model, $this->modelData);
     }
 
     public function storeModel(): ActionResult
     {
-        return StoreStock::run(owner:$this->parent , modelData:$this->modelData);
+        return StoreStock::run(owner: $this->parent, modelData: $this->modelData);
     }
 
     public function postMigrateActions(ActionResult $res): ActionResult
@@ -93,14 +100,14 @@ class MigrateStock extends MigrateModel
 
             ];
 
-            if( $auroraPartLocationData->{'Minimum Quantity'}){
-                $settings['min_stock'] =$auroraPartLocationData->{'Minimum Quantity'};
+            if ($auroraPartLocationData->{'Minimum Quantity'}) {
+                $settings['min_stock'] = $auroraPartLocationData->{'Minimum Quantity'};
             }
-            if( $auroraPartLocationData->{'Maximum Quantity'}){
-                $settings['max_stock'] =$auroraPartLocationData->{'Maximum Quantity'};
+            if ($auroraPartLocationData->{'Maximum Quantity'}) {
+                $settings['max_stock'] = $auroraPartLocationData->{'Maximum Quantity'};
             }
-            if( $auroraPartLocationData->{'Moving Quantity'}){
-                $settings['max_stock'] =$auroraPartLocationData->{'Moving Quantity'};
+            if ($auroraPartLocationData->{'Moving Quantity'}) {
+                $settings['max_stock'] = $auroraPartLocationData->{'Moving Quantity'};
             }
 
 
@@ -143,15 +150,13 @@ class MigrateStock extends MigrateModel
             }
         });
 
-        if($auroraImagesCollectionWithImage->count()){
+        if ($auroraImagesCollectionWithImage->count()) {
             MigrateImages::run($model, $auroraImagesCollectionWithImage);
         }
-
     }
 
     protected function migrateAttachments()
     {
-
         /** @var Stock $model */
         $model = $this->model;
 

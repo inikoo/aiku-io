@@ -8,6 +8,8 @@
 
 namespace App\Models\Accounting;
 
+use App\Actions\Hydrators\HydrateCustomer;
+use App\Actions\Hydrators\HydrateShop;
 use App\Models\CRM\Customer;
 use App\Models\Sales\Order;
 use App\Models\Trade\Shop;
@@ -38,6 +40,24 @@ class Invoice extends Model implements Auditable
     protected $attributes = [
         'data' => '{}',
     ];
+
+    protected static function booted()
+    {
+        static::created(
+            function (Invoice $invoice) {
+                HydrateCustomer::make()->invoices($invoice->customer);
+                HydrateShop::make()->invoices($invoice->shop);
+
+            }
+        );
+        static::deleted(
+            function (Invoice $invoice) {
+                HydrateCustomer::make()->invoices($invoice->customer);
+                HydrateShop::make()->invoices($invoice->shop);
+
+            }
+        );
+    }
 
     protected $guarded = [];
 

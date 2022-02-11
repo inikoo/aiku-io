@@ -8,7 +8,10 @@
 
 namespace App\Actions\Trade\Shop;
 
+use App\Actions\UI\WithInertia;
 use App\Models\Trade\Shop;
+use Inertia\Inertia;
+use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Lorisleiva\Actions\Concerns\WithAttributes;
@@ -20,7 +23,7 @@ use Lorisleiva\Actions\Concerns\WithAttributes;
 class ShowShop
 {
     use AsAction;
-    use WithAttributes;
+    use WithInertia;
 
     public function handle()
     {
@@ -28,7 +31,51 @@ class ShowShop
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("shops.{$this->shop->id}.view");
+        return $request->user()->hasPermissionTo("shops.view.{$this->shop->id}");
+    }
+
+    public function asInertia(Shop $shop, array $attributes = []): Response
+    {
+        $this->set('shop', $shop)->set('type', 'fulfilment_house')->fill($attributes);
+
+        $this->validateAttributes();
+
+
+        session(['currentShop' => $shop->id]);
+
+
+        return Inertia::render(
+            'show-model',
+            [
+                'breadcrumbs' => $this->getBreadcrumbs($this->shop),
+                'navLocation' => ['module' => 'shops', 'metaSection' => 'shop'],
+                'headerData' => [
+                    'title'  => $shop->name,
+
+                ],
+                'model'      => $shop
+            ]
+
+        );
+    }
+
+    public function prepareForValidation(ActionRequest $request): void
+    {
+        $this->fillFromRequest($request);
+    }
+
+    public function getBreadcrumbs(Shop $shop): array
+    {
+        return array_merge(
+            (new IndexShop())->getBreadcrumbs(),
+            [
+                'shops.show' => [
+                    'route' => 'shops.show',
+                    'routeParameters' => $shop->id,
+                    'name' => $shop->code,
+                ],
+            ]
+        );
     }
 
     public function asController(Shop $shop): Shop

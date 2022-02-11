@@ -8,6 +8,7 @@
 
 namespace App\Models\Sales;
 
+use App\Actions\Hydrators\HydrateShop;
 use App\Models\Accounting\Invoice;
 use App\Models\Accounting\InvoiceTransaction;
 use App\Models\CRM\Customer;
@@ -45,6 +46,21 @@ class Order extends Model implements Auditable
     ];
 
     protected $guarded = [];
+
+    protected static function booted()
+    {
+        static::created(
+            function (Order $order) {
+                HydrateShop::make()->orderStats($order->shop);
+            }
+        );
+        static::deleted(
+            function (Order $order) {
+                HydrateShop::make()->orderStats($order->shop);
+            }
+        );
+    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

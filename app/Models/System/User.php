@@ -8,6 +8,7 @@
 
 namespace App\Models\System;
 
+use App\Actions\Hydrators\HydrateTenant;
 use App\Models\Assets\Language;
 use App\Models\Media\Image;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,6 +54,21 @@ class User extends Authenticatable
         'errors'   => 'array',
         'status'   => 'boolean'
     ];
+
+    protected static function booted()
+    {
+        static::created(
+            function () {
+                HydrateTenant::make()->userStats();
+            }
+        );
+        static::deleted(
+            function () {
+                HydrateTenant::make()->userStats();
+            }
+        );
+
+    }
 
 
     public function userable(): MorphTo

@@ -8,6 +8,8 @@
 
 namespace App\Models\CRM;
 
+use App\Actions\Hydrators\HydrateShop;
+use App\Models\Accounting\Invoice;
 use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Attachment;
@@ -66,6 +68,7 @@ class Customer extends Model implements Auditable
                         ]
                     );
                 }
+                HydrateShop::make()->customerStats($customer->shop);
             }
         );
         static::deleted(
@@ -73,8 +76,14 @@ class Customer extends Model implements Auditable
                 if($customer->shop->type=='fulfilment_house'){
                     $customer->fulfilmentCustomer()->delete();
                 }
+                HydrateShop::make()->customerStats($customer->shop);
             }
         );
+        static::updated(function (Customer $customer) {
+            if ($customer->wasChanged('trade_state')) {
+                HydrateShop::make()->customerNumberInvoicesStats($customer->shop);
+            }
+        });
     }
 
 
@@ -122,6 +131,16 @@ class Customer extends Model implements Auditable
     public function clients(): HasMany
     {
         return $this->hasMany(CustomerClient::class);
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(CustomerStats::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
 }

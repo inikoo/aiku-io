@@ -54,12 +54,14 @@ class MigrateInventory extends MigrateAurora
     protected function migrate(Tenant $tenant)
     {
 
+        DB::connection('aurora')->table('Part Dimension')
+            ->orderBy('Part Valid From')->chunk(1000, function ($chunk) use ($tenant) {
+                foreach ($chunk as $auroraPartData) {
+                    $result = MigrateStock::run($auroraPartData);
+                    $this->recordAction($tenant, $result);
+                }
+            });
 
-
-        foreach (DB::connection('aurora')->table('Part Dimension')->get() as $auroraPartData) {
-            $result = MigrateStock::run($auroraPartData);
-            $this->recordAction($tenant, $result);
-        }
 
         foreach (
             DB::connection('aurora')->table('Part Deleted Dimension')

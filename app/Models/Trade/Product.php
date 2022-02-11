@@ -8,7 +8,9 @@
 
 namespace App\Models\Trade;
 
+use App\Actions\Hydrators\HydrateShop;
 use App\Models\Media\Image;
+use App\Models\SalesStats;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -43,6 +45,20 @@ class Product extends Model implements Auditable
         'data' => '{}',
         'settings' => '{}',
     ];
+
+    protected static function booted()
+    {
+        static::created(
+            function (Product $product) {
+                HydrateShop::make()->productStats($product->shop);
+            }
+        );
+        static::deleted(
+            function (Product $product) {
+                HydrateShop::make()->productStats($product->shop);
+            }
+        );
+    }
 
     public function getSlugSourceAttribute(): string
     {
@@ -76,6 +92,15 @@ class Product extends Model implements Auditable
     public function tradeUnits(): BelongsToMany
     {
         return $this->belongsToMany(TradeUnit::class)->withPivot('quantity')->withTimestamps();
+    }
+
+    public function salesStats(): MorphOne
+    {
+        return $this->morphOne(SalesStats::class, 'model')->where('scope','sales');
+    }
+    public function salesTenantCurrencyStats(): MorphOne
+    {
+        return $this->morphOne(SalesStats::class, 'model')->where('scope','sales-tenant-currency');
     }
 
 }

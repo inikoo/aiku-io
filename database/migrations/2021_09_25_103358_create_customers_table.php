@@ -33,6 +33,7 @@ class CreateCustomersTable extends Migration
 
             $table->enum('status',['pending-approval','approved','rejected','banned'])->index();
             $table->enum('state',['in-process','active','losing','lost','registered'])->index()->nullable();
+            $table->enum('trade_state',['none','one','many'])->index()->nullable()->default('none')->comment('number of invoices');
 
             $table->unsignedBigInteger('billing_address_id')->nullable()->index();
             $table->foreign('billing_address_id')->references('id')->on('addresses');
@@ -48,6 +49,33 @@ class CreateCustomersTable extends Migration
 
             $table->index([DB::raw('name(64)')]);
         });
+
+        Schema::create('customer_stats', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('customer_id')->index();
+            $table->foreign('customer_id')->references('id')->on('customers');
+
+
+            $table->timestampTz('last_submitted_order_at')->nullable();
+            $table->timestampTz('last_dispatched_delivery_at')->nullable();
+            $table->timestampTz('last_invoiced_at')->nullable();
+
+
+            $table->unsignedBigInteger('number_deliveries')->default(0);
+            $table->unsignedBigInteger('number_deliveries_type_order')->default(0);
+            $table->unsignedBigInteger('number_deliveries_type_replacement')->default(0);
+
+            $table->unsignedBigInteger('number_invoices')->default(0);
+            $table->unsignedBigInteger('number_invoices_type_invoice')->default(0);
+            $table->unsignedBigInteger('number_invoices_type_refund')->default(0);
+
+
+
+
+            $table->timestampsTz();
+        });
+
+
     }
 
     /**
@@ -57,6 +85,7 @@ class CreateCustomersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('customer_stats');
         Schema::dropIfExists('customers');
     }
 }

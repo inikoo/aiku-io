@@ -23,8 +23,8 @@ class CreateStocksTable extends Migration
             $table->id();
             $table->morphs('owner');
             $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
-            $table->string('state')->nullable()->index();
-            $table->string('quantity_status')->nullable()->index();
+            $table->enum('state',['in-process','active','discontinuing','discontinued'])->nullable()->index();
+            $table->enum('quantity_status',['surplus','optimal','low','critical','out-of-stock','error'])->nullable()->index();
             $table->boolean('sellable')->default(1)->index();
             $table->boolean('raw_material')->default(0)->index();
             $table->string('slug')->index();

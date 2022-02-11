@@ -15,6 +15,7 @@ class CreateSuppliersTable extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->mediumIncrements('id');
+            $table->boolean('status')->default(true)->index();
             $table->string('code')->index();
             $table->morphs('owner');
             $table->string('name');

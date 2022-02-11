@@ -143,6 +143,9 @@ class CreateAuxTables extends Migration
 
         });
 
+        //todo waiting for kalnoy/nestedset to support Laravel 9
+        //https://github.com/lazychaser/laravel-nestedset/pull/546
+        /*
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('container');
@@ -169,7 +172,7 @@ class CreateAuxTables extends Migration
             $table->unique(['category_id', 'categoriable_type', 'categoriable_id'], 'categoriables_idx');
         });
 
-
+        */
 
 
         Schema::create('contacts', function (Blueprint $table) {

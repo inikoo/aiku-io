@@ -16,6 +16,8 @@ use App\Models\Inventory\Stock;
 use App\Models\Production\Workshop;
 use App\Models\System\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
@@ -108,6 +110,30 @@ class Tenant extends SpatieTenant
     public function getCodeAttribute(): string
     {
         return Str::snake(app('currentTenant')->name, '-');
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(TenantStats::class);
+    }
+
+    public function tradeStats(): HasOne
+    {
+        return $this->hasOne(TenantTradeStats::class);
+    }
+
+    public function inventoryStats(): HasOne
+    {
+        return $this->hasOne(TenantInventoryStats::class);
+    }
+    public function procurementStats(): HasOne
+    {
+        return $this->hasOne(TenantProcurementStats::class);
+    }
+
+    public function salesStats():HasMany
+    {
+        return $this->hasMany(TenantSalesStats::class);
     }
 
 

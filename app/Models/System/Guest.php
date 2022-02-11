@@ -8,6 +8,7 @@
 
 namespace App\Models\System;
 
+use App\Actions\Hydrators\HydrateTenant;
 use App\Models\HumanResources\Clocking;
 use App\Models\HumanResources\Workplace;
 use App\Models\Traits\HasPersonalData;
@@ -45,14 +46,22 @@ class Guest extends Model implements Auditable
 
     protected static function booted()
     {
+        static::created(
+            function () {
+                HydrateTenant::make()->userStats();
+            }
+        );
+        static::deleted(
+            function () {
+                HydrateTenant::make()->userStats();
+            }
+        );
         static::updated(function ($guest) {
             if ($guest->wasChanged('name')) {
                 $guest->user?->update(['name' => $guest->name]);
             }
         });
     }
-
-
 
     public function user(): MorphOne
     {

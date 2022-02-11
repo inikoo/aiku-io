@@ -22,6 +22,7 @@ class CreateAgentsTable extends Migration
         Schema::create('agents', function (Blueprint $table) {
 
             $table->mediumIncrements('id');
+            $table->boolean('status')->default(true)->index();
             $table->string('code')->index();
             $table->morphs('owner');
             $table->string('name');

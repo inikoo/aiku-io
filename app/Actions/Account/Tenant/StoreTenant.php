@@ -8,6 +8,7 @@
 
 namespace App\Actions\Account\Tenant;
 
+use App\Models\Assets\Currency;
 use App\Models\Utils\ActionResult;
 use App\Models\Account\Division;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -21,7 +22,21 @@ class StoreTenant
         $res = new ActionResult();
 
         /** @var \App\Models\Account\Tenant $tenant */
-        $tenant        = $division->tenants()->create($tenantData);
+        $tenant = $division->tenants()->create($tenantData);
+        $tenant->stats()->create();
+        $tenant->tradeStats()->create();
+        $tenant->inventoryStats()->create();
+        $tenant->procurementStats()->create();
+
+
+        $tenant->salesStats()->create(['currency_id' => $tenant->currency_id]);
+
+        foreach (Currency::whereIn('code', ['USD', 'GBP','EUR'])->get()->pluck('id') as $currencyID) {
+            if ($currencyID != $tenant->currency_id) {
+                $tenant->salesStats()->create(['currency_id' => $currencyID]);
+            }
+        }
+
         $res->model    = $tenant;
         $res->model_id = $tenant->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';

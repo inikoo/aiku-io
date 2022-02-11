@@ -45,26 +45,23 @@ class HandleInertiaTenantsRequests extends Middleware
     public function share(Request $request): array
     {
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
-            'tenantName' => app('currentTenant')->name,
+            'tenantName'     => app('currentTenant')->name,
             'tenantNickname' => app('currentTenant')->nickname,
 
             'appType'       => app('currentTenant')->division->slug,
             'modules'       => function () use ($request) {
                 /** @var \App\Models\Account\Division $division */
                 $division = app('currentTenant')->division;
+
                 return $division->getUserLayout($request->user());
             },
-            'layout'       => function () use ($request) {
+            'layout'        => function () use ($request) {
                 /** @var \App\Models\Account\Division $division */
                 $division = app('currentTenant')->division;
+
                 return $division->getUserLayout($request->user());
             },
-            'currentModels' => fn() => [
-                'ecommerce_shop'   => session('currentEcommerceShop'),
-                'fulfilment_house' => session('currentFulfilmentHouse'),
-                'warehouse'        => session('currentWarehouse'),
-                'website'          => session('currentWebsite')
-            ],
+
             'locale'        => App::currentLocale(),
             'translations'  => fn() => GetUITranslations::run()
         ] : [];
@@ -73,6 +70,11 @@ class HandleInertiaTenantsRequests extends Middleware
 
         return array_merge(parent::share($request), $firstLoadOnlyProps, [
 
+            'currentModels' => fn() => [
+                'shop'      => session('currentShop'),
+                'warehouse' => session('currentWarehouse'),
+                'website'   => session('currentWebsite')
+            ],
             'auth.user' => fn() => $request->user()
                 ? $request->user()->only('id', 'name', 'email', 'userable_type')
                 : null,

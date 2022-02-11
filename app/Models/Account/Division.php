@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
+/**
+ * @mixin IdeHelperDivision
+ */
 class Division extends Model
 {
     use UsesLandlordConnection;

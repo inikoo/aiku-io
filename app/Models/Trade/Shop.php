@@ -8,18 +8,21 @@
 
 namespace App\Models\Trade;
 
+use App\Actions\Hydrators\HydrateTenant;
+use App\Models\Accounting\Invoice;
 use App\Models\CRM\Customer;
 use App\Models\Sales\Adjust;
 use App\Models\Sales\Charge;
 use App\Models\Sales\Order;
 use App\Models\Sales\ShippingSchema;
+use App\Models\SalesStats;
 use App\Models\Traits\HasAddress;
 use App\Models\Web\Website;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -54,6 +57,21 @@ class Shop extends Model implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::created(
+            function () {
+                HydrateTenant::make()->shopStats();
+            }
+        );
+        static::deleted(
+            function () {
+                HydrateTenant::make()->shopStats();
+            }
+        );
+
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -70,6 +88,10 @@ class Shop extends Model implements Auditable
         return $this->hasMany(Customer::class);
     }
 
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
 
     public function products(): HasMany
     {
@@ -99,6 +121,20 @@ class Shop extends Model implements Auditable
     public function website(): HasOne
     {
         return $this->hasOne(Website::class);
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(ShopStats::class);
+    }
+
+    public function salesStats(): MorphOne
+    {
+        return $this->morphOne(SalesStats::class, 'model')->where('scope','sales');
+    }
+    public function salesTenantCurrencyStats(): MorphOne
+    {
+        return $this->morphOne(SalesStats::class, 'model')->where('scope','sales-tenant-currency');
     }
 
 

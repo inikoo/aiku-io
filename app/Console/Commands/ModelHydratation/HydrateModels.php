@@ -19,7 +19,7 @@ class HydrateModels extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->models=['user','employee','guest','warehouse','warehouse_area'];
+        $this->models=['user','employee','guest','warehouse','warehouse_area','shop'];
     }
 
     public function handle(): int
@@ -48,27 +48,7 @@ class HydrateModels extends Command
         return 0;
     }
 
-    /*
-    protected function user(){
-        $this->line("Hydrating users");
-        Artisan::call("hydrate:user",
-                      [
-                          'user_id' => 'all',
-                          '--tenant'  => $this->option('tenant')
-                      ]
-        );
-    }
 
-    protected function employee(){
-        $this->line("Hydrating employees");
-        Artisan::call("hydrate:employee",
-                      [
-                          'employee_id' => 'all',
-                          '--tenant'  => $this->option('tenant')
-                      ]
-        );
-    }
-    */
 
 
 }

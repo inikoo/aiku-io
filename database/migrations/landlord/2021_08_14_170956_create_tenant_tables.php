@@ -132,7 +132,7 @@ class CreateTenantTables extends Migration
         });
 
         Schema::create('divisions', function (Blueprint $table) {
-            $table->id();
+            $table->smallIncrements('id');
             $table->string('slug')->unique();
             $table->string('name');
             $table->jsonb('data');
@@ -140,7 +140,7 @@ class CreateTenantTables extends Migration
         });
 
         Schema::create('tenants', function (Blueprint $table) {
-            $table->id();
+            $table->smallIncrements('id');
             $table->string('nickname')->unique();
             $table->string('name')->comment('E.g. company name');
             $table->string('domain')->unique();

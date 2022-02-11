@@ -8,7 +8,9 @@
 
 namespace App\Actions\Hydrators;
 
+use App\Models\Accounting\Invoice;
 use App\Models\CRM\Customer;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 
@@ -21,6 +23,36 @@ class HydrateCustomer extends HydrateModel
     public function handle(Customer $customer): void
     {
         $this->contact($customer);
+        $this->invoices($customer);
+    }
+
+    public function invoices(Customer $customer): void
+    {
+        $numberInvoices = $customer->invoices->count();
+        $stats = [
+            'number_invoices' => $numberInvoices,
+        ];
+
+        $customer->trade_state= match ($numberInvoices) {
+            0 => 'none',
+            1 => 'one',
+            default => 'many'
+        };
+        $customer->save();
+
+        $invoiceTypes = ['invoice', 'refund'];
+        $invoiceTypeCounts = Invoice::where('customer_id', $customer->id)
+            ->selectRaw('type, count(*) as total')
+            ->groupBy('type')
+            ->pluck('total', 'type')->all();
+
+
+        foreach ($invoiceTypes as $invoiceType) {
+            $stats['number_invoices_type_'.$invoiceType] = Arr::get($invoiceTypeCounts, $invoiceType, 0);
+        }
+
+
+        $customer->stats->update($stats);
     }
 
     public function contact(Customer $customer): void

@@ -27,6 +27,7 @@ class StoreCustomer
 
         /** @var Customer $customer */
         $customer = $shop->customers()->create($customerData);
+        $customer->stats()->create();
         $addresses = [];
 
         $billing_address_id  = null;

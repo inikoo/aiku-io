@@ -21,11 +21,20 @@ class StoreShop
 {
     use AsAction;
 
-    public function handle(array $data,array $addressData=[]): ActionResult
+    public function handle(array $data, array $addressData = []): ActionResult
     {
-
         $res  = new ActionResult();
         $shop = Shop::create($data);
+        $shop->stats()->create();
+        $shop->salesStats()->create([
+                                        'scope' => 'sales'
+                                    ]);
+        if ($shop->currency_id != app('currentTenant')->currency_id) {
+            $shop->salesStats()->create([
+                                            'scope' => 'sales-tenant-currency'
+                                        ]);
+        }
+
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
@@ -48,10 +57,10 @@ class StoreShop
             Role::where('name', preg_replace('/#/', $shop->id, $role_name))->first()->syncPermissions($permissions);
         });
 
-        $address                 = StoreAddress::run($addressData);
+        $address = StoreAddress::run($addressData);
 
         $shop->address_id = $address->id;
-        $shop->location=$shop->getLocation();
+        $shop->location   = $shop->getLocation();
         $shop->save();
 
         $res->model    = $shop;

@@ -8,6 +8,7 @@
 
 namespace App\Models\HumanResources;
 
+use App\Actions\Hydrators\HydrateTenant;
 use App\Models\Helpers\Attachment;
 use App\Models\Media\Image;
 use App\Models\System\User;
@@ -56,7 +57,17 @@ class Employee extends Model implements Auditable
 
     protected static function booted()
     {
-        static::updated(function ($employee) {
+        static::created(
+            function () {
+                HydrateTenant::make()->employeeStats();
+            }
+        );
+        static::deleted(
+            function () {
+                HydrateTenant::make()->employeeStats();
+            }
+        );
+        static::updated(function (Employee $employee) {
             if ($employee->wasChanged('name')) {
                 $employee->user?->update(['name' => $employee->name]);
             }

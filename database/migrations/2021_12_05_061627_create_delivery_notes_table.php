@@ -47,8 +47,6 @@ class CreateDeliveryNotesTable extends Migration
                              'dispatched',
                              'cancelled',
                              'cancelled-to-restock',
-
-
                          ]
             )->index();
             //$table->string('status')->nullable()->index();
