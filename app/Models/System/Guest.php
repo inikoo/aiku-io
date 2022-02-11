@@ -56,9 +56,11 @@ class Guest extends Model implements Auditable
                 HydrateTenant::make()->userStats();
             }
         );
-        static::updated(function ($guest) {
+        static::updated(function (Guest $guest) {
             if ($guest->wasChanged('name')) {
                 $guest->user?->update(['name' => $guest->name]);
+            }elseif ($guest->wasChanged('status')) {
+                HydrateTenant::make()->userStats();
             }
         });
     }

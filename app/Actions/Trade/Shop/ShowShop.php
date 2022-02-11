@@ -51,6 +51,28 @@ class ShowShop
                 'navLocation' => ['module' => 'shops', 'metaSection' => 'shop'],
                 'headerData' => [
                     'title'  => $shop->name,
+                    'meta'        => [
+                        [
+                            'icon' => ['fal','user'],
+                            'name' => $shop->stats->number_customers,
+                            'href' =>[
+                                'route'=>'shops.show.customers.index',
+                                'routeParameters'=>$this->shop->id
+                            ]
+                        ],
+                        [
+                            'icon' => ['fal','shopping-cart'],
+                            'name' => $shop->stats->number_orders,
+                            'href' =>[
+                                'route'=>'shops.show.orders.index',
+                                'routeParameters'=>$this->shop->id
+                            ]
+                        ],
+
+
+
+
+                    ],
 
                 ],
                 'model'      => $shop

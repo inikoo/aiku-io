@@ -47,6 +47,7 @@ class ShowTradeDashboard
                 'navLocation' => ['module' => 'shops', 'metaSection' => 'shops', 'sectionRoot' => 'shops.dashboard'],
                 'headerData'  => [
                     'title' => __('Shops dashboard'),
+
                 ]
             ]
 

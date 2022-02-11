@@ -49,10 +49,28 @@ class ShowAccount
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs' => $this->breadcrumbs,
+                'navLocation' => ['module' => 'account'],
+
                 'headerData' => [
-                    'module'      => 'account',
                     'title'       => $this->title,
-                    'breadcrumbs' => $this->breadcrumbs,
+                    'meta'        => [
+                        [
+                            'icon' => ['fal','user-circle'],
+                            'name' => App('currentTenant')->stats->number_users_status_active??0,
+                            'href' =>[
+                                'route'=>'account.users.index',
+                            ]
+                        ],
+                        [
+                            'icon' => ['fal','user-alien'],
+                            'name' => App('currentTenant')->stats->number_guests_status_active??0,
+                            'href' =>[
+                                'route'=>'account.guests.index',
+                            ]
+                        ],
+                    ],
+
                     'actionIcons' => [
                         /*
                         'account.logbook'  => [
@@ -90,8 +108,7 @@ class ShowAccount
         return [
             'tenant' => [
                 'route'   => 'account.show',
-                'name'    => __('Account').' ['.$this->account->nickname.']',
-                'current' => false
+                'name'    => __('Account'),
             ],
         ];
     }

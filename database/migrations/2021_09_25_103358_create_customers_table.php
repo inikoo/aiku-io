@@ -19,10 +19,10 @@ class CreateCustomersTable extends Migration
             $table->foreign('shop_id')->references('id')->on('shops');
 
 
-            $table->string('name', 256)->nullable();
-            $table->string('contact_name',256)->nullable()->index();
+            $table->string('name', 256)->nullable()->fulltext();
+            $table->string('contact_name',256)->nullable()->index()->fulltext();
             $table->string('company_name',256)->nullable();
-            $table->string('email')->nullable();
+            $table->string('email')->nullable()->fulltext();
             $table->string('phone')->nullable();
             $table->string('identity_document_number')->nullable();
             $table->string('website',256)->nullable();

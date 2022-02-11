@@ -97,10 +97,12 @@ class IndexEmployee
         return Inertia::render(
             'index-model',
             [
+                'breadcrumbs' => $this->breadcrumbs,
+                'navLocation' => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
+
                 'headerData' => [
-                    'module'      => 'human_resources',
                     'title'       => $this->title,
-                    'breadcrumbs' => $this->breadcrumbs,
+
                     'actionIcons' => $actionIcons,
                 ],
                 'dataTable'  => [

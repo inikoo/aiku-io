@@ -43,11 +43,19 @@ class ShowHumanResourcesDashboard
         return Inertia::render(
             'show-dashboard',
             [
-                'headerData' => [
-                    'module'      => 'human_resources',
-                    'title'       => __('Human resources dashboard'),
-                    'breadcrumbs' => $this->getBreadcrumbs(),
-
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'navLocation' => ['module' => 'human_resources'],
+                'headerData'  => [
+                    'title' => __('Human resources'),
+                    'meta'  => [
+                        [
+                            'icon' => ['fal', 'user-hard-hat'],
+                            'name' => App('currentTenant')->stats->number_employees_state_working,
+                            'href' => [
+                                'route' => 'human_resources.employees.index',
+                            ]
+                        ],
+                    ]
                 ]
             ]
 
@@ -62,11 +70,10 @@ class ShowHumanResourcesDashboard
 
     public function getBreadcrumbs(): array
     {
-
         return [
             'human_resources.dashboard' => [
-                'route'           => 'human_resources.dashboard',
-                'name'            => __('Human resources'),
+                'route' => 'human_resources.dashboard',
+                'name'  => __('Human resources'),
             ]
         ];
     }

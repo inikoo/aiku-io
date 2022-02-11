@@ -75,10 +75,12 @@ class ShowUser
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs' => $this->breadcrumbs,
+                'navLocation' => ['account' => 'shops', 'sectionRoot' => 'account.users.index'],
+
                 'headerData' => [
-                    'module'      => 'users',
                     'title'       => $this->user->username,
-                    'breadcrumbs' => $this->breadcrumbs,
+
                     'meta'        => [
                         [
                             'icon' => $this->user->type_icon,

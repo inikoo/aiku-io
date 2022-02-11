@@ -41,11 +41,11 @@ class HydrateTenant
 
     public function shopStats()
     {
-        $stats=[
+        $stats = [
             'number_shops' => Shop::count()
         ];
 
-        $shopTypes = ['shop', 'fulfilment_house'];
+        $shopTypes     = ['shop', 'fulfilment_house'];
         $shopTypeCount = Shop::selectRaw('type, count(*) as total')
             ->groupBy('type')
             ->pluck('total', 'type')->all();
@@ -53,7 +53,7 @@ class HydrateTenant
         foreach ($shopTypes as $shopType) {
             $stats['number_shops_type_'.$shopType] = Arr::get($shopTypeCount, $shopType, 0);
         }
-        $userSubtypes = ['b2b', 'b2c', 'storage', 'fulfilment', 'dropshipping'];
+        $userSubtypes     = ['b2b', 'b2c', 'storage', 'fulfilment', 'dropshipping'];
         $userSubtypeCount = Shop::selectRaw('subtype, count(*) as total')
             ->groupBy('subtype')
             ->pluck('total', 'subtype')->all();
@@ -63,7 +63,6 @@ class HydrateTenant
         }
 
         App('currentTenant')->tradeStats->update($stats);
-
     }
 
     public function customerStats()
@@ -77,11 +76,11 @@ class HydrateTenant
 
     public function employeeStats()
     {
-        $stats=[
-                'number_employees' => Employee::count()
-            ];
+        $stats = [
+            'number_employees' => Employee::count()
+        ];
 
-        $employeeStates = ['hired', 'working', 'left'];
+        $employeeStates     = ['hired', 'working', 'left'];
         $employeeStateCount = Employee::selectRaw('state, count(*) as total')
             ->groupBy('state')
             ->pluck('total', 'state')->all();
@@ -91,7 +90,6 @@ class HydrateTenant
             $stats['number_employees_state_'.$employeeState] = Arr::get($employeeStateCount, $employeeState, 0);
         }
         App('currentTenant')->stats->update($stats);
-
     }
 
 
@@ -100,12 +98,18 @@ class HydrateTenant
         $numberUsers       = User::count();
         $numberActiveUsers = User::where('status', true)->count();
 
+        $numberGuests       = Guest::count();
+        $numberActiveGuests = Guest::where('status', true)->count();
+
+
         $stats = [
 
-            'number_guests'                => Guest::count(),
-            'number_users'                 => $numberUsers,
-            'number_users_status_active'   => $numberActiveUsers,
-            'number_users_status_inactive' => $numberUsers - $numberActiveUsers
+            'number_guests'                 => Guest::count(),
+            'number_guests_status_active'   => $numberActiveGuests,
+            'number_guests_status_inactive' => $numberGuests - $numberActiveGuests,
+            'number_users'                  => $numberUsers,
+            'number_users_status_active'    => $numberActiveUsers,
+            'number_users_status_inactive'  => $numberUsers - $numberActiveUsers
 
         ];
 

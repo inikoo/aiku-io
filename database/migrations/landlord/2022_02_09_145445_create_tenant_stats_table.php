@@ -32,6 +32,8 @@ class CreateTenantStatsTable extends Migration
             }
 
             $table->unsignedSmallInteger('number_guests')->default(0);
+            $table->unsignedSmallInteger('number_guests_status_active')->default(0);
+            $table->unsignedSmallInteger('number_guests_status_inactive')->default(0);
 
             $table->unsignedSmallInteger('number_users')->default(0);
             $table->unsignedSmallInteger('number_users_status_active')->default(0);

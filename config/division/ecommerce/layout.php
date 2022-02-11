@@ -60,6 +60,7 @@ return [
         'sections'    => [
             'human_resources.employees.index'  => [
                 'name' => 'Employees',
+                'icon'     => ['fal', 'user-hard-hat'],
             ],
             'human_resources.timesheets.index' => [
                 'name' => 'Timesheets',
@@ -91,9 +92,13 @@ return [
 
             'account.users.index'  => [
                 'name' => 'Users',
+                'icon'     => ['fal', 'user-circle'],
+
             ],
             'account.guests.index' => [
                 'name' => 'Guests',
+                'icon'     => ['fal', 'user-alien'],
+
             ],
             'account.roles.index'  => [
                 'name' => 'Roles',
