@@ -46,10 +46,12 @@ class ShowProcurementDashboard
         return Inertia::render(
             'show-dashboard',
             [
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'navLocation' => ['account' => 'procurement'],
+
                 'headerData' => [
-                    'module'      => 'procurement',
                     'title'       => __('Procurement dashboard'),
-                    'breadcrumbs' => $this->getBreadcrumbs(),
+
 
                 ]
             ]
