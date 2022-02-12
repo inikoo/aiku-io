@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Accounting\InvoiceTransaction;
+namespace App\Actions\Financials\InvoiceTransaction;
 
 use App\Models\Utils\ActionResult;
 use App\Models\Sales\Order;
@@ -24,7 +24,7 @@ class StoreInvoiceTransaction
         $data['shop_id']=$parent->shop_id;
         $data['customer_id']=$parent->customer_id;
 
-        /** @var \App\Models\Accounting\InvoiceTransaction $invoiceTransaction */
+        /** @var \App\Models\Financials\InvoiceTransaction $invoiceTransaction */
         $invoiceTransaction = $parent->invoiceTransactions()->create($data);
 
         $res->model    = $invoiceTransaction;

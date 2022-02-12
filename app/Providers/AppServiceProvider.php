@@ -56,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
                 'Adjust'                  => 'App\Models\Sales\Adjust',
                 'Shipper'                 => 'App\Models\Delivery\Shipper',
                 'DeliveryNote'            => 'App\Models\Delivery\DeliveryNote',
-                'Invoice'                 => 'App\Models\Accounting\Invoice',
+                'Invoice'                 => 'App\Models\Financials\Invoice',
                 'Order'                   => 'App\Models\Sales\Order',
                 'Stock'                   => 'App\Models\Inventory\Stock',
                 'Workshop'                => 'App\Models\Production\Workshop',

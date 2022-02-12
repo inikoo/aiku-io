@@ -8,7 +8,7 @@
 
 namespace App\Models\Sales;
 
-use App\Models\Accounting\InvoiceTransaction;
+use App\Models\Financials\InvoiceTransaction;
 use App\Models\CRM\Customer;
 use App\Models\Delivery\DeliveryNoteItem;
 use App\Models\Trade\Shop;

@@ -43,19 +43,16 @@ class Picking extends Model
         return $this->belongsToMany(deliveryNoteItem::class)->withTimestamps();
     }
 
-    /** @noinspection PhpUnused */
     public function setRequiredAttribute($val)
     {
         $this->attributes['required'] = sprintf('%.3f', $val);
     }
 
-    /** @noinspection PhpUnused */
     public function setPickedAttribute($val)
     {
         $this->attributes['picked'] = is_null($val) ? null:   sprintf('%.3f', $val);
     }
 
-    /** @noinspection PhpUnused */
     public function setWeightAttribute($val)
     {
         $this->attributes['weight'] = is_null($val) ? null:   sprintf('%.3f', $val);

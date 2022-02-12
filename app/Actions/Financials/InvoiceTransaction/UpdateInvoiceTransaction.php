@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Accounting\InvoiceTransaction;
+namespace App\Actions\Financials\InvoiceTransaction;
 
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\Accounting\InvoiceTransaction;
+use App\Models\Financials\InvoiceTransaction;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 

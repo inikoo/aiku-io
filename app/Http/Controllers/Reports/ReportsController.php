@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Reports;
 
 
+use App\Actions\Reports\ShowReportsDashboard;
 use App\Http\Controllers\Controller;
 use Inertia\Response;
 
@@ -17,9 +18,9 @@ class ReportsController extends Controller
 {
 
 
-    public function index(): Response
+    public function dashboard(): Response
     {
-        return IndexReports::make()->asInertia();
+        return ShowReportsDashboard::make()->asInertia();
     }
 
 

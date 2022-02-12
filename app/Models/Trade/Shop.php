@@ -9,7 +9,7 @@
 namespace App\Models\Trade;
 
 use App\Actions\Hydrators\HydrateTenant;
-use App\Models\Accounting\Invoice;
+use App\Models\Financials\Invoice;
 use App\Models\CRM\Customer;
 use App\Models\Sales\Adjust;
 use App\Models\Sales\Charge;

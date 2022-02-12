@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Accounting;
+namespace App\Models\Financials;
 
 use App\Actions\Hydrators\HydrateCustomer;
 use App\Actions\Hydrators\HydrateShop;

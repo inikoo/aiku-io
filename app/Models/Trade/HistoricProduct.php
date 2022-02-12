@@ -25,6 +25,11 @@ class HistoricProduct extends Model implements Auditable
     use UsesTenantConnection;
     use SoftDeletes;
 
+    protected $casts = [
+        'status' => 'boolean',
+
+    ];
+
     public $timestamps = ["created_at"];
     public const UPDATED_AT = null;
 

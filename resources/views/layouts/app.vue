@@ -112,7 +112,7 @@
                                             >{{ $page.props.auth.user.name }}</p>
                                             <p
                                                 class="text-sm font-medium text-gray-500 group-hover:text-gray-700"
-                                            >{{ translations.see_profile }}</p>
+                                            >{{ locale.__('View profile') }}</p>
                                         </div>
                                     </div>
                                 </Link>
@@ -130,7 +130,7 @@
                                         <div class="ml-5">
                                             <p
                                                 class="text-base font-medium text-gray-700 group-hover:text-gray-900"
-                                            >{{ translations.log_out }}</p>
+                                            >{{ locale.__('Log out') }}</p>
                                         </div>
                                     </div>
                                 </form>
@@ -145,8 +145,12 @@
 
             <!-- Static sidebar for desktop -->
             <sidebar
-                :nav-location="$page.props.navLocation??[]"
-                :current-route="route().current()"></sidebar>
+                :tenantNickname="tenantNickname"
+                :nav-data="$page.props.navData??[]"
+                :current-route="route().current()">
+
+
+            </sidebar>
 
             <div class="flex flex-col min-w-0 flex-1 overflow-hidden">
 
@@ -158,6 +162,7 @@
                         <!-- Start main area-->
                         <div class="absolute inset-0 py-2 px-4 sm:px-6 lg:px-7">
                             <div class="h-full">
+                                {{ layout.currentModels.shop }}
                                 <slot></slot>
                             </div>
                         </div>
@@ -177,23 +182,16 @@
                 </div>
             </div>
         </div>
-        <div class="bg-slate-800 text-gray-100 text-sm		">03</div>
+        <div class="bg-slate-800 text-gray-100 text-sm"> {{ locale.language }} </div>
     </div>
 </template>
 
 
-<script>
-let initCurrentModels;
-let initTranslations;
-let initLocale;
-let initLayout;
-
-</script>
 
 <script setup>
 import {Link} from '@inertiajs/inertia-vue3';
 import FontAwesomeIcon from '../../scripts/fa-icons';
-import {computed, provide} from 'vue';
+import {computed, watchEffect} from 'vue';
 import {usePage} from '@inertiajs/inertia-vue3';
 import {ref} from 'vue';
 
@@ -205,56 +203,28 @@ import Avatar from 'vue-boring-avatars';
 import Breadcrumbs from '../components/navigation/top/breadcrumbs.vue';
 import Sidebar from '../components/navigation/left/sidebar.vue';
 
+import {useLocaleStore} from '../../scripts/stores/locale.js';
+import {useLayoutStore} from '../../scripts/stores/layout.js';
+
+import qs from "qs";
+console.log(qs.stringify({ a: 'b' }))
+const locale = useLocaleStore();
+const layout = useLayoutStore();
+
+watchEffect(() => {
+    if (usePage().props.value.language) {locale.language = usePage().props.value.language;}
+    if (usePage().props.value.translations) {locale.translations = usePage().props.value.translations;}
+    if (usePage().props.value.modules) {layout.modules = usePage().props.value.modules;}
+
+});
+
 const logout = () => $inertia.post(route('logout'));
 
-const layout = computed(() => {
+const tenantNickname = computed(() => usePage().props.value.tenantNickname)
 
-    if (usePage().props.value.layout) {
-        let layout = usePage().props.value.layout;
-        initLayout = layout;
-        return layout;
-    } else {
-        return initLayout;
-    }
-});
-provide('layout', layout);
-
-const currentModels = computed(() => {
-
-    if (usePage().props.value.currentModels) {
-        initCurrentModels = usePage().props.value.currentModels;
-        return usePage().props.value.currentModels;
-    } else {
-        return initCurrentModels;
-    }
-});
-const translations = computed(() => {
-
-    if (usePage().props.value.translations) {
-
-        initTranslations = usePage().props.value.translations;
-        return usePage().props.value.translations;
-    } else {
-        return initTranslations;
-    }
-});
-const locale = computed(() => {
-
-    if (usePage().props.value.locale) {
-        initLocale = usePage().props.value.locale;
-        return usePage().props.value.locale;
-    } else {
-        return initLocale;
-    }
-});
-
-provide('translations', translations);
-provide('locale', locale.value);
-provide('currentModels', currentModels);
 
 const sidebarOpen = ref(false);
-const tenantName = usePage().props.value.tenantName;
-const tenantNickname = usePage().props.value.tenantNickname;
+
 
 
 </script>

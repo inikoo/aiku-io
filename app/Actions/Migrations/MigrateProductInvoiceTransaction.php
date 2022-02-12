@@ -9,9 +9,9 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Accounting\InvoiceTransaction\StoreInvoiceTransaction;
-use App\Actions\Accounting\InvoiceTransaction\UpdateInvoiceTransaction;
-use App\Models\Accounting\InvoiceTransaction;
+use App\Actions\Financials\InvoiceTransaction\StoreInvoiceTransaction;
+use App\Actions\Financials\InvoiceTransaction\UpdateInvoiceTransaction;
+use App\Models\Financials\InvoiceTransaction;
 use App\Models\Sales\Order;
 use App\Models\Sales\Transaction;
 use Illuminate\Support\Facades\DB;

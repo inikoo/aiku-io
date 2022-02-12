@@ -91,7 +91,7 @@ class IndexCustomer
             'index-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navLocation' => ['module' => 'shops', 'metaSection' => $this->metaSection,'sectionRoot'=>$this->sectionRoot],
+                'navData' => ['module' => 'shops', 'metaSection' => $this->metaSection,'sectionRoot'=>$this->sectionRoot],
 
                 'headerData' => [
                    'title'=>$this->title

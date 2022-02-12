@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Accounting\Invoice;
+namespace App\Actions\Financials\Invoice;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
 use App\Models\Utils\ActionResult;
@@ -35,7 +35,7 @@ class StoreInvoice
         $billingAddress=StoreImmutableAddress::run($billingAddress);
         $modelData['billing_address_id']=$billingAddress->id;
 
-        /** @var \App\Models\Accounting\Invoice $invoice */
+        /** @var \App\Models\Financials\Invoice $invoice */
 
         $invoice = $order->invoices()->create($modelData);
 

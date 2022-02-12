@@ -9,10 +9,10 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Accounting\Invoice\StoreInvoice;
-use App\Actions\Accounting\Invoice\UpdateInvoice;
-use App\Actions\Accounting\InvoiceTransaction\StoreInvoiceTransaction;
-use App\Models\Accounting\Invoice;
+use App\Actions\Financials\Invoice\StoreInvoice;
+use App\Actions\Financials\Invoice\UpdateInvoice;
+use App\Actions\Financials\InvoiceTransaction\StoreInvoiceTransaction;
+use App\Models\Financials\Invoice;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use App\Models\Sales\Transaction;

@@ -22,12 +22,14 @@ InertiaProgress.init();
 //     forceTLS: true
 // });
 
+import { createPinia } from 'pinia'
 
 createInertiaApp({
     resolve: (name) => importPageComponent(name, import.meta.glob('../views/pages/**/*.vue')),
     setup({el, app, props, plugin}) {
         createApp({render: () => h(app, props)})
             .use(plugin)
+            .use(createPinia())
             .component('InertiaLink', Link) // Hack for inertiajs-tables-laravel-query-builder
             // @ts-ignore
             .mixin({methods: {route}})

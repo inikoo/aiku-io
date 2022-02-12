@@ -9,7 +9,7 @@
 namespace App\Models\CRM;
 
 use App\Actions\Hydrators\HydrateShop;
-use App\Models\Accounting\Invoice;
+use App\Models\Financials\Invoice;
 use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Attachment;

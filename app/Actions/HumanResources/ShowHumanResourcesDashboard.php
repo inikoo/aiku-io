@@ -44,7 +44,7 @@ class ShowHumanResourcesDashboard
             'show-dashboard',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navLocation' => ['module' => 'human_resources'],
+                'navData' => ['module' => 'human_resources'],
                 'headerData'  => [
                     'title' => __('Human resources'),
                     'meta'  => [

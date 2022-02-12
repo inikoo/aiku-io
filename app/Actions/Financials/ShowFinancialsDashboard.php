@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sun, 16 Jan 2022 12:31:52 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sat, 12 Feb 2022 00:09:52 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Inventory;
+namespace App\Actions\Financials;
 
 
 use App\Actions\UI\WithInertia;
@@ -16,7 +16,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
-class ShowInventoryDashboard
+class ShowFinancialsDashboard
 {
     use AsAction;
     use WithInertia;
@@ -29,7 +29,10 @@ class ShowInventoryDashboard
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("inventory.view");
+        return
+            $request->user()->hasPermissionTo("financials.accounts_receivable.view") ||
+            $request->user()->hasPermissionTo("financials.accounts_payable.view")
+            ;
     }
 
 
@@ -44,10 +47,10 @@ class ShowInventoryDashboard
             'show-dashboard',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData' => ['account' => 'inventory'],
+                'navData' => ['account' => 'procurement'],
 
                 'headerData' => [
-                    'title'       => __('Inventory'),
+                    'title'       => __('Financials'),
 
 
                 ]
@@ -62,13 +65,14 @@ class ShowInventoryDashboard
     }
 
 
-    private function getBreadcrumbs(): array
+    public function getBreadcrumbs(): array
     {
 
         return [
             'warehouse' => [
-                'route'           => 'inventory.dashboard',
-                'name'            => __('Inventory'),
+                'route'           => 'financials.dashboard',
+                'name'            => __('Financials'),
+                'current'         => false
             ]
         ];
     }

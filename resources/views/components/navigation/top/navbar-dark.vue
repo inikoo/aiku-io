@@ -12,20 +12,20 @@
                 <div class="flex items-center px-2 lg:px-0">
                     <div class="flex-shrink-0">
                         <font-awesome-icon :icon="['fad', 'dice-d10']" class="text-gray-100" size="2x" />
-                        <span class="hidden sm:inline-block	">
-                        <span class="ml-4 text-3xl text-gray-100 font-light tracking-tighter">{{ tenantCode }}</span>
-                        <span class="text-sm text-gray-100 font-light tracking-tighter">@aiku</span>
-                        </span>
+
                     </div>
                     <div class="hidden lg:block lg:ml-6">
                         <div class="flex space-x-4">
 
-                            <Link v-for="(module,idx) in layout" :key="idx"
+                            <Link v-for="(module,idx) in layout.modules" :key="idx"
 
                                   :class="[isCurrent(module.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']"
 
-                                  :href="route(module.route)">
-                                <span class="hidden xl:inline-block">{{module.name}}</span> <span class="xl:hidden">{{module.shortName}}</span>
+                                  :href="getLink(module)">
+                                <span class="hidden xl:inline-block">
+                                    {{module.name}}
+                                    <font-awesome-icon :icon="['fal', 'bars']" ></font-awesome-icon>
+                                </span> <span class="xl:hidden">{{module.shortName}}</span>
                             </Link>
 
 
@@ -66,7 +66,7 @@
 
         <DisclosurePanel class="lg:hidden">
             <div class="px-2 pt-2 pb-3 space-y-1">
-                <DisclosureButton  v-for="(module,idx) in layout" :key="idx"
+                <DisclosureButton  v-for="(module,idx) in layout.modules" :key="idx"
                                    as="a" :href="route(module.route)"  class="bg-gray-900 text-white   block px-3 py-2 rounded-md text-base font-medium ">{{module.name}}</DisclosureButton>
 
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
@@ -99,10 +99,20 @@ library.add(faDiceD10);
 
 import { SearchIcon } from '@heroicons/vue/solid'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
-import {inject} from 'vue';
+import {useLayoutStore} from '../../../../scripts/stores/layout.js';
 const props = defineProps(['tenantCode','currentRoute']);
 
-const layout = inject('layout')
+
+const layout = useLayoutStore();
+
+
+
+const getLink = (module)=>{
+    if(module.code==='shops' && layout.currentModels.shop){
+        return route('shops.show',layout.currentModels.shop)
+    }
+    return route(module.route)
+}
 
 const isCurrent = (route) => {
     const rootRoute=route.substring(0, route.indexOf('.'));

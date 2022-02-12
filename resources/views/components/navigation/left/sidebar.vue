@@ -11,23 +11,29 @@
             <!-- Sidebar component, swap this element with another sidebar if you like -->
             <div class="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-gray-100">
                 <div class="flex-1 flex flex-col pt-0 pb-4 overflow-y-auto">
-                    <nav class="mt-5 flex-1" aria-label="Sidebar">
+                    <nav class="mt-2 flex-1" aria-label="Sidebar">
+
+
+                        <div class="ml-4 mb-5 ">
+                            <span class="text-3xl text-gray-800 font-light tracking-tighter" >{{ tenantNickname }}</span>
+                            <span class="text-sm text-gray-600 font-light tracking-tighter">@aiku</span>
+                        </div>
                         <div class="px-2 space-y-1">
                             <div
-                                v-for="(item,idx) in layout"
+                                v-for="(module,idx) in layout.modules"
                                 :key="idx"
-                                v-show="getItemVisibility(item.route)"
+                                v-show="getItemVisibility(module.route)"
                             >
                                 <Link
-                                    v-for="(section,href) in item['sections']"
-                                    :href="route(href,getSectionRouteParameters(item, item.fallbackModel))"
-                                    :class="[navLocation['sectionRoot']===href ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']"
-                                    v-show="navLocation['metaSection']?  navLocation['metaSection']===section['metaSection']   : true"
+                                    v-for="(section,href) in module['sections']"
+                                    :href="route(href,getSectionRouteParameters(module, module.fallbackModel))"
+                                    :class="[navData['sectionRoot']===href ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']"
+                                    v-show="navData['metaSection']?  navData['metaSection']===section['metaSection']   : true"
                                 >
                                     <font-awesome-icon
                                         fixed-width
                                         :icon="section['icon']"
-                                        :class="[navLocation['sectionRoot']===href? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
+                                        :class="[navData['sectionRoot']===href? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
                                         aria-hidden="true"
                                     />
                                     {{ section['name'] }}
@@ -74,7 +80,7 @@
                                 <Link
                                     v-if="$page.props.auth.user.userable_type !== 'Tenant'"
                                     :href="route('profile.show')"
-                                >{{ translations.see_profile }}</Link>
+                                >{{ locale.__('View profile') }}</Link>
                                 <span v-else>{{ $page.props.auth.user.name }}</span>
                             </div>
                             <div class="flex-1 text-right">
@@ -85,9 +91,6 @@
                                         aria-hidden="true"
                                     />
                                 </Link>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -102,15 +105,14 @@ import { Link } from '@inertiajs/inertia-vue3';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Avatar from "vue-boring-avatars";
 import { LogoutIcon } from '@heroicons/vue/outline';
-import {inject} from 'vue';
+import {useLocaleStore} from '../../../../scripts/stores/locale.js';
+import {useLayoutStore} from '../../../../scripts/stores/layout.js';
 
-const props = defineProps(['navLocation','currentRoute']);
+const props = defineProps(['navData','currentRoute','tenantNickname']);
 
+const locale = useLocaleStore()
+const layout = useLayoutStore();
 
-const layout = inject('layout')
-const translations = inject('translations')
-const currentModels = inject('currentModels')
-console.log(currentModels.value)
 let secondaryNavigation=[];
 
 const getItemVisibility=(route)=>{
@@ -127,7 +129,7 @@ const getSectionRouteParameters=(module,fallbackModel)=>{
         moduleCode = 'shop';
 
     if (['shop', 'website', 'warehouse', 'workshop'].includes(moduleCode)) {
-        return currentModels[moduleCode] ?? fallbackModel ?? 1;
+        return layout.currentModels[moduleCode] ?? fallbackModel ?? 1;
     }
 
     return {};

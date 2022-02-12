@@ -31,10 +31,10 @@
                                 </template>
                             </DatePicker>
 
-                            <Phone  v-else-if="fieldData.type === 'phone'" v-model="form[field]" ></Phone>
+                            <Phone v-else-if="fieldData.type === 'phone'" v-model="form[field]"></Phone>
 
                             <Address v-else-if="fieldData.type === 'address'" :fieldData="fieldData" :form="form" :countriesAddressData="args['countriesAddressData']"/>
-                            <ToggleWithIcon  v-else-if="fieldData.type === 'toggleWithIcon'"  :initial-value="form[field]"   v-model="form[field]" ></ToggleWithIcon>
+                            <ToggleWithIcon v-else-if="fieldData.type === 'toggleWithIcon'" :initial-value="form[field]" v-model="form[field]"></ToggleWithIcon>
 
                             <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
 
@@ -45,7 +45,7 @@
                                 <CheckCircleIcon v-if="form.recentlySuccessful" class="mt-1.5  h-5 w-5 text-green-500" aria-hidden="true"/>
                         </span>
                         <span class="ml-2 flex-shrink-0">
-                            <button :title="translations.update" :disabled="form.processing  || !form.isDirty " type="submit">
+                            <button :title="locale.__('Update')" :disabled="form.processing  || !form.isDirty " type="submit">
                                 <SaveIcon class="h-7 w-7 " :class="form.isDirty ? 'text-indigo-500' : 'text-gray-200'" aria-hidden="true"/>
                             </button>
                         </span>
@@ -57,10 +57,8 @@
     </form>
 </template>
 
-<script>
-import {Link} from '@inertiajs/inertia-vue3';
+<script setup>
 import {useForm} from '@inertiajs/inertia-vue3';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {ExclamationCircleIcon, CheckCircleIcon, SaveIcon} from '@heroicons/vue/solid';
 import Select from './select.vue';
 import {DatePicker} from 'v-calendar';
@@ -68,55 +66,39 @@ import Radio from './radio.vue';
 import Address from './address.vue';
 import Phone from './phone.vue';
 import ToggleWithIcon from './toggle-with-icon.vue';
-import { inject } from 'vue'
+import {useLocaleStore} from '../../../scripts/stores/locale.js';
 
-export default {
+const props = defineProps(['fieldData', 'field', 'args']);
 
-    components: {
-        ToggleWithIcon,
-        Link, FontAwesomeIcon, ExclamationCircleIcon, CheckCircleIcon, SaveIcon, Select, DatePicker, Radio, Address,Phone
-    },
-    props     : ['fieldData', 'field', 'args'],
-    methods   : {
-        handleChange: function(form) {
-            form.clearErrors();
-        },
-    },
-    setup(props) {
-        const translations = inject('translations')
+const locale = useLocaleStore();
 
-        const postURL = props.fieldData['postURL'] ?? props.args['postURL'];
-        let formFields = {};
+const handleChange = (form) => form.clearErrors();
 
-        if (props.fieldData['type'] === 'address') {
+const postURL = props.fieldData['postURL'] ?? props.args['postURL'];
+let formFields = {};
 
-            formFields['country_id'] = props.fieldData.value.country_id;
-            formFields['administrative_area'] = props.fieldData.value.administrative_area;
-            formFields['dependant_locality'] = props.fieldData.value.dependant_locality;
-            formFields['locality'] = props.fieldData.value.locality;
-            formFields['postal_code'] = props.fieldData.value.postal_code;
-            formFields['sorting_code'] = props.fieldData.value.sorting_code;
-            formFields['address_line_2'] = props.fieldData.value.address_line_2;
-            formFields['address_line_1'] = props.fieldData.value.address_line_1;
+if (props.fieldData['type'] === 'address') {
 
+    formFields['country_id'] = props.fieldData.value.country_id;
+    formFields['administrative_area'] = props.fieldData.value.administrative_area;
+    formFields['dependant_locality'] = props.fieldData.value.dependant_locality;
+    formFields['locality'] = props.fieldData.value.locality;
+    formFields['postal_code'] = props.fieldData.value.postal_code;
+    formFields['sorting_code'] = props.fieldData.value.sorting_code;
+    formFields['address_line_2'] = props.fieldData.value.address_line_2;
+    formFields['address_line_1'] = props.fieldData.value.address_line_1;
 
-        } else {
-            formFields = {
-                [props.field]: props.fieldData.value,
-            };
+} else {
+    formFields = {
+        [props.field]: props.fieldData.value,
+    };
 
-            if (props.fieldData['hasOther']) {
-                formFields[props.fieldData['hasOther']['name']] = props.fieldData['hasOther']['value'];
-            }
+    if (props.fieldData['hasOther']) {
+        formFields[props.fieldData['hasOther']['name']] = props.fieldData['hasOther']['value'];
+    }
 
-        }
+}
 
+const form = useForm(formFields);
 
-        const form = useForm(formFields);
-        return {
-            form, postURL,translations
-        };
-    },
-
-};
 </script>

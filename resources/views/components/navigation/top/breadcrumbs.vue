@@ -17,7 +17,7 @@
                                 class="flex-shrink-0 h-4 w-4"
                                 aria-hidden="true"
                             />
-                            <span class="sr-only">{{ translations['dashboard'] }}</span>
+                            <span class="sr-only">{{ locale.__('dashboard') }}</span>
                         </Link>
                     </div>
                 </li>
@@ -53,11 +53,11 @@
 <script setup>
 import {ChevronRightIcon} from '@heroicons/vue/solid';
 import {Link} from '@inertiajs/inertia-vue3';
-import {inject} from 'vue';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import {useLocaleStore} from '../../../../scripts/stores/locale.js';
 
 const props = defineProps(['breadcrumbs']);
-const translations = inject('translations');
+const locale = useLocaleStore();
 
 let displayBreadcrumbs = Object.keys(props.breadcrumbs).length > 0;
 

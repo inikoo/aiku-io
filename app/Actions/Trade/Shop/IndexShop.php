@@ -51,7 +51,7 @@ class IndexShop
             'index-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navLocation' => ['module' => 'shops', 'metaSection' => 'shops', 'sectionRoot' => 'shops.index'],
+                'navData' => ['module' => 'shops', 'metaSection' => 'shops', 'sectionRoot' => 'shops.index'],
 
                 'headerData' => [
                     'title'       => __('Shops'),

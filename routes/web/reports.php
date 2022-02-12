@@ -9,5 +9,5 @@
 
 use App\Http\Controllers\Reports\ReportsController;
 
-Route::get('/', [ReportsController::class, 'index'])->name('index');
+Route::get('/', [ReportsController::class, 'dashboard'])->name('dashboard');
 

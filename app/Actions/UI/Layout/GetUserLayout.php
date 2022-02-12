@@ -55,7 +55,7 @@ class GetUserLayout
 
                     if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
                         $sections[$sectionRoute] = [
-                            'icon'      => Arr::get($section, 'icon', ['fal', 'angle-right']),
+                            'icon'      => Arr::get($section, 'icon', ['fal', 'dot-circle']),
                             'name'      => __(Arr::get($section, 'name')),
                             'shortName' => __(Arr::get($section, 'shortName', Arr::get($section, 'name'))),
                         ];

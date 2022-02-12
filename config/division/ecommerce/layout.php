@@ -9,7 +9,7 @@
 
 return [
     [
-        'code'        => 'dashboard',
+        'code'      => 'dashboard',
         'route'     => 'dashboard.index',
         'name'      => 'Home',
         'shortName' => 'Home',
@@ -17,7 +17,7 @@ return [
         'sections'  => []
     ],
     [
-        'code'        => 'shops',
+        'code'      => 'shops',
         'route'     => 'shops.dashboard',
         'name'      => 'Shops',
         'shortName' => 'Shops',
@@ -25,23 +25,46 @@ return [
         'sections'  => []
     ],
     [
-        'code'        => 'inventory',
+        'code'      => 'inventory',
         'route'     => 'inventory.dashboard',
         'name'      => 'Inventory',
         'shortName' => 'Inventory',
         'icon'      => ['fal', 'box'],
-        'sections'  => []
+        'sections'  => [
+            'inventory.stocks.index'          => [
+                'name' => 'Stocks',
+                'icon' => ['fal', 'box'],
+            ],
+            'inventory.stock_locations.index' => [
+                'name' => 'Stock-Locations',
+            ],
+
+        ]
     ],
     [
-        'code'        => 'procurement',
+        'code'      => 'procurement',
         'route'     => 'procurement.dashboard',
         'name'      => 'Procurement',
         'shortName' => 'Procurement',
         'icon'      => ['fal', 'apple-crate'],
-        'sections'  => []
+        'sections'  => [
+            'procurement.agents.index'          => [
+                'name' => 'Agents',
+            ],
+            'procurement.suppliers.index'       => [
+                'name' => 'Suppliers',
+            ],
+            'procurement.purchase_orders.index' => [
+                'name' => 'Purchase orders',
+            ],
+            'procurement.deliveries.index'      => [
+                'name' => 'Deliveries',
+            ],
+
+        ]
     ],
     [
-        'code'          => 'financials',
+        'code'        => 'financials',
         'route'       => 'financials.dashboard',
         'permissions' => ['financials.view'],
         'name'        => 'Financials',
@@ -51,7 +74,7 @@ return [
         ]
     ],
     [
-        'code'          => 'human_resources',
+        'code'        => 'human_resources',
         'route'       => 'human_resources.dashboard',
         'permissions' => ['employees.view'],
         'name'        => 'Human Resources',
@@ -60,7 +83,7 @@ return [
         'sections'    => [
             'human_resources.employees.index'  => [
                 'name' => 'Employees',
-                'icon'     => ['fal', 'user-hard-hat'],
+                'icon' => ['fal', 'user-hard-hat'],
             ],
             'human_resources.timesheets.index' => [
                 'name' => 'Timesheets',
@@ -72,32 +95,32 @@ return [
         ]
     ],
     [
-        'code'        => 'reports',
-        'route'     => 'reports.index',
+        'code'      => 'reports',
+        'route'     => 'reports.dashboard',
         'name'      => 'Reports',
         'shortName' => 'Reports',
         'icon'      => ['fal', 'chart-line'],
         'sections'  => [
         ]
     ],
-    'account'         => [
-        'code'          => 'account',
+    'account' => [
+        'code'        => 'account',
         'route'       => 'account.show',
         'permissions' => ['account.users.view'],
         'name'        => 'Account',
-        'shortName'        => 'Acc',
+        'shortName'   => 'Acc',
 
         'icon'     => ['fal', 'dice-d4'],
         'sections' => [
 
             'account.users.index'  => [
                 'name' => 'Users',
-                'icon'     => ['fal', 'user-circle'],
+                'icon' => ['fal', 'user-circle'],
 
             ],
             'account.guests.index' => [
                 'name' => 'Guests',
-                'icon'     => ['fal', 'user-alien'],
+                'icon' => ['fal', 'user-alien'],
 
             ],
             'account.roles.index'  => [

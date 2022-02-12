@@ -62,7 +62,7 @@ class HandleInertiaTenantsRequests extends Middleware
                 return $division->getUserLayout($request->user());
             },
 
-            'locale'        => App::currentLocale(),
+            'language'        => App::currentLocale(),
             'translations'  => fn() => GetUITranslations::run()
         ] : [];
 

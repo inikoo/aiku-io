@@ -48,7 +48,7 @@ class ShowShop
             'show-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->shop),
-                'navLocation' => ['module' => 'shops', 'metaSection' => 'shop'],
+                'navData' => ['module' => 'shops', 'metaSection' => 'shop'],
                 'headerData' => [
                     'title'  => $shop->name,
                     'meta'        => [

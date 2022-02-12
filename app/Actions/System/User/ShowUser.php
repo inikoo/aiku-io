@@ -76,7 +76,7 @@ class ShowUser
             'show-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navLocation' => ['account' => 'shops', 'sectionRoot' => 'account.users.index'],
+                'navData' => ['account' => 'shops', 'sectionRoot' => 'account.users.index'],
 
                 'headerData' => [
                     'title'       => $this->user->username,

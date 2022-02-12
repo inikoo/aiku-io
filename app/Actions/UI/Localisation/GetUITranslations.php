@@ -26,7 +26,7 @@ class GetUITranslations
             'update'=>__('Update'),
             'log_out'=>__('Log out'),
             'open_sidebar'=>__('Open sidebar'),
-            'see_profile'=>__('View profile'),
+            'View profile'=>__('View profile'),
             'select_a_tab'=>__('Select a tab'),
         ];
     }

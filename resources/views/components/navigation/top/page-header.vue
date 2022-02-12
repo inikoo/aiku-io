@@ -6,7 +6,7 @@
   -->
 
 <template>
-    <Head :title="headerData.pageTitle??headerData.title??''" />
+    <Head :title="headerData.pageTitle??headerData.title??''"/>
     <div class="mb-6">
 
         <div class="mt-2 md:flex md:items-center md:justify-between">
@@ -29,9 +29,9 @@
 
                 <div class="mt-1 flex flex-row flex-wrap mt-0 -ml-6 ">
                     <div v-for="(meta,metaIdx) in headerData['meta']" :key="metaIdx" class="mt-2 ml-6 flex items-center text-sm text-gray-500">
-                        <Badge v-if="meta.badge" :data="meta" ></Badge>
+                        <Badge v-if="meta.badge" :data="meta"></Badge>
                         <template v-else>
-                            <span class="text-gray-400"><font-awesome-icon v-if="meta.icon" :icon="meta.icon"  :class="[meta.iconClass,'flex-shrink-0 mr-1.5 h-5 w-5']"  aria-hidden="true"/></span>
+                            <span class="text-gray-400"><font-awesome-icon v-if="meta.icon" :icon="meta.icon" :class="[meta.iconClass,'flex-shrink-0 mr-1.5 h-5 w-5']" aria-hidden="true"/></span>
                             <Link v-if="meta.href" v-bind:title="meta.nameTitle" :href="route(meta.href.route,meta.href.routeParameters)">
                                 {{ meta.name }}
                             </Link>
@@ -50,7 +50,6 @@
             </div>
 
 
-
             <div class="hidden md:block mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
                 <span class="ml-2" v-for="(actionIcon,href) in headerData['actionIcons']" :key="actionIcon.name">
                     <Link :href="route(href,actionIcon['routeParameters'])" as="button">
@@ -66,44 +65,30 @@
     </div>
 </template>
 
-<script>
-import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/vue/solid';
+<script setup>
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {Link} from '@inertiajs/inertia-vue3';
 import Badge from '../../elements/badge.vue';
-import { Head } from '@inertiajs/inertia-vue3'
-import { inject } from 'vue'
+import {Head} from '@inertiajs/inertia-vue3';
+import {useLocaleStore} from '../../../../scripts/stores/locale.js';
 
-export default {
-    props     : ['headerData'],
-    components: {
-        Badge,
-        ChevronLeftIcon,
-        ChevronRightIcon, FontAwesomeIcon, Link,Head
-    },
-    setup(props) {
-
-        const translations = inject('translations')
+const props = defineProps(['headerData']);
+const locale = useLocaleStore();
 
 
-        let sections = [];
+let sections = [];
 
-        /*
-        const items = usePage().props.value.modules[props.headerData.module]['sections'];
+/*
+const items = usePage().props.value.modules[props.headerData.module]['sections'];
 
-        for (const item in items) {
-            sections.push(
-                {
-                    name: items[item].name, href: route(item), current: route().current(item),
-                },
-            );
-        }
-        */
+for (const item in items) {
+    sections.push(
+        {
+            name: items[item].name, href: route(item), current: route().current(item),
+        },
+    );
+}
+*/
 
-        return {
-            sections,translations
-        };
-    }
 
-};
 </script>

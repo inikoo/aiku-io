@@ -8,7 +8,7 @@
 
 namespace App\Actions\Hydrators;
 
-use App\Models\Accounting\Invoice;
+use App\Models\Financials\Invoice;
 use App\Models\CRM\Customer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;

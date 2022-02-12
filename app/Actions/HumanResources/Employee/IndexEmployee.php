@@ -98,7 +98,7 @@ class IndexEmployee
             'index-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navLocation' => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
+                'navData' => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
 
                 'headerData' => [
                     'title'       => $this->title,

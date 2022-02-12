@@ -10,7 +10,7 @@ namespace App\Actions\Delivery\Picking;
 
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\Accounting\InvoiceTransaction;
+use App\Models\Financials\InvoiceTransaction;
 use App\Models\Delivery\Picking;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;

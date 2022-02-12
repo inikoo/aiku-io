@@ -55,15 +55,7 @@ Route::prefix('account')->name('account.')
 Route::prefix('shops')->name('shops.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/shops.php');
-/*
-Route::prefix('ecommerce')->name('ecommerce_shops.')
-    ->middleware(['auth', 'verified'])
-    ->group(__DIR__.'/web/ecommerce_shops.php');
 
-Route::prefix('fulfilment_houses')->name('fulfilment_houses.')
-    ->middleware(['auth', 'verified'])
-    ->group(__DIR__.'/web/fulfilment_houses.php');
-*/
 
 Route::prefix('websites')->name('websites.')
     ->middleware(['auth', 'verified'])

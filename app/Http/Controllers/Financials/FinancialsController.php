@@ -9,10 +9,9 @@
 namespace App\Http\Controllers\Financials;
 
 
+use App\Actions\Financials\ShowFinancialsDashboard;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Procurement\IndexWarehouse;
-use App\Http\Controllers\Procurement\ShowWarehouse;
-use App\Http\Controllers\Procurement\Warehouse;
+
 use Inertia\Response;
 
 
@@ -22,7 +21,7 @@ class FinancialsController extends Controller
 
     public function dashboard(): Response
     {
-        return DashboardFinancials::make()->asInertia();
+        return ShowFinancialsDashboard::make()->asInertia();
     }
 
 

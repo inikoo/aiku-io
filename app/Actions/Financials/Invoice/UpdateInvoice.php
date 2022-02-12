@@ -6,12 +6,12 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Accounting\Invoice;
+namespace App\Actions\Financials\Invoice;
 
 use App\Actions\Helpers\Address\StoreImmutableAddress;
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\Accounting\Invoice;
+use App\Models\Financials\Invoice;
 use App\Models\Helpers\Address;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;

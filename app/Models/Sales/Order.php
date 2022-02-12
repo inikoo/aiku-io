@@ -9,8 +9,8 @@
 namespace App\Models\Sales;
 
 use App\Actions\Hydrators\HydrateShop;
-use App\Models\Accounting\Invoice;
-use App\Models\Accounting\InvoiceTransaction;
+use App\Models\Financials\Invoice;
+use App\Models\Financials\InvoiceTransaction;
 use App\Models\CRM\Customer;
 use App\Models\Delivery\DeliveryNote;
 use App\Models\Helpers\Attachment;

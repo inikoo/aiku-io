@@ -47,7 +47,7 @@ class ShowProcurementDashboard
             'show-dashboard',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navLocation' => ['account' => 'procurement'],
+                'navData' => ['account' => 'procurement'],
 
                 'headerData' => [
                     'title'       => __('Procurement dashboard'),

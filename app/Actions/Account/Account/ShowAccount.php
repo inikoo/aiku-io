@@ -50,7 +50,7 @@ class ShowAccount
             'show-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navLocation' => ['module' => 'account'],
+                'navData' => ['module' => 'account'],
 
                 'headerData' => [
                     'title'       => $this->title,

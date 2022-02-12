@@ -55,7 +55,7 @@ class ShowEditAccount
             'edit-model',
             [
                 'translations' => GetUITranslations::run(),
-                'locale'        => App::currentLocale(),
+                'language'        => App::currentLocale(),
                 'headerData' => [
                     'module'      => 'account',
                     'title'       => __('Account settings', ['name' => $this->account->name]),

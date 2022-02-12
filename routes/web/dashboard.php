@@ -14,7 +14,7 @@ Route::get('/', function () {
         'show-dashboard',
         [
             'breadcrumbs' => [],
-            'navLocation' => ['module' => 'dashboard'],
+            'navData' => ['module' => 'dashboard'],
 
             'headerData' => [
 

@@ -58,7 +58,7 @@ class ShowEditProfile
             'edit-model',
             [
                 'translations'  => GetUITranslations::run(),
-                'locale'        => App::currentLocale(),
+                'language'        => App::currentLocale(),
                 'headerData' => [
                     'module'      => 'users',
                     'title'       => __('Editing profile'),
