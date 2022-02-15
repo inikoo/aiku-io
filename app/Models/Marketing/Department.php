@@ -8,6 +8,8 @@
 
 namespace App\Models\Marketing;
 
+use App\Actions\Hydrators\HydrateDepartment;
+use App\Actions\Hydrators\HydrateShop;
 use App\Models\Media\Image;
 use App\Models\SalesStats;
 use App\Models\Traits\HasSlug;
@@ -35,6 +37,24 @@ class Department extends Model  implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::created(
+            function (Department $department) {
+                HydrateShop::make()->departmentsStats($department->shop);
+            }
+        );
+        static::deleted(
+            function (Department $department) {
+                HydrateShop::make()->departmentsStats($department->shop);
+            }
+        );
+        static::updated(function (Department $department) {
+            if ($department->wasChanged('state')) {
+                HydrateShop::make()->departmentsStats($department->shop);
+            }
+        });
+    }
 
     public function getSlugSourceAttribute(): string
     {

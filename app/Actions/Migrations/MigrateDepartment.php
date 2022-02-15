@@ -36,7 +36,10 @@ class MigrateDepartment extends MigrateModel
 
                 'code' => $this->auModel->data->{'Category Code'},
                 'name' => $this->auModel->data->{'Category Label'},
-
+                'state'      => match ($this->auModel->data->{'Product Category Status'}) {
+                    'In Process' => 'creating',
+                    default => strtolower($this->auModel->data->{'Product Category Status'})
+                },
                 'created_at' => $this->getDate($this->auModel->data->{'Product Category Valid From'}),
                 'aurora_id'  =>$this->auModel->data->{'Category Key'},
 

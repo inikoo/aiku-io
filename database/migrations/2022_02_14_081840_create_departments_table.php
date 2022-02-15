@@ -25,7 +25,7 @@ return new class extends Migration
 
             $table->unsignedMediumInteger('shop_id')->nullable();
             $table->foreign('shop_id')->references('id')->on('shops');
-
+            $table->enum('state', ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'])->nullable()->index();
             $table->string('code')->index();
             $table->string('name', 255)->nullable();
             $table->text('description')->nullable();
@@ -40,7 +40,19 @@ return new class extends Migration
             $table->smallIncrements('id');
             $table->unsignedSmallInteger('department_id')->index();
             $table->foreign('department_id')->references('id')->on('departments');
+
+
+            $table->unsignedBigInteger('number_families')->default(0);
+            $familyStates = ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'];
+            foreach ($familyStates as $familyState) {
+                $table->unsignedBigInteger('number_families_state_'.str_replace('-', '_', $familyState))->default(0);
+            }
+
             $table->unsignedBigInteger('number_products')->default(0);
+            $productStates = ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'];
+            foreach ($productStates as $productState) {
+                $table->unsignedBigInteger('number_products_state_'.str_replace('-', '_', $productState))->default(0);
+            }
 
             $table->timestampsTz();
 
