@@ -37,7 +37,7 @@ class MigrateShop extends MigrateModel
                         default => 'shop'
                     },
                 'subtype'                  => strtolower($this->auModel->data->{'Store Type'}),
-                'code'                     => strtolower($this->auModel->data->{'Store Code'}),
+                'code'                     => $this->auModel->data->{'Store Code'},
                 'name'                     => $this->auModel->data->{'Store Name'},
                 'website'                  => $this->auModel->data->{'Store URL'},
                 'company_name'             => $this->auModel->data->{'Store Company Name'},

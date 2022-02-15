@@ -34,7 +34,7 @@ class MigrateWebsite extends MigrateModel
             [
 
                 'name'        => $this->auModel->data->{'Website Name'},
-                'code'        => strtolower($this->auModel->data->{'Website Code'}),
+                'code'        => $this->auModel->data->{'Website Code'},
                 'url'        => strtolower($this->auModel->data->{'Website URL'}),
                 'state'       => Str::snake($this->auModel->data->{'Website Status'}, '-'),
                 'launched_at' => $this->getDate($this->auModel->data->{'Website Launched'}),

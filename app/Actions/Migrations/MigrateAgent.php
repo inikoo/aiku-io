@@ -65,7 +65,7 @@ class MigrateAgent extends MigrateModel
             [
                 'name' => $this->auModel->data->{'Agent Name'},
                 'code' => Str::snake(
-                    preg_replace('/^aw/', 'aw ', strtolower($this->auModel->data->{'Agent Code'}))
+                    preg_replace('/^aw/', 'aw ', $this->auModel->data->{'Agent Code'})
                     ,
                     '-'
                 ),

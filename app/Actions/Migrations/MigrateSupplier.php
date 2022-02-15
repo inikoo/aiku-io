@@ -61,11 +61,7 @@ class MigrateSupplier extends MigrateModel
         $this->modelData['supplier'] = $this->sanitizeData(
             [
                 'name' => $this->auModel->data->{'Supplier Name'},
-                'code' => Str::snake(
-                    preg_replace('/^aw/', 'aw ', strtolower($this->auModel->data->{'Supplier Code'}))
-                    ,
-                    '-'
-                ),
+                'code' => $this->auModel->data->{'Supplier Code'},
                 'company_name'    => $this->auModel->data->{'Supplier Company Name'},
                 'contact_name'       => $this->auModel->data->{'Supplier Main Contact Name'},
                 'email'      => $this->auModel->data->{'Supplier Main Plain Email'},
