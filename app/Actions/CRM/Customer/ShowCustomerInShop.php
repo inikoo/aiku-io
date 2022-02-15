@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Fri, 28 Jan 2022 22:46:56 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sun, 13 Feb 2022 03:34:08 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
@@ -19,7 +19,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 /**
  * @property Customer $customer
  */
-class ShowCustomer
+class ShowCustomerInShop
 {
     use AsAction;
     use WithInertia;
@@ -43,15 +43,12 @@ class ShowCustomer
         $this->validateAttributes();
 
 
-
-
         return Inertia::render(
             'show-model',
             [
-                'headerData' => [
-                    'title'       => $customer->name,
-                    'breadcrumbs' => $this->get('breadcrumbs'),
-
+                'breadcrumbs' => $this->getBreadcrumbs($customer),
+                'headerData'  => [
+                    'title' => $customer->name,
                 ],
                 'model'       => $customer
             ]
@@ -61,27 +58,20 @@ class ShowCustomer
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(Customer $customer): array
     {
-        /** @var Customer $customer */
-        $customer = $this->get('customer');
-
-
         return array_merge(
             (new IndexCustomerInShop())->getBreadcrumbs($customer->shop),
             [
                 'customer' => [
-                    'route'           => 'customers.show',
-                    'routeParameters' => $customer->id,
-                    'name'            => $customer->code,
-                    'current'         => false
+                    'route' => 'marketing.shops.show.customers.show',
+                    'routeParameters' => [$customer->shop_id, $customer->id],
+                    'name' => $customer->getFormattedID(),
                 ],
             ]
         );

@@ -16,7 +16,7 @@ use App\Models\Financials\Invoice;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use App\Models\Sales\Transaction;
-use App\Models\Trade\Product;
+use App\Models\Marketing\Product;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;

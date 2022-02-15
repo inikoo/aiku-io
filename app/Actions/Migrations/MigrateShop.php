@@ -8,9 +8,9 @@
 
 namespace App\Actions\Migrations;
 
-use App\Actions\Trade\Shop\StoreShop;
-use App\Actions\Trade\Shop\UpdateShop;
-use App\Models\Trade\Shop;
+use App\Actions\Marketing\Shop\StoreShop;
+use App\Actions\Marketing\Shop\UpdateShop;
+use App\Models\Marketing\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;

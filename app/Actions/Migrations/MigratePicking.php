@@ -65,8 +65,8 @@ class MigratePicking extends MigrateModel
 
         $this->modelData   = [
             'stock_id'          => $stock->id,
-            'required'          => $this->auModel->data->{'Required'},
-            'picked'            => $this->auModel->data->{'Picked'},
+            'required'          => round($this->auModel->data->{'Required'},3),
+            'picked'            => round($this->auModel->data->{'Picked'},3),
             'picker_id'         => $picker?->id,
             'packer_id'         => $packer?->id,
             'stock_movement_id' => $stock_movement_id,

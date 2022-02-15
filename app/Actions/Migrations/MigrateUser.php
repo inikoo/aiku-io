@@ -17,7 +17,7 @@ use App\Models\HumanResources\Employee;
 use App\Models\Production\Workshop;
 use App\Models\System\Guest;
 use App\Models\System\User;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

@@ -72,8 +72,8 @@ class MigrateStockMovement extends MigrateModel
             [
                 'type'        => $type,
                 'location_id' => $location->id,
-                'quantity'    => $this->auModel->data->{'Inventory Transaction Quantity'},
-                'amount'      => $this->auModel->data->{'Inventory Transaction Amount'},
+                'quantity'    => round($this->auModel->data->{'Inventory Transaction Quantity'},3),
+                'amount'      => round($this->auModel->data->{'Inventory Transaction Amount'},3),
 
                 'aurora_id'  => $this->auModel->data->{'Inventory Transaction Key'},
                 'created_at' => $this->auModel->data->{'Date'} ?? null,

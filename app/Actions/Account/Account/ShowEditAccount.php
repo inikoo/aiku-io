@@ -55,11 +55,13 @@ class ShowEditAccount
             'edit-model',
             [
                 'translations' => GetUITranslations::run(),
-                'language'        => App::currentLocale(),
-                'headerData' => [
-                    'module'      => 'account',
+                'language'     => App::currentLocale(),
+                'tenant'       => app('currentTenant')->only('name', 'nickname'),
+                'breadcrumbs' => $this->breadcrumbs,
+
+                'headerData'   => [
+
                     'title'       => __('Account settings', ['name' => $this->account->name]),
-                    'breadcrumbs' => $this->breadcrumbs,
                     'actionIcons' => [
 
                         'account.show' => [
@@ -69,7 +71,7 @@ class ShowEditAccount
 
                     ]
                 ],
-                'formData'   => [
+                'formData'     => [
                     'blueprint' => [
                         'profile' => [
                             'title'    => __('Profile'),

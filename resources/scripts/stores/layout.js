@@ -5,14 +5,16 @@
  *  Version 4.0
  */
 
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia';
 
 export const useLayoutStore = defineStore('layout', {
-    state: () => ({
-        modules: [],
-        currentModels: [],
-    }),
+    state: () => (
+        {
+            modules      : [],
+            currentModels: [],
+            tenant       : {},
+        }
+    ),
 
-
-})
+});
 

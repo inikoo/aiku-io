@@ -10,8 +10,8 @@ namespace App\Models\Delivery;
 
 use App\Models\CRM\Customer;
 use App\Models\Sales\Order;
-use App\Models\Trade\Product;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Product;
+use App\Models\Marketing\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

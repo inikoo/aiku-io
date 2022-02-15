@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Http\Resources\Trade;
+namespace App\Http\Resources\Marketing;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,7 +18,7 @@ class ShopInertiaResource extends JsonResource
 
     public function toArray($request): array|Arrayable|JsonSerializable
     {
-        /** @var \App\Models\Trade\Shop $shop */
+        /** @var \App\Models\Marketing\Shop $shop */
         $shop = $this;
 
 

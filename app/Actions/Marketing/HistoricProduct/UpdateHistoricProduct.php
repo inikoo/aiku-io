@@ -6,10 +6,10 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\HistoricProduct;
+namespace App\Actions\Marketing\HistoricProduct;
 
 use App\Models\Utils\ActionResult;
-use App\Models\Trade\HistoricProduct;
+use App\Models\Marketing\HistoricProduct;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateHistoricProduct

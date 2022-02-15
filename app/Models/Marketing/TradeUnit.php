@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Trade;
+namespace App\Models\Marketing;
 
 use App\Models\Inventory\Stock;
 use App\Models\Traits\HasSlug;

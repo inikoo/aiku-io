@@ -6,24 +6,18 @@
  *  Version 4.0
  */
 
-namespace App\Http\Controllers\Trade;
+namespace App\Http\Controllers\Marketing;
 
-use App\Actions\Trade\Shop\IndexShop;
-use App\Actions\Trade\Shop\ShowEcommerceShop;
-use App\Actions\Trade\Shop\ShowShop;
-use App\Actions\Trade\ShowTradeDashboard;
+use App\Actions\Marketing\Shop\IndexShop;
+use App\Actions\Marketing\Shop\ShowShop;
 use App\Http\Controllers\Controller;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Inertia\Response;
 
 
 class ShopController extends Controller
 {
 
-    public function dashboard(): Response
-    {
-        return ShowTradeDashboard::make()->asInertia();
-    }
 
     public function index(): Response
     {

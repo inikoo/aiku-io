@@ -11,7 +11,7 @@ use App\Models\Media\Image;
 use App\Models\Procurement\SupplierProduct;
 use App\Models\Production\WorkshopProduct;
 use App\Models\System\User;
-use App\Models\Trade\Product;
+use App\Models\Marketing\Product;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;

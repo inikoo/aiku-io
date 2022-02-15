@@ -14,8 +14,8 @@ use App\Models\Sales\Adjust;
 use App\Models\Sales\Charge;
 use App\Models\Sales\ShippingZone;
 use App\Models\Sales\TaxBand;
-use App\Models\Trade\Product;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Product;
+use App\Models\Marketing\Shop;
 
 trait WithTransaction
 {

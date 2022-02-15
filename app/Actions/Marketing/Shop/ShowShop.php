@@ -6,10 +6,10 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\Shop;
+namespace App\Actions\Marketing\Shop;
 
 use App\Actions\UI\WithInertia;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -48,7 +48,7 @@ class ShowShop
             'show-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->shop),
-                'navData' => ['module' => 'shops', 'metaSection' => 'shop'],
+                'navData' => ['module' => 'marketing', 'metaSection' => 'shop'],
                 'headerData' => [
                     'title'  => $shop->name,
                     'meta'        => [
@@ -56,7 +56,7 @@ class ShowShop
                             'icon' => ['fal','user'],
                             'name' => $shop->stats->number_customers,
                             'href' =>[
-                                'route'=>'shops.show.customers.index',
+                                'route'=>'marketing.shops.show.customers.index',
                                 'routeParameters'=>$this->shop->id
                             ]
                         ],
@@ -64,7 +64,7 @@ class ShowShop
                             'icon' => ['fal','shopping-cart'],
                             'name' => $shop->stats->number_orders,
                             'href' =>[
-                                'route'=>'shops.show.orders.index',
+                                'route'=>'marketing.shops.show.orders.index',
                                 'routeParameters'=>$this->shop->id
                             ]
                         ],
@@ -91,8 +91,8 @@ class ShowShop
         return array_merge(
             (new IndexShop())->getBreadcrumbs(),
             [
-                'shops.show' => [
-                    'route' => 'shops.show',
+                'marketing.shops.show' => [
+                    'route' => 'marketing.shops.show',
                     'routeParameters' => $shop->id,
                     'name' => $shop->code,
                 ],
@@ -104,7 +104,6 @@ class ShowShop
     {
         $this->set('Shop', $shop);
         $this->validateAttributes();
-
         return $shop;
     }
 

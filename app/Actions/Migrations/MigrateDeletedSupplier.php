@@ -9,7 +9,7 @@
 namespace App\Actions\Migrations;
 
 
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;

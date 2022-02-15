@@ -1,20 +1,21 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 20 Jan 2022 22:41:38 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sun, 13 Feb 2022 01:20:09 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Http\Controllers\Shops;
+namespace App\Http\Controllers\Marketing;
 
 
 use App\Actions\CRM\Customer\IndexCustomerInShop;
 use App\Actions\CRM\Customer\IndexCustomerInTenant;
 use App\Actions\CRM\Customer\ShowCustomer;
+use App\Actions\CRM\Customer\ShowCustomerInShop;
 use App\Http\Controllers\Controller;
 use App\Models\CRM\Customer;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Inertia\Response;
 
 
@@ -37,7 +38,7 @@ class CustomerController extends Controller
 
     public function showInShop(Shop $shop, Customer $customer): Response
     {
-        return ShowCustomer::make()->asInertia($customer);
+        return ShowCustomerInShop::make()->asInertia($customer);
     }
 
 

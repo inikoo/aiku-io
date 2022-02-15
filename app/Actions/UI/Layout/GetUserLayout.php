@@ -23,57 +23,64 @@ class GetUserLayout
     {
         $layout = [];
 
-        $this->initialize($user);
-
 
         foreach ($modulesScaffolding as $moduleKey => $module) {
-            $modulePermissions = $module['permissions'] ?? false;
+            //$modulePermissions = $module['permissions'] ?? false;
 
 
-            if ($this->canShow($module)) {
-                /*
+            /*
 
-                $module = $this->prepareModule($module);
-
-
+            $module = $this->prepareModule($module);
 
 
 
-                $layout[$moduleKey] = array_merge(
-                    Arr::except($module, ['sections', 'id']),
-                    ['sections' => $sections]
 
 
-                );
-                */
+            $layout[$moduleKey] = array_merge(
+                Arr::except($module, ['sections', 'id']),
+                ['sections' => $sections]
 
 
-                $sections = [];
+            );
+            */
 
-                foreach ($this->getSections($module) as $sectionRoute => $section) {
-                    $sectionPermissions = $section['permissions'] ?? false;
 
-                    if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
-                        $sections[$sectionRoute] = [
-                            'icon'      => Arr::get($section, 'icon', ['fal', 'dot-circle']),
-                            'name'      => __(Arr::get($section, 'name')),
-                            'shortName' => __(Arr::get($section, 'shortName', Arr::get($section, 'name'))),
-                        ];
-                        if (Arr::get($section, 'metaSection')) {
-                            $sections[$sectionRoute]['metaSection'] = Arr::get($section, 'metaSection');
-                        }
+            $sections = [];
+
+            foreach ($this->getSections($module) as $sectionRoute => $section) {
+                $sectionPermissions = $section['permissions'] ?? false;
+
+                if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
+                    $sections[$sectionRoute] = [
+                        'icon'      => Arr::get($section, 'icon', ['fal', 'dot-circle']),
+                        'name'      => __(Arr::get($section, 'name')),
+                        'shortName' => __(Arr::get($section, 'shortName', Arr::get($section, 'name'))),
+                    ];
+                    if (Arr::get($section, 'metaSection')) {
+                        $sections[$sectionRoute]['metaSection'] = Arr::get($section, 'metaSection');
                     }
                 }
-
-
-                $layout[] = [
-                    'code'      => $module['code'],
-                    'name'      => __($module['name']),
-                    'shortName' => __($module['shortName']),
-                    'route'     => $module['route'],
-                    'sections'  => $sections
-                ];
             }
+
+
+            $moduleData     = [
+                'code'      => $module['code'],
+                'name'      => __($module['name']),
+                'shortName' => __($module['shortName']),
+                'route'     => $module['route'],
+                'sections'  => $sections
+            ];
+            $visibleModels = $this->getVisibleModels($user, $module);
+            if (!is_null($visibleModels)) {
+                $moduleData['visibleModels']=$visibleModels;
+                $moduleData['visibleModelsCount']=count($visibleModels);
+                $moduleData['ModelsCount']=$this->getModelsCount($module);
+
+
+            }
+
+
+            $layout[] = $moduleData;
         }
 
 
@@ -95,10 +102,15 @@ class GetUserLayout
         return Arr::get($module, 'sections', []);
     }
 
-
-    protected function canShow($moduleKey): bool
+    protected function getModelsCount($module): int
     {
-        return true;
+        return 0;
     }
+
+    protected function getVisibleModels($user, $module): ?array
+    {
+        return null;
+    }
+
 
 }

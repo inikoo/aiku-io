@@ -52,9 +52,9 @@ Route::prefix('account')->name('account.')
     ->middleware(['auth', 'verified'])
     ->group(__DIR__.'/web/account.php');
 
-Route::prefix('shops')->name('shops.')
+Route::prefix('marketing')->name('marketing.')
     ->middleware(['auth', 'verified'])
-    ->group(__DIR__.'/web/shops.php');
+    ->group(__DIR__.'/web/marketing.php');
 
 
 Route::prefix('websites')->name('websites.')

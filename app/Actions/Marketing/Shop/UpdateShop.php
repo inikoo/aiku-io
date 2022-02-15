@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\Shop;
+namespace App\Actions\Marketing\Shop;
 
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 

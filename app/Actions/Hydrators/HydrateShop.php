@@ -10,9 +10,11 @@ namespace App\Actions\Hydrators;
 
 use App\Models\Financials\Invoice;
 use App\Models\CRM\Customer;
+use App\Models\Marketing\Department;
+use App\Models\Marketing\Family;
 use App\Models\Sales\Order;
-use App\Models\Trade\Product;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Product;
+use App\Models\Marketing\Shop;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 

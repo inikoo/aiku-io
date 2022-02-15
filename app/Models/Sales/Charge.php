@@ -7,7 +7,7 @@
  */
 namespace App\Models\Sales;
 
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

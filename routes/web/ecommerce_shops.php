@@ -7,8 +7,8 @@
  */
 
 
-use App\Http\Controllers\Shops\CustomerController;
-use App\Http\Controllers\Trade\ShopController;
+use App\Http\Controllers\Marketing\CustomerController;
+use App\Http\Controllers\Marketing\ShopController;
 
 
 Route::get('/', [ShopController::class, 'index'])->name('index');

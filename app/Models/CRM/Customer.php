@@ -14,8 +14,8 @@ use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Attachment;
 use App\Models\Media\Image;
-use App\Models\Trade\Product;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Product;
+use App\Models\Marketing\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -141,6 +141,11 @@ class Customer extends Model implements Auditable
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function getFormattedID(): string
+    {
+        return sprintf('%04d',$this->id);
     }
 
 }

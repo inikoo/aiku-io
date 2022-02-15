@@ -12,7 +12,7 @@ namespace App\Actions\Migrations;
 use App\Actions\Sales\ShippingSchema\StoreShippingSchema;
 use App\Actions\Sales\ShippingSchema\UpdateShippingSchema;
 use App\Models\Sales\ShippingSchema;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;

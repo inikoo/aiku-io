@@ -22,10 +22,7 @@
                                   :class="[isCurrent(module.route) ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']"
 
                                   :href="getLink(module)">
-                                <span class="hidden xl:inline-block">
-                                    {{module.name}}
-                                    <font-awesome-icon :icon="['fal', 'bars']" ></font-awesome-icon>
-                                </span> <span class="xl:hidden">{{module.shortName}}</span>
+                                <navbar-dark-button-label :module="module" ></navbar-dark-button-label>
                             </Link>
 
 
@@ -93,13 +90,12 @@
 import { Link } from '@inertiajs/inertia-vue3';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faDiceD10 } from '@/private/pro-duotone-svg-icons';
-library.add(faDiceD10);
+
 
 import { SearchIcon } from '@heroicons/vue/solid'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import {useLayoutStore} from '../../../../scripts/stores/layout.js';
+import NavbarDarkButtonLabel from './navbar-dark-button-label.vue';
 const props = defineProps(['tenantCode','currentRoute']);
 
 
@@ -108,8 +104,9 @@ const layout = useLayoutStore();
 
 
 const getLink = (module)=>{
-    if(module.code==='shops' && layout.currentModels.shop){
-        return route('shops.show',layout.currentModels.shop)
+
+    if(module.code==='marketing' && layout.currentModels.shop){
+        return route('marketing.shops.show',layout.currentModels.shop)
     }
     return route(module.route)
 }

@@ -9,8 +9,8 @@
 namespace App\Actions\CRM\Customer;
 
 
-use App\Actions\Trade\Shop\ShowShop;
-use App\Models\Trade\Shop;
+use App\Actions\Marketing\Shop\ShowShop;
+use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\ActionRequest;
 
 use function __;
@@ -25,7 +25,8 @@ class IndexCustomerInShop extends IndexCustomer
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("shops.customers.view") || $request->user()->hasPermissionTo("shops.customers.{$this->shop->id}.view");
+
+        return $request->user()->hasPermissionTo("shops.customers.view") || $request->user()->hasPermissionTo("shops.customers.view.{$this->shop->id}");
     }
 
 
@@ -51,7 +52,7 @@ class IndexCustomerInShop extends IndexCustomer
             [
                 'title' => __('Customers in :shop', ['shop' => $this->shop->code]),
                 'breadcrumbs'=>$this->getBreadcrumbs($this->shop),
-                'sectionRoot'=>'shops.show.customers.index',
+                'sectionRoot'=>'marketing.shops.show.customers.index',
                 'metaSection' => 'shop'
 
 
@@ -66,8 +67,9 @@ class IndexCustomerInShop extends IndexCustomer
         return array_merge(
             (new ShowShop())->getBreadcrumbs($shop),
             [
-                'shop.customers.index' => [
-                    'route'   => 'shops.customers.index',
+                'marketing.shops.show.customers.index' => [
+                    'route'   => 'marketing.shops.show.customers.index',
+                    'routeParameters' => $shop->id,
                     'name'    => __('customers'),
                 ],
             ]

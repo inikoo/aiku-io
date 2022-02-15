@@ -9,7 +9,7 @@
 namespace App\Actions\Sales\Charge;
 
 use App\Models\Utils\ActionResult;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreCharge

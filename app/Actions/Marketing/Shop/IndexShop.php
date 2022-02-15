@@ -6,11 +6,12 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\Shop;
+namespace App\Actions\Marketing\Shop;
 
 
-use App\Http\Resources\Trade\ShopInertiaResource;
-use App\Models\Trade\Shop;
+use App\Actions\Marketing\ShowMarketingDashboard;
+use App\Http\Resources\Marketing\ShopInertiaResource;
+use App\Models\Marketing\Shop;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
@@ -51,7 +52,7 @@ class IndexShop
             'index-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData' => ['module' => 'shops', 'metaSection' => 'shops', 'sectionRoot' => 'shops.index'],
+                'navData' => ['module' => 'marketing', 'metaSection' => 'shops', 'sectionRoot' => 'marketing.shops.index'],
 
                 'headerData' => [
                     'title'       => __('Shops'),
@@ -64,7 +65,7 @@ class IndexShop
                             'sort'  => 'code',
                             'label' => __('Code'),
                             'href'  => [
-                                'route'  =>'shops.show',
+                                'route'  =>'marketing.shops.show',
                                 'column' => 'id',
                                 'with_permission'=>'can_view'
 
@@ -99,12 +100,17 @@ class IndexShop
 
     public function getBreadcrumbs(): array
     {
-        return [
-            'index' => [
-                'route'   => 'shops.index',
-                'name'    => __('Shops'),
-            ],
-        ];
+
+
+        return array_merge(
+            (new ShowMarketingDashboard())->getBreadcrumbs(),
+            [
+                'marketing.shops.index' => [
+                    'route'   => 'marketing.shops.index',
+                    'name'    => __('Shops'),
+                ],
+            ]
+        );
 
     }
 

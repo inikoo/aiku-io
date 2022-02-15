@@ -13,7 +13,7 @@ use App\Actions\Inventory\Stock\UpdateStock;
 use App\Models\Account\Tenant;
 use App\Models\Inventory\Location;
 use App\Models\Inventory\Stock;
-use App\Models\Trade\TradeUnit;
+use App\Models\Marketing\TradeUnit;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;

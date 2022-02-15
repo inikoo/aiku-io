@@ -10,7 +10,7 @@ namespace App\Models\Procurement;
 
 use App\Models\Media\Image;
 use App\Models\SalesStats;
-use App\Models\Trade\TradeUnit;
+use App\Models\Marketing\TradeUnit;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

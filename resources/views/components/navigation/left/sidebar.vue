@@ -14,16 +14,22 @@
                     <nav class="mt-2 flex-1" aria-label="Sidebar">
 
 
-                        <div class="ml-4 mb-5 ">
-                            <span class="text-3xl text-gray-800 font-light tracking-tighter" >{{ tenantNickname }}</span>
+                        <div class="ml-4 mb-2 ">
+                            <span class="text-3xl text-gray-800 font-light tracking-tighter" >{{ layout.tenant.nickname }}</span>
                             <span class="text-sm text-gray-600 font-light tracking-tighter">@aiku</span>
                         </div>
+
+
+
                         <div class="px-2 space-y-1">
                             <div
                                 v-for="(module,idx) in layout.modules"
                                 :key="idx"
                                 v-show="getItemVisibility(module.route)"
                             >
+
+                              <sidebar-model-header :module="module" :navData="navData"></sidebar-model-header>
+
                                 <Link
                                     v-for="(section,href) in module['sections']"
                                     :href="route(href,getSectionRouteParameters(module, module.fallbackModel))"
@@ -107,8 +113,9 @@ import Avatar from "vue-boring-avatars";
 import { LogoutIcon } from '@heroicons/vue/outline';
 import {useLocaleStore} from '../../../../scripts/stores/locale.js';
 import {useLayoutStore} from '../../../../scripts/stores/layout.js';
+import SidebarModelHeader from './sidebar-model-header.vue';
 
-const props = defineProps(['navData','currentRoute','tenantNickname']);
+const props = defineProps(['navData','currentRoute']);
 
 const locale = useLocaleStore()
 const layout = useLayoutStore();
@@ -116,6 +123,7 @@ const layout = useLayoutStore();
 let secondaryNavigation=[];
 
 const getItemVisibility=(route)=>{
+
     const rootRoute=route.substring(0, route.indexOf('.'));
     const rootCurrentRoute=props.currentRoute.substring(0, props.currentRoute.indexOf('.'));
     return rootRoute===rootCurrentRoute;
@@ -125,7 +133,7 @@ const getSectionRouteParameters=(module,fallbackModel)=>{
     let  moduleCode=module.code;
     if (moduleCode === 'inventory')
         moduleCode = 'warehouse';
-    else if (moduleCode === 'shops')
+    else if (moduleCode === 'marketing')
         moduleCode = 'shop';
 
     if (['shop', 'website', 'warehouse', 'workshop'].includes(moduleCode)) {
@@ -134,5 +142,7 @@ const getSectionRouteParameters=(module,fallbackModel)=>{
 
     return {};
 }
+
+
 
 </script>

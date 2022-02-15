@@ -12,7 +12,7 @@ namespace App\Actions\Media\Image\Traits;
 use App\Http\Resources\Media\ModelAttachmentResource;
 use App\Models\HumanResources\Employee;
 use App\Models\Media\Image;
-use App\Models\Trade\Product;
+use App\Models\Marketing\Product;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\QueryBuilder;
 

@@ -6,10 +6,10 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\TradeUnit;
+namespace App\Actions\Marketing\TradeUnit;
 
 use App\Models\Utils\ActionResult;
-use App\Models\Trade\TradeUnit;
+use App\Models\Marketing\TradeUnit;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 

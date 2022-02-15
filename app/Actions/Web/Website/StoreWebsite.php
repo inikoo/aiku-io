@@ -11,7 +11,7 @@ namespace App\Actions\Web\Website;
 use App\Models\System\Permission;
 use App\Models\System\Role;
 use App\Models\Utils\ActionResult;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Multitenancy\Models\Tenant;
 use Spatie\Permission\PermissionRegistrar;

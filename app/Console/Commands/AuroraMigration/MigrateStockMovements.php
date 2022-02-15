@@ -51,7 +51,7 @@ class MigrateStockMovements extends MigrateAurora
         DB::connection('aurora')->table('Inventory Transaction Fact')
             ->where('Inventory Transaction Record Type','Movement')
             ->whereNotIn('Inventory Transaction Type',['Adjust'])
-            ->orderBy('Date')->chunk(50000, function ($chunk) use ($tenant) {
+            ->orderBy('Date')->chunk(5000, function ($chunk) use ($tenant) {
             foreach ($chunk as $auroraData) {
                 $result = MigrateStockMovement::run(
                     $auroraData

@@ -9,7 +9,7 @@
 namespace App\Models\CRM;
 
 use App\Models\Helpers\Address;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -12,7 +12,7 @@ namespace App\Actions\Migrations;
 use App\Actions\Sales\Charge\StoreCharge;
 use App\Actions\Sales\Charge\UpdateCharge;
 use App\Models\Sales\Charge;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;

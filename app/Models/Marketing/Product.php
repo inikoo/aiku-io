@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Trade;
+namespace App\Models\Marketing;
 
 use App\Actions\Hydrators\HydrateShop;
 use App\Models\Media\Image;

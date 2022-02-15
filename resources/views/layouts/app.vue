@@ -7,7 +7,7 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
     <div class="flex h-screen flex-col">
-        <navbar-dark :tenant-code="tenantNickname" :current-route="route().current()"></navbar-dark>
+        <navbar-dark  :current-route="route().current()"></navbar-dark>
         <div class="h-max grow flex overflow-hidden bg-white">
             <!-- Static sidebar for mobile -->
             <TransitionRoot as="template" :show="sidebarOpen">
@@ -145,7 +145,6 @@
 
             <!-- Static sidebar for desktop -->
             <sidebar
-                :tenantNickname="tenantNickname"
                 :nav-data="$page.props.navData??[]"
                 :current-route="route().current()">
 
@@ -162,7 +161,6 @@
                         <!-- Start main area-->
                         <div class="absolute inset-0 py-2 px-4 sm:px-6 lg:px-7">
                             <div class="h-full">
-                                {{ layout.currentModels.shop }}
                                 <slot></slot>
                             </div>
                         </div>
@@ -206,8 +204,7 @@ import Sidebar from '../components/navigation/left/sidebar.vue';
 import {useLocaleStore} from '../../scripts/stores/locale.js';
 import {useLayoutStore} from '../../scripts/stores/layout.js';
 
-import qs from "qs";
-console.log(qs.stringify({ a: 'b' }))
+
 const locale = useLocaleStore();
 const layout = useLayoutStore();
 
@@ -215,12 +212,13 @@ watchEffect(() => {
     if (usePage().props.value.language) {locale.language = usePage().props.value.language;}
     if (usePage().props.value.translations) {locale.translations = usePage().props.value.translations;}
     if (usePage().props.value.modules) {layout.modules = usePage().props.value.modules;}
+    if (usePage().props.value.currentModels) {layout.currentModels = usePage().props.value.currentModels;}
+    if (usePage().props.value.tenant) {layout.tenant = usePage().props.value.tenant;}
 
 });
 
 const logout = () => $inertia.post(route('logout'));
 
-const tenantNickname = computed(() => usePage().props.value.tenantNickname)
 
 
 const sidebarOpen = ref(false);

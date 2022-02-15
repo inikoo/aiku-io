@@ -11,7 +11,7 @@ namespace App\Models\Inventory;
 use App\Models\Helpers\Attachment;
 use App\Models\LocationStock;
 use App\Models\Media\Image;
-use App\Models\Trade\TradeUnit;
+use App\Models\Marketing\TradeUnit;
 use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -48,7 +48,7 @@ class IndexCustomer
             'shop_code' => [
                 'label' => __('Shop'),
                 'href'  => [
-                    'route'  => 'shops.show.customers.index',
+                    'route'  => 'marketing.shops.show.customers.index',
                     'column' => 'shop_id'
                 ],
             ],
@@ -56,7 +56,7 @@ class IndexCustomer
                 'sort'  => 'customer_number',
                 'label' => __('Id'),
                 'href'  => [
-                    'route'  => 'shops.show.customers.show',
+                    'route'  => 'marketing.shops.show.customers.show',
                     'column' => ['shop_id', 'id']
                 ],
             ],

@@ -6,7 +6,7 @@
  *  Version 4.0
  */
 
-namespace App\Models\Trade;
+namespace App\Models\Marketing;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

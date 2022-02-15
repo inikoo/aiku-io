@@ -9,8 +9,8 @@
 namespace App\Actions\CRM\Customer;
 
 
-use App\Actions\Trade\Shop\IndexShop;
-use App\Models\Trade\Shop;
+use App\Actions\Marketing\Shop\IndexShop;
+use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -34,26 +34,15 @@ class IndexCustomerInTenant extends IndexCustomer
         $canView = $request->user()->hasPermissionTo("shops.customers.view");
         $this->canViewAll=$canView;
         if (!$canView) {
-
-
-
-
             $this->allowed_shops = Shop::withTrashed()->get()->pluck('id')->filter(function ($shopID) use ($request) {
                 $request->user()->can("shops.customers.$shopID.view");
             });
-
-
-
             $canView = $this->allowed_shops->count()>0;
         }
 
         return $canView;
     }
     public function queryConditions($query){
-
-
-
-
         $select=array_merge(array_diff( $this->select, ['id','name'] ), ['customers.id as id', 'shops.code as shop_code','customers.name as name']);
 
         if(!$this->canViewAll){
@@ -80,8 +69,8 @@ class IndexCustomerInTenant extends IndexCustomer
             [
                 'title' => __('Customers'),
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'sectionRoot' => 'shops.customers.index',
-                'metaSection' => 'shops'
+                'sectionRoot' => 'marketing.customers.index',
+                'metaSection' => 'marketing'
             ]
         );
         $this->fillFromRequest($request);
@@ -93,8 +82,8 @@ class IndexCustomerInTenant extends IndexCustomer
         return array_merge(
             (new IndexShop())->getBreadcrumbs(),
             [
-                'shop.customers.index' => [
-                    'route' => 'shops.customers.index',
+                'marketing.customers.index' => [
+                    'route' => 'marketing.customers.index',
                     'name'  => __('Customers'),
                 ],
             ]

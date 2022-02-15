@@ -11,7 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\CRM\Customer\StoreCustomer;
 
 use App\Models\CRM\Customer;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;

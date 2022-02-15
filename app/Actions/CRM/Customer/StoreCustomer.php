@@ -11,7 +11,7 @@ namespace App\Actions\CRM\Customer;
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Models\Utils\ActionResult;
 use App\Models\CRM\Customer;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreCustomer

@@ -6,11 +6,10 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\Product;
+namespace App\Actions\Marketing\Product;
 
 use App\Models\Utils\ActionResult;
-use App\Models\Procurement\Supplier;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreProduct
@@ -21,7 +20,7 @@ class StoreProduct
     {
         $res = new ActionResult();
 
-        /** @var \App\Models\Trade\Product $product */
+        /** @var \App\Models\Marketing\Product $product */
         $product = $shop->products()->create($data);
 
         $product->salesStats()->create([

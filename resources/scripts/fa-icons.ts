@@ -15,8 +15,8 @@ import { faDiceD10 } from '@/private/pro-duotone-svg-icons';
 library.add(faDiceD10);
 
 // App icons
-import { faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars } from '@/private/pro-light-svg-icons';
-library.add(faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars);
+import { faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars ,faDiamond} from '@/private/pro-light-svg-icons';
+library.add(faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars,faDiamond);
 
 import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
 library.add(faBirthdayCake, faMars, faVenus);
@@ -36,7 +36,9 @@ library.add( faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
     faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
     faUserSecret,faHandHoldingBox,faUser,faShoppingCart);
 
-
+// For Marketing
+import { faCashRegister } from '@/private/pro-light-svg-icons';
+library.add(faCashRegister);
 
 // For inventory
 import { faBox } from '@/private/pro-light-svg-icons';
@@ -45,6 +47,7 @@ library.add(faBox);
 // For account section
 
 import { faCheckCircle, faTimesCircle, } from '@fortawesome/free-solid-svg-icons';
+// @ts-ignore
 library.add(faCheckCircle, faTimesCircle);
 import {  faUserCircle,faUserAlien } from '@/private/pro-light-svg-icons';
 library.add(faUserAlien, faUserCircle);

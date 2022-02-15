@@ -45,25 +45,19 @@ class HandleInertiaTenantsRequests extends Middleware
     public function share(Request $request): array
     {
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
-            'tenantName'     => app('currentTenant')->name,
-            'tenantNickname' => app('currentTenant')->nickname,
 
-            'appType'       => app('currentTenant')->division->slug,
-            'modules'       => function () use ($request) {
-                /** @var \App\Models\Account\Division $division */
-                $division = app('currentTenant')->division;
-
-                return $division->getUserLayout($request->user());
-            },
-            'layout'        => function () use ($request) {
+            'tenant'  => app('currentTenant')->only('name', 'nickname'),
+            'appType' => app('currentTenant')->division->slug,
+            'modules' => function () use ($request) {
                 /** @var \App\Models\Account\Division $division */
                 $division = app('currentTenant')->division;
 
                 return $division->getUserLayout($request->user());
             },
 
-            'language'        => App::currentLocale(),
-            'translations'  => fn() => GetUITranslations::run()
+
+            'language'     => App::currentLocale(),
+            'translations' => fn() => GetUITranslations::run()
         ] : [];
 
         Session::forget('redirectFromLogin');
@@ -75,7 +69,7 @@ class HandleInertiaTenantsRequests extends Middleware
                 'warehouse' => session('currentWarehouse'),
                 'website'   => session('currentWebsite')
             ],
-            'auth.user' => fn() => $request->user()
+            'auth.user'     => fn() => $request->user()
                 ? $request->user()->only('id', 'name', 'email', 'userable_type')
                 : null,
 

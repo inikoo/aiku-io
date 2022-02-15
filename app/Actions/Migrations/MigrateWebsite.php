@@ -11,7 +11,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Web\Website\StoreWebsite;
 use App\Actions\Web\Website\UpdateWebsite;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use App\Models\Web\Website;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;

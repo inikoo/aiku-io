@@ -9,9 +9,9 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Trade\TradeUnit\StoreTradeUnit;
-use App\Actions\Trade\TradeUnit\UpdateTradeUnit;
-use App\Models\Trade\TradeUnit;
+use App\Actions\Marketing\TradeUnit\StoreTradeUnit;
+use App\Actions\Marketing\TradeUnit\UpdateTradeUnit;
+use App\Models\Marketing\TradeUnit;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;

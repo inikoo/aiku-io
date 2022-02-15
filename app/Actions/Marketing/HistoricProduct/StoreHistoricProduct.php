@@ -6,10 +6,10 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\HistoricProduct;
+namespace App\Actions\Marketing\HistoricProduct;
 
 use App\Models\Utils\ActionResult;
-use App\Models\Trade\Product;
+use App\Models\Marketing\Product;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreHistoricProduct
@@ -19,7 +19,7 @@ class StoreHistoricProduct
     public function handle(Product $product, array $data): ActionResult
     {
         $res = new ActionResult();
-        /** @var \App\Models\Trade\HistoricProduct $historicProduct */
+        /** @var \App\Models\Marketing\HistoricProduct $historicProduct */
 
         $historicProduct = $product->historicRecords()->create($data);
 

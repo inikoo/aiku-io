@@ -8,7 +8,7 @@
 
 namespace App\Actions\Hydrators;
 
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 
 trait HasSalesStats
 {

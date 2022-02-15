@@ -6,11 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\Trade\Shop;
+namespace App\Actions\Marketing\Shop;
 
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Models\Utils\ActionResult;
-use App\Models\Trade\Shop;
+use App\Models\Marketing\Shop;
 use App\Models\System\Permission;
 use App\Models\System\Role;
 use Lorisleiva\Actions\Concerns\AsAction;
