@@ -93,6 +93,16 @@ class Shop extends Model implements Auditable
         return $this->hasMany(Invoice::class);
     }
 
+    public function departments(): HasMany
+    {
+        return $this->hasMany(Department::class);
+    }
+
+    public function families(): HasMany
+    {
+        return $this->hasMany(Family::class);
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

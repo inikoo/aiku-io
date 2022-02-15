@@ -46,8 +46,6 @@ class MigrateCustomer extends MigrateModel
             $state = 'lost';
         }
 
-
-
         $this->modelData['customer'] = $this->sanitizeData(
             [
                 'shop_id'                  => $this->parent->id,

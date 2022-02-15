@@ -39,11 +39,8 @@ class ShippingZone  extends Model implements Auditable
 
     protected $guarded = [];
 
-    /** @noinspection PhpUnused */
     public function getSlugSourceAttribute(): string
     {
-
-
         return  $this->shippingSchema->slug.'-'.$this->code;
     }
 

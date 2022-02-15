@@ -23,7 +23,7 @@ class UpdateShippingZone
     {
         $res = new ActionResult();
 
-        $shippingZone->update(Arr::except($modelData,['data']));
+        $shippingZone->update(Arr::except($modelData,['settings']));
         $shippingZone->update($this->extractJson($modelData));
 
         $res->changes = array_merge($res->changes, $shippingZone->getChanges());

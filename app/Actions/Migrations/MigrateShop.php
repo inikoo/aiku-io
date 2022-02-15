@@ -76,8 +76,10 @@ class MigrateShop extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreShop::run(data: $this->modelData['shop']);
+        return StoreShop::run(modelData: $this->modelData['shop']);
     }
+
+
 
     public function authorize(ActionRequest $request): bool
     {

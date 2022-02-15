@@ -21,10 +21,10 @@ class StoreShop
 {
     use AsAction;
 
-    public function handle(array $data, array $addressData = []): ActionResult
+    public function handle(array $modelData, array $addressData = []): ActionResult
     {
         $res  = new ActionResult();
-        $shop = Shop::create($data);
+        $shop = Shop::create($modelData);
         $shop->stats()->create();
         $shop->salesStats()->create([
                                         'scope' => 'sales'

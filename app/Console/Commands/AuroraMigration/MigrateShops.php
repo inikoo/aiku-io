@@ -9,6 +9,8 @@
 namespace App\Console\Commands\AuroraMigration;
 
 use App\Actions\Migrations\MigrateCharge;
+use App\Actions\Migrations\MigrateDepartment;
+use App\Actions\Migrations\MigrateFamily;
 use App\Actions\Migrations\MigrateShipper;
 use App\Actions\Migrations\MigrateShippingSchema;
 use App\Actions\Migrations\MigrateShop;
@@ -43,6 +45,11 @@ class MigrateShops extends MigrateAurora
             ->update(['aiku_id' => null]);
         DB::connection('aurora')->table('Website Dimension')
             ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Category Dimension')
+            ->update([
+                         'aiku_department_id' => null,
+                         'aiku_family_id' => null
+                     ]);
     }
 
     protected function count(): int
@@ -52,6 +59,18 @@ class MigrateShops extends MigrateAurora
         $count += DB::connection('aurora')->table('Charge Dimension')->count();
         $count += DB::connection('aurora')->table('Shipper Dimension')->count();
         $count += DB::connection('aurora')->table('Website Dimension')->count();
+        foreach (DB::connection('aurora')->table('Store Dimension')->get() as $auroraStoreData) {
+            $count += DB::connection('aurora')
+                ->table('Category Dimension')
+                ->where('Category Branch Type', 'Head')
+                ->where('Category Root Key', $auroraStoreData->{'Store Department Category Key'})->count();
+        }
+        foreach (DB::connection('aurora')->table('Store Dimension')->get() as $auroraStoreData) {
+            $count += DB::connection('aurora')
+                ->table('Category Dimension')
+                ->where('Category Branch Type', 'Head')
+                ->where('Category Root Key', $auroraStoreData->{'Store Family Category Key'})->count();
+        }
 
         return $count;
     }
@@ -79,6 +98,27 @@ class MigrateShops extends MigrateAurora
                 $result = MigrateCharge::run($auroraChargeData);
                 $this->recordAction($tenant, $result);
             }
+
+            foreach (
+                DB::connection('aurora')
+                    ->table('Category Dimension')
+                    ->leftJoin('Product Category Dimension', 'Product Category Key', 'Category Key')
+                    ->where('Category Branch Type', 'Head')
+                    ->where('Category Root Key', $auroraStoreData->{'Store Department Category Key'})->get() as $auroraDepartment
+            ) {
+                $result = MigrateDepartment::run($auroraDepartment);
+                $this->recordAction($tenant, $result);
+            }
+            foreach (
+                DB::connection('aurora')
+                    ->table('Category Dimension')
+                    ->leftJoin('Product Category Dimension', 'Product Category Key', 'Category Key')
+                    ->where('Category Branch Type', 'Head')
+                    ->where('Category Root Key', $auroraStoreData->{'Store Family Category Key'})->get() as $auroraFamily
+            ) {
+                $result = MigrateFamily::run($auroraFamily);
+                $this->recordAction($tenant, $result);
+            }
         }
 
         foreach (DB::connection('aurora')->table('Shipper Dimension')->get() as $auroraShipperData) {
@@ -90,7 +130,6 @@ class MigrateShops extends MigrateAurora
             $result = MigrateWebsite::run($auroraWebsiteData);
             $this->recordAction($tenant, $result);
         }
-
     }
 
 
