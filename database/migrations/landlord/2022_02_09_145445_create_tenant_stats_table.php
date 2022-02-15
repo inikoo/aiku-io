@@ -53,7 +53,7 @@ class CreateTenantStatsTable extends Migration
             $table->timestampsTz();
         });
 
-        Schema::create('tenant_trade_stats', function (Blueprint $table) {
+        Schema::create('tenant_marketing_stats', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->unsignedSmallInteger('tenant_id')->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
@@ -78,6 +78,8 @@ class CreateTenantStatsTable extends Migration
             foreach ($customerNumberInvoicesStates as $customerNumberInvoicesState) {
                 $table->unsignedBigInteger('number_customers_trade_state_'.$customerNumberInvoicesState)->default(0);
             }
+
+            $table->unsignedBigInteger('number_orphan_families')->default(0);
 
 
             $table->unsignedBigInteger('number_orders')->default(0);
@@ -223,7 +225,7 @@ class CreateTenantStatsTable extends Migration
         Schema::dropIfExists('tenant_sales_stats');
         Schema::dropIfExists('tenant_procurement_stats');
         Schema::dropIfExists('tenant_inventory_stats');
-        Schema::dropIfExists('tenant_trade_stats');
+        Schema::dropIfExists('tenant_marketing_stats');
         Schema::dropIfExists('tenant_stats');
     }
 }

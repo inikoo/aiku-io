@@ -8,6 +8,8 @@
 
 namespace App\Models\Marketing;
 
+use App\Actions\Hydrators\HydrateDepartment;
+use App\Actions\Hydrators\HydrateShop;
 use App\Models\Media\Image;
 use App\Models\SalesStats;
 use App\Models\Traits\HasSlug;
@@ -35,6 +37,34 @@ class Family extends Model  implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::created(
+            function (Family $family) {
+                if($family->department_id){
+                    HydrateDepartment::make()->familiesStats($family->department);
+                }
+                HydrateShop::make()->familiesStats($family->shop);
+            }
+        );
+        static::deleted(
+            function (Family $family) {
+                if($family->department_id){
+                    HydrateDepartment::make()->familiesStats($family->department);
+                }
+                HydrateShop::make()->familiesStats($family->shop);
+            }
+        );
+        static::updated(function (Family $family) {
+            if ($family->wasChanged('state')) {
+                if($family->department_id){
+                    HydrateDepartment::make()->familiesStats($family->department);
+                }
+                HydrateShop::make()->familiesStats($family->shop);
+            }
+        });
+    }
+
 
     public function getSlugSourceAttribute(): string
     {
@@ -46,9 +76,9 @@ class Family extends Model  implements Auditable
         return $this->belongsTo(Shop::class);
     }
 
-    public function departments(): BelongsTo
+    public function department(): BelongsTo
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Department::class);
     }
 
     public function products(): HasMany

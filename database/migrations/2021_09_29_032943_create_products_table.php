@@ -27,7 +27,7 @@ class CreateProductsTable extends Migration
             $table->unsignedMediumInteger('shop_id')->nullable();
             $table->foreign('shop_id')->references('id')->on('shops');
 
-            $table->enum('state', ['creating', 'active', 'no-available', 'discontinuing', 'discontinued'])->nullable()->index();
+            $table->enum('state', ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'])->nullable()->index();
             $table->boolean('status')->nullable()->index();
 
             $table->string('code')->index();

@@ -16,11 +16,11 @@ use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 /**
  * @mixin IdeHelperTenantTradeStats
  */
-class TenantTradeStats extends Model
+class TenantMarketingStats extends Model
 {
     use UsesLandlordConnection;
 
-    protected $table = 'tenant_trade_stats';
+    protected $table = 'tenant_marketing_stats';
 
     protected $guarded = [];
 

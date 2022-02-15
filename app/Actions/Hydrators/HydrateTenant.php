@@ -62,12 +62,12 @@ class HydrateTenant
             $stats['number_shops_subtype_'.$userSubtype] = Arr::get($userSubtypeCount, $userSubtype, 0);
         }
 
-        App('currentTenant')->tradeStats->update($stats);
+        App('currentTenant')->marketingStats->update($stats);
     }
 
     public function customerStats()
     {
-        App('currentTenant')->tradeStats->update(
+        App('currentTenant')->marketingStats->update(
             [
                 'number_customers' => ShopStats::sum('number_customers')
             ]

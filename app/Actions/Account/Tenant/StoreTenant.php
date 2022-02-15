@@ -24,7 +24,7 @@ class StoreTenant
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant = $division->tenants()->create($tenantData);
         $tenant->stats()->create();
-        $tenant->tradeStats()->create();
+        $tenant->marketingStats()->create();
         $tenant->inventoryStats()->create();
         $tenant->procurementStats()->create();
 

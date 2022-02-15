@@ -117,9 +117,9 @@ class Tenant extends SpatieTenant
         return $this->hasOne(TenantStats::class);
     }
 
-    public function tradeStats(): HasOne
+    public function marketingStats(): HasOne
     {
-        return $this->hasOne(TenantTradeStats::class);
+        return $this->hasOne(TenantMarketingStats::class);
     }
 
     public function inventoryStats(): HasOne
