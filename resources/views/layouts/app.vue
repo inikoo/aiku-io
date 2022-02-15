@@ -189,7 +189,6 @@
 <script setup>
 import {Link} from '@inertiajs/inertia-vue3';
 import FontAwesomeIcon from '../../scripts/fa-icons';
-import {computed, watchEffect} from 'vue';
 import {usePage} from '@inertiajs/inertia-vue3';
 import {ref} from 'vue';
 
