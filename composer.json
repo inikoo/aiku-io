@@ -35,7 +35,8 @@
         "tightenco/ziggy": "^1.4",
         "twilio/sdk": "^6.34",
         "vemcogroup/laravel-translation": "^3.0",
-        "wulfheart/laravel-actions-ide-helper": "dev-l9-compatibility"
+        "wulfheart/laravel-actions-ide-helper": "dev-l9-compatibility",
+        "ext-zlib": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",
