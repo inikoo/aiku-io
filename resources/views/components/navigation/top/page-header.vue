@@ -78,17 +78,7 @@ const locale = useLocaleStore();
 
 let sections = [];
 
-/*
-const items = usePage().props.value.modules[props.headerData.module]['sections'];
 
-for (const item in items) {
-    sections.push(
-        {
-            name: items[item].name, href: route(item), current: route().current(item),
-        },
-    );
-}
-*/
 
 
 </script>

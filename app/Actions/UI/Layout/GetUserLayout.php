@@ -17,10 +17,22 @@ class GetUserLayout
     use AsAction;
 
     protected User $user;
+    private array $modelsCount;
+    private array $visibleModels;
+
+    public function __construct()
+    {
+        $this->modelsCount = [];
+        $this->visibleModels = [];
+
+    }
+
+
 
 
     public function handle(User $user, array $modulesScaffolding): array
     {
+        $this->initialize($user);
         $layout = [];
 
 
@@ -31,11 +43,6 @@ class GetUserLayout
             /*
 
             $module = $this->prepareModule($module);
-
-
-
-
-
             $layout[$moduleKey] = array_merge(
                 Arr::except($module, ['sections', 'id']),
                 ['sections' => $sections]
@@ -74,7 +81,7 @@ class GetUserLayout
             if (!is_null($visibleModels)) {
                 $moduleData['visibleModels']=$visibleModels;
                 $moduleData['visibleModelsCount']=count($visibleModels);
-                $moduleData['ModelsCount']=$this->getModelsCount($module);
+                $moduleData['ModelsCount']=$this->getModelsCount($module['code']);
 
 
             }

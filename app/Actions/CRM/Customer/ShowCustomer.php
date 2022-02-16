@@ -48,9 +48,10 @@ class ShowCustomer
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs' => $this->get('breadcrumbs'),
+
                 'headerData' => [
                     'title'       => $customer->name,
-                    'breadcrumbs' => $this->get('breadcrumbs'),
 
                 ],
                 'model'       => $customer

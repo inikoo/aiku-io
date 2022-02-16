@@ -14,20 +14,51 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+/**
+ * @property array $modelsCount
+ * @property array $visibleModels
+ */
 class GetUserLayoutEcommerce extends GetUserLayout
 {
     use AsAction;
 
 
-    private array $models;
-
-    private Collection $ecommerce_shops;
-    private Collection $fulfilment_houses;
-    private Collection $websites;
-    private Collection $warehouses;
-    private Collection $workshops;
 
 
+
+    protected function initialize($user)
+    {
+        $this->user = $user;
+
+        $this->modelsCount = [
+            'marketing' => Shop::count(),
+            'inventory' => Warehouse::count()
+        ];
+
+        $this->visibleModels = [
+            'marketing' => Shop::get()->filter(function ($shop) use ($user) {
+                return $user->hasPermissionTo("shops.view.$shop->id");
+            })->map(function ($shop) {
+                return Arr::only($shop->toArray(), ['id', 'code', 'name']);
+            })->mapWithKeys(function ($item) {
+                return [$item['id'] => Arr::except($item, 'id')];
+            })->all(),
+            'inventory' =>Warehouse::get()->filter(function ($warehouse) use ($user) {
+                return $user->hasPermissionTo("warehouses.view.$warehouse->id");
+            })->map(function ($warehouse) {
+                return Arr::only($warehouse->toArray(), ['id', 'code', 'name']);
+            })->mapWithKeys(function ($item) {
+                return [$item['id'] => Arr::except($item, 'id')];
+            })->all()
+        ];
+
+        session(['marketingCount' =>$this->modelsCount['marketing']]);
+
+        if ($this->modelsCount['marketing'] == 1) {
+
+            session(['currentShop' =>array_key_first($this->visibleModels['marketing'])]);
+        }
+    }
 
     protected function getSections($module)
     {
@@ -41,7 +72,7 @@ class GetUserLayoutEcommerce extends GetUserLayout
                     'shortName'   => __('Marketing'),
                     'icon'        => ['fal', 'cash-register'],
                 ],
-                'marketing.shops.index'           => [
+                'marketing.shops.index'     => [
                     'metaSection' => 'shops',
                     'name'        => __('Shops'),
                     'shortName'   => __('Shops'),
@@ -77,22 +108,10 @@ class GetUserLayoutEcommerce extends GetUserLayout
     }
 
 
-
-
-
     protected function getModelsCount($module): int
     {
-        return match ($module['code']) {
-            'marketing',
-            => (function () use ($module) {
-                return Shop::count();
-            })(),
-            'inventory',
-            => (function () use ($module) {
-                return Warehouse::count();
-            })(),
-            default => 0,
-        };
+        return $this->modelsCount[$module]??0;
+
     }
 
     protected function getVisibleModels($user, $module): ?array
@@ -105,7 +124,7 @@ class GetUserLayoutEcommerce extends GetUserLayout
                 })->map(function ($shop) {
                     return Arr::only($shop->toArray(), ['id', 'code', 'name']);
                 })->mapWithKeys(function ($item) {
-                    return [$item['id'] => Arr::except($item,'id')];
+                    return [$item['id'] => Arr::except($item, 'id')];
                 })->all();
             })(),
             'inventory',
@@ -115,13 +134,12 @@ class GetUserLayoutEcommerce extends GetUserLayout
                 })->map(function ($warehouse) {
                     return Arr::only($warehouse->toArray(), ['id', 'code', 'name']);
                 })->mapWithKeys(function ($item) {
-                    return [$item['id'] => Arr::except($item,'id')];
+                    return [$item['id'] => Arr::except($item, 'id')];
                 })->all();
             })(),
             default => null,
         };
     }
-
 
 
 }

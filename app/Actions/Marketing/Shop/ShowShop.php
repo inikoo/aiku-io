@@ -14,7 +14,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Lorisleiva\Actions\Concerns\WithAttributes;
 
 
 /**
@@ -48,34 +47,32 @@ class ShowShop
             'show-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->shop),
-                'navData' => ['module' => 'marketing', 'metaSection' => 'shop'],
-                'headerData' => [
-                    'title'  => $shop->name,
-                    'meta'        => [
+                'navData'     => ['module' => 'marketing', 'metaSection' => 'shop'],
+                'headerData'  => [
+                    'title' => $shop->name,
+                    'meta'  => [
                         [
-                            'icon' => ['fal','user'],
+                            'icon' => ['fal', 'user'],
                             'name' => $shop->stats->number_customers,
-                            'href' =>[
-                                'route'=>'marketing.shops.show.customers.index',
-                                'routeParameters'=>$this->shop->id
+                            'href' => [
+                                'route'           => 'marketing.shops.show.customers.index',
+                                'routeParameters' => $this->shop->id
                             ]
                         ],
                         [
-                            'icon' => ['fal','shopping-cart'],
+                            'icon' => ['fal', 'shopping-cart'],
                             'name' => $shop->stats->number_orders,
-                            'href' =>[
-                                'route'=>'marketing.shops.show.orders.index',
-                                'routeParameters'=>$this->shop->id
+                            'href' => [
+                                'route'           => 'marketing.shops.show.orders.index',
+                                'routeParameters' => $this->shop->id
                             ]
                         ],
-
-
 
 
                     ],
 
                 ],
-                'model'      => $shop
+                'model'       => $shop
             ]
 
         );
@@ -89,12 +86,12 @@ class ShowShop
     public function getBreadcrumbs(Shop $shop): array
     {
         return array_merge(
-            (new IndexShop())->getBreadcrumbs(),
+            session('marketingCount') == 1 ? [] : (new IndexShop())->getBreadcrumbs(),
             [
                 'marketing.shops.show' => [
-                    'route' => 'marketing.shops.show',
+                    'route'           => 'marketing.shops.show',
                     'routeParameters' => $shop->id,
-                    'name' => $shop->code,
+                    'name'            => $shop->code,
                 ],
             ]
         );
@@ -104,6 +101,7 @@ class ShowShop
     {
         $this->set('Shop', $shop);
         $this->validateAttributes();
+
         return $shop;
     }
 

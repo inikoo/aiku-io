@@ -157,7 +157,7 @@
 
 
                 <div class="flex-1 relative z-0 flex overflow-hidden">
-                    <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none">
+                    <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none  max-w-screen-2xl	   ">
                         <!-- Start main area-->
                         <div class="absolute inset-0 py-2 px-4 sm:px-6 lg:px-7">
                             <div class="h-full">
@@ -167,7 +167,7 @@
                         <!-- End main area -->
                     </main>
                     <aside
-                        class="hidden relative 2xl:flex 2xl:flex-col flex-shrink-0 w-96 border-l border-gray-200"
+                        class="hidden relative 2xl:flex 2xl:flex-col   flex-shrink-0 w-52  3xl:w-1/4  border-l border-gray-200"
                     >
                         <!-- Start secondary column (hidden on smaller screens) -->
                         <div class="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
@@ -190,7 +190,7 @@
 import {Link} from '@inertiajs/inertia-vue3';
 import FontAwesomeIcon from '../../scripts/fa-icons';
 import {usePage} from '@inertiajs/inertia-vue3';
-import {ref} from 'vue';
+import {ref, watchEffect} from 'vue';
 
 import NavbarDark from '../components/navigation/top/navbar-dark.vue';
 import {Dialog, DialogOverlay, TransitionChild, TransitionRoot} from '@headlessui/vue';

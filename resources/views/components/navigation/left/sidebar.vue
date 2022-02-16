@@ -7,8 +7,7 @@
 
 <template>
     <div class="hidden lg:flex lg:flex-shrink-0">
-        <div class="flex flex-col   w-40  xl:w-64 ">
-            <!-- Sidebar component, swap this element with another sidebar if you like -->
+        <div class="flex flex-col   w-40  2xl:w-52 3xl:w-64 ">
             <div class="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-gray-100">
                 <div class="flex-1 flex flex-col pt-0 pb-4 overflow-y-auto">
                     <nav class="mt-2 flex-1" aria-label="Sidebar">

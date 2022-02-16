@@ -50,7 +50,7 @@ class ShowCustomerInShop
                 'headerData'  => [
                     'title' => $customer->name,
                 ],
-                'model'       => $customer
+                'model'       => $customer,
             ]
 
         );
