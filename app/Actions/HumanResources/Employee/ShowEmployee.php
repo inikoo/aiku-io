@@ -8,6 +8,7 @@
 
 namespace App\Actions\HumanResources\Employee;
 
+use App\Actions\HumanResources\ShowHumanResourcesDashboard;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\HumanResources\EmployeeResource;
 use App\Models\HumanResources\Employee;
@@ -73,13 +74,16 @@ class ShowEmployee
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs'   => $this->breadcrumbs,
+                'navData'     => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
+
                 'headerData' => [
                     'module'        => 'users',
                     'title'         => $this->employee->name,
                     'subTitle'      => $this->employee->nickname,
                     'titleTitle'    => __('Name'),
                     'subTitleTitle' => __('nickname'),
-                    'breadcrumbs'   => $this->breadcrumbs,
+
                     'meta'          => [
 
                         match ($this->employee->state) {
@@ -166,13 +170,19 @@ class ShowEmployee
     private function breadcrumbs(): array
     {
         return array_merge(
-            (new IndexEmployee())->getBreadcrumbs(),
+            (new ShowHumanResourcesDashboard())->getBreadcrumbs(),
             [
                 'human_resources.employees.show' => [
                     'route'           => 'human_resources.employees.show',
                     'routeParameters' => $this->employee->id,
                     'name'            => $this->employee->nickname,
-                    'current'         => true
+                    'index'=>[
+                        'route'   => 'human_resources.employees.index',
+                        'overlay' => __('Employees index')
+                    ],
+                    'modelLabel'=>[
+                        'label'=>__('employee')
+                    ],
                 ],
             ]
         );

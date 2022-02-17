@@ -97,7 +97,7 @@ class IndexEmployee
         return Inertia::render(
             'index-model',
             [
-                'breadcrumbs' => $this->breadcrumbs,
+                'breadcrumbs' => $this->getBreadcrumbs(),
                 'navData' => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
 
                 'headerData' => [
@@ -160,28 +160,25 @@ class IndexEmployee
             ($request->user()->can('employees.edit'))
         );
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
+
+
+    public function getBreadcrumbs(): array
     {
+
         return array_merge(
             (new ShowHumanResourcesDashboard())->getBreadcrumbs(),
             [
                 'human_resources.employees.index' => [
                     'route'   => 'human_resources.employees.index',
-                    'name'    => $this->title,
-                    'current' => false
+
+                    'modelLabel'=>[
+                        'label'=>__('employees')
+                    ],
                 ],
             ]
         );
-    }
-
-    public function getBreadcrumbs(): array
-    {
-        $this->validateAttributes();
-
-        return $this->breadcrumbs();
     }
 
 
