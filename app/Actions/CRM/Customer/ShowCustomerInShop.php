@@ -8,21 +8,19 @@
 
 namespace App\Actions\CRM\Customer;
 
-use App\Actions\UI\WithInertia;
+use App\Actions\Marketing\Shop\IndexShop;
+use App\Actions\Marketing\Shop\ShowShop;
 use App\Models\CRM\Customer;
-use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 
 
 /**
  * @property Customer $customer
  */
-class ShowCustomerInShop
+class ShowCustomerInShop extends ShowCustomer
 {
-    use AsAction;
-    use WithInertia;
+
 
 
     public function handle()
@@ -42,36 +40,43 @@ class ShowCustomerInShop
 
         $this->validateAttributes();
 
+        return $this->getInertia();
 
-        return Inertia::render(
-            'show-model',
-            [
-                'breadcrumbs' => $this->getBreadcrumbs($customer),
-                'headerData'  => [
-                    'title' => $customer->name,
-                ],
-                'model'       => $customer,
-            ]
-
-        );
     }
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        $this->fillFromRequest($request);
+        $request->merge(
+            [
+                'title' => $this->customer->name,
+                'breadcrumbs'=>$this->getBreadcrumbs($this->customer),
+                'sectionRoot'=>'marketing.shops.show.customers.index',
+                'metaSection' => 'shop'
 
+
+            ]
+        );
+        $this->fillFromRequest($request);
     }
 
 
     public function getBreadcrumbs(Customer $customer): array
     {
         return array_merge(
-            (new IndexCustomerInShop())->getBreadcrumbs($customer->shop),
+            (new showShop())->getBreadcrumbs($customer->shop),
             [
-                'customer' => [
-                    'route' => 'marketing.shops.show.customers.show',
+                'marketing.shops.show.customers.show' => [
+                    'index'=>[
+                        'route'   => 'marketing.shops.show.customers.index',
+                        'routeParameters'=>[$customer->shop_id],
+                        'overlay' => __('Customer index')
+                    ],
+                    'modelLabel'=>[
+                        'label'=>__('customer')
+                    ],
+                    'route'           => 'marketing.shops.show.customers.show',
                     'routeParameters' => [$customer->shop_id, $customer->id],
-                    'name' => $customer->getFormattedID(),
+                    'name'            => $customer->getFormattedID(),
                 ],
             ]
         );

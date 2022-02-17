@@ -13,7 +13,7 @@
                     <div class="flex items-center">
                         <Link :href="route('dashboard.index')" class="text-gray-400 hover:text-gray-500">
                             <font-awesome-icon
-                                :icon="['fal', 'tachometer-alt-fast']"
+                                :icon="['fal', 'home']"
                                 class="flex-shrink-0 h-4 w-4"
                                 aria-hidden="true"
                             />
@@ -23,11 +23,24 @@
                 </li>
                 <li v-for="(breadcrumb, breadcrumbIdx) in  breadcrumbs" :key="breadcrumbIdx" class="flex">
                     <div class="flex items-center">
-                        <ChevronRightIcon class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true"/>
-                        <Link :href="route(breadcrumb.route,breadcrumb.routeParameters)"
-                              class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                        <ChevronRightIcon class="flex-shrink-0 h-5 w-5 text-gray-400 mr-2" aria-hidden="true"/>
+
+                        <Link class="mr-2" v-if="breadcrumb.index" :href="route(breadcrumb.index.route,breadcrumb.index.routeParameters)">
+                            <font-awesome-icon
+
+                                :icon="breadcrumb.index.icon??['fal', 'bars']"
+                                class="flex-shrink-0 h-4 w-4"
+                                aria-hidden="true"
+                                :title="breadcrumb.index.overlay"
+                            />
+                        </Link>
+
+                        <span v-if="breadcrumb.modelLabel" class="mr-1 text-sm "><span class="font-semibold">:</span><span class="font-thin	">{{breadcrumb.modelLabel.label}}</span></span>
+
+                        <Link :href="route(breadcrumb.route,breadcrumb['routeParameters'])"
+                              class="  text-gray-500 hover:text-gray-700"
                               :aria-current="(breadcrumbIdx !== Object.keys(breadcrumbs).length - 1) ? 'page' : undefined">
-                <span v-if="breadcrumb.model">
+                            <span v-if="breadcrumb.model">
                             <font-awesome-icon
                                 v-if="breadcrumb.model.icon"
                                 :icon="breadcrumb.model.icon"
@@ -37,12 +50,13 @@
                             />
                             <span v-else>{{ breadcrumb.model.label }}:</span>
                         </span>
-                            {{ breadcrumb.name }}
+                        {{ breadcrumb.name }}
                         </Link>
                         <span
                             class="ml-1 text-sm font-medium text-gray-400"
                             v-if="breadcrumb.suffix"
                         >{{ breadcrumb.suffix }}</span>
+
                     </div>
                 </li>
             </ol>

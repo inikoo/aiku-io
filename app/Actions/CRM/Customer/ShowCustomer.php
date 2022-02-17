@@ -12,12 +12,15 @@ use App\Actions\UI\WithInertia;
 use App\Models\CRM\Customer;
 use Inertia\Inertia;
 use Inertia\Response;
-use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
 /**
  * @property Customer $customer
+ * @property array $breadcrumbs
+ * @property string $sectionRoot
+ * @property string $title
+ * @property string $metaSection
  */
 class ShowCustomer
 {
@@ -25,66 +28,60 @@ class ShowCustomer
     use WithInertia;
 
 
-    public function handle()
+    public function getInertia(): Response
     {
-    }
-
-
-    public function authorize(ActionRequest $request): bool
-    {
-        return $request->user()->hasPermissionTo("shops.customers.view.{$this->customer->shop_id}");
-    }
-
-
-    public function asInertia(Customer $customer, array $attributes = []): Response
-    {
-        $this->set('customer', $customer)->fill($attributes);
-
-        $this->validateAttributes();
-
-
-
-
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs' => $this->get('breadcrumbs'),
-
-                'headerData' => [
-                    'title'       => $customer->name,
-
+                'navData'     => ['module' => 'shops', 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
+                'breadcrumbs' => $this->breadcrumbs,
+                'headerData'  => [
+                    'title' => $this->title,
+                    'meta'  => [
+                        [
+                            'name' => $this->customer->status
+                        ]
+                    ]
                 ],
-                'model'       => $customer
+                'model'       => $this->customer,
+                'blocks'      => [
+                    'two-column-card' => [
+                        'components' => [
+                            [
+                                'type'      => 'item',
+                                'span'      => 1,
+                                'valueType' => 'list',
+                                'value'     => [
+                                    [
+                                        'overlay' => __('Contact name'),
+                                        'text'    => $this->customer->contact_name
+
+                                    ],
+                                    [
+                                        'overlay' => __('Company'),
+                                        'text'    => $this->customer->company_name
+
+                                    ]
+                                ]
+                            ],
+                            [
+                                'type'  => 'item',
+                                'span'  => 1,
+                                'value' => [
+                                    'icon'    => ['fal', 'at'],
+                                    'overlay' => __('Email'),
+                                    'text'    => $this->customer->email
+                                ]
+                            ]
+
+                        ],
+
+                    ]
+
+
+                ]
             ]
 
-        );
-    }
-
-    public function prepareForValidation(ActionRequest $request): void
-    {
-
-        $this->fillFromRequest($request);
-
-        $this->set('breadcrumbs', $this->breadcrumbs());
-    }
-
-
-    private function breadcrumbs(): array
-    {
-        /** @var Customer $customer */
-        $customer = $this->get('customer');
-
-
-        return array_merge(
-            (new IndexCustomerInShop())->getBreadcrumbs($customer->shop),
-            [
-                'customer' => [
-                    'route'           => 'customers.show',
-                    'routeParameters' => $customer->id,
-                    'name'            => $customer->code,
-                    'current'         => false
-                ],
-            ]
         );
     }
 

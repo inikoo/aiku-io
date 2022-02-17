@@ -7,11 +7,17 @@
 
 <template layout="app">
     <PageHeader :headerData="headerData"/>
+    <template v-for="(blockData,block) in blocks" >
+        <two-column-card v-if="block==='two-column-card'"  :data="blockData"/>
+    </template>
 </template>
 
 <script setup>
 import PageHeader from '../components/navigation/top/page-header.vue';
-const props = defineProps(['headerData']);
+import TwoColumnCard from '../components/data-display/two-column-card/card.vue';
+const props = defineProps(['headerData','blocks','model','breadcrumbs']);
+console.log(props.blocks)
+
 </script>
 
 

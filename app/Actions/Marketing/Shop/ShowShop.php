@@ -85,14 +85,26 @@ class ShowShop
 
     public function getBreadcrumbs(Shop $shop): array
     {
+        $breadcrumb = [
+            'modelLabel'=>[
+                'label'=>__('store')
+            ],
+            'route'           => 'marketing.shops.show',
+            'routeParameters' => $shop->id,
+            'name'            => $shop->code,
+        ];
+
+        if (session('marketingCount') > 1) {
+            $breadcrumb['index'] = [
+                'route'   => 'marketing.shops.index',
+                'overlay' => __('Shops index')
+            ];
+        }
+
         return array_merge(
             session('marketingCount') == 1 ? [] : (new IndexShop())->getBreadcrumbs(),
             [
-                'marketing.shops.show' => [
-                    'route'           => 'marketing.shops.show',
-                    'routeParameters' => $shop->id,
-                    'name'            => $shop->code,
-                ],
+                'marketing.shops.show' => $breadcrumb
             ]
         );
     }

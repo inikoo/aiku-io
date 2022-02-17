@@ -70,7 +70,11 @@ class IndexCustomerInShop extends IndexCustomer
                 'marketing.shops.show.customers.index' => [
                     'route'   => 'marketing.shops.show.customers.index',
                     'routeParameters' => $shop->id,
-                    'name'    => __('customers'),
+
+                    'modelLabel'=>[
+                        'label'=>__('customers')
+                    ],
+
                 ],
             ]
         );

@@ -6,7 +6,7 @@
   -->
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
-    <div class="flex h-screen flex-col">
+    <div class="flex h-screen flex-col ">
         <navbar-dark  :current-route="route().current()"></navbar-dark>
         <div class="h-max grow flex overflow-hidden bg-white">
             <!-- Static sidebar for mobile -->

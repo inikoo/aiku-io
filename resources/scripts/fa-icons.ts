@@ -15,8 +15,8 @@ import { faDiceD10 } from '@/private/pro-duotone-svg-icons';
 library.add(faDiceD10);
 
 // App icons
-import { faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars ,faDiamond} from '@/private/pro-light-svg-icons';
-library.add(faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars,faDiamond);
+import { faHome, faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars ,faDiamond} from '@/private/pro-light-svg-icons';
+library.add(faHome,faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars,faDiamond);
 
 import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
 library.add(faBirthdayCake, faMars, faVenus);
@@ -56,3 +56,8 @@ library.add(faUserAlien, faUserCircle);
 import { faTasks,faUserHardHat } from '@/private/pro-light-svg-icons';
 library.add(faTasks,faUserHardHat);
 export default FontAwesomeIcon;
+
+
+// contact cards
+import { faAt } from '@/private/pro-light-svg-icons';
+library.add(faAt);

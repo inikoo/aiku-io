@@ -145,7 +145,7 @@ class Customer extends Model implements Auditable
 
     public function getFormattedID(): string
     {
-        return sprintf('%04d',$this->id);
+        return sprintf('%05d',$this->id);
     }
 
 }
