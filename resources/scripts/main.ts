@@ -1,8 +1,42 @@
 import { createApp, h } from 'vue'
+import NProgress from 'nprogress'
+
 import {createInertiaApp, Link} from '@inertiajs/inertia-vue3'
 import { importPageComponent } from '@/scripts/vite/import-page-component'
-import { InertiaProgress } from '@inertiajs/progress';
-InertiaProgress.init();
+//import { InertiaProgress } from '@inertiajs/progress';
+//InertiaProgress.init();
+
+import '@/css/nprogress.css';
+import { Inertia } from '@inertiajs/inertia'
+
+
+let timeout = null
+
+Inertia.on('start', () => {
+    timeout = setTimeout(() => NProgress.start(), 250)
+})
+
+Inertia.on('progress', (event) => {
+    // @ts-ignore
+    if (NProgress.isStarted() && event.detail.progress.percentage) {
+        // @ts-ignore
+        NProgress.set((event.detail.progress.percentage / 100) * 0.9)
+    }
+})
+
+Inertia.on('finish', (event) => {
+    clearTimeout(timeout)
+    if (!NProgress.isStarted()) {
+        return
+    } else if (event.detail.visit.completed) {
+        NProgress.done()
+    } else if (event.detail.visit.interrupted) {
+        NProgress.set(0)
+    } else if (event.detail.visit.cancelled) {
+        NProgress.done()
+        NProgress.remove()
+    }
+})
 
 
 /**
