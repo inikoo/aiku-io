@@ -4,60 +4,72 @@
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
+import {library} from "@fortawesome/fontawesome-svg-core";
 
 
-import { faDiceD10 } from '@/private/pro-duotone-svg-icons';
+import {faDiceD10} from '@/private/pro-duotone-svg-icons';
 
 
 library.add(faDiceD10);
 
 // App icons
-import { faHome, faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars ,faDiamond} from '@/private/pro-light-svg-icons';
-library.add(faHome,faDotCircle,faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup,faTachometerAltFast,faBars,faDiamond);
+import {faHome, faDotCircle, faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup, faTachometerAltFast, faBars, faDiamond} from '@/private/pro-light-svg-icons';
 
-import { faBirthdayCake, faMars, faVenus } from '@/private/pro-regular-svg-icons';
+library.add(faHome, faDotCircle, faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup, faTachometerAltFast, faBars, faDiamond);
+
+import {faBirthdayCake, faMars, faVenus} from '@/private/pro-regular-svg-icons';
+
 library.add(faBirthdayCake, faMars, faVenus);
-
-
-
 
 
 // Module icons
 import {
-    faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
+    faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
     faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
-    faUserSecret,faHandHoldingBox,faUser,faShoppingCart
+    faUser, faShoppingCart
 } from '@/private/pro-light-svg-icons';
 
-library.add( faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
+library.add(faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
     faWarehouseAlt, faAppleCrate, faAbacus, faIndustry, faInventory, faPalletAlt,
-    faUserSecret,faHandHoldingBox,faUser,faShoppingCart);
+    faUser, faShoppingCart);
+
+// Procurement
+import {
+     faHandHoldingBox,faUserSecret
+} from '@/private/pro-light-svg-icons';
+
+library.add(faHandHoldingBox,faUserSecret);
+
 
 // For Marketing
-import { faCashRegister } from '@/private/pro-light-svg-icons';
+import {faCashRegister} from '@/private/pro-light-svg-icons';
+
 library.add(faCashRegister);
 
 // For inventory
-import { faBox } from '@/private/pro-light-svg-icons';
+import {faBox} from '@/private/pro-light-svg-icons';
+
 library.add(faBox);
 
 // For account section
 
-import { faCheckCircle, faTimesCircle, } from '@fortawesome/free-solid-svg-icons';
+import {faCheckCircle, faTimesCircle,} from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
 library.add(faCheckCircle, faTimesCircle);
-import {  faUserCircle,faUserAlien } from '@/private/pro-light-svg-icons';
+import {faUserCircle, faUserAlien} from '@/private/pro-light-svg-icons';
+
 library.add(faUserAlien, faUserCircle);
 
-// For employee model
-import { faTasks,faUserHardHat } from '@/private/pro-light-svg-icons';
-library.add(faTasks,faUserHardHat);
+// Human resources
+import {faTasks, faUserHardHat,faClipboardUser} from '@/private/pro-light-svg-icons';
+
+library.add(faTasks, faUserHardHat,faClipboardUser);
 export default FontAwesomeIcon;
 
 
 // contact cards
-import { faAt } from '@/private/pro-light-svg-icons';
+import {faAt} from '@/private/pro-light-svg-icons';
+
 library.add(faAt);

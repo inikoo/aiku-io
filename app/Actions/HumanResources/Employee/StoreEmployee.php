@@ -11,7 +11,6 @@ namespace App\Actions\HumanResources\Employee;
 use App\Models\HumanResources\Workplace;
 use App\Models\Utils\ActionResult;
 use App\Models\HumanResources\Employee;
-use App\Rules\Phone;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -55,7 +54,7 @@ class StoreEmployee
         return [
             'name'   => 'required|string',
             'email'  => 'email',
-            'phone'  => ['string', new Phone()],
+            'phone'  => 'phone:AUTO',
             'status' => [
                 'required',
                 Rule::in(['working', 'ex-employee', 'hired']),

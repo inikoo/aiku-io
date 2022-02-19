@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\Phone;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreatePatientGuardianRequest extends FormRequest
@@ -20,7 +19,7 @@ class CreatePatientGuardianRequest extends FormRequest
             'relation' => 'required|string',
             'name'     => 'required|string',
             'email'    => 'string|email',
-            'phone'    => ['string', new Phone()]
+            'phone'    => 'phone:AUTO',
         ];
     }
 }

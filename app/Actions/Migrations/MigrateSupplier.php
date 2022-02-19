@@ -60,16 +60,16 @@ class MigrateSupplier extends MigrateModel
 
         $this->modelData['supplier'] = $this->sanitizeData(
             [
-                'name' => $this->auModel->data->{'Supplier Name'},
-                'code' => $this->auModel->data->{'Supplier Code'},
-                'company_name'    => $this->auModel->data->{'Supplier Company Name'},
-                'contact_name'       => $this->auModel->data->{'Supplier Main Contact Name'},
-                'email'      => $this->auModel->data->{'Supplier Main Plain Email'},
-                'phone'      => $phone,
-                'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Supplier Default Currency Code'}),
-                'aurora_id'   => $this->auModel->data->{'Supplier Key'},
-                'created_at'  => $this->auModel->data->{'Supplier Valid From'},
-                'deleted_at'  => $deleted_at,
+                'name'         => $this->auModel->data->{'Supplier Name'},
+                'code'         => preg_replace('/\s/', '-', $this->auModel->data->{'Supplier Code'}),
+                'company_name' => $this->auModel->data->{'Supplier Company Name'},
+                'contact_name' => $this->auModel->data->{'Supplier Main Contact Name'},
+                'email'        => $this->auModel->data->{'Supplier Main Plain Email'},
+                'phone'        => $phone,
+                'currency_id'  => $this->parseCurrencyID($this->auModel->data->{'Supplier Default Currency Code'}),
+                'aurora_id'    => $this->auModel->data->{'Supplier Key'},
+                'created_at'   => $this->auModel->data->{'Supplier Valid From'},
+                'deleted_at'   => $deleted_at,
 
             ]
         );
@@ -85,7 +85,6 @@ class MigrateSupplier extends MigrateModel
     {
         $this->model = Supplier::withTrashed()->find($this->auModel->data->aiku_id);
     }
-
 
 
     protected function migrateImages()
@@ -112,7 +111,6 @@ class MigrateSupplier extends MigrateModel
 
     protected function migrateAttachments()
     {
-
         /** @var Supplier $model */
         $model = $this->model;
 

@@ -32,7 +32,7 @@ class IndexAgent
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Agent::class)
-            ->select('agents.id', 'code', 'name', 'number_suppliers', 'number_purchase_orders','location')
+            ->select('agents.id', 'code', 'name', 'number_suppliers', 'number_purchase_orders', 'location')
             ->leftJoin('agent_stats', 'agents.id', '=', 'agent_stats.agent_id')
             ->allowedSorts(['code', 'name', 'number_suppliers', 'number_purchase_orders'])
             ->paginate()
@@ -45,16 +45,21 @@ class IndexAgent
         $this->validateAttributes();
 
 
+        $headerData = [
+            'title' => __('Agents'),
+        ];
+        if (!empty($this->inModel)) {
+            $headerData['inModel'] = $this->inModel;
+        }
+
+
         return Inertia::render(
             'index-model',
             [
-                'headerData' => [
-                    'module'      => 'procurement',
-                    'title'       => $this->get('title'),
-                    'breadcrumbs' => $this->getBreadcrumbs(),
-
-                ],
-                'dataTable'  => [
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'navData'     => ['module' => 'procurement', 'sectionRoot' => 'procurement.agents.index'],
+                'headerData'  => $headerData,
+                'dataTable'   => [
                     'records' => AgentInertiaResource::collection($this->handle()),
                     'columns' => [
                         'code'                   => [
@@ -69,9 +74,9 @@ class IndexAgent
                             'sort'  => 'name',
                             'label' => __('Name')
                         ],
-                        'location'                   => [
-                            'label' => __('Location'),
-                            'location'=>true,
+                        'location'               => [
+                            'label'    => __('Location'),
+                            'location' => true,
                         ],
                         'number_suppliers'       => [
                             'sort'  => 'number_suppliers',
@@ -102,11 +107,6 @@ class IndexAgent
 
     public function prepareForValidation(ActionRequest $request): void
     {
-        $request->merge(
-            [
-                'title' => __('Agents'),
-            ]
-        );
         $this->fillFromRequest($request);
     }
 
@@ -115,10 +115,11 @@ class IndexAgent
         return array_merge(
             (new ShowProcurementDashboard())->getBreadcrumbs(),
             [
-                'index' => [
-                    'route'   => 'procurement.agents.index',
-                    'name'    => __('Agents'),
-                    'current' => false
+                'procurement.agents.index' => [
+                    'route'      => 'procurement.agents.index',
+                    'modelLabel' => [
+                        'label' => __('agents')
+                    ],
                 ],
             ]
         );

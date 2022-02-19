@@ -32,9 +32,7 @@
             <tr v-for="(record,recordIdx) in dataTable.records.data" v-bind:key="recordIdx">
                 <td v-for="(column,columnIdx) in dataTable.columns" v-bind:key="columnIdx">
                     <template v-if="column.href">
-                        <span
-                            v-if="column.href.with_permission && !record[column.href.with_permission]"
-                        >
+                        <span v-if="column.href.with_permission && !record[column.href.with_permission]">
                             <font-awesome-icon
                                 fixed-width
                                 :icon="['fal', 'lock-alt']"
@@ -261,7 +259,7 @@ const locale = useLocaleStore();
 const getCellValue = (record, columnIdx) => {
     let value = record[columnIdx];
     if (Number.isFinite(value)) {
-        return new Intl.NumberFormat($this.locale.language).format(value);
+        return new Intl.NumberFormat(locale.language).format(value);
     }
     return value;
 

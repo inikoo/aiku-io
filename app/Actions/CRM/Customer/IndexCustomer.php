@@ -39,13 +39,12 @@ class IndexCustomer
     protected array $select;
     protected array $columns;
 
-    public function  __construct()
+    public function __construct()
     {
+        $this->select = ['id', 'name', 'shop_id'];
 
-        $this->select=['id', 'name', 'shop_id'];
-
-        $this->columns=[
-            'shop_code' => [
+        $this->columns = [
+            'shop_code'       => [
                 'label' => __('Shop'),
                 'href'  => [
                     'route'  => 'marketing.shops.show.customers.index',
@@ -65,36 +64,34 @@ class IndexCustomer
                 'label' => __('Name')
             ]
         ];
-
     }
 
-    public function queryConditions($query){
+    public function queryConditions($query)
+    {
         return $query->select($this->select);
     }
 
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Customer::class)
-
-            ->when(true, [$this,'queryConditions'])
+            ->when(true, [$this, 'queryConditions'])
             ->defaultSorts('-id')
-            ->allowedSorts(['name', 'id','location'])
+            ->allowedSorts(['name', 'id', 'location'])
             ->paginate()
             ->withQueryString();
     }
 
 
-
-    public function getInertia(){
-
+    public function getInertia()
+    {
         return Inertia::render(
             'index-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navData' => ['module' => 'shops', 'metaSection' => $this->metaSection,'sectionRoot'=>$this->sectionRoot],
+                'navData'     => ['module' => 'shops', 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
 
                 'headerData' => [
-                   'title'=>$this->title
+                    'title' => $this->title
 
                 ],
                 'dataTable'  => [
@@ -113,13 +110,5 @@ class IndexCustomer
             );
         });
     }
-
-
-
-
-
-
-
-
 
 }

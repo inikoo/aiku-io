@@ -8,7 +8,10 @@
 
 namespace App\Http\Controllers\Procurement;
 
-use App\Actions\Procurement\Supplier\IndexSupplier;
+use App\Actions\Procurement\Supplier\IndexSupplierInTenant;
+use App\Actions\Procurement\Supplier\IndexSupplierInAgent;
+use App\Actions\Procurement\Supplier\ShowSupplierInAgent;
+use App\Actions\Procurement\Supplier\ShowSupplierInTenant;
 use App\Http\Controllers\Controller;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
@@ -23,17 +26,24 @@ class SupplierController extends Controller
 
     public function index(): Response
     {
-        return IndexSupplier::make()->asInertia(parent: App('currentTenant'));
+        return IndexSupplierInTenant::make()->asInertia();
     }
 
     public function indexInAgent(Agent $agent): Response
     {
-        return IndexSupplier::make()->asInertia(parent: $agent);
+        return IndexSupplierInAgent::make()->asInertia(agent: $agent);
     }
+
+
+    public function showInAgent(Agent $agent,Supplier $supplier): Response
+    {
+        return ShowSupplierInAgent::make()->asInertia($supplier);
+    }
+
 
     public function show(Supplier $supplier): Response
     {
-        return ShowSupplier::make()->asInertia($supplier);
+        return ShowSupplierInTenant::make()->asInertia($supplier);
     }
 
     public function edit(Supplier $supplier): Response

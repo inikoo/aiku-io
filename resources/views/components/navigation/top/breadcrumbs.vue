@@ -35,21 +35,16 @@
                             />
                         </Link>
 
-                        <span v-if="breadcrumb.modelLabel" class="mr-1 text-sm "><span class="font-semibold">:</span><span class="font-thin	">{{breadcrumb.modelLabel.label}}</span></span>
+                        <span v-if="breadcrumb.modelLabel" class="mr-1 text-sm "><span class="font-light">{{breadcrumb.modelLabel.label}}</span>
+                            <span v-if="breadcrumb.name" class="font-semibold">→</span>
+                            <span v-else class="font-thin ml-1.5 	">≡</span>
+                        </span>
 
                         <Link :href="route(breadcrumb.route,breadcrumb['routeParameters'])"
                               class="  text-gray-500 hover:text-gray-700"
                               :aria-current="(breadcrumbIdx !== Object.keys(breadcrumbs).length - 1) ? 'page' : undefined">
-                            <span v-if="breadcrumb.model">
-                            <font-awesome-icon
-                                v-if="breadcrumb.model.icon"
-                                :icon="breadcrumb.model.icon"
-                                class="flex-shrink-0 h-4 w-4 mr-1"
-                                :title="breadcrumb.model.label"
-                                aria-hidden="true"
-                            />
-                            <span v-else>{{ breadcrumb.model.label }}:</span>
-                        </span>
+
+
                         {{ breadcrumb.name }}
                         </Link>
                         <span

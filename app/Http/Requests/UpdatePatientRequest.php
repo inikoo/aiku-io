@@ -8,7 +8,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\Phone;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -43,7 +42,7 @@ class UpdatePatientRequest extends FormRequest
                 Rule::in(['male', 'female']),
             ],
             'email'                        => 'sometimes|email',
-            'phone'                        => ['sometimes', 'string', new Phone()],
+            'phone'                        => 'sometimes|phone:AUTO',
             'identity_document_type'       => 'sometimes|required_with:identity_document_number',
             'identity_document_number'     => 'sometimes|required_with:identity_document_type',
             'other_identity_document_type' => 'sometimes|required_if:identity_document_type,Other'

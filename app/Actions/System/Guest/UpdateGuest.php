@@ -12,7 +12,6 @@ use App\Actions\System\User\UpdateUser;
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\System\Guest;
-use App\Rules\Phone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -50,17 +49,17 @@ class UpdateGuest
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit') ||
-            $request->user()->hasPermissionTo("account.edit");
+        return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit')
+            || $request->user()->hasPermissionTo("account.edit");
     }
 
     public function rules(): array
     {
         return [
-            'nickname'   => 'sometimes|required|string',
-            'name'   => 'sometimes|required|string',
-            'email'  => 'sometimes|email',
-            'phone'  => ['string', new Phone()],
+            'nickname' => 'sometimes|required|string',
+            'name'     => 'sometimes|required|string',
+            'email'    => 'sometimes|email',
+            'phone'    => 'sometimes|phone:AUTO',
             'username' => 'sometimes|required|string|unique:App\Models\System\User,username',
             'password' => ['sometimes', 'required', Password::min(8)->uncompromised()],
             'status'   => 'sometimes|required|boolean'
@@ -72,10 +71,16 @@ class UpdateGuest
     {
         $request->validate();
 
-        $modelData=$request->only('name', 'email', 'phone', 'identity_document_number',
-                                  'name','email', 'phone',
-                                  'nickname',
-                                  'emergency_contact',
+        $modelData = $request->only(
+            'name',
+            'email',
+            'phone',
+            'identity_document_number',
+            'name',
+            'email',
+            'phone',
+            'nickname',
+            'emergency_contact',
         );
 
         if ($data = $request->only('address')) {
@@ -91,15 +96,20 @@ class UpdateGuest
 
     public function asInertia(Guest $guest, Request $request): RedirectResponse
     {
-
         $this->set('guest', $guest);
         $this->fillFromRequest($request);
         $this->validateAttributes();
 
-        $modelData=$request->only('name', 'email', 'phone', 'identity_document_number',
-                                  'name','email', 'phone',
-                                  'nickname',
-                                  'emergency_contact',
+        $modelData = $request->only(
+            'name',
+            'email',
+            'phone',
+            'identity_document_number',
+            'name',
+            'email',
+            'phone',
+            'nickname',
+            'emergency_contact',
         );
 
         if ($data = $request->only('address')) {
@@ -107,11 +117,12 @@ class UpdateGuest
         }
 
         $this->handle(
-            $guest,$modelData
+            $guest,
+            $modelData
 
         );
 
-        UpdateUser::run($guest->user,$request->only('status', 'username','password'));
+        UpdateUser::run($guest->user, $request->only('status', 'username', 'password'));
 
 
         return Redirect::route('account.guests.edit', $guest->id);

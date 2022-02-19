@@ -12,7 +12,10 @@
         <div class="mt-2 md:flex md:items-center md:justify-between">
             <div class="flex-1 min-w-0">
                 <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-                    <span v-bind:title="headerData.titleTitle">{{ headerData.title }}</span> <span v-bind:title="headerData.subTitleTitle" class="text-gray-700 text-lg sm:text-xl  ">{{ headerData.subTitle }}</span>
+                    <span v-bind:title="headerData.titleTitle">{{ headerData.title }}</span>
+                    <span v-if="headerData['inModel']" class="text-lg font-normal mx-2"> <span class="font-light">∈{{headerData['inModel']['model']}}</span> {{headerData['inModel']['modelName']}}</span>
+
+                    <span v-if="headerData['subTitleTitle']" v-bind:title="headerData.subTitleTitle" class="text-gray-700 text-lg sm:text-xl  ">{{ headerData.subTitle }}</span>
                 </h2>
 
 

@@ -12,7 +12,7 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
-
+    'phone' => 'The :attribute field contains an invalid number.',
     'accepted' => 'The :attribute must be accepted.',
     'accepted_if' => 'The :attribute must be accepted when :other is :value.',
     'active_url' => 'The :attribute is not a valid URL.',
@@ -123,7 +123,7 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute must be a valid URL.',
     'uuid' => 'The :attribute must be a valid UUID.',
-    'phone' => 'The :attribute do not exist.',
+  //  'phone' => 'The :attribute do not exist.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

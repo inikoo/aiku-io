@@ -13,7 +13,6 @@ use App\Models\HumanResources\JobPosition;
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
 use App\Models\HumanResources\Employee;
-use App\Rules\Phone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -30,10 +29,9 @@ class UpdateEmployee
     use WithUpdate;
     use WithAttributes;
 
-    public function handle(Employee $employee,  array $employeeData): ActionResult
+    public function handle(Employee $employee, array $employeeData): ActionResult
     {
         $res = new ActionResult();
-
 
 
         $employee->update(
@@ -83,8 +81,7 @@ class UpdateEmployee
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit') ||
-            $request->user()->hasPermissionTo("employees.edit");
+        return $request->user()->tokenCan('root') || $request->user()->tokenCan('human-resources:edit') || $request->user()->hasPermissionTo("employees.edit");
     }
 
     public function rules(): array
@@ -92,7 +89,7 @@ class UpdateEmployee
         return [
             'name'                     => 'sometimes|required|string',
             'email'                    => 'sometimes|email',
-            'phone'                    => ['string', new Phone()],
+            'phone'                    => 'sometimes|phone:AUTO',
             'identity_document_number' => 'sometimes|required|string',
             'date_of_birth'            => 'sometimes|nullable|date|before_or_equal:today',
             'address'                  => 'sometimes|nullable|string',
@@ -146,30 +143,23 @@ class UpdateEmployee
 
             );
         }
-
-
     }
 
 
-    public function afterValidator(Employee $employee,Validator $validator, ActionRequest $request): void
+    public function afterValidator(Employee $employee, Validator $validator, ActionRequest $request): void
     {
-
         if ($request->exists('employee_relationships')) {
-
             $employee_relationships = json_decode($request->get('employee_relationships'), true);
 
             foreach ($employee_relationships['ids'] as $id) {
                 if ($relatedEmployee = Employee::find($id)) {
-                    if($employee->id==$relatedEmployee->id){
+                    if ($employee->id == $relatedEmployee->id) {
                         $validator->errors()->add('employee_relationships', 'Related employee same as employee.');
-
                     }
                 } else {
                     $validator->errors()->add('employee_relationships', 'Related employee not found.');
                 }
             }
-
-
         }
 
         if ($request->exists('job_position_slugs')) {
@@ -200,11 +190,14 @@ class UpdateEmployee
 
     public function asController(Employee $employee, ActionRequest $request): ActionResultResource
     {
-
         $request->validate();
 
-        $modelData=$request->only(
-            'name', 'email', 'phone', 'identity_document_number', 'date_of_birth',
+        $modelData = $request->only(
+            'name',
+            'email',
+            'phone',
+            'identity_document_number',
+            'date_of_birth',
             'nickname',
             'worker_number',
             'emergency_contact',
@@ -230,14 +223,17 @@ class UpdateEmployee
 
     public function asInertia(Employee $employee, Request $request): RedirectResponse
     {
-
         $this->set('employee', $employee);
         $this->fillFromRequest($request);
         $this->validateAttributes();
 
 
-        $modelData=$request->only(
-            'name', 'email', 'phone', 'identity_document_number', 'date_of_birth',
+        $modelData = $request->only(
+            'name',
+            'email',
+            'phone',
+            'identity_document_number',
+            'date_of_birth',
             'nickname',
             'worker_number',
             'emergency_contact',

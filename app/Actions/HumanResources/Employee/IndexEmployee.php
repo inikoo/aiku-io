@@ -172,7 +172,6 @@ class IndexEmployee
             [
                 'human_resources.employees.index' => [
                     'route'   => 'human_resources.employees.index',
-
                     'modelLabel'=>[
                         'label'=>__('employees')
                     ],

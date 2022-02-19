@@ -10,7 +10,6 @@ namespace App\Actions\System\Guest;
 
 use App\Models\Utils\ActionResult;
 use App\Models\System\Guest;
-use App\Rules\Phone;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -44,7 +43,7 @@ class StoreGuest
         return [
             'name'   => 'required|string',
             'email'  => 'email',
-            'phone'  => ['string', new Phone()],
+            'phone'  => 'phone:AUTO',
             'nickname'=>'required|string',
 
         ];

@@ -25,15 +25,12 @@ class IndexCustomerInShop extends IndexCustomer
 
     public function authorize(ActionRequest $request): bool
     {
-
         return $request->user()->hasPermissionTo("shops.customers.view") || $request->user()->hasPermissionTo("shops.customers.view.{$this->shop->id}");
     }
-
 
     public function queryConditions($query){
         return $query->where('shop_id',$this->shop->id)->select($this->select);
     }
-
 
     public function asInertia(Shop $shop)
     {
@@ -41,8 +38,6 @@ class IndexCustomerInShop extends IndexCustomer
         $this->validateAttributes();
         unset($this->columns['shop_code']);
         return $this->getInertia();
-
-
 
     }
 
@@ -54,8 +49,6 @@ class IndexCustomerInShop extends IndexCustomer
                 'breadcrumbs'=>$this->getBreadcrumbs($this->shop),
                 'sectionRoot'=>'marketing.shops.show.customers.index',
                 'metaSection' => 'shop'
-
-
             ]
         );
         $this->fillFromRequest($request);

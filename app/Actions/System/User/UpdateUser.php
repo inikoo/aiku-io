@@ -60,7 +60,7 @@ class UpdateUser
     public function rules(): array
     {
         return [
-            'username' => 'sometimes|required|string|unique:App\Models\System\User,username',
+            'username' => 'sometimes|required|alpha_dash|unique:App\Models\System\User,username',
             'password' => ['sometimes', 'required', Password::min(8)->uncompromised()],
             'status'   => 'sometimes|required|boolean'
         ];

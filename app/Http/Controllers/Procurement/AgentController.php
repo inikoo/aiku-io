@@ -10,6 +10,8 @@ namespace App\Http\Controllers\Procurement;
 
 use App\Actions\Procurement\Agent\IndexAgent;
 use App\Actions\Procurement\Agent\ShowAgent;
+use App\Actions\Procurement\Agent\ShowEditAgent;
+use App\Actions\Procurement\Agent\UpdateAgent;
 use App\Http\Controllers\Controller;
 use App\Models\Procurement\Agent;
 use Illuminate\Http\RedirectResponse;

@@ -9,6 +9,7 @@
 namespace App\Actions\Procurement\Agent;
 
 
+use App\Actions\Procurement\ShowProcurementDashboard;
 use App\Actions\UI\WithInertia;
 use App\Models\Procurement\Agent;
 use Inertia\Inertia;
@@ -43,9 +44,6 @@ class ShowAgent
 
         $this->validateAttributes();
 
-
-
-
         $actionIcons = [];
         if ($this->get('canEdit')) {
             $actionIcons['procurement.agents.edit'] = [
@@ -55,15 +53,23 @@ class ShowAgent
             ];
         }
 
-
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs' => $this->getBreadcrumbs($this->agent),
                 'headerData' => [
-                    'module'      => 'agents',
                     'title'       => $agent->name,
-                    'breadcrumbs' => $this->getBreadcrumbs($this->agent),
                     'actionIcons' => $actionIcons,
+                    'meta'=>[
+                        [
+                            'icon'=>['fal','hand-holding-box'],
+                            'name' => $this->agent->stats->number_suppliers.'  '.__('suppliers'),
+                            'href'=>[
+                                'route'=>'procurement.agents.show.suppliers.index',
+                                'routeParameters'=>$this->agent->id
+                            ]
+                        ]
+                    ]
 
                 ],
                 'model'      => $agent
@@ -82,15 +88,18 @@ class ShowAgent
     public function getBreadcrumbs(Agent $agent): array
     {
         return array_merge(
-            (new IndexAgent())->getBreadcrumbs(),
+            (new ShowProcurementDashboard())->getBreadcrumbs(),
             [
-                'agents.show' => [
+                'procurement.agents.show' => [
                     'route'           => 'procurement.agents.show',
                     'routeParameters' => $agent->id,
                     'name'            => $agent->code,
-                    'model'           => [
-                        'label' => __('Agent'),
-                        'icon'  => ['fal', 'user-secret'],
+                    'index'=>[
+                        'route'   => 'procurement.agents.index',
+                        'overlay' => __('Agents index')
+                    ],
+                    'modelLabel'=>[
+                        'label'=>__('agent')
                     ],
 
                 ],

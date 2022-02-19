@@ -9,7 +9,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Assets\Country;
-use App\Rules\Phone;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -55,7 +54,7 @@ class CreatePatientRequest extends FormRequest
             'other_identity_document_type' => 'required_if:identity_document_type,Other',
             'relation'                     => 'required|string',
             'email'                        => 'string|email',
-            'phone'                        => ['string', new Phone()],
+            'phone'                        => 'phone:AUTO',
             'guardian_name'                => 'required_if:type,dependant',
 
 

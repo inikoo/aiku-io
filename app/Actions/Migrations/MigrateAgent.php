@@ -50,6 +50,7 @@ class MigrateAgent extends MigrateModel
     public function parseMetadata($data, $auData)
     {
         data_set($data, 'order_id_counter', $auData->{'Agent Order Last Order ID'});
+
         return $data;
     }
 
@@ -63,20 +64,15 @@ class MigrateAgent extends MigrateModel
 
         $this->modelData['agent'] = $this->sanitizeData(
             [
-                'name' => $this->auModel->data->{'Agent Name'},
-                'code' => Str::snake(
-                    preg_replace('/^aw/', 'aw ', $this->auModel->data->{'Agent Code'})
-                    ,
-                    '-'
-                ),
-                'company_name'    => $this->auModel->data->{'Agent Company Name'},
-                'contact_name'       => $this->auModel->data->{'Agent Main Contact Name'},
-                'email'      => $this->auModel->data->{'Agent Main Plain Email'},
-                'phone'      => $phone,
-
-                'currency_id' => $this->parseCurrencyID($this->auModel->data->{'Agent Default Currency Code'}),
-                'aurora_id'   => $this->auModel->data->{'Agent Key'},
-                'created_at'  => $this->auModel->data->{'Agent Valid From'}
+                'name'         => $this->auModel->data->{'Agent Name'},
+                'code'         => preg_replace('/\s/', '-', $this->auModel->data->{'Agent Code'}),
+                'company_name' => $this->auModel->data->{'Agent Company Name'},
+                'contact_name' => $this->auModel->data->{'Agent Main Contact Name'},
+                'email'        => $this->auModel->data->{'Agent Main Plain Email'},
+                'phone'        => $phone,
+                'currency_id'  => $this->parseCurrencyID($this->auModel->data->{'Agent Default Currency Code'}),
+                'aurora_id'    => $this->auModel->data->{'Agent Key'},
+                'created_at'   => $this->auModel->data->{'Agent Valid From'}
 
             ]
         );
@@ -101,8 +97,8 @@ class MigrateAgent extends MigrateModel
         $this->modelData['agent']['settings'] = $this->parseSettings($agent->settings, $this->auModel->data);
 
         $result = UpdateAgent::run(
-            agent:       $agent,
-            modelData:   $this->modelData['agent'],
+            agent:     $agent,
+            modelData: $this->modelData['agent'],
         );
 
         $resultAddress = UpdateAddress::run($agent->address, $this->modelData['address']);

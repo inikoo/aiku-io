@@ -18,15 +18,25 @@ Route::get('/agents/{agent}/edit', [AgentController::class, 'edit'])->name('agen
 Route::post('/agents/{agent}', [AgentController::class, 'update'])->name('agents.update');
 
 Route::get('/agents/{agent}/suppliers', [SupplierController::class, 'indexInAgent'])->name('agents.show.suppliers.index');
+Route::get('/agents/{agent}/suppliers/{supplier}', [SupplierController::class, 'showInAgent'])->name('agents.show.suppliers.show')->scopeBindings();;
+Route::get('/agents/{agent}/suppliers/{supplier}/edit', [SupplierController::class, 'editInAgent'])->name('agents.show.suppliers.edit')->scopeBindings();;
+Route::post('/agents/{agent}/suppliers/{supplier}', [SupplierController::class, 'updateInAgent'])->name('agents.show.suppliers.update')->scopeBindings();;
+
+
+Route::get('/agents/{agent}/suppliers/{supplier}/purchase_orders', [PurchaseOrderController::class, 'indexInSupplierInAgent'])->name('agents.show.suppliers.show.purchase_orders.index')->scopeBindings();;
+Route::get('/agents/{agent}/suppliers/{supplier}/purchase_orders/{purchaseOrder}', [PurchaseOrderController::class, 'showInSupplierInAgent'])->name('agents.show.suppliers.show.purchase_orders.show')->scopeBindings();;
+
 Route::get('/agents/{agent}/purchase_orders', [PurchaseOrderController::class, 'indexInAgent'])->name('agents.show.purchase_orders.index');
 
 
 Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
-Route::get('/suppliers/{supplier}', [AgentController::class, 'show'])->name('suppliers.show');
+Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])->name('suppliers.show');
 Route::get('/suppliers/{supplier}/edit', [AgentController::class, 'edit'])->name('suppliers.edit');
 Route::post('/suppliers/{supplier}', [AgentController::class, 'update'])->name('suppliers.update');
 
 Route::get('/suppliers/{supplier}/purchase_orders', [PurchaseOrderController::class, 'indexInSupplier'])->name('suppliers.show.purchase_orders.index');
+
+
 
 
 Route::get('/purchase_orders', [PurchaseOrderController::class, 'index'])->name('purchase_orders.index');

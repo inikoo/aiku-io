@@ -50,7 +50,7 @@ class ShowProcurementDashboard
                 'navData' => ['account' => 'procurement'],
 
                 'headerData' => [
-                    'title'       => __('Procurement dashboard'),
+                    'title'       => __('Procurement'),
 
 
                 ]
