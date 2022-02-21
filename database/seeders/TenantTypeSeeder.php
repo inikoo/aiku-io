@@ -8,25 +8,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\Account\Division;
+use App\Models\Account\TenantType;
 use Illuminate\Database\Seeder;
 
-class DivisionSeeder extends Seeder
+class TenantTypeSeeder extends Seeder
 {
 
     public function run()
     {
-        foreach (config('divisions') as $slug => $data) {
+        foreach (config('tenant_type') as $code => $data) {
 
-            Division::upsert([
+            TenantType::upsert([
                                      [
-                                         'slug' => $slug,
-                                         'name' => $data['name'],
-                                         'data' => json_encode([])
+                                         'code' => $code,
+
                                      ],
                                  ],
-                             ['slug'],
-                             ['name']
+                               ['code'],
             );
 
         }

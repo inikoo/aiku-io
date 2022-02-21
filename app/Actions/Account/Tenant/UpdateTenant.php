@@ -38,7 +38,7 @@ class UpdateTenant
     public function rules(): array
     {
         return [
-            'nickname' => 'sometimes|required|string|unique:tenants',
+            'code' => 'sometimes|required|string|unique:tenants',
             'email' => 'sometimes|required|email|unique:tenants',
 
         ];
@@ -50,7 +50,7 @@ class UpdateTenant
 
         return $this->handle(
             $tenant,
-            $request->only('nickname', 'email'),
+            $request->only('code', 'email'),
         );
     }
 }

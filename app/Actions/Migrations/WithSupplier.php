@@ -18,6 +18,7 @@ use App\Models\Utils\ActionResult;
 trait WithSupplier{
     public function updateModel(): ActionResult
     {
+
         /**  @var Supplier $supplier */
         $supplier                                = $this->model;
         $this->modelData['supplier']['data']     = $this->parseMetadata($supplier->data, $this->auModel->data);
@@ -50,6 +51,9 @@ trait WithSupplier{
 
     public function setModel()
     {
+        if(Supplier::withTrashed()->find($this->auModel->data->aiku_id)){
+            dd($this->auModel->data);
+        }
         $this->model = Supplier::withTrashed()->find($this->auModel->data->aiku_id);
     }
 

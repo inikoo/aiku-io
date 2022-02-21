@@ -20,10 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Str;
 use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
 
 /**
@@ -31,14 +28,21 @@ use Spatie\Sluggable\SlugOptions;
  */
 class Tenant extends SpatieTenant
 {
-    use HasSlug;
+
+    protected $casts = [
+        'data'            => 'array',
+        'tax_number_data' => 'array',
+        'location'        => 'array',
+
+    ];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'            => '{}',
+        'location'        => '{}',
+        'tax_number_data' => '{}',
+
     ];
-    protected $casts = [
-        'data' => 'array'
-    ];
+
 
     protected $guarded = [];
 
@@ -53,19 +57,15 @@ class Tenant extends SpatieTenant
         });
     }
 
-    public function getSlugOptions(): SlugOptions
+    public function getDatabaseName(): string
     {
-        return SlugOptions::create()
-            ->generateSlugsFrom('database')
-            ->saveSlugsTo('nickname')
-            ->doNotGenerateSlugsOnUpdate();
+        return $this->code.'_aiku';
     }
 
-    public function division(): BelongsTo
+    public function tenantType(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Account\Division');
+        return $this->belongsTo('App\Models\Account\TenantType');
     }
-
 
     public function accountUser(): MorphOne
     {
@@ -107,10 +107,6 @@ class Tenant extends SpatieTenant
         return $this->belongsTo(Language::class);
     }
 
-    public function getCodeAttribute(): string
-    {
-        return Str::snake(app('currentTenant')->name, '-');
-    }
 
     public function stats(): HasOne
     {
@@ -126,12 +122,13 @@ class Tenant extends SpatieTenant
     {
         return $this->hasOne(TenantInventoryStats::class);
     }
+
     public function procurementStats(): HasOne
     {
         return $this->hasOne(TenantProcurementStats::class);
     }
 
-    public function salesStats():HasMany
+    public function salesStats(): HasMany
     {
         return $this->hasMany(TenantSalesStats::class);
     }

@@ -42,15 +42,15 @@ class Customer extends Model implements Auditable
     use Searchable;
 
     protected $casts = [
-        'data' => 'array',
-        'tax_number_data'=>'array',
-        'location' => 'array',
+        'data'            => 'array',
+        'tax_number_data' => 'array',
+        'location'        => 'array',
 
     ];
 
     protected $attributes = [
-        'data' => '{}',
-        'location' => '{}',
+        'data'            => '{}',
+        'location'        => '{}',
         'tax_number_data' => '{}',
 
     ];
@@ -61,10 +61,10 @@ class Customer extends Model implements Auditable
     {
         static::created(
             function (Customer $customer) {
-                if($customer->shop->type=='fulfilment_house'){
+                if ($customer->shop->type == 'fulfilment_house') {
                     $customer->fulfilmentCustomer()->create(
                         [
-                            'aurora_id'=>$customer->aurora_id
+                            'aurora_id' => $customer->aurora_id
                         ]
                     );
                 }
@@ -73,7 +73,7 @@ class Customer extends Model implements Auditable
         );
         static::deleted(
             function (Customer $customer) {
-                if($customer->shop->type=='fulfilment_house'){
+                if ($customer->shop->type == 'fulfilment_house') {
                     $customer->fulfilmentCustomer()->delete();
                 }
                 HydrateShop::make()->customerStats($customer->shop);
@@ -115,7 +115,7 @@ class Customer extends Model implements Auditable
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id','status', 'type','aurora_id');
+        return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id', 'status', 'type', 'aurora_id');
     }
 
     public function shop(): BelongsTo
@@ -145,7 +145,7 @@ class Customer extends Model implements Auditable
 
     public function getFormattedID(): string
     {
-        return sprintf('%05d',$this->id);
+        return sprintf('%05d', $this->id);
     }
 
 }

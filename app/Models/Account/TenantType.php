@@ -16,10 +16,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
-/**
- * @mixin IdeHelperDivision
- */
-class Division extends Model
+
+class TenantType extends Model
 {
     use UsesLandlordConnection;
 
@@ -38,7 +36,7 @@ class Division extends Model
 
     public function getLayout(): Array
     {
-        return config('division.'.app('currentTenant')->division->slug.'.layout', []);
+        return config('tenant_type.'.app('currentTenant')->tenantType->code.'.layout', []);
     }
 
     public function getUserLayout(?User $user): array
@@ -49,6 +47,7 @@ class Division extends Model
 
         return match ($this->slug) {
             'ecommerce' => GetUserLayoutEcommerce::run($user, $this->getLayout()),
+            'agent' => GetUserLayoutAgent::run($user, $this->getLayout()),
             'health' => GetUserLayout::run($user, $this->getLayout()),
             default => [],
         };

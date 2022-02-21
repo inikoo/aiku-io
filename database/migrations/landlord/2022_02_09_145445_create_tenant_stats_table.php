@@ -21,7 +21,7 @@ class CreateTenantStatsTable extends Migration
     {
         Schema::create('tenant_stats', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->unsignedSmallInteger('tenant_id')->index();
+            $table->unsignedMediumInteger('tenant_id')->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
 
             $table->unsignedSmallInteger('number_employees')->default(0);
@@ -55,7 +55,7 @@ class CreateTenantStatsTable extends Migration
 
         Schema::create('tenant_marketing_stats', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->unsignedSmallInteger('tenant_id')->index();
+            $table->unsignedMediumInteger('tenant_id')->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
 
             $table->unsignedSmallInteger('number_shops')->default(0);
@@ -99,7 +99,7 @@ class CreateTenantStatsTable extends Migration
 
         Schema::create('tenant_inventory_stats', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->unsignedSmallInteger('tenant_id')->index();
+            $table->unsignedMediumInteger('tenant_id')->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
 
 
@@ -152,7 +152,7 @@ class CreateTenantStatsTable extends Migration
 
         Schema::create('tenant_procurement_stats', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->unsignedSmallInteger('tenant_id')->index();
+            $table->unsignedMediumInteger('tenant_id')->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
 
             $table->unsignedMediumInteger('number_suppliers')->default(0);
@@ -185,7 +185,7 @@ class CreateTenantStatsTable extends Migration
 
         Schema::create('tenant_sales_stats', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->unsignedSmallInteger('tenant_id')->index();
+            $table->unsignedMediumInteger('tenant_id')->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
             $table->unsignedSmallInteger('currency_id')->nullable();
             $table->foreign('currency_id')->references('id')->on('currencies');

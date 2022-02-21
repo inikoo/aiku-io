@@ -32,12 +32,18 @@ class LanguageSeeder extends Seeder
         curl_close($ch);
 
 
+        $validLanguages=['en','es','sk','zh-CN'];
+
         foreach ($response->result->languages as $language) {
+
+
+
 
             Language::upsert([
                                      [
                                          'code' => $language->code,
                                          'name' => $language->name,
+                                         'status'=>in_array($language->code,$validLanguages),
                                          'data' => json_encode([])
                                      ],
                                  ],

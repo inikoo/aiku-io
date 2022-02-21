@@ -42,7 +42,7 @@ class HydrateModel
 
         $tenants->eachCurrent(function (Tenant $tenant) use ($command) {
 
-            $command->info("Tenant: $tenant->nickname");
+            $command->info("Tenant: $tenant->code");
 
             if ($command->argument('id') == 'all') {
                 $this->loopAll($command);

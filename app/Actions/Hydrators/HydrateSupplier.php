@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 class HydrateSupplier extends HydrateModel
 {
 
-    public string $commandSignature = 'hydrate:supplier {id} {--t|tenant=* : Tenant nickname}';
+    public string $commandSignature = 'hydrate:supplier {id} {--t|tenant=* : Tenant code}';
 
 
     public function handle(Supplier $supplier): void

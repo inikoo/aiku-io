@@ -56,7 +56,7 @@ class ShowEditAccount
             [
                 'translations' => GetUITranslations::run(),
                 'language'     => App::currentLocale(),
-                'tenant'       => app('currentTenant')->only('name', 'nickname'),
+                'tenant'       => app('currentTenant')->only('name', 'code'),
                 'breadcrumbs' => $this->breadcrumbs,
 
                 'headerData'   => [
@@ -145,7 +145,7 @@ class ShowEditAccount
         return [
             'tenant' => [
                 'route'   => 'account.show',
-                'name'    => __('Account').' ['.$this->account->nickname.']',
+                'name'    => __('Account').' ['.$this->account->code.']',
                 'suffix'  => '('.__('editing').')',
                 'current' => false
             ],

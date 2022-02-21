@@ -47,12 +47,12 @@ class HandleInertiaTenantsRequests extends Middleware
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
 
             'tenant'  => app('currentTenant')->only('name', 'nickname'),
-            'appType' => app('currentTenant')->division->slug,
+            'appType' => app('currentTenant')->tenantType->code,
             'modules' => function () use ($request) {
-                /** @var \App\Models\Account\Division $division */
-                $division = app('currentTenant')->division;
+                /** @var \App\Models\Account\TenantType $tenantType */
+                $tenantType = app('currentTenant')->tenantType;
 
-                return $division->getUserLayout($request->user());
+                return $tenantType->getUserLayout($request->user());
             },
 
 

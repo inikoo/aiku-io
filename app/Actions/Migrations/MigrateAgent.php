@@ -123,16 +123,18 @@ class MigrateAgent extends MigrateModel
 
     protected function migrateImages()
     {
+
         /**  @var Agent $agent */
         $agent                           = $this->model;
         $auroraImagesCollection          = $this->getModelImagesCollection('Agent', $agent->aurora_id);
         $auroraImagesCollectionWithImage = $auroraImagesCollection->each(function ($auroraImage) {
-            if ($rawImage = MigrateRawImage::run($auroraImage)) {
+            if ($rawImage = MigrateRawImage::run($auroraImage,$this->auModel->data->aurora_account)) {
                 return $auroraImage->communal_image_id = $rawImage->communalImage->id;
             } else {
                 return $auroraImage->communal_image_id = null;
             }
         });
+
 
         MigrateImages::run($agent, $auroraImagesCollectionWithImage);
     }

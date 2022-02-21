@@ -107,7 +107,7 @@ class MigrateSuppliers extends MigrateAurora
                 ->whereIn('User Type', ['Agent', 'Supplier'])
                 ->get() as $auroraUserData
         ) {
-            $this->results[$tenant->nickname]['models']++;
+            $this->results[$tenant->code]['models']++;
             $result = MigrateUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }
@@ -117,7 +117,7 @@ class MigrateSuppliers extends MigrateAurora
                 ->whereIn('User Deleted Type', ['Agent', 'Supplier'])
                 ->get() as $auroraUserData
         ) {
-            $this->results[$tenant->nickname]['models']++;
+            $this->results[$tenant->code]['models']++;
             $result = MigrateDeletedUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }

@@ -104,7 +104,7 @@ class MigrateHR extends MigrateAurora
                 ->table('Staff Dimension')
                 ->get() as $auroraData
         ) {
-            $this->results[$tenant->nickname]['models']++;
+            $this->results[$tenant->code]['models']++;
             if ($auroraData->{'Staff Type'} == 'Contractor') {
                 $result = MigrateGuest::run($auroraData);
             } else {
@@ -114,7 +114,7 @@ class MigrateHR extends MigrateAurora
         }
 
         foreach (DB::connection('aurora')->table('Staff Deleted Dimension')->get() as $auroraData) {
-            $this->results[$tenant->nickname]['models']++;
+            $this->results[$tenant->code]['models']++;
             if ($auroraData->{'Staff Deleted Type'} == 'Contractor') {
                 $result = MigrateDeletedGuest::run($auroraData);
             } else {
@@ -128,7 +128,7 @@ class MigrateHR extends MigrateAurora
                 ->whereIn('User Type', ['Staff', 'Contractor'])
                 ->get() as $auroraUserData
         ) {
-            $this->results[$tenant->nickname]['models']++;
+            $this->results[$tenant->code]['models']++;
             $result = MigrateUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }
@@ -138,7 +138,7 @@ class MigrateHR extends MigrateAurora
                 ->whereIn('User Deleted Type', ['Staff', 'Contractor'])
                 ->get() as $auroraUserData
         ) {
-            $this->results[$tenant->nickname]['models']++;
+            $this->results[$tenant->code]['models']++;
             $result = MigrateDeletedUser::run($auroraUserData);
             $this->recordAction($tenant, $result);
         }

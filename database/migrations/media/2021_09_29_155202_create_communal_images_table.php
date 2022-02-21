@@ -38,7 +38,7 @@ class CreateCommunalImagesTable extends Migration
         Schema::create('communal_image_tenant', function (Blueprint $table) {
             $table->unsignedBigInteger('communal_image_id');
             $table->foreign('communal_image_id')->references('id')->on('communal_images');
-            $table->unsignedBigInteger('tenant_id')->index();
+            $table->unsignedMediumInteger('tenant_id')->index();
             $table->timestampsTz();
             $table->unique(['communal_image_id','tenant_id']);
         });

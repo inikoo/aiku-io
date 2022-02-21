@@ -60,7 +60,7 @@ class CreateTenantTables extends Migration
             $table->string('code')->unique()->index();
             $table->string('name')->nullable()->index();
             $table->string('original_name')->nullable();
-            $table->string('status')->nullable()->index();
+            $table->string('status')->default(false)->nullable()->index();
             $table->jsonb('data');
             $table->timestampsTz();
         });
@@ -131,23 +131,32 @@ class CreateTenantTables extends Migration
             $table->timestampsTz();
         });
 
-        Schema::create('divisions', function (Blueprint $table) {
+        Schema::create('tenant_types', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->string('slug')->unique();
-            $table->string('name');
-            $table->jsonb('data');
+            $table->string('code')->unique();
             $table->timestampsTz();
         });
 
         Schema::create('tenants', function (Blueprint $table) {
-            $table->smallIncrements('id');
-            $table->string('nickname')->unique();
+            $table->mediumIncrements('id');
+            $table->string('code')->unique();
             $table->string('name')->comment('E.g. company name');
-            $table->string('domain')->unique();
-            $table->string('database')->unique();
-            $table->string('email')->unique();
+            $table->string('domain')->unique()->nullable();
+            $table->foreignId('tenant_type_id')->constrained();
 
-            $table->foreignId('division_id')->constrained();
+
+            $table->string('contact_name',256)->nullable()->index()->fulltext();
+            $table->string('company_name',256)->nullable();
+            $table->string('email')->unique()->fulltext();
+            $table->string('phone')->nullable();
+            $table->string('identity_document_number')->nullable();
+            $table->string('website',256)->nullable();
+            $table->string('tax_number')->nullable()->index();
+            $table->enum('tax_number_status', ['valid', 'invalid', 'na', 'unknown'])->nullable()->default('na');
+            $table->jsonb('tax_number_data');
+            $table->unsignedBigInteger('address_id')->nullable()->index();
+            $table->jsonb('location');
+
             $table->unsignedSmallInteger('country_id')->nullable();
             $table->unsignedSmallInteger('currency_id')->nullable();
             $table->unsignedSmallInteger('language_id')->nullable();
@@ -171,7 +180,7 @@ class CreateTenantTables extends Migration
 
 
         Schema::dropIfExists('tenants');
-        Schema::dropIfExists('divisions');
+        Schema::dropIfExists('tenant_types');
         Schema::dropIfExists('user_agents');
         Schema::dropIfExists('ip_geolocations');
         Schema::table('countries', function (Blueprint $table) {

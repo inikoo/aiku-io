@@ -16,7 +16,6 @@ use App\Models\System\User;
 use App\Models\Marketing\Shop;
 use App\Models\Marketing\ShopStats;
 use Illuminate\Console\Command;
-use Illuminate\Session\Store;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -25,7 +24,7 @@ class HydrateTenant
 {
     use AsAction;
 
-    public string $commandSignature = 'hydrate:tenant {nickname?}';
+    public string $commandSignature = 'hydrate:tenant {code?}';
 
 
     public function handle(): void
@@ -213,8 +212,8 @@ class HydrateTenant
 
     public function asCommand(Command $command): void
     {
-        if ($command->argument('nickname')) {
-            $tenants = Tenant::where('nickname', $command->argument('nickname'))->get();
+        if ($command->argument('code')) {
+            $tenants = Tenant::where('code', $command->argument('code'))->get();
         } else {
             $tenants = Tenant::all();
         }

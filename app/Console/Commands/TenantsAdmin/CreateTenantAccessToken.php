@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class CreateTenantAccessToken extends Command
 {
 
-    protected $signature = 'tenant:token {nickname} {token_name} {scopes?*} ';
+    protected $signature = 'tenant:token {code} {token_name} {scopes?*} ';
 
     protected $description = 'Create new tenant access token';
 
@@ -28,7 +28,7 @@ class CreateTenantAccessToken extends Command
 
     public function handle(): int
     {
-        if ($tenant = Tenant::firstWhere('nickname', $this->argument('nickname'))) {
+        if ($tenant = Tenant::firstWhere('code', $this->argument('code'))) {
             $tenant->makeCurrent();
             $token= $tenant->user->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
 
@@ -49,7 +49,7 @@ class CreateTenantAccessToken extends Command
 
             $this->line("Tenant access token: $token");
         } else {
-            $this->error("Tenant not found: {$this->argument('nickname')}");
+            $this->error("Tenant not found: {$this->argument('code')}");
         }
 
         return 0;

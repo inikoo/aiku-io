@@ -34,7 +34,7 @@ class ShowTenants
      public function jsonResponse():AnonymousResourceCollection
     {
         $tenants = QueryBuilder::for(Tenant::class)
-            ->allowedFilters(['nickname', 'domain','database'])
+            ->allowedFilters(['code', 'domain','database'])
             ->paginate();
         return  TenantResource::collection($tenants);
     }

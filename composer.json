@@ -36,7 +36,8 @@
         "symfony/process": "^6.0",
         "tightenco/ziggy": "^1.4",
         "vemcogroup/laravel-translation": "^3.0",
-        "wulfheart/laravel-actions-ide-helper": "dev-l9-compatibility"
+        "wulfheart/laravel-actions-ide-helper": "dev-l9-compatibility",
+      "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",

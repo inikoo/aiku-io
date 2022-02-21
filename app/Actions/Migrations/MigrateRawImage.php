@@ -18,9 +18,9 @@ class MigrateRawImage
 {
     use AsAction;
 
-    public function handle($auroraImageData): ?RawImage
+    public function handle($auroraImageData, $auroraAccountCode = null): ?RawImage
     {
-        if ($imageData = $this->getImageData($auroraImageData)) {
+        if ($imageData = $this->getImageData($auroraImageData, $auroraAccountCode)) {
             $rawImageRes = StoreRawImage::run(
                 Arr::get($imageData, 'image_path'),
                 Arr::only($imageData, ['mime', 'created_at'])
@@ -37,9 +37,12 @@ class MigrateRawImage
         }
     }
 
-    protected function getImageData($auroraImageData): bool|array
+    protected function getImageData($auroraImageData, $auroraAccountCode = null): bool|array
     {
-        $image_path = sprintf(config('app.aurora_image_path'), app('currentTenant')->data['aurora_account_code']).'/'
+        $image_path = sprintf(
+                config('app.aurora_image_path'),
+                $auroraAccountCode ?? app('currentTenant')->data['aurora_account_code']
+            ).'/'
             .$auroraImageData->{'Image File Checksum'}[0].'/'
             .$auroraImageData->{'Image File Checksum'}[1].'/'
             .$auroraImageData->{'Image File Checksum'}.'.'

@@ -31,14 +31,14 @@ class StoreWebsite
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = Tenant::current();
-        $permissions = collect(config("division.{$tenant->division->slug}.model_permissions.Website"))->map(function ($name) use ($shop) {
+        $permissions = collect(config("tenant_type.{$tenant->tenantType->code}.model_permissions.Website"))->map(function ($name) use ($shop) {
             return preg_replace('/#/', $shop->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
             Permission::create(['name' => $permission]);
         });
 
-        $roles = collect(config("division.{$tenant->division->slug}.model_roles.Website"))->map(function ($name) use ($shop) {
+        $roles = collect(config("tenant_type.{$tenant->tenantType->code}.model_roles.Website"))->map(function ($name) use ($shop) {
             return preg_replace('/#/', $shop->id, $name);
         });
 

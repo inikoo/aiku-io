@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 class HydrateModels extends Command
 {
 
-    protected $signature = 'hydrate:all {--m|model=* : Model} {--t|tenant=* : Tenant nickname}';
+    protected $signature = 'hydrate:all {--m|model=* : Model} {--t|tenant=* : Tenant code}';
 
 
     protected $description = 'Hydrate all denormalized models';

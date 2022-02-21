@@ -75,7 +75,7 @@ class CreateMediaTables extends Migration
         Schema::create('common_attachment_tenant', function (Blueprint $table) {
             $table->unsignedBigInteger('common_attachment_id');
             $table->foreign('common_attachment_id')->references('id')->on('common_attachments');
-            $table->unsignedBigInteger('tenant_id')->index();
+            $table->unsignedMediumInteger('tenant_id')->index();
             $table->timestampsTz();
             $table->unique(['common_attachment_id','tenant_id']);
         });

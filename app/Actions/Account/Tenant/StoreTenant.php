@@ -10,19 +10,19 @@ namespace App\Actions\Account\Tenant;
 
 use App\Models\Assets\Currency;
 use App\Models\Utils\ActionResult;
-use App\Models\Account\Division;
+use App\Models\Account\TenantType;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreTenant
 {
     use AsAction;
 
-    public function handle(Division $division, array $tenantData): ActionResult
+    public function handle(TenantType $tenantType, array $tenantData): ActionResult
     {
         $res = new ActionResult();
 
         /** @var \App\Models\Account\Tenant $tenant */
-        $tenant = $division->tenants()->create($tenantData);
+        $tenant = $tenantType->tenants()->create($tenantData);
         $tenant->stats()->create();
         $tenant->marketingStats()->create();
         $tenant->inventoryStats()->create();
