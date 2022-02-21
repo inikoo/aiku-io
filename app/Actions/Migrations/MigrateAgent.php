@@ -128,7 +128,7 @@ class MigrateAgent extends MigrateModel
         $agent                           = $this->model;
         $auroraImagesCollection          = $this->getModelImagesCollection('Agent', $agent->aurora_id);
         $auroraImagesCollectionWithImage = $auroraImagesCollection->each(function ($auroraImage) {
-            if ($rawImage = MigrateRawImage::run($auroraImage,$this->auModel->data->aurora_account)) {
+            if ($rawImage = MigrateRawImage::run($auroraImage,$this->auModel->data->aurora_account??null)) {
                 return $auroraImage->communal_image_id = $rawImage->communalImage->id;
             } else {
                 return $auroraImage->communal_image_id = null;

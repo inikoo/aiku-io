@@ -90,6 +90,13 @@ class MigrateModel
         $this->parent        = $this->getParent();
         $this->parseModelData();
 
+        if ($this->auModel->data->agentMigration??false) {
+
+            $this->aiku_id_field = 'aiku_agent_unit_id';
+
+        }
+
+
 
         if ($this->auModel->data->{$this->aiku_id_field}) {
             $this->setModel();

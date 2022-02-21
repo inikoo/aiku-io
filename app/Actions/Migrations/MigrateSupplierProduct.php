@@ -38,6 +38,10 @@ class MigrateSupplierProduct extends MigrateModel
             ->where('Part SKU', $this->auModel->data->{'Supplier Part Part SKU'})->first();
 
 
+        if ($this->auModel->data->agentMigration) {
+            $this->auModel->partData->agentMigration = true;
+        }
+
         $data     = [];
         $settings = [];
 
@@ -91,7 +95,7 @@ class MigrateSupplierProduct extends MigrateModel
             'Supplier Part',
             $this->auModel->data->{'Supplier Part Key'}
         )->each(function ($auroraImage) {
-            if ($rawImage = MigrateRawImage::run($auroraImage)) {
+            if ($rawImage = MigrateRawImage::run($auroraImage, $this->auModel->data->aurora_account ?? null)) {
                 return $auroraImage->communal_image_id = $rawImage->communalImage->id;
             } else {
                 return $auroraImage->communal_image_id = null;
@@ -105,7 +109,7 @@ class MigrateSupplierProduct extends MigrateModel
 
     public function setModel()
     {
-        $this->model = SupplierProduct::withTrashed()->find($this->auModel->data->aiku_supplier_id);
+        $this->model = SupplierProduct::withTrashed()->find($this->auModel->data->{$this->aiku_id_field});
     }
 
     public function updateModel(): ActionResult
@@ -126,6 +130,7 @@ class MigrateSupplierProduct extends MigrateModel
     public function postMigrateActions(ActionResult $res): ActionResult
     {
         $tradeResult = MigrateTradeUnit::run($this->auModel->partData);
+
 
         $res->changes = array_merge($res->changes, $tradeResult->changes);
 

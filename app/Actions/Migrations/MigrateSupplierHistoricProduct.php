@@ -57,7 +57,7 @@ class MigrateSupplierHistoricProduct extends MigrateModel
 
     public function setModel()
     {
-        $this->model = HistoricSupplierProduct::withTrashed()->find($this->auModel->data->aiku_supplier_historic_product_id);
+        $this->model = HistoricSupplierProduct::withTrashed()->find($this->auModel->data->{$this->aiku_id_field});
     }
 
     public function updateModel(): ActionResult

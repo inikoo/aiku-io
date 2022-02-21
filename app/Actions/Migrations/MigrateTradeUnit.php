@@ -26,7 +26,7 @@ class MigrateTradeUnit extends MigrateModel
         parent::__construct();
         $this->auModel->table    = 'Part Dimension';
         $this->auModel->id_field = 'Part SKU';
-        $this->aiku_id_field='aiku_unit_id';
+        $this->aiku_id_field     = 'aiku_unit_id';
     }
 
 
@@ -34,9 +34,9 @@ class MigrateTradeUnit extends MigrateModel
     {
         $this->modelData = $this->sanitizeData(
             [
-                'name' => $this->auModel->data->{'Part Recommended Product Unit Name'},
-                'code'        => strtolower($this->auModel->data->{'Part Reference'}),
-                'aurora_id'   => $this->auModel->data->{'Part SKU'},
+                'name'      => $this->auModel->data->{'Part Recommended Product Unit Name'},
+                'code'      => strtolower($this->auModel->data->{'Part Reference'}),
+                'aurora_id' => $this->auModel->data->{'Part SKU'},
             ]
         );
 
@@ -44,12 +44,9 @@ class MigrateTradeUnit extends MigrateModel
     }
 
 
-
     public function setModel()
     {
-        $this->model = TradeUnit::withTrashed()->find($this->auModel->data->aiku_unit_id);
-
-
+            $this->model = TradeUnit::withTrashed()->find($this->auModel->data->{$this->aiku_id_field});
     }
 
     public function updateModel(): ActionResult
