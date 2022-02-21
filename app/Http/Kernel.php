@@ -66,8 +66,22 @@ class Kernel extends HttpKernel
             EnsureValidTenantSession::class,
             SetLocale::class,
             HandleInertiaTenantsRequests::class,
+            Authenticate::class,
+        ],
+
+        'app' => [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            SetLocale::class,
+            HandleInertiaTenantsRequests::class,
+            Authenticate::class,
 
         ],
+
 
         'api' => [
             ForceJsonResponse::class,

@@ -8,11 +8,11 @@
 
 namespace App\Multitenancy\Tasks;
 
+use App\Models\System\PersonalAccessToken;
+use Laravel\Sanctum\PersonalAccessToken as BasePersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 use Spatie\Multitenancy\Models\Tenant;
-use App\Models\Tenant\PersonalAccessToken;
 use Spatie\Multitenancy\Tasks\SwitchTenantTask;
-use Laravel\Sanctum\PersonalAccessToken as BasePersonalAccessToken;
 
 class SetSanctumPersonAccessTokenModelTask implements SwitchTenantTask
 {

@@ -1,16 +1,16 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Tue, 07 Sep 2021 23:09:56 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Tue, 22 Feb 2022 01:34:35 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Account;
+namespace App\Models\Admin;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -43,9 +43,9 @@ class AccountAdmin extends Model
 
     }
 
-    public function accountUser(): MorphOne
+    public function adminUser(): HasOne
     {
-        return $this->morphOne(AccountUser::class, 'userable');
+        return $this->hasOne(AdminUser::class);
     }
 
 }

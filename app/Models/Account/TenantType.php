@@ -17,6 +17,9 @@ use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
 
+/**
+ * @mixin IdeHelperTenantType
+ */
 class TenantType extends Model
 {
     use UsesLandlordConnection;

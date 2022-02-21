@@ -20,7 +20,7 @@ class CreateDeploymentsTable extends Migration
     public function up()
     {
         Schema::create('account_admins', function (Blueprint $table) {
-            $table->id();
+            $table->smallIncrements('id');
             $table->string('name');
             $table->string('slug')->unique()->index();
             $table->string('email')->unique();
@@ -30,7 +30,7 @@ class CreateDeploymentsTable extends Migration
         });
 
         Schema::create('personal_access_tokens', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->smallIncrements('id');
             $table->morphs('tokenable');
             $table->string('name');
             $table->string('token', 64)->unique();
@@ -40,7 +40,7 @@ class CreateDeploymentsTable extends Migration
         });
 
         Schema::create('deployments', function (Blueprint $table) {
-            $table->id();
+            $table->smallIncrements('id');
             $table->string('version');
             $table->string('hash');
             $table->string('state')->default('deploying');

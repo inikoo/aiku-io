@@ -1,15 +1,16 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 22 Sep 2021 21:35:32 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Tue, 22 Feb 2022 01:41:36 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
 
-namespace App\Models\Tenant;
+namespace App\Models\System;
 
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
+
 
 /**
  * @mixin IdeHelperPersonalAccessToken

@@ -9,6 +9,7 @@
 namespace App\Http\Middleware;
 
 use App\Actions\UI\Localisation\GetUITranslations;
+use App\Models\Account\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -44,15 +45,23 @@ class HandleInertiaTenantsRequests extends Middleware
      */
     public function share(Request $request): array
     {
+
+        $hasTenant=Tenant::checkCurrent();
+
+
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
 
-            'tenant'  => app('currentTenant')->only('name', 'nickname'),
-            'appType' => app('currentTenant')->tenantType->code,
-            'modules' => function () use ($request) {
-                /** @var \App\Models\Account\TenantType $tenantType */
-                $tenantType = app('currentTenant')->tenantType;
+            'tenant'  => $hasTenant?app('currentTenant')->only('name', 'nickname'):[],
+            'appType' => $hasTenant?app('currentTenant')->tenantType->code:null,
+            'modules' => function () use ($request,$hasTenant) {
+                if($hasTenant) {
+                    /** @var \App\Models\Account\TenantType $tenantType */
+                    $tenantType = app('currentTenant')->tenantType;
 
-                return $tenantType->getUserLayout($request->user());
+                    return $tenantType->getUserLayout($request->user());
+                }else{
+                    return [];
+                }
             },
 
 

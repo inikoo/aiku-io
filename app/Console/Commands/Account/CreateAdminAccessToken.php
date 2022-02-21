@@ -8,7 +8,7 @@
 
 namespace App\Console\Commands\Account;
 
-use App\Models\Account\AccountAdmin;
+use App\Models\Admin\AccountAdmin;
 use Illuminate\Console\Command;
 
 
@@ -27,7 +27,8 @@ class CreateAdminAccessToken extends Command
     public function handle(): int
     {
         if ($admin = AccountAdmin::firstWhere('slug', $this->argument('slug'))) {
-            $token= $admin->accountUser->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
+
+            $token= $admin->adminUser->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
             $this->line("AccountAdmin access token: $token");
         } else {
             $this->error("AccountAdmin not found: {$this->argument('slug')}");

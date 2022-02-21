@@ -8,8 +8,9 @@
 
 namespace App\Console\Commands\Account;
 
-use App\Actions\Account\AccountUser\StoreAccountUser;
-use App\Models\Account\AccountAdmin;
+
+use App\Actions\Admin\AdminUser\StoreAdminUser;
+use App\Models\Admin\AccountAdmin;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -58,8 +59,8 @@ class CreateAccountAdmin extends Command
         $admin->save();
 
 
-        $res = StoreAccountUser::run($admin,
-                                      [
+        $res = StoreAdminUser::run($admin,
+                                    [
                                           'username' => $username,
                                           'password' => Hash::make($password)
                                       ]

@@ -67,9 +67,9 @@ class Tenant extends SpatieTenant
         return $this->belongsTo('App\Models\Account\TenantType');
     }
 
-    public function accountUser(): MorphOne
+    public function tenantUser(): hasOne
     {
-        return $this->morphOne(AccountUser::class, 'userable');
+        return $this->hasOne(TenantUser::class);
     }
 
     public function user(): MorphOne

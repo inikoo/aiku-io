@@ -1,24 +1,25 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sat, 18 Sep 2021 01:20:48 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Tue, 22 Feb 2022 01:47:21 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\Account;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
+
 /**
- * @mixin IdeHelperAccountUser
+ * @mixin IdeHelperAdminUser
  */
-class AccountUser extends Authenticatable
+class AdminUser extends Authenticatable
 {
     use HasFactory;
     use HasApiTokens;
@@ -36,10 +37,10 @@ class AccountUser extends Authenticatable
         'settings' => 'array'
     ];
 
-
-    public function userable(): MorphTo
+    public function accountAdmin(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(AccountAdmin::class);
     }
+
 
 }

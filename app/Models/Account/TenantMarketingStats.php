@@ -14,7 +14,7 @@ use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
 /**
- * @mixin IdeHelperTenantTradeStats
+ * @mixin IdeHelperTenantMarketingStats
  */
 class TenantMarketingStats extends Model
 {

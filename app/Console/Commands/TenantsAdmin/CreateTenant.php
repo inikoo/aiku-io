@@ -8,7 +8,7 @@
 
 namespace App\Console\Commands\TenantsAdmin;
 
-use App\Actions\Account\AccountUser\StoreAccountUser;
+use App\Actions\Account\TenantUser\StoreTenantUser;
 use App\Actions\Account\Tenant\StoreTenant;
 use App\Actions\HumanResources\Workplace\StoreWorkplace;
 use App\Actions\System\User\StoreUser;
@@ -135,19 +135,21 @@ class CreateTenant extends Command
                 ->update(['aiku_id' => $tenant->id]);
         }
 
-        $username = $tenant->code;
-        if ($this->option('email')) {
-            $username = $this->option('email');
+
+        if(!$this->option('domain')) {
+            $username = $tenant->code;
+            if ($this->option('email')) {
+                $username = $this->option('email');
+            }
+
+
+            StoreTenantUser::run($tenant,
+                                 [
+                                      'username' => $username,
+                                      'password' => Hash::make($password)
+                                  ]
+            );
         }
-
-
-        StoreAccountUser::run($tenant,
-                              [
-                                  'username' => $username,
-                                  'password' => Hash::make($password)
-                              ]
-        );
-
 
         $tenant->makeCurrent();
 

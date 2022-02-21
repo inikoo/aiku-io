@@ -38,19 +38,21 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-
-
             Route::domain('api.'.config('app.domain'))
                 ->middleware('landlord_api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/landlord/api/api.php'));
 
 
-
             Route::domain('www.'.config('app.domain'))
                 ->middleware('landlord')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/landlord/web.php'));
+
+            Route::domain('app.'.config('app.domain'))
+                ->middleware('app')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/web.php'));
 
             Route::prefix('migration')
                 ->middleware('api')
@@ -62,6 +64,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
+
+
 
             Route::middleware('web')
                 ->namespace($this->namespace)

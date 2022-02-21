@@ -33,8 +33,8 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap(
             [
-                'AccountUser'             => 'App\Models\Account\AccountUser',
-                'AccountAdmin'            => 'App\Models\Account\AccountAdmin',
+                'TenantUser'             => 'App\Models\Account\TenantUser',
+                'AccountAdmin'            => 'App\Models\Admin\AccountAdmin',
                 'Address'                 => 'App\Models\Helpers\Address',
                 'Tenant'                  => 'App\Models\Account\Tenant',
                 'User'                    => 'App\Models\System\User',
@@ -78,7 +78,7 @@ class AppServiceProvider extends ServiceProvider
                 'Mailshot'                 => 'App\Models\Notifications\Mailshot',
                 'Category'                 => 'App\Models\Helpers\Category',
 
-                'AccountUser'                     => 'App\AccountUser',
+                'TenantUser'                     => 'App\TenantUser',
                 'Tenant'                   => 'App\Tenant',
                 */
             ]

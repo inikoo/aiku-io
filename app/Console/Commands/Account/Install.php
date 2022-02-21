@@ -8,12 +8,8 @@
 
 namespace App\Console\Commands\Account;
 
-use App\Actions\Account\AccountUser\StoreAccountUser;
-use App\Models\Account\AccountAdmin;
 use App\Models\Aiku\Aiku;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 
 class Install extends Command

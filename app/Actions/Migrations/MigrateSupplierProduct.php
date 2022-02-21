@@ -38,7 +38,7 @@ class MigrateSupplierProduct extends MigrateModel
             ->where('Part SKU', $this->auModel->data->{'Supplier Part Part SKU'})->first();
 
 
-        if ($this->auModel->data->agentMigration) {
+        if ($this->auModel->data->agentMigration??false) {
             $this->auModel->partData->agentMigration = true;
         }
 

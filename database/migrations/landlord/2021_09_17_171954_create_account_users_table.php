@@ -19,10 +19,25 @@ class CreateAccountUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('account_users', function (Blueprint $table) {
-            $table->id();
+
+        Schema::create('admin_users', function (Blueprint $table) {
+
+            $table->smallIncrements('id');
+            $table->unsignedSmallInteger('account_admin_id');
+            $table->foreign('account_admin_id')->references('id')->on('account_admins');
+
             $table->string('username')->unique();
-            $table->morphs('userable');
+            $table->string('password');
+            $table->jsonb('data');
+            $table->jsonb('settings');
+            $table->timestampsTz();
+        });
+
+        Schema::create('tenant_users', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->unsignedBigInteger('tenant_id');
+            $table->foreign('tenant_id')->references('id')->on('tenants');
+            $table->string('username')->unique();
             $table->string('password');
             $table->jsonb('data');
             $table->jsonb('settings');
@@ -37,6 +52,7 @@ class CreateAccountUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('account_users');
+        Schema::dropIfExists('tenant_users');
+        Schema::dropIfExists('admin_users');
     }
 }

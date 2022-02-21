@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'tenant_users',
         ],
+        'app' => [
+            'driver' => 'session',
+            'provider' => 'landlord_users',
+        ],
 
         'api' => [
             'driver' => 'sanctum',
@@ -81,7 +85,7 @@ return [
         ],
         'landlord_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Account\AccountUser::class,
+            'model' => App\Models\Account\TenantUser::class,
         ],
 
 

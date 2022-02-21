@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Account\Tenant;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,13 +22,13 @@ class AuthenticatedSessionController extends Controller
     {
         return Inertia::render('login', [
             'labels'     => [
-                'username'    => __('Username'),
-                'password'    => __('Password'),
-                'login'       => __('Log in'),
-                'remember_me' => __('Remember me'),
-                'generic_error'=>__('Whoops! Something went wrong.')
+                'username'      => __('Username'),
+                'password'      => __('Password'),
+                'login'         => __('Log in'),
+                'remember_me'   => __('Remember me'),
+                'generic_error' => __('Whoops! Something went wrong.')
             ],
-            'tenantCode' => app('currentTenant')->code,
+            'tenantCode' => Tenant::checkCurrent() ? app('currentTenant')->code : null,
             'status'     => session('status'),
         ]);
     }
