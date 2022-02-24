@@ -30,7 +30,7 @@ class CreateTenantAccessToken extends Command
     {
         if ($tenant = Tenant::firstWhere('code', $this->argument('code'))) {
             $tenant->makeCurrent();
-            $token= $tenant->user->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
+            $token= $tenant->getAdminUser()->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
 
             if(Arr::get($tenant->data,'aurora_db')){
 

@@ -14,9 +14,12 @@
         <div class="h-full " >
                 <div class=" flex flex-col justify-center py-12 sm:px-6 lg:px-8  ">
                     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md     ">
-                        <div class="mx-auto mb-5 ">
-                            <font-awesome-icon :icon="['fad', 'dice-d10']" class="ml-4" size="2x" /> <span class="ml-4 text-2xl  md:text-3xl font-light tracking-tighter">{{tenantCode}}@aiku</span>
+                        <div class="mx-auto mb-10 content-center	 justify-center flex  ">
+                            <font-awesome-icon :icon="['fad', 'dice-d10']" class="ml-4" size="2x" />
+                            <span v-if="tenantCode" class="ml-4 text-2xl  md:text-3xl font-light tracking-tighter">{{tenantCode}}@aiku</span>
+
                         </div>
+
                         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 sm:w-96     ">
 
                             <form class="space-y-6" @submit.prevent="submit">
@@ -79,7 +82,7 @@
 
                         </div>
 
-                        <div class="pt-4 text-center	 sm:w-96">
+                        <div class="pt-4 text-center	mt-5 sm:w-96">
                             aiku.io
                         </div>
 

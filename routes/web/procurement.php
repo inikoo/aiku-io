@@ -1,13 +1,15 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sat, 15 Jan 2022 22:24:05 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Wed, 23 Feb 2022 22:23:28 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
 use App\Http\Controllers\Procurement\AgentController;
+use App\Http\Controllers\Procurement\DeliveriesController;
 use App\Http\Controllers\Procurement\ProcurementController;
+use App\Http\Controllers\Procurement\PurchaseOrderController;
 use App\Http\Controllers\Procurement\SupplierController;
 
 Route::get('/', [ProcurementController::class, 'dashboard'])->name('dashboard');

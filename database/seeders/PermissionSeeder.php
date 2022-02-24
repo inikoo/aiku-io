@@ -1,18 +1,18 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Mon, 16 Aug 2021 06:31:01 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Tue, 22 Feb 2022 15:05:27 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
 namespace Database\Seeders;
 
-use App\Models\System\Permission;
-use App\Models\System\Role;
+use App\Models\Aiku\AppType;
+use App\Models\Auth\Permission;
+use App\Models\Auth\Role;
+use Exception;
 use Illuminate\Database\Seeder;
-use Spatie\Multitenancy\Models\Tenant;
-
 use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
@@ -26,22 +26,39 @@ class PermissionSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        /** @var \App\Models\Account\Tenant $tenant */
-        $tenant = Tenant::current();
+
+        foreach (AppType::all() as $appType) {
+            $permissions = collect(config("app_type.$appType->code.permissions"));
+            $roles       = collect(config("app_type.$appType->code.roles"));
+
+            $permissions->each(function ($permission) use ($appType) {
+                try {
+                    Permission::create(['name' => $permission, 'guard_name' => $appType->code]);
+                } catch (Exception) {
+                }
+            });
 
 
-        $permissions = collect(config("tenant_type.{$tenant->tenantType->code}.permissions"));
-        $roles       = collect(config("tenant_type.{$tenant->tenantType->code}.roles"));
+            $roles->each(function ($permission_names, $role_name) use ($appType) {
+                if (!$role = Role::where('name', $role_name)
+                    ->where('team_id', $appType->id)
+                    ->where('guard_name', $appType->code)
+                    ->first()) {
+                    /** @var \App\Models\Auth\Role $role */
+                    $role = Role::create(['name' => $role_name, 'team_id' => $appType->id, 'guard_name' => $appType->code]);
+                }
+                $permissions = [];
+                foreach ($permission_names as $permission_name) {
 
-        $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
-            Permission::create(['name' => $permission]);
-        });
-        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) {
-            Role::create(['name' => $role]);
-        });
 
-        $roles->each(function ($permissions, $role_name) {
-            Role::where('name', $role_name)->first()->syncPermissions($permissions);
-        });
+                    if ($permission = Permission::where('guard_name', $appType->code)->where('name', $permission_name)->first()) {
+                        $permissions[] = $permission;
+                    }
+                }
+
+                $role->syncPermissions($permissions);
+
+            });
+        }
     }
 }

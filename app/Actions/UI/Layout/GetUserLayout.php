@@ -8,7 +8,7 @@
 
 namespace App\Actions\UI\Layout;
 
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 

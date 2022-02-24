@@ -10,7 +10,7 @@ namespace App\Actions\HumanResources\Workplace;
 
 use App\Models\Account\Tenant;
 use App\Models\HumanResources\Employee;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use App\Models\Utils\ActionResult;
 use Lorisleiva\Actions\Concerns\AsAction;
 

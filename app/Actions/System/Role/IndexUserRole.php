@@ -9,15 +9,11 @@
 namespace App\Actions\System\Role;
 
 
-use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\System\Profile\ShowProfile;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\System\RoleInertiaResource;
 use App\Http\Resources\System\RoleResource;
-
-use App\Models\System\Role;
-use App\Models\System\User;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Models\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
@@ -25,7 +21,6 @@ use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * @property User $user

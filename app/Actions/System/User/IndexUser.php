@@ -13,7 +13,7 @@ use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\System\UserInertiaResource;
 use App\Http\Resources\System\UserResource;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Inertia;

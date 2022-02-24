@@ -9,10 +9,10 @@
 namespace App\Actions\Migrations;
 
 
+use App\Models\HumanResources\Employee;
+use App\Models\HumanResources\Guest;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
-use App\Models\HumanResources\Employee;
-use App\Models\System\Guest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;

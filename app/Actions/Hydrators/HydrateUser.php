@@ -8,7 +8,7 @@
 
 namespace App\Actions\Hydrators;
 
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Support\Collection;
 
 

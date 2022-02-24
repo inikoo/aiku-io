@@ -18,7 +18,7 @@ class RoleInertiaResource extends JsonResource
 
     public function toArray($request): array|Arrayable|JsonSerializable
     {
-        /** @var \App\Models\System\Role $role */
+        /** @var \App\Models\Auth\Role $role */
         $role = $this;
 
         return [

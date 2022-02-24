@@ -8,7 +8,7 @@
 
 namespace App\Actions\System\User;
 
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateUserToken

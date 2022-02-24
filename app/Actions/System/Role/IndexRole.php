@@ -9,13 +9,11 @@
 namespace App\Actions\System\Role;
 
 
-use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\System\Profile\ShowProfile;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\System\RoleInertiaResource;
 use App\Http\Resources\System\RoleResource;
-
-use App\Models\System\Role;
+use App\Models\Auth\Role;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

@@ -9,6 +9,8 @@
 namespace App\Actions\Admin\AdminUser;
 
 use App\Models\Admin\AccountAdmin;
+use App\Models\Assets\Language;
+use App\Models\Assets\Timezone;
 use App\Models\Utils\ActionResult;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -20,6 +22,19 @@ class StoreAdminUser
     public function handle(AccountAdmin $accountAdmin, array $userData): ActionResult
     {
         $res  = new ActionResult();
+
+
+        if(empty($userData['language_id'])){
+            $language = Language::where('code', config('app.locale'))->firstOrFail();
+            $userData['language_id']=$language->id;
+        }
+
+        if(empty($userData['timezone_id'])){
+            $timezone = Timezone::where('name', config('app.timezone'))->firstOrFail();
+            $userData['timezone_id']=$timezone->id;
+        }
+
+
 
         /** @var \App\Models\Admin\AdminUser $adminUser */
         $adminUser= $accountAdmin->adminUser()->create($userData);

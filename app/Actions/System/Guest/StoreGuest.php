@@ -8,8 +8,8 @@
 
 namespace App\Actions\System\Guest;
 
+use App\Models\HumanResources\Guest;
 use App\Models\Utils\ActionResult;
-use App\Models\System\Guest;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 

@@ -10,20 +10,20 @@ namespace App\Actions\Migrations;
 
 
 use App\Actions\System\User\CreateUserToken;
+use App\Models\Auth\User;
+use App\Models\HumanResources\Employee;
+use App\Models\HumanResources\Guest;
 use App\Models\Inventory\Warehouse;
+use App\Models\Marketing\Shop;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
-use App\Models\HumanResources\Employee;
 use App\Models\Production\Workshop;
-use App\Models\System\Guest;
-use App\Models\System\User;
-use App\Models\Marketing\Shop;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
-use App\Models\Utils\ActionResult;
 
 
 class MigrateUser extends MigrateModel
@@ -93,12 +93,13 @@ class MigrateUser extends MigrateModel
 
         $this->modelData['user'] = $this->sanitizeData(
             [
-                'username'    => strtolower($this->auModel->data->{'User Handle'}),
-                'password'    => Hash::make(config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(), 4, '-', true)),
-                'aurora_id'   => $this->auModel->data->{'User Key'},
-                'language_id' => $this->parseLanguageID($this->auModel->data->{'User Preferred Locale'}),
-                'status'      => $this->auModel->data->{'User Active'} == 'Yes' ? 1 : 0,
-                'created_at'  => $this->auModel->data->{'User Created'},
+                'username'         => strtolower($this->auModel->data->{'User Handle'}),
+                'password'         => Hash::make(config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(), 4, '-', true)),
+                'aurora_id'        => $this->auModel->data->{'User Key'},
+                'language_id'      => $this->parseLanguageID($this->auModel->data->{'User Preferred Locale'}),
+                'status'           => $this->auModel->data->{'User Active'} == 'Yes' ? 1 : 0,
+                'created_at'       => $this->auModel->data->{'User Created'},
+                'middleware_group' => $this->auModel->data->middleware_group ?? 'ecommerce'
             ]
         );
 
@@ -113,7 +114,7 @@ class MigrateUser extends MigrateModel
         $diff = $activeShops->diff($authorisedShops);
 
 
-        if (count($diff) ) {
+        if (count($diff)) {
             $roles = [];
             foreach ($authorisedShops as $aurora_id) {
                 /** @var Shop $shop */

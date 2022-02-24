@@ -18,7 +18,7 @@ class UserResource extends JsonResource
 
     public function toArray($request): array|Arrayable|JsonSerializable
     {
-        /** @var \App\Models\System\User $user */
+        /** @var \App\Models\Auth\User $user */
         $user = $this;
 
         return [

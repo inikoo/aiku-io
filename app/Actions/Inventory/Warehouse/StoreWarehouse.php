@@ -8,10 +8,10 @@
 
 namespace App\Actions\Inventory\Warehouse;
 
-use App\Models\Utils\ActionResult;
+use App\Models\Auth\Permission;
+use App\Models\Auth\Role;
 use App\Models\Inventory\Warehouse;
-use App\Models\System\Permission;
-use App\Models\System\Role;
+use App\Models\Utils\ActionResult;
 use Exception;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Multitenancy\Models\Tenant;
@@ -31,7 +31,7 @@ class StoreWarehouse
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = Tenant::current();
-        $permissions = collect(config("tenant_type.{$tenant->tenantType->code}.model_permissions.Warehouse"))->map(function ($name) use ($warehouse) {
+        $permissions = collect(config("app_type.{$tenant->appType->code}.model_permissions.Warehouse"))->map(function ($name) use ($warehouse) {
             return preg_replace('/#/', $warehouse->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
@@ -41,19 +41,25 @@ class StoreWarehouse
             }
         });
 
-        $roles = collect(config("tenant_type.{$tenant->tenantType->code}.model_roles.Warehouse"))->map(function ($name) use ($warehouse) {
+        $roles = collect(config("app_type.{$tenant->appType->code}.model_roles.Warehouse"))
+            ->map(function ($name) use ($warehouse) {
             return preg_replace('/#/', $warehouse->id, $name);
         });
 
-        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) use ($warehouse) {
+        $roles->keys()
+            ->map(function ($role) use ($warehouse) {
+                return preg_replace('/#/', $warehouse->id, $role);})
+            ->diff(Role::where('team_id',$tenant->appType->id)->pluck('name'))->each(function ($role) use ($warehouse,$tenant) {
             try {
-                Role::create(['name' => preg_replace('/#/', $warehouse->id, $role)]);
+                Role::create(['name' => preg_replace('/#/', $warehouse->id, $role), 'team_id' => $tenant->appType->id]);
             } catch (Exception) {
             }
         });
-        $roles->each(function ($permissions, $role_name) use ($warehouse) {
+        $roles->each(function ($permissions, $role_name) use ($warehouse,$tenant) {
             try {
-                Role::where('name', preg_replace('/#/', $warehouse->id, $role_name))->first()->syncPermissions($permissions);
+                Role::where('name', preg_replace('/#/', $warehouse->id, $role_name))
+                    ->where('team_id', $tenant->appType->id)
+                    ->first()->syncPermissions($permissions);
             } catch (Exception) {
             }
         });

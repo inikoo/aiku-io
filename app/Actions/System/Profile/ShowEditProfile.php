@@ -11,7 +11,7 @@ namespace App\Actions\System\Profile;
 use App\Actions\Assets\Language\IndexLanguage;
 use App\Actions\UI\Localisation\GetUITranslations;
 use App\Actions\UI\WithInertia;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;

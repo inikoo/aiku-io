@@ -36,6 +36,7 @@ return [
         Spatie\Multitenancy\Tasks\SwitchTenantDatabaseTask::class,
         App\Multitenancy\Tasks\SetSanctumPersonAccessTokenModelTask::class,
         App\Multitenancy\Tasks\PrefixCacheTask::class,
+        App\Multitenancy\Tasks\SetPermissionsConfigTask::class
     ],
 
     /*

@@ -9,13 +9,13 @@
 namespace App\Actions\System\User;
 
 
-use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
+use App\Models\Auth\User;
+use App\Models\HumanResources\Employee;
+use App\Models\HumanResources\Guest;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
-use App\Models\HumanResources\Employee;
-use App\Models\System\Guest;
-use App\Models\System\User;
+use App\Models\Utils\ActionResult;
 use Illuminate\Validation\Rules\Password;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -36,7 +36,14 @@ class StoreUser
         };
 
         /** @var User $user */
-        $user = $userable->user()->create($userData);
+
+
+        $userData['userable_type']=class_basename($userable::class);
+        $userData['userable_id']=$userable->id;
+
+
+        $user=app('currentTenant')->users()->create($userData);
+
         $user->stats()->create([]);
 
 
@@ -56,7 +63,7 @@ class StoreUser
     public function rules(): array
     {
         return [
-            'username' => 'required|string|unique:App\Models\System\User,username',
+            'username' => 'required|string|unique:App\Models\Auth\User,username',
             'password' => ['required', 'confirmed', Password::min(8)->uncompromised()],
         ];
     }

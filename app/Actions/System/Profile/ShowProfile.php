@@ -10,7 +10,7 @@ namespace App\Actions\System\Profile;
 
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\System\UserResource;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;

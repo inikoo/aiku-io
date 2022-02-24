@@ -8,7 +8,7 @@
 
 namespace App\Console\Commands\Account;
 
-use App\Models\Aiku\Aiku;
+use App\Models\Aiku\AppType;
 use Illuminate\Console\Command;
 
 
@@ -26,9 +26,9 @@ class Install extends Command
 
     public function handle(): int
     {
-        $aiku = new Aiku([]);
+        $appType = AppType::where('code', 'aiku')->first();
 
-        $aiku->save();
+        $appType->aikuApp()->create([]);
 
 
         return 0;

@@ -9,7 +9,7 @@
 namespace App\Actions\System\Guest;
 
 use App\Http\Resources\System\GuestResource;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;

@@ -11,11 +11,11 @@ namespace App\Actions\Migrations;
 
 use App\Actions\System\Guest\StoreGuest;
 use App\Actions\System\Guest\UpdateGuest;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
-use App\Models\Utils\ActionResult;
 
 class MigrateGuest extends MigrateModel
 {

@@ -8,10 +8,10 @@
 
 namespace App\Actions\Web\Website;
 
-use App\Models\System\Permission;
-use App\Models\System\Role;
-use App\Models\Utils\ActionResult;
+use App\Models\Auth\Permission;
+use App\Models\Auth\Role;
 use App\Models\Marketing\Shop;
+use App\Models\Utils\ActionResult;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Multitenancy\Models\Tenant;
 use Spatie\Permission\PermissionRegistrar;
@@ -31,22 +31,27 @@ class StoreWebsite
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = Tenant::current();
-        $permissions = collect(config("tenant_type.{$tenant->tenantType->code}.model_permissions.Website"))->map(function ($name) use ($shop) {
-            return preg_replace('/#/', $shop->id, $name);
+        $permissions = collect(config("app_type.{$tenant->appType->code}.model_permissions.Website"))->map(function ($name) use ($website) {
+            return preg_replace('/#/', $website->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
             Permission::create(['name' => $permission]);
         });
 
-        $roles = collect(config("tenant_type.{$tenant->tenantType->code}.model_roles.Website"))->map(function ($name) use ($shop) {
-            return preg_replace('/#/', $shop->id, $name);
+        $roles = collect(config("app_type.{$tenant->appType->code}.model_roles.Website"))->map(function ($name) use ($website) {
+            return preg_replace('/#/', $website->id, $name);
         });
 
-        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) use ($shop) {
-            Role::create(['name' => preg_replace('/#/', $shop->id, $role)]);
+        $roles->keys()
+            ->map(function ($role) use ($website) {
+                return preg_replace('/#/', $website->id, $role);})
+            ->diff(Role::where('team_id',$tenant->appType->id)->pluck('name'))->each(function ($role) use ($tenant,$website) {
+            Role::create(['name' => preg_replace('/#/', $website->id, $role), 'team_id' => $tenant->appType->id]);
         });
-        $roles->each(function ($permissions, $role_name) use ($shop) {
-            Role::where('name', preg_replace('/#/', $shop->id, $role_name))->first()->syncPermissions($permissions);
+        $roles->each(function ($permissions, $role_name) use ($website,$tenant) {
+            Role::where('name', preg_replace('/#/', $website->id, $role_name))
+                ->where('team_id', $tenant->appType->id)
+                ->first()->syncPermissions($permissions);
         });
 
 

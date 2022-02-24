@@ -9,9 +9,9 @@
 namespace App\Models\HumanResources;
 
 use App\Actions\Hydrators\HydrateTenant;
+use App\Models\Auth\User;
 use App\Models\Helpers\Attachment;
 use App\Models\Media\Image;
-use App\Models\System\User;
 use App\Models\Traits\HasPersonalData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -18,7 +18,7 @@ class GuestInertiaResource extends JsonResource
 
     public function toArray($request): array|Arrayable|JsonSerializable
     {
-        /** @var \App\Models\System\Guest $guest */
+        /** @var \App\Models\HumanResources\Guest $guest */
         $guest = $this;
 
 

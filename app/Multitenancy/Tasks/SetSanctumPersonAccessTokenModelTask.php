@@ -8,7 +8,7 @@
 
 namespace App\Multitenancy\Tasks;
 
-use App\Models\System\PersonalAccessToken;
+use App\Models\Auth\PersonalAccessToken;
 use Laravel\Sanctum\PersonalAccessToken as BasePersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 use Spatie\Multitenancy\Models\Tenant;

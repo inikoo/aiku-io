@@ -10,6 +10,7 @@ namespace App\Actions\HumanResources;
 
 
 use App\Actions\UI\WithInertia;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -29,6 +30,8 @@ class ShowHumanResourcesDashboard
 
     public function authorize(ActionRequest $request): bool
     {
+
+
         return $request->user()->hasPermissionTo("employees.view");
     }
 

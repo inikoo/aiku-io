@@ -37,10 +37,12 @@ class AppServiceProvider extends ServiceProvider
                 'AccountAdmin'            => 'App\Models\Admin\AccountAdmin',
                 'Address'                 => 'App\Models\Helpers\Address',
                 'Tenant'                  => 'App\Models\Account\Tenant',
-                'User'                    => 'App\Models\System\User',
+                'User'                    => 'App\Models\Auth\User',
+                'AdminUser'               => 'App\Models\Admin\AdminUser',
+                'Address'                 => 'App\Models\Helpers\Address',
                 'Patient'                 => 'App\Models\Health\Patient',
                 'Employee'                => 'App\Models\HumanResources\Employee',
-                'Guest'                   => 'App\Models\System\Guest',
+                'Guest'                   => 'App\Models\HumanResources\Guest',
                 'Customer'                => 'App\Models\CRM\Customer',
                 'RawImage'                => 'App\Models\Media\RawImage',
                 'ProcessedImage'          => 'App\Models\Assets\ProcessedImage',
@@ -78,8 +80,6 @@ class AppServiceProvider extends ServiceProvider
                 'Mailshot'                 => 'App\Models\Notifications\Mailshot',
                 'Category'                 => 'App\Models\Helpers\Category',
 
-                'TenantUser'                     => 'App\TenantUser',
-                'Tenant'                   => 'App\Tenant',
                 */
             ]
         );

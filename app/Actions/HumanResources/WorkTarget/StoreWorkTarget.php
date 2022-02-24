@@ -9,10 +9,10 @@
 namespace App\Actions\HumanResources\WorkTarget;
 
 use App\Models\HumanResources\Employee;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use App\Models\Utils\ActionResult;
-use Lorisleiva\Actions\Concerns\AsAction;
 use Exception;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreWorkTarget
 {

@@ -14,7 +14,7 @@ use App\Actions\System\User\ShowUser;
 use App\Actions\System\User\UpdateUser;
 use App\Http\Controllers\Controller;
 
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 use Illuminate\Http\Request;

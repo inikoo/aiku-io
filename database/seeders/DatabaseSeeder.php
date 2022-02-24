@@ -7,7 +7,7 @@
  */
 
 namespace Database\Seeders;
-use App\Models\Health\Patient;
+
 use Spatie\Multitenancy\Models\Tenant;
 use Illuminate\Database\Seeder;
 
@@ -23,26 +23,21 @@ class DatabaseSeeder extends Seeder
 
     public function runTenantSpecificSeeders()
     {
-
         $this->call([
-                        PermissionSeeder::class,
                         JobPositionSeeder::class,
-                      //  PatientSeeder::class,
+                        //  PatientSeeder::class,
                     ]);
-
-
-
     }
 
     public function runLandlordSpecificSeeders()
     {
-
         $this->call([
-                        TenantTypeSeeder::class,
+                        AppTypeSeeder::class,
                         CountrySeeder::class,
                         CurrencySeeder::class,
                         TimezoneSeeder::class,
                         LanguageSeeder::class,
+                        PermissionSeeder::class
                     ]);
     }
 

@@ -10,7 +10,7 @@ namespace App\Actions\System\Guest;
 
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\HumanResources\EmployeeResource;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use Inertia\Inertia;
 use Inertia\Response;
 use JetBrains\PhpStorm\Pure;

@@ -10,7 +10,7 @@ namespace App\Actions\HumanResources\Clocking;
 
 use App\Models\HumanResources\ClockingMachine;
 use App\Models\HumanResources\Employee;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use App\Models\Utils\ActionResult;
 use Lorisleiva\Actions\Concerns\AsAction;
 

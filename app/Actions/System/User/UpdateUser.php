@@ -10,7 +10,7 @@ namespace App\Actions\System\User;
 
 use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -60,7 +60,7 @@ class UpdateUser
     public function rules(): array
     {
         return [
-            'username' => 'sometimes|required|alpha_dash|unique:App\Models\System\User,username',
+            'username' => 'sometimes|required|alpha_dash|unique:App\Models\Auth\User,username',
             'password' => ['sometimes', 'required', Password::min(8)->uncompromised()],
             'status'   => 'sometimes|required|boolean'
         ];

@@ -10,9 +10,9 @@ namespace App\Actions\Hydrators;
 
 
 use App\Models\Account\Tenant;
+use App\Models\Auth\User;
 use App\Models\HumanResources\Employee;
-use App\Models\System\Guest;
-use App\Models\System\User;
+use App\Models\HumanResources\Guest;
 use App\Models\Marketing\Shop;
 use App\Models\Marketing\ShopStats;
 use Illuminate\Console\Command;

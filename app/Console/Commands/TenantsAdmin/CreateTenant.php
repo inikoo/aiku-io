@@ -8,12 +8,11 @@
 
 namespace App\Console\Commands\TenantsAdmin;
 
-use App\Actions\Account\TenantUser\StoreTenantUser;
 use App\Actions\Account\Tenant\StoreTenant;
 use App\Actions\HumanResources\Workplace\StoreWorkplace;
 use App\Actions\System\User\StoreUser;
-use App\Models\Account\TenantType;
 use App\Models\Account\Tenant;
+use App\Models\Aiku\AppType;
 use App\Models\Assets\Country;
 use App\Models\Assets\Currency;
 use App\Models\Assets\Language;
@@ -39,7 +38,6 @@ class CreateTenant extends Command
 
     public function handle(): int
     {
-
         if (!preg_match('/^[a-z]{1,16}$/', $this->argument('code'))) {
             $this->error("Invalid tenant code: {$this->argument('code')}");
 
@@ -79,11 +77,11 @@ class CreateTenant extends Command
         }
 
         if ($this->option('aurora_agent')) {
-            $data['aurora_agent'] = json_decode($this->option('aurora_agent'),true);
+            $data['aurora_agent'] = json_decode($this->option('aurora_agent'), true);
         }
 
-        $tenantType = TenantType::where('code', $this->option('type'))->first();
-        if (!$tenantType) {
+        $appType = AppType::where('code', $this->option('type'))->first();
+        if (!$appType) {
             $this->error("Tenant type {$this->option('type')} not found");
 
             return 0;
@@ -108,7 +106,8 @@ class CreateTenant extends Command
 
         $tenantData = [
             'code'         => $this->argument('code'),
-            'domain'       => $this->option('domain') ? $this->option('domain').'.'.config('app.domain') : null,
+            // 'domain'       => $this->option('domain') ? $this->option('domain').'.'.config('app.domain') : null,
+            'domain'       => $this->option('domain') ? $this->option('domain') : null,
             'name'         => $this->option('name'),
             'contact_name' => $this->option('contact_name'),
             'email'        => $this->option('email'),
@@ -120,7 +119,7 @@ class CreateTenant extends Command
 
         ];
 
-        $res    = StoreTenant::run($tenantType, $tenantData);
+        $res    = StoreTenant::run($appType, $tenantData);
         $tenant = $res->model;
 
         if (Arr::get($tenant->data, 'aurora_db')) {
@@ -135,21 +134,6 @@ class CreateTenant extends Command
                 ->update(['aiku_id' => $tenant->id]);
         }
 
-
-        if(!$this->option('domain')) {
-            $username = $tenant->code;
-            if ($this->option('email')) {
-                $username = $this->option('email');
-            }
-
-
-            StoreTenantUser::run($tenant,
-                                 [
-                                      'username' => $username,
-                                      'password' => Hash::make($password)
-                                  ]
-            );
-        }
 
         $tenant->makeCurrent();
 
@@ -170,15 +154,32 @@ class CreateTenant extends Command
         );
 
 
-        $userPassword = (config('app.env') == 'local' ? 'hello' : wordwrap(Str::random(12), 4, '-', true));
+        setPermissionsTeamId($tenant->appType->id);
 
-        $res = StoreUser::run(userable: $tenant,
-            userData:                   [
-                                            'username' => 'admin',
-                                            'password' => Hash::make($userPassword),
-                                        ]
+        if ($this->option('domain')) {
+            $userData = [
+                'username'         => 'admin',
+                'middleware_group' => 'ecommerce'
+            ];
+        } else {
+            $userData = [
+                'jar_username'     => 'admin',
+                'middleware_group' => $appType->code == 'ecommerce' ? 'jar_ecommerce' : $appType->code,
+
+            ];
+        }
+
+        $res = StoreUser::run(
+            userable: $tenant,
+            userData: array_merge($userData, [
+
+                          'tenant_id' => $tenant->id,
+                          'password'  => Hash::make($password),
+                          'admin'     => true,
+                      ])
 
         );
+
 
         $res->model->syncRoles(['super-admin']);
 
@@ -189,19 +190,14 @@ class CreateTenant extends Command
         }
 
         $this->table(
-            ['Account', 'Slug', 'Username', 'Password'],
+            ['Tenant', 'Domain', 'Username', 'Password'],
             [
+
                 [
-                    'tenant',
                     $tenant->code,
-                    $tenant->user->username,
+                    $tenant->domain ?? 'app',
+                    $res->model->username,
                     ($this->option('randomPassword') ? $password : '*****'),
-                ],
-                [
-                    'appAdmin',
-                    '',
-                    'admin',
-                    $userPassword
                 ]
             ]
         );

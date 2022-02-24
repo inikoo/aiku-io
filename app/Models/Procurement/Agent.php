@@ -9,7 +9,7 @@
 namespace App\Models\Procurement;
 
 use App\Models\Media\Image;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use App\Models\Traits\HasAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

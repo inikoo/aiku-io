@@ -10,7 +10,7 @@ namespace App\Actions\System\User;
 
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\System\UserResource;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use JetBrains\PhpStorm\Pure;
@@ -69,7 +69,7 @@ class ShowUser
             ];
         }
 
-        /** @var \App\Models\HumanResources\Employee|\App\Models\System\Guest $userable */
+        /** @var \App\Models\HumanResources\Employee|\App\Models\HumanResources\Guest $userable */
         $userable = $this->user->userable;
 
         return Inertia::render(

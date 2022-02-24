@@ -130,6 +130,7 @@ class MigrateHR extends MigrateAurora
         ) {
             $this->results[$tenant->code]['models']++;
             $result = MigrateUser::run($auroraUserData);
+
             $this->recordAction($tenant, $result);
         }
 

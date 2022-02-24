@@ -9,7 +9,7 @@
 namespace App\Actions\System\User;
 
 use App\Actions\UI\WithInertia;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;

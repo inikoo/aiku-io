@@ -35,7 +35,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         CommunalImageAnchoring::class => [
             UpdateCommunalImageStats::class
-        ]
+        ],
+        'Illuminate\Auth\Events\Login' => [
+            'App\Listeners\LogSuccessfulLogin',
+        ],
 
 
 

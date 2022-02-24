@@ -23,6 +23,7 @@ class CreateEmployeesTable extends Migration
             $table->smallIncrements('id');
             $table->string('slug')->unique();
             $table->string('name');
+            $table->json('roles');
             $table->json('data')->nullable();
             $table->timestampsTz();
 
@@ -68,15 +69,7 @@ class CreateEmployeesTable extends Migration
             $table->unique(['job_position_id','employee_id']);
         });
 
-        Schema::create('job_position_role', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('job_position_id')->index();
-            $table->foreign('job_position_id')->references('id')->on('job_positions');
-            $table->unsignedBigInteger('role_id')->index();
-            $table->foreign('role_id')->references('id')->on('roles');
-            $table->timestampsTz();
-            $table->unique(['job_position_id','role_id']);
-        });
+
 
 
 

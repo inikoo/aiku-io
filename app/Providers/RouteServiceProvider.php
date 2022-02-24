@@ -54,6 +54,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
 
+            Route::domain('agents.'.config('app.domain'))
+                ->middleware('agents')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/jar_ecommerce.php'));
+
             Route::prefix('migration')
                 ->middleware('api')
                 ->namespace($this->namespace)
@@ -67,9 +72,9 @@ class RouteServiceProvider extends ServiceProvider
 
 
 
-            Route::middleware('web')
+            Route::middleware('subdomain_ecommerce')
                 ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));
+                ->group(base_path('routes/ecommerce.php'));
         });
     }
 

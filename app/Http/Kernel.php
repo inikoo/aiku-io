@@ -10,9 +10,11 @@ use App\Http\Middleware\HandleInertiaTenantsRequests;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\SetPermissionTeam;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustHosts;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\UseEcommerceGuard;
 use App\Http\Middleware\VerifyCsrfToken;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
@@ -55,8 +57,10 @@ class Kernel extends HttpKernel
 
     protected $middlewareGroups = [
 
-        'web' => [
+        'subdomain_ecommerce' => [
+            UseEcommerceGuard::class,
             NeedsTenant::class,
+            SetPermissionTeam::class,
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
@@ -66,7 +70,20 @@ class Kernel extends HttpKernel
             EnsureValidTenantSession::class,
             SetLocale::class,
             HandleInertiaTenantsRequests::class,
-            Authenticate::class,
+
+        ],
+
+        'agents' => [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            SetLocale::class,
+            HandleInertiaTenantsRequests::class,
+
+
         ],
 
         'app' => [
@@ -124,16 +141,18 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'json.response'    => ForceJsonResponse::class,
-        'auth'             => Authenticate::class,
-        'auth.basic'       => AuthenticateWithBasicAuth::class,
-        'cache.headers'    => SetCacheHeaders::class,
-        'can'              => Authorize::class,
-        'guest'            => RedirectIfAuthenticated::class,
-        'password.confirm' => RequirePassword::class,
-        'signed'           => ValidateSignature::class,
-        'throttle'         => ThrottleRequests::class,
-        'verified'         => EnsureEmailIsVerified::class,
+        'json.response'         => ForceJsonResponse::class,
+        'auth'                  => Authenticate::class,
+        'auth.basic'            => AuthenticateWithBasicAuth::class,
+        'cache.headers'         => SetCacheHeaders::class,
+        'can'                   => Authorize::class,
+        'guest'                 => RedirectIfAuthenticated::class,
+        'password.confirm'      => RequirePassword::class,
+        'signed'                => ValidateSignature::class,
+        'throttle'              => ThrottleRequests::class,
+        'verified'              => EnsureEmailIsVerified::class,
+        'multitenancy.require'  => NeedsTenant::class,
+        'multitenancy.firewall' => EnsureValidTenantSession::class,
     ];
 
 

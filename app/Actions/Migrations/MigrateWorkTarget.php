@@ -12,13 +12,13 @@ namespace App\Actions\Migrations;
 use App\Actions\HumanResources\WorkTarget\StoreWorkTarget;
 use App\Actions\HumanResources\WorkTarget\UpdateWorkTarget;
 use App\Models\HumanResources\Employee;
+use App\Models\HumanResources\Guest;
 use App\Models\HumanResources\WorkTarget;
-use App\Models\System\Guest;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Models\Utils\ActionResult;
 
 
 class MigrateWorkTarget extends MigrateModel

@@ -9,18 +9,19 @@
 namespace App\Models\Account;
 
 use App\Models\Assets\Language;
-use App\Models\Procurement\Agent;
-use App\Models\Procurement\Supplier;
 use App\Models\HumanResources\Workplace;
 use App\Models\Inventory\Stock;
+use App\Models\Procurement\Agent;
+use App\Models\Procurement\Supplier;
 use App\Models\Production\Workshop;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\Multitenancy\Models\Tenant as SpatieTenant;
+
 
 
 /**
@@ -50,7 +51,7 @@ class Tenant extends SpatieTenant
     {
         static::updated(function ($tenant) {
             if ($tenant->wasChanged('language_id')) {
-                $tenant->user->update([
+                $tenant->getAdminUser()->update([
                                           'language_id' => $tenant->language_id
                                       ]);
             }
@@ -62,17 +63,20 @@ class Tenant extends SpatieTenant
         return $this->code.'_aiku';
     }
 
-    public function tenantType(): BelongsTo
+    public function appType(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Account\TenantType');
+        return $this->belongsTo('App\Models\Aiku\AppType');
     }
 
-    public function tenantUser(): hasOne
+    public function getAdminUser(): User
     {
-        return $this->hasOne(TenantUser::class);
+
+        return (new User())->where('tenant_id', $this->id)->where('admin', true)->first();
     }
 
-    public function user(): MorphOne
+
+
+    public function adminUser(): MorphOne
     {
         return $this->morphOne(User::class, 'userable');
     }
@@ -131,6 +135,11 @@ class Tenant extends SpatieTenant
     public function salesStats(): HasMany
     {
         return $this->hasMany(TenantSalesStats::class);
+    }
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
     }
 
 

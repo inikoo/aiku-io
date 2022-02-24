@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'ecommerce',
         'passwords' => 'users',
     ],
 
@@ -37,6 +37,10 @@ return [
 
     'guards' => [
         'web' => [
+            'driver' => 'session',
+            'provider' => 'tenant_users',
+        ],
+        'ecommerce' => [
             'driver' => 'session',
             'provider' => 'tenant_users',
         ],
@@ -81,11 +85,11 @@ return [
     'providers' => [
         'tenant_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\System\User::class,
+            'model' => App\Models\Auth\User::class,
         ],
         'landlord_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Account\TenantUser::class,
+            'model' => App\Models\Auth\User::class,
         ],
 
 
@@ -100,7 +104,7 @@ return [
     | than one user table or model in the application and you want to have
     | separate password reset settings based on the specific user types.
     |
-    | The expire time is the number of minutes that the reset token should be
+    | The expiry time is the number of minutes that the reset token should be
     | considered valid. This security feature keeps tokens short-lived so
     | they have less time to be guessed. You may change this as needed.
     |

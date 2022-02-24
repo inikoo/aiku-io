@@ -8,21 +8,21 @@
 
 namespace App\Actions\Account\Tenant;
 
+use App\Models\Aiku\AppType;
 use App\Models\Assets\Currency;
 use App\Models\Utils\ActionResult;
-use App\Models\Account\TenantType;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreTenant
 {
     use AsAction;
 
-    public function handle(TenantType $tenantType, array $tenantData): ActionResult
+    public function handle(AppType $appType, array $tenantData): ActionResult
     {
         $res = new ActionResult();
 
         /** @var \App\Models\Account\Tenant $tenant */
-        $tenant = $tenantType->tenants()->create($tenantData);
+        $tenant = $appType->tenants()->create($tenantData);
         $tenant->stats()->create();
         $tenant->marketingStats()->create();
         $tenant->inventoryStats()->create();

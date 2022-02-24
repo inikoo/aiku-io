@@ -45,12 +45,30 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
+        $subdomain = current(explode('.', $this->getHost()));
+
+        $credentials = match ($subdomain) {
+            'agents' => [
+                'status' => true,
+                'jar_username' => $this->get('username'),
+                'password' => $this->get('password'),
+            ],
+            default => array_merge(
+                $this->only('username', 'password'),
+                ['status' => true, 'tenant_id' => App('currentTenant')->id]
+            ),
+        };
+
+
+        if (!Auth::attempt(
+            $credentials,
+            $this->boolean('remember')
+        )) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'username' => __('auth.failed'),
-            ]);
+                                                        'username' => __('auth.failed'),
+                                                    ]);
         }
 
         RateLimiter::clear($this->throttleKey());
@@ -65,7 +83,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited()
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -74,11 +92,11 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'username' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+                                                    'username' => trans('auth.throttle', [
+                                                        'seconds' => $seconds,
+                                                        'minutes' => ceil($seconds / 60),
+                                                    ]),
+                                                ]);
     }
 
     /**

@@ -9,7 +9,7 @@
 namespace App\Actions\System\Guest;
 
 use App\Actions\UI\WithInertia;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -17,7 +17,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 
 
 /**
- * @property Guest $guest
+ * @property \App\Models\HumanResources\Guest $guest
  * @property array $breadcrumbs
  */
 class ShowEditGuest

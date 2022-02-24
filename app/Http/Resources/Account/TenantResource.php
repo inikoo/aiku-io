@@ -25,7 +25,7 @@ class TenantResource extends JsonResource
             'id'         => $tenant->id,
             'nickname'   => $tenant->code,
             'email'      => $tenant->email,
-            'tenant_type'   => $tenant->tenantType->only(['slug', 'name']),
+            'app_type'   => $tenant->appType->only(['slug', 'name']),
             'created_at' => $tenant->created_at,
             'updated_at' => $tenant->updated_at,
         ];

@@ -8,7 +8,7 @@
 
 namespace App\Models\HumanResources;
 
-use App\Models\System\Role;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,11 +23,13 @@ class JobPosition extends Model
     use UsesTenantConnection;
 
     protected $casts = [
-        'data'     => 'array',
+        'data'  => 'array',
+        'roles' => 'array',
     ];
 
     protected $attributes = [
-        'data'     => '{}',
+        'data'  => '{}',
+        'roles' => '{}',
     ];
 
     protected $guarded = [];
@@ -35,11 +37,6 @@ class JobPosition extends Model
     public function employees(): BelongsToMany
     {
         return $this->belongsToMany(Employee::class)->withTimestamps();
-    }
-
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
 

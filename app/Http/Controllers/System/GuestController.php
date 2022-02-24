@@ -13,11 +13,10 @@ use App\Actions\System\Guest\ShowEditGuest;
 use App\Actions\System\Guest\ShowGuest;
 use App\Actions\System\Guest\UpdateGuest;
 use App\Http\Controllers\Controller;
-
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Response;
 use Illuminate\Http\Request;
+use Inertia\Response;
 
 
 class GuestController extends Controller

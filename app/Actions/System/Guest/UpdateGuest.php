@@ -9,9 +9,9 @@
 namespace App\Actions\System\Guest;
 
 use App\Actions\System\User\UpdateUser;
-use App\Models\Utils\ActionResult;
 use App\Actions\WithUpdate;
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
+use App\Models\Utils\ActionResult;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -60,7 +60,7 @@ class UpdateGuest
             'name'     => 'sometimes|required|string',
             'email'    => 'sometimes|email',
             'phone'    => 'sometimes|phone:AUTO',
-            'username' => 'sometimes|required|string|unique:App\Models\System\User,username',
+            'username' => 'sometimes|required|string|unique:App\Models\Auth\User,username',
             'password' => ['sometimes', 'required', Password::min(8)->uncompromised()],
             'status'   => 'sometimes|required|boolean'
 

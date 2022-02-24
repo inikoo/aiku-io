@@ -8,10 +8,10 @@
 
 namespace App\Actions\Production\Workshop;
 
-use App\Models\System\Permission;
-use App\Models\System\Role;
-use App\Models\Utils\ActionResult;
 use App\Models\Account\Tenant;
+use App\Models\Auth\Permission;
+use App\Models\Auth\Role;
+use App\Models\Utils\ActionResult;
 use Exception;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Permission\PermissionRegistrar;
@@ -30,7 +30,7 @@ class StoreWorkshop
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant      = \Spatie\Multitenancy\Models\Tenant::current();
-        $permissions = collect(config("tenant_type.{$tenant->tenantType->code}.model_permissions.Workshop"))->map(function ($name) use ($workshop) {
+        $permissions = collect(config("app_type.{$tenant->appType->code}.model_permissions.Workshop"))->map(function ($name) use ($workshop) {
             return preg_replace('/#/', $workshop->id, $name);
         });
         $permissions->diff(Permission::all()->pluck('name'))->each(function ($permission) {
@@ -40,19 +40,24 @@ class StoreWorkshop
             }
         });
 
-        $roles = collect(config("tenant_type.{$tenant->tenantType->code}.model_roles.Workshop"))->map(function ($name) use ($workshop) {
+        $roles = collect(config("app_type.{$tenant->appType->code}.model_roles.Workshop"))->map(function ($name) use ($workshop) {
             return preg_replace('/#/', $workshop->id, $name);
         });
 
-        $roles->keys()->diff(Role::all()->pluck('name'))->each(function ($role) use ($workshop) {
+        $roles->keys()
+            ->map(function ($role) use ($workshop) {
+                return preg_replace('/#/', $workshop->id, $role);})
+            ->diff(Role::where('team_id',$tenant->appType->id)->pluck('name'))->each(function ($role) use ($workshop,$tenant) {
             try {
-                Role::create(['name' => preg_replace('/#/', $workshop->id, $role)]);
+                Role::create(['name' => preg_replace('/#/', $workshop->id, $role), 'team_id' => $tenant->appType->id]);
             } catch (Exception) {
             }
         });
-        $roles->each(function ($permissions, $role_name) use ($workshop) {
+        $roles->each(function ($permissions, $role_name) use ($workshop,$tenant) {
             try {
-                Role::where('name', preg_replace('/#/', $workshop->id, $role_name))->first()->syncPermissions($permissions);
+                Role::where('name', preg_replace('/#/', $workshop->id, $role_name))
+                    ->where('team_id', $tenant->appType->id)
+                    ->first()->syncPermissions($permissions);
             } catch (Exception) {
             }
         });

@@ -8,7 +8,7 @@
 
 namespace App\Actions\Hydrators;
 
-use App\Models\System\Guest;
+use App\Models\HumanResources\Guest;
 use Illuminate\Support\Collection;
 
 class HydrateGuest extends HydrateModel

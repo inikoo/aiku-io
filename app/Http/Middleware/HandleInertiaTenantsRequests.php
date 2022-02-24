@@ -52,13 +52,13 @@ class HandleInertiaTenantsRequests extends Middleware
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
 
             'tenant'  => $hasTenant?app('currentTenant')->only('name', 'nickname'):[],
-            'appType' => $hasTenant?app('currentTenant')->tenantType->code:null,
+            'appType' => $hasTenant?app('currentTenant')->appType->code:null,
             'modules' => function () use ($request,$hasTenant) {
                 if($hasTenant) {
-                    /** @var \App\Models\Account\TenantType $tenantType */
-                    $tenantType = app('currentTenant')->tenantType;
+                    /** @var \App\Models\Aiku\AppType $appType */
+                    $appType = app('currentTenant')->appType;
 
-                    return $tenantType->getUserLayout($request->user());
+                    return $appType->getUserLayout($request->user());
                 }else{
                     return [];
                 }

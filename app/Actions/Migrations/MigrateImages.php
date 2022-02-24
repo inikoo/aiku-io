@@ -10,7 +10,7 @@ use App\Models\Media\CommunalImage;
 use App\Models\Media\Image;
 use App\Models\Procurement\SupplierProduct;
 use App\Models\Production\WorkshopProduct;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use App\Models\Marketing\Product;
 use Exception;
 use Illuminate\Support\Facades\DB;

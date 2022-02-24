@@ -14,10 +14,18 @@ class CreateTenantTables extends Migration
 {
     public function up()
     {
+        Schema::create('app_types', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->string('code')->unique();
+            $table->timestampsTz();
+        });
+
         Schema::create('aiku', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('version')->nullable();
             $table->dateTimeTz('deployed_at')->nullable();
+            $table->unsignedSmallInteger('app_type_id')->index();
+            $table->foreign('app_type_id')->references('id')->on('app_types');
             $table->jsonb('data');
             $table->jsonb('settings');
             $table->timestampsTz();
@@ -131,18 +139,15 @@ class CreateTenantTables extends Migration
             $table->timestampsTz();
         });
 
-        Schema::create('tenant_types', function (Blueprint $table) {
-            $table->smallIncrements('id');
-            $table->string('code')->unique();
-            $table->timestampsTz();
-        });
+
 
         Schema::create('tenants', function (Blueprint $table) {
             $table->mediumIncrements('id');
             $table->string('code')->unique();
             $table->string('name')->comment('E.g. company name');
             $table->string('domain')->unique()->nullable();
-            $table->foreignId('tenant_type_id')->constrained();
+            $table->unsignedSmallInteger('app_type_id')->index();
+            $table->foreign('app_type_id')->references('id')->on('app_types');
 
 
             $table->string('contact_name',256)->nullable()->index()->fulltext();
@@ -180,7 +185,6 @@ class CreateTenantTables extends Migration
 
 
         Schema::dropIfExists('tenants');
-        Schema::dropIfExists('tenant_types');
         Schema::dropIfExists('user_agents');
         Schema::dropIfExists('ip_geolocations');
         Schema::table('countries', function (Blueprint $table) {
@@ -195,6 +199,8 @@ class CreateTenantTables extends Migration
         Schema::dropIfExists('timezones');
         Schema::dropIfExists('countries');
         Schema::dropIfExists('aiku');
+        Schema::dropIfExists('app_types');
+
 
     }
 }

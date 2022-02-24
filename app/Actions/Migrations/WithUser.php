@@ -10,7 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\System\User\StoreUser;
 use App\Actions\System\User\UpdateUser;
-use App\Models\System\User;
+use App\Models\Auth\User;
 use Exception;
 use Illuminate\Support\Arr;
 use App\Models\Utils\ActionResult;
@@ -33,6 +33,7 @@ trait WithUser
     public function storeModel(): ActionResult
     {
         try {
+
             return StoreUser::run(
                 userable: $this->parent,
                 userData: $this->modelData['user']
