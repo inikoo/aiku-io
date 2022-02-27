@@ -31,7 +31,6 @@ class UpdateUser
 
     public function handle(User $user, array $modelData): ActionResult
     {
-
         $res = new ActionResult();
 
         $user->update(Arr::except($modelData, ['data', 'settings']));
@@ -47,14 +46,15 @@ class UpdateUser
 
     public function authorize(ActionRequest $request): bool
     {
-
         if ($this->user->userable_type == 'Tenant') {
             return false;
         }
 
-        return $request->user()->tokenCan('root') || $request->user()->tokenCan('system:edit') ||
-            $request->user()->hasPermissionTo("account.users.edit")
-            ;
+        return $this->user->tenant_id === App('currentTenant')->id
+            && ($request->user()->tokenCan('root')
+                || $request->user()->tokenCan('system:edit')
+                || $request->user()->hasPermissionTo("account.users.edit")
+            );
     }
 
     public function rules(): array
@@ -85,14 +85,13 @@ class UpdateUser
 
     public function asInertia(User $user, Request $request): RedirectResponse
     {
-
         $this->set('user', $user);
 
         $this->fillFromRequest($request);
         $this->validateAttributes();
 
         //todo: deal with errors and no changes
-        $res=$this->handle(
+        $this->handle(
             $user,
             $this->only(['username', 'password', 'status']),
         );

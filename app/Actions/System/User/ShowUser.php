@@ -41,7 +41,8 @@ class ShowUser
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("account.users.view");
+
+        return $this->user->tenant_id===App('currentTenant')->id  && $request->user()->hasPermissionTo("account.users.view");
     }
 
     public function asInertia(User $user, array $attributes = []): Response

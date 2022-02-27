@@ -34,7 +34,7 @@ class ShowEditUser
         if ($this->user->userable_type == 'Tenant') {
             return false;
         }
-        return $request->user()->hasPermissionTo("account.users.edit");
+        return $this->user->tenant_id===App('currentTenant')->id  && $request->user()->hasPermissionTo("account.users.edit");
     }
 
     public function asInertia(User $user, array $attributes = []): Response

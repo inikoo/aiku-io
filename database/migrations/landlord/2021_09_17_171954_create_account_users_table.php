@@ -28,12 +28,22 @@ class CreateAccountUsersTable extends Migration
 
             $table->string('username')->unique();
             $table->string('password');
+
+
+            $table->boolean('status')->default(true)->index();
+            $table->unsignedSmallInteger('language_id');
+            $table->foreign('language_id')->references('id')->on('languages');
+            $table->unsignedSmallInteger('timezone_id');
+            $table->foreign('timezone_id')->references('id')->on('timezones');
+
             $table->jsonb('data');
             $table->jsonb('settings');
             $table->text('two_factor_secret')->nullable();
             $table->text('two_factor_recovery_codes')->nullable();
             $table->rememberToken();
             $table->timestampsTz();
+            $table->softDeletesTz();
+
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -47,12 +57,26 @@ class CreateAccountUsersTable extends Migration
             $table->string('jar_username')->unique()->nullable();
             $table->string('username')->nullable();
             $table->string('password');
+
+            $table->morphs('userable');
+            $table->string('name')->nullable();
+            $table->boolean('status')->default(true)->index();
+            $table->unsignedSmallInteger('language_id');
+            $table->foreign('language_id')->references('id')->on('languages');
+            $table->unsignedSmallInteger('timezone_id');
+            $table->foreign('timezone_id')->references('id')->on('timezones');
+
             $table->jsonb('data');
             $table->jsonb('settings');
             $table->text('two_factor_secret')->nullable();
             $table->text('two_factor_recovery_codes')->nullable();
             $table->rememberToken();
             $table->timestampsTz();
+            $table->softDeletesTz();
+            $table->unique(['tenant_id','username']);
+            $table->unsignedBigInteger('aurora_id')->nullable()->index();
+
+
         });
 
         Schema::create('user_stats', function (Blueprint $table) {

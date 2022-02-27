@@ -33,9 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         Relation::morphMap(
             [
-                'TenantUser'             => 'App\Models\Account\TenantUser',
                 'AccountAdmin'            => 'App\Models\Admin\AccountAdmin',
-                'Address'                 => 'App\Models\Helpers\Address',
                 'Tenant'                  => 'App\Models\Account\Tenant',
                 'User'                    => 'App\Models\Auth\User',
                 'AdminUser'               => 'App\Models\Admin\AdminUser',

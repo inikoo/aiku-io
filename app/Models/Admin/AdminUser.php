@@ -10,10 +10,12 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
-
+use Spatie\Permission\Traits\HasRoles;
 
 
 /**
@@ -23,19 +25,36 @@ class AdminUser extends Authenticatable
 {
     use HasFactory;
     use HasApiTokens;
+    use Notifiable;
     use UsesLandlordConnection;
+    use HasRoles;
+    use SoftDeletes;
 
-    protected $guarded = [];
+    protected $casts = [
+        'data'     => 'array',
+        'settings' => 'array',
+        'status'   => 'boolean'
+    ];
 
     protected $attributes = [
         'data'     => '{}',
         'settings' => '{}',
     ];
 
-    protected $casts = [
-        'data'     => 'array',
-        'settings' => 'array'
+    protected $hidden = [
+        'password',
     ];
+
+    protected $guarded = [];
+
+    /**
+     * @return string
+     * Hack for laravel permissions to work
+     */
+    public function guardName(): string
+    {
+        return 'aiku';
+    }
 
     public function accountAdmin(): BelongsTo
     {

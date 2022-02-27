@@ -140,7 +140,6 @@ class CreateTenant extends Command
         DB::connection('tenant')->statement("CREATE COLLATION ci  (provider = icu, locale = 'und-u-ks-level2', deterministic = false)");
 
         Artisan::call('tenants:artisan "migrate:fresh --force --database=tenant" --tenant='.$tenant->id);
-        Artisan::call('tenants:artisan "db:seed --force --class=PermissionSeeder" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=JobPositionSeeder" --tenant='.$tenant->id);
         Artisan::call('tenants:artisan "db:seed --force --class=WorkScheduleSeeder" --tenant='.$tenant->id);
 

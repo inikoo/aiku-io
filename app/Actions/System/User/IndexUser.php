@@ -45,6 +45,7 @@ class IndexUser
 
         return QueryBuilder::for(User::class)
             ->allowedSorts(['username', 'name', 'status', 'userable_type'])
+            ->where('tenant_id',App('currentTenant')->id)
             ->defaultSort('username')
             ->allowedFilters(['username', $globalSearch])
             ->paginate()
