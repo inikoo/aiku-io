@@ -16,12 +16,12 @@ class UpdateHistoricWorkshopProduct
 {
     use AsAction;
 
-    public function handle(HistoricWorkshopProduct $historicWorkshopProduct, array $data): ActionResult
+    public function handle(HistoricWorkshopProduct $historicWorkshopProduct, array $modelData): ActionResult
     {
         $res = new ActionResult();
 
 
-        $historicWorkshopProduct->update($data);
+        $historicWorkshopProduct->update($modelData);
         $res->changes = array_merge($res->changes, $historicWorkshopProduct->getChanges());
 
 

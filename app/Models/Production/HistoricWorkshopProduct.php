@@ -29,6 +29,10 @@ class HistoricWorkshopProduct extends Model implements Auditable
     public $timestamps = ["created_at"];
     public const UPDATED_AT = null;
 
+    protected $casts=[
+        'status'=>'boolean'
+    ];
+
     protected $guarded = [];
 
 
@@ -36,6 +40,11 @@ class HistoricWorkshopProduct extends Model implements Auditable
     public function workshopProduct(): BelongsTo
     {
         return $this->belongsTo(WorkshopProduct::class);
+    }
+
+    public function setCostAttribute($val)
+    {
+        $this->attributes['cost'] = sprintf('%.4f', $val);
     }
 
 }

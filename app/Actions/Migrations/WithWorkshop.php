@@ -9,8 +9,8 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Procurement\Supplier\UpdateSupplier;
 use App\Actions\Production\Workshop\StoreWorkshop;
+use App\Actions\Production\Workshop\UpdateWorkshop;
 use App\Models\Account\Tenant;
 use App\Models\Production\Workshop;
 use App\Models\Utils\ActionResult;
@@ -35,7 +35,7 @@ trait WithWorkshop
         $this->modelData['workshop']['data']     = $this->parseMetadata($workshop->data);
         $this->modelData['workshop']['settings'] = $this->parseSettings($workshop->settings);
 
-        return UpdateSupplier::run(
+        return UpdateWorkshop::run(
             workshop:  $workshop,
             modelData: $this->modelData['workshop'],
         );

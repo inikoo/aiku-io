@@ -124,7 +124,12 @@ class MigrateSupplierProduct extends MigrateModel
 
     public function getParent(): Supplier
     {
-        return Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+        $supplier= Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
+        if(!$supplier){
+            dd($this->auModel->data);
+        }
+
+        return  $supplier;
     }
 
     public function postMigrateActions(ActionResult $res): ActionResult

@@ -35,7 +35,7 @@ class CreateSupplierProductsTable extends Migration
             $table->string('name', 255)->nullable();
             $table->text('description')->nullable();
 
-            $table->unsignedDecimal('cost', 18)->comment('unit cost');
+            $table->unsignedDecimal('cost', 18,4)->comment('unit cost');
             $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
             $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
             $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
@@ -57,7 +57,7 @@ class CreateSupplierProductsTable extends Migration
             $table->dateTimeTz('deleted_at')->nullable();
             $table->unsignedBigInteger('supplier_product_id')->nullable()->index();
             $table->foreign('supplier_product_id')->references('id')->on('supplier_products');
-            $table->unsignedDecimal('cost',  18)->comment('unit cost');
+            $table->unsignedDecimal('cost',  18,4)->comment('unit cost');
             $table->string('code')->nullable();
             $table->string('name',255)->nullable();
             $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');

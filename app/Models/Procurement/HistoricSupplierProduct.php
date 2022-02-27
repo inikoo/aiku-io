@@ -29,11 +29,15 @@ class HistoricSupplierProduct extends Model implements Auditable
     public $timestamps = ["created_at"];
     public const UPDATED_AT = null;
 
+    protected $casts=[
+        'status'=>'boolean'
+    ];
+
     protected $guarded = [];
 
     public function setCostAttribute($val)
     {
-        $this->attributes['cost'] = sprintf('%.2f', $val);
+        $this->attributes['cost'] = sprintf('%.4f', $val);
     }
 
     public function setCbmAttribute($val)

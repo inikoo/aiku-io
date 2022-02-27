@@ -36,7 +36,12 @@ class MigrateStockMovement extends MigrateModel
 
     public function getParent(): Stock
     {
-        return Stock::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Part SKU'});
+        $stock=Stock::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Part SKU'});
+        if(!$stock){
+            print "get parent stock not found\n";
+            dd($this->auModel->data);
+        }
+        return $stock;
     }
 
     public function parseModelData()

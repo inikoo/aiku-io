@@ -39,7 +39,7 @@ class MigrateUser extends MigrateModel
 
     public function getParent(): Employee|Supplier|Agent|Guest
     {
-        return match ($this->auModel->data->{'User Type'}) {
+        $parent= match ($this->auModel->data->{'User Type'}) {
             'Staff' => Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Contractor' => Guest::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Supplier' => Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
@@ -47,6 +47,11 @@ class MigrateUser extends MigrateModel
 
             default => null
         };
+
+        if(!$parent){
+            dd($this->auModel);
+        }
+        return $parent;
     }
 
     public function parseModelData()

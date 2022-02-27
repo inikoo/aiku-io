@@ -11,7 +11,7 @@ namespace App\Actions\Migrations;
 use App\Actions\Production\HistoricWorkshopProduct\StoreHistoricWorkshopProduct;
 use App\Actions\Production\HistoricWorkshopProduct\UpdateHistoricWorkshopProduct;
 
-use App\Models\Procurement\HistoricSupplierProduct;
+use App\Models\Production\HistoricWorkshopProduct;
 use App\Models\Production\WorkshopProduct;
 
 use Illuminate\Support\Facades\DB;
@@ -40,12 +40,12 @@ class MigrateWorkshopHistoricProduct extends MigrateModel
 
         $this->modelData = $this->sanitizeData(
             [
-                'code'        => $this->auModel->data->{'Supplier Part Historic Reference'},
-                'pack'        => $this->auModel->data->{'Supplier Part Historic Units Per Package'},
-                'carton'      => $this->auModel->data->{'Supplier Part Historic Units Per Package'} * $this->auModel->data->{'Supplier Part Historic Packages Per Carton'},
-                'status'      => $status,
-                'created_at'  => null,
-                'aurora_id'   => $this->auModel->data->{'Supplier Part Historic Key'}
+                'code'       => $this->auModel->data->{'Supplier Part Historic Reference'},
+                'pack'       => $this->auModel->data->{'Supplier Part Historic Units Per Package'},
+                'carton'     => $this->auModel->data->{'Supplier Part Historic Units Per Package'} * $this->auModel->data->{'Supplier Part Historic Packages Per Carton'},
+                'status'     => $status,
+                'created_at' => null,
+                'aurora_id'  => $this->auModel->data->{'Supplier Part Historic Key'}
             ]
         );
 
@@ -56,12 +56,15 @@ class MigrateWorkshopHistoricProduct extends MigrateModel
 
     public function setModel()
     {
-        $this->model = HistoricSupplierProduct::withTrashed()->find($this->auModel->data->aiku_workshop_historic_product_id);
+        $this->model = HistoricWorkshopProduct::withTrashed()->find($this->auModel->data->aiku_workshop_historic_product_id);
     }
 
     public function updateModel(): ActionResult
     {
-        return UpdateHistoricWorkshopProduct::run($this->model, $this->modelData);
+        return UpdateHistoricWorkshopProduct::run(
+            historicWorkshopProduct: $this->model,
+            modelData:               $this->modelData
+        );
     }
 
     public function storeModel(): ActionResult

@@ -31,6 +31,7 @@ class CustomerClient extends Model implements Auditable
 
     protected $casts = [
         'location' => 'array',
+        'deactivated_at'=>'datetime'
     ];
 
     protected $attributes = [

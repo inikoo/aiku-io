@@ -76,5 +76,10 @@ class WorkshopProduct extends Model implements Auditable
         return $this->morphOne(SalesStats::class, 'model')->where('scope','sales-tenant-currency');
     }
 
+    public function setCostAttribute($val)
+    {
+        $this->attributes['cost'] = sprintf('%.4f', $val);
+    }
+
 
 }

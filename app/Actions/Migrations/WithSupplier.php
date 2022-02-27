@@ -15,18 +15,20 @@ use App\Actions\Helpers\Address\UpdateAddress;
 use App\Models\Procurement\Supplier;
 use App\Models\Utils\ActionResult;
 
-trait WithSupplier{
+trait WithSupplier
+{
     public function updateModel(): ActionResult
     {
-
+        $res = new ActionResult();
         /**  @var Supplier $supplier */
         $supplier                                = $this->model;
         $this->modelData['supplier']['data']     = $this->parseMetadata($supplier->data, $this->auModel->data);
         $this->modelData['supplier']['settings'] = $this->parseSettings($supplier->settings, $this->auModel->data);
 
+
         $res           = UpdateSupplier::run(
-            supplier:    $supplier,
-            modelData:        $this->modelData['supplier'],
+            supplier:  $supplier,
+            modelData: $this->modelData['supplier'],
         );
         $addressResult = UpdateAddress::run($res->model->address, $this->modelData['address']);
 
@@ -51,7 +53,7 @@ trait WithSupplier{
 
     public function setModel()
     {
-        if(Supplier::withTrashed()->find($this->auModel->data->aiku_id)){
+        if (Supplier::withTrashed()->find($this->auModel->data->aiku_id)) {
             dd($this->auModel->data);
         }
         $this->model = Supplier::withTrashed()->find($this->auModel->data->aiku_id);
@@ -59,7 +61,7 @@ trait WithSupplier{
 
     public function parseMetadata($data, $auData)
     {
-        data_set($data, 'order_id_counter', $auData->{'Supplier Order Last Order ID'}??null);
+        data_set($data, 'order_id_counter', $auData->{'Supplier Order Last Order ID'} ?? null);
 
 
         return $data;
@@ -67,13 +69,13 @@ trait WithSupplier{
 
     public function parseSettings($settings, $auData)
     {
-        data_set($settings, 'order.port_of_export', $auData->{'Supplier Default Port of Export'}??null);
-        data_set($settings, 'order.port_of_import', $auData->{'Supplier Default Port of Import'}??null);
-        data_set($settings, 'order.incoterm', $auData->{'Supplier Default Incoterm'}??null);
-        data_set($settings, 'order.terms_and_conditions', $auData->{'Supplier Default PO Terms and Conditions'}??null);
-        data_set($settings, 'order.id_format', $auData->{'Supplier Order Public ID Format'}??null);
+        data_set($settings, 'order.port_of_export', $auData->{'Supplier Default Port of Export'} ?? null);
+        data_set($settings, 'order.port_of_import', $auData->{'Supplier Default Port of Import'} ?? null);
+        data_set($settings, 'order.incoterm', $auData->{'Supplier Default Incoterm'} ?? null);
+        data_set($settings, 'order.terms_and_conditions', $auData->{'Supplier Default PO Terms and Conditions'} ?? null);
+        data_set($settings, 'order.id_format', $auData->{'Supplier Order Public ID Format'} ?? null);
 
-        data_set($settings, 'products.origin', $this->parseCountryID($this->auModel->data->{'Supplier Products Origin Country Code'}??null));
+        data_set($settings, 'products.origin', $this->parseCountryID($this->auModel->data->{'Supplier Products Origin Country Code'} ?? null));
 
         return $settings;
     }

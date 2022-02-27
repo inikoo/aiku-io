@@ -28,7 +28,6 @@ class MigrateSupplierProducts extends MigrateAurora
 
         return 0;
     }
-
     protected function reset()
     {
         DB::connection('aurora')->table('Supplier Part Dimension')
@@ -61,7 +60,13 @@ class MigrateSupplierProducts extends MigrateAurora
 
     protected function migrate(Tenant $tenant)
     {
-        foreach (DB::connection('aurora')->table('Supplier Dimension')->get() as $auData) {
+        foreach (DB::connection('aurora')->table('Supplier Dimension')
+            ->leftJoin('Agent Supplier Bridge','Agent Supplier Supplier Key','Supplier Key')
+            ->whereNull('Agent Supplier Agent Key')
+            ->get() as $auData) {
+
+
+
 
 
             DB::connection('aurora')
