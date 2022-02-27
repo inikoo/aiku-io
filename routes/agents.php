@@ -14,7 +14,8 @@ Route::get('/login', [AuthenticatedSessionController::class, 'create'])
     ->middleware('guest:agent')
     ->name('login');
 
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->defaults('guard', 'agent')
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->defaults('guard', 'agent')
     ->middleware('guest:agent');
 
 
