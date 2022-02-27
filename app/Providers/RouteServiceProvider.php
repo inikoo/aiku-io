@@ -57,7 +57,7 @@ class RouteServiceProvider extends ServiceProvider
             Route::domain('agents.'.config('app.domain'))
                 ->middleware('agents')
                 ->namespace($this->namespace)
-                ->group(base_path('routes/jar_ecommerce.php'));
+                ->group(base_path('routes/agents.php'));
 
             Route::prefix('migration')
                 ->middleware('api')

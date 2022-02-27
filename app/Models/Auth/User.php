@@ -40,7 +40,7 @@ class User extends Authenticatable
         'data'     => 'array',
         'settings' => 'array',
         'status'   => 'boolean',
-        'admin'   => 'boolean'
+        'admin'    => 'boolean'
     ];
 
     protected $attributes = [
@@ -85,6 +85,15 @@ class User extends Authenticatable
     public function language(): BelongsTo
     {
         return $this->belongsTo(Language::class);
+    }
+
+    public function getUsername(): ?string
+    {
+        if ($this->middleware_group == 'ecommerce') {
+            return $this->username;
+        }
+
+        return $this->jar_username;
     }
 
     public function getTypeIconAttribute(): array

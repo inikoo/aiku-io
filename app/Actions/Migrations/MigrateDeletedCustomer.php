@@ -21,6 +21,7 @@ use App\Models\Utils\ActionResult;
 class MigrateDeletedCustomer extends MigrateModel
 {
     use WithCustomer;
+    use WithInvalidAddress;
 
     #[Pure] public function __construct()
     {
@@ -74,8 +75,16 @@ class MigrateDeletedCustomer extends MigrateModel
             ]
         );
 
+        if($auroraDeletedData->{'Customer Invoice Address Country 2 Alpha Code'}=='XX'){
+            $auroraDeletedData=$this->fixAddress(prefix: 'Customer Invoice', data: $auroraDeletedData);
+        }
+        if($auroraDeletedData->{'Customer Delivery Address Country 2 Alpha Code'}=='XX'){
+            $auroraDeletedData=$this->fixAddress(prefix: 'Customer Delivery', data: $auroraDeletedData);
+        }
 
         $addresses = [];
+
+
 
         $billingAddress  = $this->parseAddress(prefix: 'Customer Invoice', auAddressData: $auroraDeletedData);
         $deliveryAddress = $this->parseAddress(prefix: 'Customer Delivery', auAddressData: $auroraDeletedData);

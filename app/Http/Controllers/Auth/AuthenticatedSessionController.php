@@ -38,10 +38,9 @@ class AuthenticatedSessionController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request, $guard = 'ecommerce'): RedirectResponse
     {
-
-        $request->authenticate();
+        $request->authenticate($guard);
 
         $request->session()->regenerate();
 
@@ -54,9 +53,9 @@ class AuthenticatedSessionController extends Controller
      * Destroy an authenticated session.
      *
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request, $guard = 'web'): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard($guard)->logout();
 
         $request->session()->invalidate();
 

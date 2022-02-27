@@ -87,18 +87,7 @@ return [
                 'icon' => ['fal', 'user-circle'],
 
             ],
-            'account.guests.index' => [
-                'name' => 'Guests',
-                'icon' => ['fal', 'user-alien'],
 
-            ],
-            'account.roles.index'  => [
-                'name' => 'Roles',
-            ],
-
-            'account.billing' => [
-                'name' => 'Billing',
-            ],
 
 
         ]

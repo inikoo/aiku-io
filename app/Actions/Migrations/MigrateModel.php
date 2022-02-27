@@ -205,7 +205,7 @@ class MigrateModel
         return null;
     }
 
-    protected function parseCountryID($country,$source=''): int|null
+    protected function parseCountryID($country,$source='',$auAddressData=null): int|null
     {
         if ($country != '') {
             try {
@@ -217,8 +217,8 @@ class MigrateModel
                     return Country::withTrashed()->where('name', $country)->firstOrFail()->id;
                 }
             } catch (Exception) {
+                print_r($auAddressData);
                 print "Country not found: $country ($source)\n";
-
                 return null;
             }
         }
@@ -236,7 +236,7 @@ class MigrateModel
         $addressData['locality']            = (string)Str::of($auAddressData->{$prefix.' Address Locality'} ?? null)->limit(187);
         $addressData['dependant_locality']  = (string)Str::of($auAddressData->{$prefix.' Address Dependent Locality'} ?? null)->limit(187);
         $addressData['administrative_area'] = (string)Str::of($auAddressData->{$prefix.' Address Administrative Area'} ?? null)->limit(187);
-        $addressData['country_id']          = $this->parseCountryID($auAddressData->{$prefix.' Address Country 2 Alpha Code'} ?? null, $prefix);
+        $addressData['country_id']          = $this->parseCountryID($auAddressData->{$prefix.' Address Country 2 Alpha Code'} ?? null, $prefix,$auAddressData);
 
         return $addressData;
     }

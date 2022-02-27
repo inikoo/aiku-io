@@ -36,31 +36,22 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'tenant_users',
-        ],
         'ecommerce' => [
             'driver' => 'session',
-            'provider' => 'tenant_users',
+            'provider' => 'users',
         ],
-        'app' => [
+        'agent' => [
             'driver' => 'session',
-            'provider' => 'landlord_users',
+            'provider' => 'users',
         ],
-
         'api' => [
             'driver' => 'sanctum',
-            'provider' => 'tenant_users',
+            'provider' => 'users',
             'hash' => false,
-        ],
-        'landlord_web' => [
-            'driver' => 'session',
-            'provider' => 'landlord_users',
         ],
         'landlord_api' => [
             'driver' => 'sanctum',
-            'provider' => 'landlord_users',
+            'provider' => 'admin',
             'hash' => false,
         ],
     ],
@@ -83,15 +74,14 @@ return [
     */
 
     'providers' => [
-        'tenant_users' => [
+        'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\Auth\User::class,
         ],
-        'landlord_users' => [
+        'admin' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Auth\User::class,
+            'model' => App\Models\Admin\AdminUser::class,
         ],
-
 
     ],
 

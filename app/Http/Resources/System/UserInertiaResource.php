@@ -24,7 +24,7 @@ class UserInertiaResource extends JsonResource
         return [
             'id'            => $user->id,
             'status'        => $user->status,
-            'username'      => $user->username,
+            'username'      => $user->getUsername(),
             'userable_type' => $user->localised_userable_type,
             'name'          => $user->name,
 

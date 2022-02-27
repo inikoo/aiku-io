@@ -141,18 +141,19 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'json.response'         => ForceJsonResponse::class,
-        'auth'                  => Authenticate::class,
-        'auth.basic'            => AuthenticateWithBasicAuth::class,
-        'cache.headers'         => SetCacheHeaders::class,
-        'can'                   => Authorize::class,
-        'guest'                 => RedirectIfAuthenticated::class,
-        'password.confirm'      => RequirePassword::class,
-        'signed'                => ValidateSignature::class,
-        'throttle'              => ThrottleRequests::class,
-        'verified'              => EnsureEmailIsVerified::class,
-        'multitenancy.require'  => NeedsTenant::class,
-        'multitenancy.firewall' => EnsureValidTenantSession::class,
+        'json.response'            => ForceJsonResponse::class,
+        'auth'                     => Authenticate::class,
+        'auth.basic'               => AuthenticateWithBasicAuth::class,
+        'cache.headers'            => SetCacheHeaders::class,
+        'can'                      => Authorize::class,
+        'guest'                    => RedirectIfAuthenticated::class,
+        'password.confirm'         => RequirePassword::class,
+        'signed'                   => ValidateSignature::class,
+        'throttle'                 => ThrottleRequests::class,
+        'verified'                 => EnsureEmailIsVerified::class,
+        'multitenancy.require'     => NeedsTenant::class,
+        'multitenancy.firewall'    => EnsureValidTenantSession::class,
+        'multitenancy.permissions' => SetPermissionTeam::class
     ];
 
 

@@ -41,7 +41,7 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate()
+    public function authenticate($guard = 'ecommerce')
     {
         $this->ensureIsNotRateLimited();
 
@@ -60,7 +60,7 @@ class LoginRequest extends FormRequest
         };
 
 
-        if (!Auth::attempt(
+        if (!Auth::guard($guard)->attempt(
             $credentials,
             $this->boolean('remember')
         )) {
