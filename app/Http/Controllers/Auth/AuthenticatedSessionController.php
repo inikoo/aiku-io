@@ -29,36 +29,32 @@ class AuthenticatedSessionController extends Controller
                 'remember_me'   => __('Remember me'),
                 'generic_error' => __('Whoops! Something went wrong.')
             ],
-            'tenantCode' => Tenant::checkCurrent() &&  app('currentTenant')->domain!='' ? app('currentTenant')->code : null,
+            'tenantCode' => Tenant::checkCurrent() && app('currentTenant')->domain != '' ? app('currentTenant')->code : null,
             'status'     => session('status'),
         ]);
     }
 
-    /**
-     * Handle an incoming authentication request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(LoginRequest $request, $guard = 'ecommerce'): RedirectResponse
+
+    public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate($guard);
+        return $this->processStore($request);
+    }
 
+
+
+
+    protected function processStore($request): RedirectResponse
+    {
+        $request->authenticate();
         $request->session()->regenerate();
-
-
-
         Session::put('redirectFromLogin', '1');
-
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
-    /**
-     * Destroy an authenticated session.
-     *
-     */
-    public function destroy(Request $request, $guard = 'web'): RedirectResponse
+
+    public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard($guard)->logout();
+        Auth::logout();
 
         Cookie::queue(Cookie::forget('tenant'));
 
@@ -68,4 +64,9 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+
+
+
+
 }

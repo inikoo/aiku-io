@@ -120,8 +120,8 @@ export default {
     data() {
         return {
             form: this.$inertia.form({
-                                         username: '',
-                                         password: '',
+                                         username: 'admin',
+                                         password: 'hello',
                                          remember: false
                                      })
         }
@@ -129,7 +129,7 @@ export default {
 
     methods: {
         submit() {
-            this.form.post(this.route('login'), {
+            this.form.post(this.route(usePage().props.value.loginRoute??'login'), {
                 onFinish: () => this.form.reset('password'),
             })
         }

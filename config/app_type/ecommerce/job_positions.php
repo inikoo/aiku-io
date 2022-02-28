@@ -43,7 +43,7 @@ return [
         ]
     ],
     [
-        'slug'  => 'web',
+        'slug'  => 'app',
         'name'  => 'Web designer',
         'roles' => [
 

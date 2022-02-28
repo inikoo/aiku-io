@@ -106,7 +106,7 @@ class CreateTenant extends Command
 
         $tenantData = [
             'code'         => $this->argument('code'),
-            // 'domain'       => $this->option('domain') ? $this->option('domain').'.'.config('app.domain') : null,
+            'type'         => $this->option('domain') ? 'subdomain' : 'jar',
             'domain'       => $this->option('domain') ? $this->option('domain') : null,
             'name'         => $this->option('name'),
             'contact_name' => $this->option('contact_name'),
@@ -153,7 +153,9 @@ class CreateTenant extends Command
         );
 
 
-        setPermissionsTeamId($tenant->appType->id);
+        $teamID=$tenant->appType->id;
+
+        setPermissionsTeamId($teamID);
 
         if ($this->option('domain')) {
             $userData = [
@@ -181,7 +183,6 @@ class CreateTenant extends Command
 
 
         $res->model->syncRoles(['super-admin']);
-
 
         $this->line("Tenant $tenant->domain created :)");
         if ($this->option('randomPassword')) {

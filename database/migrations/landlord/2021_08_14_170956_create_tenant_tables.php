@@ -146,6 +146,7 @@ class CreateTenantTables extends Migration
             $table->string('code')->unique();
             $table->string('name')->comment('E.g. company name');
             $table->string('domain')->unique()->nullable();
+            $table->enum('type',['subdomain','jar']);
             $table->unsignedSmallInteger('app_type_id')->index();
             $table->foreign('app_type_id')->references('id')->on('app_types');
 

@@ -44,20 +44,18 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/landlord/api/api.php'));
 
 
+            /*
             Route::domain('www.'.config('app.domain'))
                 ->middleware('landlord')
                 ->namespace($this->namespace)
-                ->group(base_path('routes/landlord/web.php'));
+                ->group(base_path('routes/landlord/app.php'));
+
+*/
 
             Route::domain('app.'.config('app.domain'))
-                ->middleware('app')
+                ->middleware('app_jar')
                 ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));
-
-            Route::domain('agents.'.config('app.domain'))
-                ->middleware('agents')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/agents.php'));
+                ->group(base_path('routes/app_jar.php'));
 
             Route::prefix('migration')
                 ->middleware('api')
@@ -71,10 +69,9 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api.php'));
 
 
-
-            Route::middleware('subdomain_ecommerce')
+            Route::middleware('app_with_subdomain')
                 ->namespace($this->namespace)
-                ->group(base_path('routes/ecommerce.php'));
+                ->group(base_path('routes/app_with_subdomain.php'));
         });
     }
 

@@ -53,14 +53,6 @@ class User extends Authenticatable
     ];
     protected $guarded = [];
 
-    /**
-     * @return string
-     * Hack for laravel permissions to work
-     */
-    public function guardName(): string
-    {
-        return $this->tenant->appType->code;
-    }
 
     public function tenant(): BelongsTo
     {

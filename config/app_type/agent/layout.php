@@ -41,10 +41,7 @@ return [
         'shortName' => 'Procurement',
         'icon'      => ['fal', 'apple-crate'],
         'sections'  => [
-            'procurement.agents.index'          => [
-                'name' => 'Agents',
-                'icon' => ['fal', 'user-secret'],
-            ],
+           
             'procurement.suppliers.index'       => [
                 'name' => 'Suppliers',
                 'icon' => ['fal', 'hand-holding-box'],

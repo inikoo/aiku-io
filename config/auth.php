@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'ecommerce',
+        'guard' => 'app',
         'passwords' => 'users',
     ],
 
@@ -36,11 +36,7 @@ return [
     */
 
     'guards' => [
-        'ecommerce' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-        'agent' => [
+        'app' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
@@ -49,7 +45,7 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
-        'landlord_api' => [
+        'admin' => [
             'driver' => 'sanctum',
             'provider' => 'admin',
             'hash' => false,

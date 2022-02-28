@@ -32,6 +32,8 @@ class MigrateSupplier extends MigrateModel
 
     public function getParent()
     {
+        //todo: clean this comment
+        /*
         if ($this->auModel->data->{'Supplier Has Agent'} == 'Yes') {
             $res = DB::connection('aurora')->table('Agent Supplier Bridge')
                 ->leftJoin('Agent Dimension', 'Agent Supplier Agent Key', '=', 'Agent Key')
@@ -44,6 +46,8 @@ class MigrateSupplier extends MigrateModel
         } else {
             return app('currentTenant');
         }
+        */
+        return app('currentTenant');
     }
 
 

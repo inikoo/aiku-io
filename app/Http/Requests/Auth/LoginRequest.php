@@ -41,14 +41,16 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate($guard = 'ecommerce')
+    public function authenticate()
     {
         $this->ensureIsNotRateLimited();
+
+
 
         $subdomain = current(explode('.', $this->getHost()));
 
         $credentials = match ($subdomain) {
-            'agents' => [
+            'app' => [
                 'status' => true,
                 'jar_username' => $this->get('username'),
                 'password' => $this->get('password'),
@@ -59,8 +61,7 @@ class LoginRequest extends FormRequest
             ),
         };
 
-
-        if (!Auth::guard($guard)->attempt(
+        if (!Auth::attempt(
             $credentials,
             $this->boolean('remember')
         )) {
@@ -70,6 +71,8 @@ class LoginRequest extends FormRequest
                                                         'username' => __('auth.failed'),
                                                     ]);
         }
+
+
 
         RateLimiter::clear($this->throttleKey());
     }

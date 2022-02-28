@@ -18,8 +18,10 @@ class LogSuccessfulLogin
     {
         /** @var \App\Models\Auth\User $authUser */
         $authUser = $event->user;
-
         Cookie::forget('tenant');
         Cookie::queue(Cookie::forever('tenant', encrypt($authUser->tenant_id)));
+        session(['tenant' => $authUser->tenant_id]);
+
+
     }
 }

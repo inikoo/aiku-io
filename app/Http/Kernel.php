@@ -14,7 +14,6 @@ use App\Http\Middleware\SetPermissionTeam;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustHosts;
 use App\Http\Middleware\TrustProxies;
-use App\Http\Middleware\UseEcommerceGuard;
 use App\Http\Middleware\VerifyCsrfToken;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
@@ -57,8 +56,7 @@ class Kernel extends HttpKernel
 
     protected $middlewareGroups = [
 
-        'subdomain_ecommerce' => [
-            UseEcommerceGuard::class,
+        'app_with_subdomain' => [
             NeedsTenant::class,
             SetPermissionTeam::class,
             EncryptCookies::class,
@@ -73,7 +71,8 @@ class Kernel extends HttpKernel
 
         ],
 
-        'agents' => [
+        'app_jar' => [
+
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
@@ -86,18 +85,6 @@ class Kernel extends HttpKernel
 
         ],
 
-        'app' => [
-            EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
-            StartSession::class,
-            ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
-            SubstituteBindings::class,
-            SetLocale::class,
-            HandleInertiaTenantsRequests::class,
-            Authenticate::class,
-
-        ],
 
 
         'api' => [

@@ -9,6 +9,7 @@
 namespace App\Resolvers;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Cookie;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantModel;
 use Spatie\Multitenancy\Models\Tenant;
@@ -21,13 +22,15 @@ class TenantResolver extends TenantFinder
     public function findForRequest(Request $request): ?Tenant
     {
 
+
         $subdomain = current(explode('.', $request->getHost()));
-        if(in_array($subdomain,['www','aiku'])){
-           return null;
+        if (in_array($subdomain, ['www', 'aiku'])) {
+            return null;
         }
         if(in_array($subdomain,['app','agents'])){
-            if ($request->hasCookie('tenant')) {
-                $tenant = $this->getTenantModel()::find(decrypt($request->cookie('tenant')));
+
+             if ($request->hasCookie('tenant')) {
+                $tenant = $this->getTenantModel()->find(decrypt($request->cookie('tenant')));
 
                 if (!empty($tenant)) {
                     return $tenant;
@@ -35,8 +38,10 @@ class TenantResolver extends TenantFinder
                 Cookie::forget('tenant');
             }
             return null;
+
         }
-        return $this->getTenantModel()::where('domain',$subdomain)->first();
+
+        return $this->getTenantModel()->where('domain', $subdomain)->first();
     }
 }
 

@@ -7,7 +7,7 @@
  */
 
 
-/*
+
 
 
 Route::prefix('dashboard')->name('dashboard.')
@@ -49,4 +49,4 @@ Route::middleware(['auth'])->get('/profile', function () {
 
 Route::prefix('profile')->name('profile.')
     ->group(__DIR__.'/profile.php');
-*/
+
