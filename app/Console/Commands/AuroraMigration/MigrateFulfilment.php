@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class MigrateFulfilment extends MigrateAurora
 {
     protected $signature = 'au_migration:ff {--reset} {--all} {--t|tenant=* : Tenant slug}';
-    protected $description = 'Migrate aurora customers';
+    protected $description = 'Migrate fulfilment';
 
     public function handle(): int
     {
@@ -33,6 +33,7 @@ class MigrateFulfilment extends MigrateAurora
 
         foreach (DB::connection('aurora')->table('Store Dimension')
             ->where('Store Type', 'Fulfilment')->get() as $auStoreData) {
+
             DB::connection('aurora')->table('Customer Dimension')
                 ->where('Customer Store Key', $auStoreData->{'Store Key'})
                 ->update(['aiku_id' => null]);
