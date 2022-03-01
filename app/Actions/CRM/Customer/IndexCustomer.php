@@ -13,6 +13,7 @@ use App\Http\Resources\CRM\CustomerInertiaResource;
 
 use App\Models\CRM\Customer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Inertia;
 use Lorisleiva\Actions\Concerns\AsAction;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
@@ -29,6 +30,7 @@ use function __;
  * @property string $sectionRoot
  * @property string $title
  * @property string $metaSection
+ * @property array $allowedSorts
  */
 class IndexCustomer
 {
@@ -38,10 +40,12 @@ class IndexCustomer
 
     protected array $select;
     protected array $columns;
+    protected array $allowedSorts;
 
     public function __construct()
     {
         $this->select = ['id', 'name', 'shop_id'];
+        $this->allowedSorts=['name', 'id', 'location'];
 
         $this->columns = [
             'shop_code'       => [
@@ -76,7 +80,7 @@ class IndexCustomer
         return QueryBuilder::for(Customer::class)
             ->when(true, [$this, 'queryConditions'])
             ->defaultSorts('-id')
-            ->allowedSorts(['name', 'id', 'location'])
+            ->allowedSorts($this->allowedSorts)
             ->paginate()
             ->withQueryString();
     }
@@ -95,7 +99,7 @@ class IndexCustomer
 
                 ],
                 'dataTable'  => [
-                    'records' => CustomerInertiaResource::collection($this->handle()),
+                    'records' => $this->getRecords(),
                     'columns' => $this->columns
                 ]
 
@@ -109,6 +113,11 @@ class IndexCustomer
                 ]
             );
         });
+    }
+
+    protected function getRecords(): AnonymousResourceCollection
+    {
+        return CustomerInertiaResource::collection($this->handle());
     }
 
 }

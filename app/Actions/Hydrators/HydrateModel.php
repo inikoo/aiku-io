@@ -35,7 +35,7 @@ class HydrateModel
 
         $tenants = match ($command->option('tenant')) {
             [] => Tenant::all(),
-            default => Tenant::where('nickname', $command->option('tenant'))->get()
+            default => (new Tenant())->where('code', $command->option('tenant'))->get()
         };
 
 

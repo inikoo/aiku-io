@@ -8,6 +8,7 @@
 
 namespace App\Models\CRM;
 
+use App\Actions\Hydrators\HydrateFulfilmentCustomer;
 use App\Actions\Hydrators\HydrateShop;
 use App\Models\Financials\Invoice;
 use App\Models\CustomerProduct;
@@ -62,11 +63,14 @@ class Customer extends Model implements Auditable
         static::created(
             function (Customer $customer) {
                 if ($customer->shop->type == 'fulfilment_house') {
-                    $customer->fulfilmentCustomer()->create(
+                    /** @var \App\Models\CRM\FulfilmentCustomer $fulfilmentCustomer */
+                    $fulfilmentCustomer = $customer->fulfilmentCustomer()->create(
                         [
                             'aurora_id' => $customer->aurora_id
                         ]
                     );
+
+                    HydrateFulfilmentCustomer::run(fulfilmentCustomer: $fulfilmentCustomer);
                 }
                 HydrateShop::make()->customerStats($customer->shop);
             }

@@ -55,6 +55,8 @@ class HydrateCustomer extends HydrateModel
         $customer->stats->update($stats);
     }
 
+
+
     public function contact(Customer $customer): void
     {
         $customer->update(

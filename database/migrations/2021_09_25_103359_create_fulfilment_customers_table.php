@@ -23,6 +23,15 @@ class CreateFulfilmentCustomersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id')->index()->nullable();
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->unsignedSmallInteger('number_unique_stocks')->default(0);
+            $uniqueStockTypes = ['pallet', 'box', 'oversize','item'];
+            foreach ($uniqueStockTypes as $uniqueStockType) {
+                $table->unsignedBigInteger('number_unique_stocks_type'.str_replace('-', '_', $uniqueStockType))->default(0);
+            }
+            $uniqueStockStates = ['in-process', 'received', 'booked-in', 'booked-out', 'invoiced', 'lost'];
+            foreach ($uniqueStockStates as $uniqueStockState) {
+                $table->unsignedBigInteger('number_unique_stocks_state_'.str_replace('-', '_', $uniqueStockState))->default(0);
+            }
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();

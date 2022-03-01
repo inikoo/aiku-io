@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Actions\Hydrators\HydrateCustomer;
 use App\Actions\Hydrators\HydrateEmployee;
+use App\Actions\Hydrators\HydrateFulfilmentCustomer;
 use App\Actions\Hydrators\HydrateGuest;
 use App\Actions\Hydrators\HydrateShop;
 use App\Actions\Hydrators\HydrateTenant;
@@ -28,7 +29,8 @@ class Kernel extends ConsoleKernel
         HydrateWarehouseArea::class,
         HydrateShop::class,
         HydrateCustomer::class,
-        HydrateTenant::class
+        HydrateTenant::class,
+        HydrateFulfilmentCustomer::class
     ];
 
     /**

@@ -30,6 +30,24 @@ class ShowCustomer
 
     public function getInertia(): Response
     {
+        $meta = [
+            [
+                'name' => $this->customer->status
+            ]
+        ];
+
+        if ($this->customer->shop->type == 'fulfilment_house') {
+            $meta[] = [
+                'href'   => [
+                    'route'           => 'marketing.shops.show.customers.show.unique_stocks.index',
+                    'routeParameters' => [$this->customer->shop_id, $this->customer->id]
+                ],
+                'icon'   => ['fal', 'pallet'],
+                'number' => $this->customer->fulfilmentCustomer->number_unique_stocks
+            ];
+        }
+
+
         return Inertia::render(
             'show-model',
             [
@@ -37,11 +55,7 @@ class ShowCustomer
                 'breadcrumbs' => $this->breadcrumbs,
                 'headerData'  => [
                     'title' => $this->title,
-                    'meta'  => [
-                        [
-                            'name' => $this->customer->status
-                        ]
-                    ]
+                    'meta'  => $meta
                 ],
                 'model'       => $this->customer,
                 'blocks'      => [

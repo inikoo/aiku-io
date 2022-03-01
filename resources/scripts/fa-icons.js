@@ -42,6 +42,13 @@ import {
 
 library.add(faHandHoldingBox,faUserSecret);
 
+// Fulfilment
+import {
+    faPallet
+} from '@/private/pro-light-svg-icons';
+
+library.add(faPallet);
+
 
 // For Marketing
 import {faCashRegister} from '@/private/pro-light-svg-icons';
@@ -67,9 +74,3 @@ import {faTasks, faUserHardHat,faClipboardUser} from '@/private/pro-light-svg-ic
 
 library.add(faTasks, faUserHardHat,faClipboardUser);
 export default FontAwesomeIcon;
-
-
-// contact cards
-import {faAt} from '@/private/pro-light-svg-icons';
-
-library.add(faAt);

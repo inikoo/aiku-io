@@ -10,7 +10,9 @@ namespace App\Actions\CRM\Customer;
 
 
 use App\Actions\Marketing\Shop\ShowShop;
+use App\Http\Resources\CRM\FulfilmentCustomerInertiaResource;
 use App\Models\Marketing\Shop;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Lorisleiva\Actions\ActionRequest;
 
 use function __;
@@ -72,7 +74,6 @@ class IndexCustomerInShop extends IndexCustomer
             ]
         );
     }
-
 
 
 

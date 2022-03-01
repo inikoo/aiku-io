@@ -9,9 +9,9 @@
 namespace App\Http\Controllers\Marketing;
 
 
+use App\Actions\CRM\Customer\IndexCustomerInFulfilmentShop;
 use App\Actions\CRM\Customer\IndexCustomerInShop;
 use App\Actions\CRM\Customer\IndexCustomerInTenant;
-use App\Actions\CRM\Customer\ShowCustomer;
 use App\Actions\CRM\Customer\ShowCustomerInShop;
 use App\Http\Controllers\Controller;
 use App\Models\CRM\Customer;
@@ -32,8 +32,12 @@ class CustomerController extends Controller
 
     public function indexInShop(Shop $shop)
     {
+        if($shop->type=='fulfilment_house'){
+            return IndexCustomerInFulfilmentShop::make()->asInertia($shop);
+        }
         return IndexCustomerInShop::make()->asInertia($shop);
     }
+
 
 
     public function showInShop(Shop $shop, Customer $customer): Response
