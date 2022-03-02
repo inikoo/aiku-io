@@ -62,10 +62,7 @@ class ShowProfile
                 'headerData' => [
                     'title'       => __('My profile'),
                     'breadcrumbs' => $this->breadcrumbs,
-                    'meta'        => [
 
-
-                    ],
                     'actionIcons' => $actionIcons,
 
 

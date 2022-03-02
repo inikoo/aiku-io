@@ -30,11 +30,68 @@ class ShowCustomer
 
     public function getInertia(): Response
     {
-        $meta = [
-            [
-                'name' => $this->customer->status
-            ]
-        ];
+        $info = [];
+
+        if ($this->customer->status != 'approved') {
+            $info[] = [
+                'type' => 'badge',
+                'data' =>
+                    match ($this->customer->status) {
+                        'working' => [
+                            'type'  => 'ok',
+                            'title' => __('Status'),
+                            'slot'  =>  __('Working')
+                        ],
+                        'pending-approval' => [
+                            'type'      => 'in-process',
+                            'slot'       => __('For approval')
+                        ],
+                        'left' => [
+                            'type'      => 'cancelled',
+                            'class' => 'text-green-600',
+                            'slot'       => __('Left')
+                        ],
+                        default => [
+                            'type'      => 'cancelled',
+                            'class' => 'text-gray-700',
+                            'slot'       => 'Unknown'
+                        ]
+                    }
+
+            ];
+        }else{
+            $info[] = [
+                'type' => 'badge',
+                'data' =>
+                    match ($this->customer->state) {
+                        'active' => [
+                            'type'  => 'ok',
+                            'title' => __('Active'),
+                            'slot'  =>  __('Active')
+                        ],
+                        'losing' => [
+                            'type'      => 'warning',
+                            'slot'       => __('Loosing')
+                        ],
+                        'lost' => [
+                            'type'      => 'cancelled',
+                            'slot'       => __('Lost')
+                        ],
+                        default => [
+                            'type'      => 'cancelled',
+                            'class' => 'text-gray-700',
+                            'slot'       => 'Unknown'
+                        ]
+                    }
+
+            ];
+
+
+        }
+
+
+
+
 
         if ($this->customer->shop->type == 'fulfilment_house') {
             $meta[] = [
@@ -55,7 +112,7 @@ class ShowCustomer
                 'breadcrumbs' => $this->breadcrumbs,
                 'headerData'  => [
                     'title' => $this->title,
-                    'meta'  => $meta
+                    'info'  => $info,
                 ],
                 'model'       => $this->customer,
                 'blocks'      => [

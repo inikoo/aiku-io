@@ -6,21 +6,21 @@
   -->
 
 <template>
-    <Head :title="headerData.pageTitle??headerData.title??''"/>
+    <Head :title="headerData['pageTitle']??headerData.title??''"/>
     <div class="mb-6">
 
         <div class="mt-2 md:flex md:items-center md:justify-between">
             <div class="flex-1 min-w-0">
                 <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-                    <span v-bind:title="headerData.titleTitle">{{ headerData.title }}</span>
-                    <span v-if="headerData['inModel']" class="text-lg font-normal mx-2"> <span class="font-light">∈{{headerData['inModel']['model']}}</span> {{headerData['inModel']['modelName']}}</span>
+                    <span v-bind:title="headerData['titleTitle']">{{ headerData.title }}</span>
+                    <span v-if="headerData['inModel']" class="text-lg font-normal mx-2"> <span class="font-light">∈{{ headerData['inModel']['model'] }}</span> {{ headerData['inModel']['modelName'] }}</span>
 
-                    <span v-if="headerData['subTitleTitle']" v-bind:title="headerData.subTitleTitle" class="text-gray-700 text-lg sm:text-xl  ">{{ headerData.subTitle }}</span>
+                    <span v-if="headerData['subTitleTitle']" v-bind:title="headerData['subTitleTitle']" class="ml-3 text-gray-700 text-lg sm:text-xl  ">{{ headerData['subTitle'] }}</span>
                 </h2>
 
 
                 <div class="md:hidden mt-4 flex-shrink-0 flex ">
-                    <button v-for="(button,href) in headerData['actionIcons']" :key="button.name" type="button" :class="[button.primary ?
+                    <button v-for="(button,href) in headerData['actionIcons']" :key="button.name" type="button" :class="[button['primary'] ?
                         'border-transparent text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' :
                         'border-gray-300    text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
                         'mb-3 inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium']">
@@ -31,20 +31,23 @@
                 </div>
 
                 <div class="mt-1 flex flex-row flex-wrap mt-0 -ml-6 ">
-                    <div v-for="(meta,metaIdx) in headerData['meta']" :key="metaIdx" class="mt-2 ml-6 flex items-center text-sm text-gray-500">
-                        <Badge v-if="meta.badge" :data="meta"></Badge>
-                        <template v-else>
-                            <span class="text-gray-400"><font-awesome-icon v-if="meta.icon" :icon="meta.icon" :class="[meta.iconClass,'flex-shrink-0 mr-1.5 h-5 w-5']" aria-hidden="true"/></span>
-                            <Link v-if="meta.href" v-bind:title="meta.nameTitle" :href="route(meta.href.route,meta.href.routeParameters)">
-                                {{ meta.number }} {{ meta.name }}
-                            </Link>
-                            <span v-else :class="meta.nameClass" v-bind:title="meta.nameTitle">{{ number(meta.number) }} {{ meta.name }}</span>
-                        </template>
+                    <div v-for="(info,infoIdx) in headerData['info']" :key="infoIdx" class="mt-2 ml-6 flex items-center text-sm text-gray-500">
+                        <component
+                            :is="getComponent(info['type'])"
+                            :data="info['data']">
+                            <component
+                                v-if="info['slot']"
+                                :is="getComponent(info['slot']['type'])"
+                                :data="info['slot']['data']">
+                            </component>
+                        </component>
                     </div>
                 </div>
+
+
             </div>
             <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
-                <button v-for="button in headerData['actions']" :key="button.name" type="button" :class="button.primary ? 'ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' :
+                <button v-for="button in headerData['actions']" :key="button.name" type="button" :class="button['primary'] ? 'ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' :
                          'ml-3 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'">
                     <Link :href="route(button.route)">{{ button.name }}</Link>
                 </button>
@@ -71,23 +74,31 @@
 <script setup>
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {Link} from '@inertiajs/inertia-vue3';
-import Badge from '../../elements/badge.vue';
 import {Head} from '@inertiajs/inertia-vue3';
 import {useLocaleStore} from '../../../../scripts/stores/locale.js';
+
+import Badge from '../../elements/badge.vue';
+import Text from '../../elements/text.vue';
+import ComponentGroup from '../../elements/component-group.vue';
+import ComponentLink from '../../elements/component-link.vue';
 
 const props = defineProps(['headerData']);
 const locale = useLocaleStore();
 
-
 let sections = [];
 
-const number = (value) => {
-    if (Number.isFinite(value)) {
-        return new Intl.NumberFormat(locale['language']).format(value);
-    }
-    return value;
+const getComponent = (componentName) => {
+    const components = {
+        'group': ComponentGroup,
+        'badge': Badge,
+        'text' : Text,
+        'link': ComponentLink
 
+    };
+    return components[componentName] ?? null;
 };
+
+
 
 
 </script>

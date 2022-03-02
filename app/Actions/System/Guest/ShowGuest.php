@@ -70,36 +70,88 @@ class ShowGuest
                     'titleTitle'    => __('Name'),
                     'subTitleTitle' => __('nickname'),
                     'breadcrumbs'   => $this->breadcrumbs,
-                    'meta'          => [
-                        match ($this->guest->status) {
-                            true => [
-                                'icon'      => 'check-circle',
-                                'iconClass' => 'text-green-600',
-                                'name'      => __('Collaboration active')
-                            ],
-                            default => [
-                                'icon'      => 'times-circle',
-                                'iconClass' => 'text-red-700',
-                                'name'      => __('Collaboration finished')
-                            ]
-                        },
+
+
+
+                    'info' => [
+
                         [
-                            'icon'      => [
-                                'fal',
-                                'dice-d4'
-                            ],
-                            'name'      => $this->guest->user ? $this->guest->user->username : __('Not an user'),
-                            'nameTitle' => __('User'),
-                            'nameClass' => $this->guest->user ?? 'text-gray-400 italic',
-                            'iconClass' => $this->guest->user ?? 'text-gray-300 ',
-                            'href'      => ($this->canViewUsers and $this->guest->user) ? [
-                                'route'           => 'account.users.show',
-                                'routeParameters' => $this->guest->user->id
-                            ] : null
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => array_merge(
+                                            ['type' => 'page-header',],
+                                            match ($this->guest->status) {
+                                                true => [
+                                                    'icon'  => 'check-circle',
+                                                    'class' => 'text-green-600',
+                                                ],
+                                                default => [
+                                                    'icon'  => 'times-circle',
+                                                    'class' => 'text-red-700',
+                                                ]
+                                            }
+                                        )
+                                    ],
+                                    [
+                                        'type' => 'text',
+                                        'data' => [
+                                            'slot' => $this->guest->status ? __('Collaboration active') : __('Collaboration finished')
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ],
+                        [
+                            'type' => 'group',
+                            'data' => [
+                                'title'      => __('User'),
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon'  => ['fal', 'dice-d4'],
+                                            'type'  => 'page-header',
+                                            'class' => $this->guest->user ?? 'text-gray-300'
+
+                                        ]
+                                    ],
+
+                                    $this->guest->user
+                                        ?
+                                        [
+                                            'type' => $this->canViewUsers?'link':'text',
+                                            'data' => [
+                                                'href'      =>  [
+                                                    'route'           => 'account.users.show',
+                                                    'parameters' => $this->guest->user->id
+                                                ],
+                                                'slot' => $this->guest->user->username
+
+                                            ]
+                                        ]
+                                        :
+                                        [
+                                            'type' => 'text',
+                                            'data' => [
+                                                'slot'  => __('Not an user'),
+                                                'class' => 'text-gray-300 italic'
+
+                                            ]
+                                        ],
+
+
+                                ]
+                            ]
+                        ]
 
 
                     ],
+
+
+
                     'actionIcons'   => $actionIcons,
 
 

@@ -50,26 +50,80 @@ class ShowShop
                 'navData'     => ['module' => 'marketing', 'metaSection' => 'shop'],
                 'headerData'  => [
                     'title' => $shop->name,
-                    'meta'  => [
+
+                    'info' => [
                         [
-                            'icon' => ['fal', 'user'],
-                            'name' => $shop->stats->number_customers,
-                            'href' => [
-                                'route'           => 'marketing.shops.show.customers.index',
-                                'routeParameters' => $this->shop->id
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon' => ['fal', 'user'],
+                                            'type' => 'page-header'
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'number',
+                                        'data' => [
+                                            'slot' => $shop->stats->number_customers
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'link',
+                                        'data' => [
+                                            'slot'  => ' '.trans_choice(__('customers'), $shop->stats->number_customers),
+                                            'class' => 'pr-1',
+                                            'href'  => [
+                                                'route'      => 'marketing.shops.show.customers.index',
+                                                'parameters' => $this->shop->id
+                                            ]
+                                        ]
+                                    ]
+                                ]
                             ]
                         ],
                         [
-                            'icon' => ['fal', 'shopping-cart'],
-                            'name' => $shop->stats->number_orders,
-                            'href' => [
-                                'route'           => 'marketing.shops.show.orders.index',
-                                'routeParameters' => $this->shop->id
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon' => ['fal', 'shopping-cart'],
+                                            'type' => 'page-header'
+                                        ]
+                                    ],
+
+
+                                    [
+                                        'type' => 'number',
+                                        'data' => [
+                                            'slot' => $shop->stats->number_orders
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'link',
+
+                                        'data' => [
+                                            'href'  => [
+                                                'route'      => 'marketing.shops.show.orders.index',
+                                                'parameters' => $this->shop->id
+                                            ],
+                                            'class' => 'pr-1',
+
+                                            'slot' => ' '.trans_choice(__('orders'), $shop->stats->number_orders)
+                                        ]
+
+                                    ],
+
+                                ],
+
+
                             ]
                         ],
-
-
                     ],
+
 
                 ],
                 'model'       => $shop
@@ -86,8 +140,8 @@ class ShowShop
     public function getBreadcrumbs(Shop $shop): array
     {
         $breadcrumb = [
-            'modelLabel'=>[
-                'label'=>__('store')
+            'modelLabel'      => [
+                'label' => __('store')
             ],
             'route'           => 'marketing.shops.show',
             'routeParameters' => $shop->id,

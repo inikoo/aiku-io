@@ -74,7 +74,7 @@ class ShowEmployee
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs'   => $this->breadcrumbs,
+                'breadcrumbs' => $this->breadcrumbs,
                 'navData'     => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
 
                 'headerData' => [
@@ -84,74 +84,130 @@ class ShowEmployee
                     'titleTitle'    => __('Name'),
                     'subTitleTitle' => __('nickname'),
 
-                    'meta'          => [
+                    'info' => [
+                        [
+                            'type' => 'badge',
+                            'data' => match ($this->employee->state) {
+                                'working' => [
+                                    'type'  => 'ok',
+                                    'title' => __('Status'),
+                                    'slot'  =>  __('Working')
+                                ],
+                                'hired' => [
+                                    'type'      => 'in-process',
+                                    'badgeClass' => 'text-green-600',
+                                    'slot'       => __('Hired')
+                                ],
+                                'left' => [
+                                    'type'      => 'cancelled',
+                                    'class' => 'text-green-600',
+                                    'slot'       => __('Left')
+                                ],
+                                default => [
+                                    'type'      => 'cancelled',
+                                    'class' => 'text-gray-700',
+                                    'slot'       => 'Unknown'
+                                ]
+                            }
+                        ],
+                        [
+                            'type' => 'group',
+                            'data' => [
+                                'title'      => __('Worker number'),
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon' => ['fal', 'clipboard-user'],
+                                            'type' => 'page-header'
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'text',
+                                        'data' => [
+                                            'slot' => $this->employee->worker_number,
 
-                        match ($this->employee->state) {
-                            'working' => [
-                                'badge'          => 'ok',
-                                'badgeClass'     => 'text-green-600',
-                                'name'           => __('Working'),
-                                'nameTitle'      => __('Status'),
-                                'suffix'         => $this->employee->employment_start_at,
-                                'suffixTitle'    => __('Start of employment'),
-                                'postSuffixHtml' => ' &rarr;'
-                            ],
-                            'hired' => [
-                                'badge'      => 'in-process',
-                                'badgeClass' => 'text-green-600',
-                                'name'       => __('Hired')
-                            ],
-                            'left' => [
-                                'badge'      => 'cancelled',
-                                'badgeClass' => 'text-green-600',
-                                'name'       => __('Left')
-                            ],
-                            default => [
-                                'badge'      => 'cancelled',
-                                'badgeClass' => 'text-gray-700',
-                                'name'       => 'Unknown'
+                                        ]
+                                    ]
+                                ]
                             ]
-                        },
-                        [
-                            'icon'      => [
-                                'fal',
-                                'clipboard-user'
-                            ],
-                            'name'      => $this->employee->worker_number,
-                            'nameTitle' => __('Worker number')
                         ],
                         [
-                            'icon'      => [
-                                'fal',
-                                'tasks'
-                            ],
-                            'name'      => $this->employee->job_title ?? __('Job title not set'),
-                            'nameTitle' => __('Job title'),
-                            'nameClass' => !$this->employee->job_title ?? 'text-red-500',
-                            'iconClass' => !$this->employee->job_title ?? 'text-red-500',
-                        ],
-                        [
-                            'icon'      => [
-                                'fal',
-                                'dice-d4'
-                            ],
-                            'name'      => $this->employee->user ? $this->employee->user->username : __('Not an user'),
-                            'nameTitle' => __('User'),
-                            'nameClass' => $this->employee->user ?? 'text-gray-400 italic',
-                            'iconClass' => $this->employee->user ?? 'text-gray-300 ',
-                            'href'      => ($this->canViewUsers and $this->employee->user) ? [
-                                'route'           => 'account.users.show',
-                                'routeParameters' => $this->employee->user->id
-                            ] : null
-                        ],
+                            'type' => 'group',
+                            'data' => [
+                                'title'      => __('Job title'),
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon'  => ['fal', 'tasks'],
+                                            'type'  => 'page-header',
+                                            'class' => !$this->employee->job_title ?? 'text-red-500'
 
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'text',
+                                        'data' => [
+                                            'slot'  => $this->employee->job_title ?? __('Job title not set'),
+                                            'class' => !$this->employee->job_title ?? 'text-red-500'
+
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        [
+                            'type' => 'group',
+                            'data' => [
+                                'title'      => __('User'),
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon'  => ['fal', 'dice-d4'],
+                                            'type'  => 'page-header',
+                                            'class' => $this->employee->user ?? 'text-gray-300'
+
+                                        ]
+                                    ],
+
+                                    $this->employee->user
+                                        ?
+                                        [
+                                            'type' => $this->canViewUsers?'link':'text',
+                                            'data' => [
+                                                'href'      =>  [
+                                                    'route'           => 'account.users.show',
+                                                    'parameters' => $this->employee->user->id
+                                                ],
+                                                'slot' => $this->employee->user->username
+
+                                            ]
+                                        ]
+                                        :
+                                        [
+                                            'type' => 'text',
+                                            'data' => [
+                                                'slot'  => __('Not an user'),
+                                                'class' => 'text-gray-300 italic'
+
+                                            ]
+                                        ],
+
+
+                                ]
+                            ]
+                        ]
 
                     ],
-                    'actionIcons'   => $actionIcons,
+
+
+
+                    'actionIcons' => $actionIcons,
 
 
                 ],
-                'model'      => $this->employee
             ]
 
         );
@@ -176,12 +232,12 @@ class ShowEmployee
                     'route'           => 'human_resources.employees.show',
                     'routeParameters' => $this->employee->id,
                     'name'            => $this->employee->nickname,
-                    'index'=>[
+                    'index'           => [
                         'route'   => 'human_resources.employees.index',
                         'overlay' => __('Employees index')
                     ],
-                    'modelLabel'=>[
-                        'label'=>__('employee')
+                    'modelLabel'      => [
+                        'label' => __('employee')
                     ],
                 ],
             ]

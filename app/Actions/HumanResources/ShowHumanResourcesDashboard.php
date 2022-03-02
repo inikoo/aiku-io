@@ -50,15 +50,40 @@ class ShowHumanResourcesDashboard
                 'navData' => ['module' => 'human_resources'],
                 'headerData'  => [
                     'title' => __('Human resources'),
-                    'meta'  => [
+                    'info' => [
                         [
-                            'icon' => ['fal', 'user-hard-hat'],
-                            'name' => App('currentTenant')->stats->number_employees_state_working,
-                            'href' => [
-                                'route' => 'human_resources.employees.index',
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon' => ['fal', 'user-hard-hat'],
+                                            'type' => 'page-header'
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'number',
+                                        'data' => [
+                                            'slot' => App('currentTenant')->stats->number_employees_state_working
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'link',
+                                        'data' => [
+                                            'slot'  => ' '.trans_choice(__('employee'), App('currentTenant')->stats->number_employees_state_working),
+                                            'class' => 'pr-1',
+                                            'href'  => [
+                                                'route' => 'human_resources.employees.index',
+                                            ]
+                                        ]
+                                    ]
+                                ]
                             ]
                         ],
-                    ]
+
+                    ],
+
                 ]
             ]
 

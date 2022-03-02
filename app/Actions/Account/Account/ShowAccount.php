@@ -41,35 +41,91 @@ class ShowAccount
 
     public function asInertia(array $attributes = []): Response
     {
-
-
-        $this->set('account',app('currentTenant'))->fill($attributes);
+        $this->set('account', app('currentTenant'))->fill($attributes);
         $this->validateAttributes();
 
         return Inertia::render(
             'show-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navData' => ['module' => 'account'],
+                'navData'     => ['module' => 'account'],
 
                 'headerData' => [
-                    'title'       => $this->title,
-                    'meta'        => [
+                    'title' => $this->title,
+
+                    'info' => [
                         [
-                            'icon' => ['fal','user-circle'],
-                            'name' => App('currentTenant')->stats->number_users_status_active??0,
-                            'href' =>[
-                                'route'=>'account.users.index',
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon' => ['fal', 'user-circle'],
+                                            'type' => 'page-header'
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'number',
+                                        'data' => [
+                                            'slot' => App('currentTenant')->stats->number_users_status_active ?? 0
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'link',
+                                        'data' => [
+                                            'slot' => ' '.trans_choice(__('users'), App('currentTenant')->stats->number_users_status_active ?? 0),
+                                            'class'=>'pr-1',
+                                            'href' => [
+                                                'route' => 'account.users.index',
+                                            ]
+                                        ]
+                                    ]
+                                ]
                             ]
                         ],
                         [
-                            'icon' => ['fal','user-alien'],
-                            'name' => App('currentTenant')->stats->number_guests_status_active??0,
-                            'href' =>[
-                                'route'=>'account.guests.index',
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => [
+                                            'icon' => ['fal', 'user-alien'],
+                                            'type' => 'page-header'
+                                        ]
+                                    ],
+
+
+                                    [
+                                        'type' => 'number',
+                                        'data' => [
+                                            'slot' => App('currentTenant')->stats->number_guests_status_active ?? 0
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'link',
+
+                                        'data' => [
+                                            'href' => [
+                                                'route' => 'account.guests.index',
+                                            ],
+                                            'class'=>'pr-1',
+
+                                            'slot' => ' '.trans_choice(__('guests'), App('currentTenant')->stats->number_guests_status_active ?? 0)
+                                        ]
+
+                                    ],
+
+                                ],
+
+
                             ]
                         ],
                     ],
+
+
+
 
                     'actionIcons' => [
                         /*
@@ -107,8 +163,8 @@ class ShowAccount
     {
         return [
             'tenant' => [
-                'route'   => 'account.show',
-                'name'    => __('Account'),
+                'route' => 'account.show',
+                'name'  => __('Account'),
             ],
         ];
     }
