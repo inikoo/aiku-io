@@ -31,35 +31,24 @@
         <template #body>
             <tr v-for="(record,recordIdx) in dataTable.records.data" v-bind:key="recordIdx">
                 <td v-for="(column,columnIdx) in dataTable.columns" v-bind:key="columnIdx">
-                    <template v-if="column.href">
-                        <span v-if="column.href.with_permission && !record[column.href.with_permission]">
-                            <font-awesome-icon
-                                fixed-width
-                                :icon="['fal', 'lock-alt']"
-                                aria-hidden="true"
-                            />
-                            {{ getCellValue(record, columnIdx) }}
-                        </span>
-                        <Link
-                            v-else-if="record[column.href.if] || checkRouteParametersIntegrity(record, column.href.column)"
-                            :href="route(column.href.route, processRouteParameters(record, column.href.column))"
-                        >{{ getCellValue(record, columnIdx) }}
-                        </Link>
-                        <span v-else class="text-gray-300">{{ column.href.notSetLabel }}</span>
-                    </template>
-                    <span
-                        v-else-if="column.transformations"
-                    >{{ column.transformations[record[columnIdx]] }} x {{ column.transformations }}</span>
-                    <Cell
-                        v-else-if="column.toggle"
-                        :data="record[columnIdx] ? column.toggle[0] : column.toggle[1]"
-                    />
-                    <span v-else-if="column.location" class="relative"><country-flag size="small" class="absolute bottom-[3px]  inline-block align-middle " :country="record[columnIdx][0]" :title="record[columnIdx][1]"/> <span
-                        class="ml-5">{{ record[columnIdx][2] }}</span></span>
-                    <span v-else>{{ getCellValue(record, columnIdx) }}</span>
+
+
+                    <component-group
+                        v-if="column.components !== undefined "
+                        :data="{
+                            'class':column['class'],
+                            'title':column['title'],
+                            'components':getComponentsData(record,column['components'])
+                            }">
+                        }
+                    </component-group>
+                    <span v-else>{{ record[column['resolver']] }}</span>
+
+
                 </td>
             </tr>
         </template>
+
     </Tailwind2.Table>
 
 </template>
@@ -244,18 +233,14 @@ import PageHeader from '../components/navigation/top/page-header.vue';
 import {Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder';
 
 import {Link} from '@inertiajs/inertia-vue3';
-import Cell from '../components/tables/cell.vue';
 import EmptyState from '../components/tables/empty-state.vue';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faLockAlt} from '@/private/pro-light-svg-icons';
 
-library.add(faLockAlt);
-import CountryFlag from 'vue-country-flag-next';
 import {useLocaleStore} from '../../scripts/stores/locale';
+import ComponentGroup from '../components/elements/component-group.vue';
 
 const locale = useLocaleStore();
 
+/*
 const getCellValue = (record, columnIdx) => {
     let value = record[columnIdx];
     if (Number.isFinite(value)) {
@@ -264,7 +249,9 @@ const getCellValue = (record, columnIdx) => {
     return value;
 
 };
+*/
 
+/*
 const toggle = (value, blueprint) => {};
 
 const checkRouteParametersIntegrity = (record, indices) => {
@@ -283,7 +270,10 @@ const checkRouteParametersIntegrity = (record, indices) => {
 
 };
 
-const processRouteParameters = (record, indices) => {
+
+ */
+
+const getValues = (record, indices) => {
     if (typeof indices === 'string') {
         indices = [indices];
     }
@@ -294,6 +284,63 @@ const processRouteParameters = (record, indices) => {
 
 };
 
+const getComponentsData = (record, components) => {
+
+    let componentData = [];
+    for (let i in components) {
+
+        let type = components[i].type;
+        let resolver=components[i]['resolver'].type;
+
+        if (type === 'link' && components[i]['resolver'].parameters.href.permission && !record[components[i]['resolver'].parameters.href.permission]) {
+            type = 'locked_link';
+            resolver='slot';
+        }
+
+        componentData.push(
+            {
+                'type': type,
+                'data': getComponentData(resolver, record, components[i]['resolver']),
+            },
+        );
+
+    }
+    return componentData;
+
+};
+
+const getComponentData = (type, record, resolver) => {
+
+    const resolvers = {
+        boolean(record, parameters) {
+            return record[parameters.indices] ? parameters.values[0] : parameters.values[1];
+        },
+        link(record, parameters) {
+            return {
+                'slot': record[parameters.indices] ?? parameters.indices,
+                'href': {
+                    'route'     : parameters.href.route,
+                    'parameters': getValues(record, parameters.href.indices),
+                },
+
+            };
+        },
+
+        slot(record, parameters) {
+            return {
+                'slot': record[parameters.indices] ?? parameters.indices,
+            };
+        },
+        country(record, parameters) {
+            return {
+                'code': record[parameters.indices][0],
+                'name': record[parameters.indices][1]
+            };
+        },
+    };
+    return resolvers[type](record, resolver.parameters) ?? null;
+
+};
 
 </script>
 

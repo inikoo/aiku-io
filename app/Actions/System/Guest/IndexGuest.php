@@ -44,13 +44,8 @@ class IndexGuest
 
         return QueryBuilder::for(Guest::class)
             ->defaultSort('-guests.id')
-            ->select(['nickname', 'id','name','status'])
-            ->with([
-                       'contact' => function ($query) {
-                           $query->select('contactable_id', 'contactable_type');
-                       }
-                   ])
-            ->allowedSorts(['nickname', 'name','status'])
+            ->select(['nickname', 'id', 'name', 'status'])
+            ->allowedSorts(['nickname', 'name', 'status'])
             ->allowedFilters(['state', 'nickname', 'name', $globalSearch])
             ->paginate()
             ->withQueryString();
@@ -82,8 +77,6 @@ class IndexGuest
         $actionIcons = [];
 
 
-
-
         if ($this->canEdit) {
             $actionIcons['account.guests.create'] = [
                 'name' => __('Create guest'),
@@ -95,45 +88,82 @@ class IndexGuest
         return Inertia::render(
             'index-model',
             [
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'navData'     => ['module' => 'account', 'sectionRoot' => 'account.guests.index'],
+
                 'headerData' => [
                     'module'      => 'account',
                     'title'       => $this->title,
-                    'breadcrumbs' => $this->breadcrumbs,
                     'actionIcons' => $actionIcons,
                 ],
                 'dataTable'  => [
-                    'records' => GuestInertiaResource::collection($this->handle()),
-                    'columns' => [
-                        'status' => [
+                    'records'  => GuestInertiaResource::collection($this->handle()),
+                    'columns'  => [
+
+                        [
                             'sort'  => 'status',
                             'label' => __('Status'),
-                            'toggle'=>[
+
+                            'components' => [
                                 [
-                                    'icon'=>'check-circle',
-                                    'iconClass'=>'text-green-600',
-                                    'cellTitle'=>__('Active')
-                                ],
-                                [
-                                    'icon'=>'times-circle',
-                                    'iconClass'=>'text-red-700',
-                                    'cellTitle'=>__('Inactive')
-                                ],
-                            ]
-                        ],
-                        'nickname'      => [
-                            'sort'  => 'nickname',
-                            'label' => __('Nickname'),
-                            'href'  => [
-                                'route'  => 'account.guests.show',
-                                'column' => 'id'
+                                    'type'     => 'icon',
+                                    'resolver' => [
+                                        'type' => 'boolean',
+
+                                        'parameters' => [
+                                            'indices' => 'status',
+                                            'values'  => [
+                                                [
+                                                    'icon'  => 'check-circle',
+                                                    'class' => 'text-green-600',
+                                                    'title' => __('Active')
+                                                ],
+                                                [
+                                                    'icon'   => 'times-circle',
+                                                    'class'  => 'text-red-700',
+                                                    'tittle' => __('Collaboration finished')
+                                                ],
+                                            ]
+                                        ],
+
+
+                                    ]
+                                ]
                             ],
+
+
                         ],
 
-                        'name'          => [
-                            'sort'         => 'name',
-                            'label'        => __('Name')
+
+                        [
+                            'sort'       => 'nickname',
+                            'label'      => __('Username'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'   => 'account.guests.show',
+                                                'indices' => 'id'
+                                            ],
+                                            'indices' => 'nickname'
+                                        ],
+
+
+                                    ]
+                                ]
+                            ],
+
                         ],
-                    ]
+
+                        [
+                            'sort'     => 'name',
+                            'label'    => __('Name'),
+                            'resolver' => 'name'
+                        ],
+                    ],
                 ]
 
 
@@ -141,7 +171,7 @@ class IndexGuest
         )->table(function (InertiaTable $table) {
             $table->addSearchRows(
                 [
-                    'guests.name'      => __('Name'),
+                    'guests.name'     => __('Name'),
                     'guests.nickname' => __('Nickname'),
 
                 ]
@@ -163,29 +193,21 @@ class IndexGuest
             'canEdit',
             ($request->user()->can('guests.edit'))
         );
-
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(): array
     {
         return array_merge(
             (new ShowTenant())->getBreadcrumbs(),
             [
                 'account.guests.index' => [
-                    'route'   => 'account.guests.index',
-                    'name'    => $this->title,
-                    'current' => false
+                    'route'      => 'account.guests.index',
+                    'modelLabel' => [
+                        'label' => __('guests')
+                    ],
                 ],
             ]
         );
-    }
-
-    public function getBreadcrumbs(): array
-    {
-        $this->validateAttributes();
-
-        return $this->breadcrumbs();
     }
 
 

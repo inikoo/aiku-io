@@ -44,25 +44,94 @@ class IndexSupplier
         $this->allowedSorts = ['code', 'name', 'number_purchase_orders'];
 
         $this->columns = [
-            'code'                   => [
-                'sort'  => 'code',
-                'label' => __('Code'),
-                'href'  => null
-            ],
-            'name'                   => [
-                'sort'  => 'name',
-                'label' => __('Name')
-            ],
-            'location'               => [
-                'label'    => __('Location'),
-                'location' => true,
-            ],
-            'number_purchase_orders' => [
-                'sort'  => 'number_purchase_orders',
-                'label' => __('Purchase orders'),
-                'href'  => null
+
+
+            'code' => [
+                'sort'       => 'code',
+                'label'      => __('Code'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type' => 'link',
+
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'procurement.suppliers.show',
+                                    'indices' => 'id'
+                                ],
+                                'indices' => 'code'
+                            ],
+
+
+                        ]
+                    ]
+                ],
 
             ],
+
+
+            'name' => [
+                'sort'     => 'name',
+                'label'    => __('Name'),
+                'resolver' => 'name'
+            ],
+
+            'location' => [
+                'label'      => __('Location'),
+                'components' => [
+                    [
+                        'type'     => 'flag',
+                        'resolver' => [
+                            'type' => 'country',
+                            'parameters' => [
+                                'indices' => 'country'
+                            ],
+
+
+                        ]
+                    ],
+                    [
+                        'type'     => 'text',
+                        'resolver' => [
+                            'type' => 'slot',
+
+                            'parameters' => [
+
+                                'indices' => 'location'
+                            ],
+
+
+                        ]
+                    ]
+                ],
+            ],
+
+
+            'number_purchase_orders' => [
+                'sort'       => 'number_purchase_orders',
+                'label'      => __('Purchase orders'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type' => 'link',
+
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'procurement.suppliers.show.purchase_orders.index',
+                                    'indices' => 'id'
+                                ],
+                                'indices' => 'number_purchase_orders'
+                            ],
+
+
+                        ]
+                    ]
+                ],
+
+            ],
+
         ];
     }
 

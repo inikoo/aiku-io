@@ -8,7 +8,6 @@
 
 namespace App\Actions\CRM\Customer;
 
-use App\Actions\Marketing\Shop\IndexShop;
 use App\Actions\Marketing\Shop\ShowShop;
 use App\Models\CRM\Customer;
 use Inertia\Response;

@@ -14,7 +14,7 @@
 
 
                         <div class="ml-4 mb-2 ">
-                            <span class="text-3xl text-gray-800 font-light tracking-tighter" >{{ layout.tenant.nickname }}</span>
+                            <span class="text-3xl text-gray-800 font-light tracking-tighter" >{{ layout.tenant.code }}</span>
                             <span class="text-sm text-gray-600 font-light tracking-tighter">@aiku</span>
                         </div>
 

@@ -79,8 +79,10 @@ import {useLocaleStore} from '../../../../scripts/stores/locale.js';
 
 import Badge from '../../elements/badge.vue';
 import Text from '../../elements/text.vue';
+import Number from '../../elements/number.vue';
 import ComponentGroup from '../../elements/component-group.vue';
 import ComponentLink from '../../elements/component-link.vue';
+import Icon from '../../elements/icon.vue';
 
 const props = defineProps(['headerData']);
 const locale = useLocaleStore();
@@ -92,6 +94,8 @@ const getComponent = (componentName) => {
         'group': ComponentGroup,
         'badge': Badge,
         'text' : Text,
+        'number': Number,
+        'icon': Icon,
         'link': ComponentLink
 
     };

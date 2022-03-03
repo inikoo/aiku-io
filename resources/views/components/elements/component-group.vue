@@ -9,8 +9,7 @@
     <span v-bind:title="data['title']" :class="data['class']">
     <component v-for="(component,idx) in data['components']" :key="idx"
                :is="getComponent(component['type'])"
-               :data="component['data']"
-    >
+               :data="component['data']">
 
     </component>
     </span>
@@ -23,6 +22,8 @@ import Text from './text.vue';
 import Icon from './icon.vue';
 import ComponentLink from './component-link.vue';
 import Number from './number.vue';
+import LockedLink from './locked-link.vue';
+import Flag from './flag.vue';
 
 const props = defineProps(['data']);
 
@@ -33,7 +34,9 @@ const getComponent = (componentName) => {
         'text' : Text,
         'icon' : Icon,
         'number': Number,
-        'link': ComponentLink
+        'link': ComponentLink,
+        'locked_link': LockedLink,
+        'flag': Flag
     };
     return components[componentName] ?? null;
 

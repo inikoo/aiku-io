@@ -74,7 +74,7 @@ class ShowEmployee
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs' => $this->breadcrumbs,
+                'breadcrumbs' => $this->getBreadcrumbs($this->employee),
                 'navData'     => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
 
                 'headerData' => [
@@ -220,18 +220,17 @@ class ShowEmployee
         $this->set('canEdit', $request->user()->can('employees.edit'));
         $this->set('canViewUsers', $request->user()->can('users.view'));
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(Employee $employee): array
     {
         return array_merge(
             (new ShowHumanResourcesDashboard())->getBreadcrumbs(),
             [
                 'human_resources.employees.show' => [
                     'route'           => 'human_resources.employees.show',
-                    'routeParameters' => $this->employee->id,
-                    'name'            => $this->employee->nickname,
+                    'routeParameters' => $employee->id,
+                    'name'            => $employee->nickname,
                     'index'           => [
                         'route'   => 'human_resources.employees.index',
                         'overlay' => __('Employees index')

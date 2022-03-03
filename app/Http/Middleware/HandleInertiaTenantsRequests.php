@@ -51,7 +51,7 @@ class HandleInertiaTenantsRequests extends Middleware
 
         $firstLoadOnlyProps = (!$request->inertia() or Session::get('redirectFromLogin')) ? [
 
-            'tenant'  => $hasTenant?app('currentTenant')->only('name', 'nickname'):[],
+            'tenant'  => $hasTenant?app('currentTenant')->only('name', 'code'):[],
             'appType' => $hasTenant?app('currentTenant')->appType->code:null,
             'modules' => function () use ($request,$hasTenant) {
                 if($hasTenant) {

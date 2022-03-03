@@ -57,13 +57,15 @@ class ShowEditUser
             ]
         ];
 
+
         return Inertia::render(
             'edit-model',
             [
+                'breadcrumbs' => $this->getBreadcrumbs($this->user),
+                'navData'     => ['module' => 'account', 'sectionRoot' => 'account.users.index'],
+
                 'headerData' => [
-                    'module'      => 'users',
                     'title'       => __('Editing').': '.$this->user->username,
-                    'breadcrumbs' => $this->breadcrumbs,
 
                     'actionIcons' => [
 
@@ -94,24 +96,13 @@ class ShowEditUser
     {
 
         $this->fillFromRequest($request);
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
-    {
-        return array_merge(
-            (new IndexUser())->getBreadcrumbs(),
-            [
-                'user' => [
-                    'route'           => 'account.users.edit',
-                    'routeParameters' => $this->user->id,
-                    'name'            => $this->user->username,
-                    'suffix'          => '('.__('editing').')',
-                    'current'         => true
-                ],
 
-            ]
-        );
+
+    public function getBreadcrumbs(User $user): array
+    {
+        return (new ShowUser())->getBreadcrumbs($user);
     }
 
 

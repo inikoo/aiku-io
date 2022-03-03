@@ -8,6 +8,7 @@
 
 namespace App\Actions\System\User;
 
+use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\System\UserResource;
 use App\Models\Auth\User;
@@ -76,8 +77,8 @@ class ShowUser
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs' => $this->breadcrumbs,
-                'navData'     => ['account' => 'shops', 'sectionRoot' => 'account.users.index'],
+                'breadcrumbs' => $this->getBreadcrumbs($this->user),
+                'navData'     => ['module' => 'account', 'sectionRoot' => 'account.users.index'],
 
                 'headerData' => [
                     'title' => $this->user->username,
@@ -178,19 +179,25 @@ class ShowUser
 
         $this->set('canViewEmployees', $request->user()->can('employees.view'));
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(User $user): array
     {
         return array_merge(
-            (new IndexUser())->getBreadcrumbs(),
+            (new ShowTenant())->getBreadcrumbs(),
             [
-                'shop' => [
+                'account.users.show' => [
                     'route'           => 'account.users.show',
-                    'routeParameters' => $this->user->id,
-                    'name'            => $this->user->username,
-                    'current'         => true
+                    'routeParameters' => $user->id,
+                    'index'=>[
+                        'route'   => 'account.users.index',
+                        'overlay' => __('User index')
+                    ],
+                    'modelLabel'=>[
+                        'label'=>__('user')
+                    ],
+                    'name'            => $user->username,
+
                 ],
             ]
         );

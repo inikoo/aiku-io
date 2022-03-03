@@ -44,28 +44,62 @@ class IndexCustomer
 
     public function __construct()
     {
-        $this->select = ['id', 'name', 'shop_id'];
-        $this->allowedSorts=['name', 'id', 'location'];
+        $this->select       = ['id', 'name', 'shop_id'];
+        $this->allowedSorts = ['name', 'id', 'location'];
 
         $this->columns = [
-            'shop_code'       => [
-                'label' => __('Shop'),
-                'href'  => [
-                    'route'  => 'marketing.shops.show.customers.index',
-                    'column' => 'shop_id'
+
+
+            'shop_code' => [
+                'sort'       => 'shop_code',
+                'label'      => __('Shop'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type'       => 'link',
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'marketing.shops.show.customers.index',
+                                    'indices' => 'shop_id'
+                                ],
+                                'indices' => 'shop_code'
+                            ],
+
+
+                        ]
+                    ]
                 ],
+
             ],
+
             'customer_number' => [
-                'sort'  => 'customer_number',
-                'label' => __('Id'),
-                'href'  => [
-                    'route'  => 'marketing.shops.show.customers.show',
-                    'column' => ['shop_id', 'id']
+                'sort'       => 'id',
+                'label'      => __('Id'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type'       => 'link',
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'marketing.shops.show.customers.show',
+                                    'indices' => ['shop_id', 'id']
+                                ],
+                                'indices' => 'customer_number'
+                            ],
+
+
+                        ]
+                    ]
                 ],
+
             ],
-            'name'            => [
-                'sort'  => 'name',
-                'label' => __('Name')
+
+            'name' => [
+                'sort'     => 'name',
+                'label'    => __('Name'),
+                'resolver' => 'name'
             ]
         ];
     }

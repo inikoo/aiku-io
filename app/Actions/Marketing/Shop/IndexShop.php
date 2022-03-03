@@ -61,19 +61,35 @@ class IndexShop
                 'dataTable'  => [
                     'records' => ShopInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'code'      => [
-                            'sort'  => 'code',
-                            'label' => __('Code'),
-                            'href'  => [
-                                'route'  =>'marketing.shops.show',
-                                'column' => 'id',
-                                'with_permission'=>'can_view'
 
+                        'code' => [
+                            'sort'       => 'code',
+                            'label'      => __('Code'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'  =>'marketing.shops.show',
+                                                'indices' => 'id',
+                                                'permission'=>'can_view'
+                                            ],
+                                            'indices' => 'code'
+                                        ],
+
+
+                                    ]
+                                ]
                             ],
+
                         ],
+
                         'name'          => [
                             'sort'  => 'name',
-                            'label' => __('Name')
+                            'label' => __('Name'),
+                            'resolver'=>'name'
                         ],
                     ]
                 ]

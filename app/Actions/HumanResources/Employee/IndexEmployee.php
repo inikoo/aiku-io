@@ -8,7 +8,6 @@
 
 namespace App\Actions\HumanResources\Employee;
 
-use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\HumanResources\ShowHumanResourcesDashboard;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\HumanResources\EmployeeInertiaResource;
@@ -45,8 +44,7 @@ class IndexEmployee
 
         return QueryBuilder::for(Employee::class)
             ->defaultSort('-employees.id')
-            ->select(['nickname', 'id', 'worker_number','name'])
-
+            ->select(['nickname', 'id', 'worker_number', 'name'])
             ->allowedSorts(['nickname', 'worker_number', 'name'])
             ->allowedFilters([$globalSearch])
             ->paginate()
@@ -98,31 +96,55 @@ class IndexEmployee
             'index-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData' => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
+                'navData'     => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
 
                 'headerData' => [
-                    'title'       => $this->title,
+                    'title' => $this->title,
 
                     'actionIcons' => $actionIcons,
                 ],
                 'dataTable'  => [
                     'records' => EmployeeInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'nickname'      => [
-                            'sort'  => 'nickname',
-                            'label' => __('Nickname'),
-                            'href'  => [
-                                'route'  => 'human_resources.employees.show',
-                                'column' => 'id'
+
+
+                        [
+                            'sort'       => 'code',
+                            'label' => __('Code'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type' => 'link',
+
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'  => 'human_resources.employees.show',
+                                                'indices' => 'id'
+                                            ],
+                                            'indices' => 'nickname'
+                                        ],
+
+
+                                    ]
+                                ]
                             ],
+
                         ],
-                        'worker_number' => [
+
+
+
+                        [
                             'sort'  => 'worker_number',
-                            'label' => __('Worker #')
+                            'label' => __('Worker #'),
+                            'resolver'  => 'worker_number',
+
                         ],
-                        'name'          => [
-                            'sort'         => 'name',
-                            'label'        => __('Name')
+
+                        [
+                            'sort'  => 'name',
+                            'label' => __('Name'),
+                            'resolver'=>'name'
                         ],
                     ]
                 ]
@@ -159,21 +181,18 @@ class IndexEmployee
             'canEdit',
             ($request->user()->can('employees.edit'))
         );
-
     }
-
 
 
     public function getBreadcrumbs(): array
     {
-
         return array_merge(
             (new ShowHumanResourcesDashboard())->getBreadcrumbs(),
             [
                 'human_resources.employees.index' => [
-                    'route'   => 'human_resources.employees.index',
-                    'modelLabel'=>[
-                        'label'=>__('employees')
+                    'route'      => 'human_resources.employees.index',
+                    'modelLabel' => [
+                        'label' => __('employees')
                     ],
                 ],
             ]

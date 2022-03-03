@@ -94,10 +94,10 @@ class ShowEditGuest
         return Inertia::render(
             'edit-model',
             [
+                'breadcrumbs' => $this->getBreadcrumbs($this->guest),
+                'navData'     => ['module' => 'account', 'sectionRoot' => 'account.guests.index'],
                 'headerData' => [
-                    'module'      => 'account',
                     'title'       => __('Editing').': '.$this->guest->name,
-                    'breadcrumbs' => $this->breadcrumbs,
                     'actionIcons' => [
 
                         'account.guests.show' => [
@@ -123,24 +123,11 @@ class ShowEditGuest
     public function prepareForValidation(ActionRequest $request): void
     {
         $this->fillFromRequest($request);
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(Guest $guest): array
     {
-        return array_merge(
-            (new IndexGuest())->getBreadcrumbs(),
-            [
-                'guest' => [
-                    'route'           => 'account.guests.show',
-                    'routeParameters' => $this->guest->id,
-                    'name'            => $this->guest->nickname,
-                    'suffix'          => '('.__('editing').')',
-                    'current'         => true
-                ],
-
-            ]
-        );
+        return (new ShowGuest())->getBreadcrumbs($guest);
     }
 
 

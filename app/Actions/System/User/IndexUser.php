@@ -45,7 +45,7 @@ class IndexUser
 
         return QueryBuilder::for(User::class)
             ->allowedSorts(['username', 'name', 'status', 'userable_type'])
-            ->where('tenant_id',App('currentTenant')->id)
+            ->where('tenant_id', App('currentTenant')->id)
             ->defaultSort('username')
             ->allowedFilters(['username', $globalSearch])
             ->paginate()
@@ -79,48 +79,83 @@ class IndexUser
         return Inertia::render(
             'index-model',
             [
+                'breadcrumbs' => $this->breadcrumbs,
+                'navData'     => ['module' => 'account',  'sectionRoot' => 'account.users.index'],
+
                 'headerData' => [
-                    'module'      => 'tenant',
                     'title'       => $this->title,
-                    'breadcrumbs' => $this->breadcrumbs,
 
                 ],
 
                 'dataTable' => [
                     'records' => UserInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'status' => [
+                        [
                             'sort'  => 'status',
                             'label' => __('Status'),
-                            'toggle'=>[
+
+                            'components' => [
                                 [
-                                    'icon'=>'check-circle',
-                                    'iconClass'=>'text-green-600',
-                                    'cellTitle'=>__('Active')
-                                ],
-                                [
-                                    'icon'=>'times-circle',
-                                    'iconClass'=>'text-red-700',
-                                    'cellTitle'=>__('Blocked')
-                                ],
-                            ]
+                                    'type'     => 'icon',
+                                    'resolver' => [
+                                        'type' => 'boolean',
+
+                                        'parameters' => [
+                                            'indices' => 'status',
+                                            'values'  => [
+                                                [
+                                                    'icon'  => 'check-circle',
+                                                    'class' => 'text-green-600',
+                                                    'title' => __('Active')
+                                                ],
+                                                [
+                                                    'icon'   => 'times-circle',
+                                                    'class'  => 'text-red-700',
+                                                    'tittle' => __('Blocked')
+                                                ],
+                                            ]
+                                        ],
+
+
+                                    ]
+                                ]
+                            ],
+
+
                         ],
 
-                        'username'      => [
-                            'sort'  => 'username',
-                            'label' => __('Username'),
-                            'href'  => [
-                                'route'  => 'account.users.show',
-                                'column' => 'id'
+                        [
+                            'sort'       => 'username',
+                            'label'      => __('Username'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type' => 'link',
+
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'   => 'account.users.show',
+                                                'indices' => 'id'
+                                            ],
+                                            'indices' => 'username'
+                                        ],
+
+
+                                    ]
+                                ]
                             ],
+
                         ],
-                        'userable_type' => [
-                            'sort'  => 'userable_type',
-                            'label' => __('Type')
+                        [
+                            'sort'     => 'userable_type',
+                            'label'    => __('Type'),
+                            'resolver' => 'userable_type'
                         ],
-                        'name'          => [
-                            'sort'  => 'name',
-                            'label' => __('Name')
+                        [
+                            'sort'     => 'name',
+                            'label'    => __('Name'),
+                            'resolver' => 'name'
                         ],
 
                     ]
@@ -148,29 +183,25 @@ class IndexUser
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
+        $this->set('breadcrumbs', $this->getBreadcrumbs());
     }
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(): array
     {
         return array_merge(
             (new ShowTenant())->getBreadcrumbs(),
             [
                 'account.users.index' => [
                     'route'   => 'account.users.index',
-                    'name'    => $this->title,
-                    'current' => false
+                    'modelLabel'=>[
+                        'label'=>__('users')
+                    ],
                 ],
             ]
         );
     }
 
-    public function getBreadcrumbs(): array
-    {
-        $this->validateAttributes();
 
-        return $this->breadcrumbs();
-    }
 
 
 }

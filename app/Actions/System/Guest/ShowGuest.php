@@ -8,6 +8,7 @@
 
 namespace App\Actions\System\Guest;
 
+use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\UI\WithInertia;
 use App\Http\Resources\HumanResources\EmployeeResource;
 use App\Models\HumanResources\Guest;
@@ -63,13 +64,12 @@ class ShowGuest
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs'   => $this->getBreadcrumbs($guest),
+                'navData'     => ['module' => 'account', 'sectionRoot' => 'account.guests.index'],
+
                 'headerData' => [
-                    'module'        => 'users',
                     'title'         => $this->guest->name,
-                    'subTitle'      => $this->guest->nickname,
                     'titleTitle'    => __('Name'),
-                    'subTitleTitle' => __('nickname'),
-                    'breadcrumbs'   => $this->breadcrumbs,
 
 
 
@@ -98,7 +98,7 @@ class ShowGuest
                                     [
                                         'type' => 'text',
                                         'data' => [
-                                            'slot' => $this->guest->status ? __('Collaboration active') : __('Collaboration finished')
+                                            'slot' => $this->guest->status ? __('Active') : __('Collaboration finished')
                                         ]
                                     ]
                                 ]
@@ -169,20 +169,29 @@ class ShowGuest
         $this->set('canEdit', $request->user()->can('account.edit'));
         $this->set('canViewUsers', $request->user()->can('account.view'));
 
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(Guest $guest): array
     {
         return array_merge(
-            (new IndexGuest())->getBreadcrumbs(),
+            (new ShowTenant())->getBreadcrumbs(),
             [
-                'shop' => [
+
+                'account.guests.show' => [
                     'route'           => 'account.guests.show',
-                    'routeParameters' => $this->guest->id,
-                    'name'            => $this->guest->nickname,
-                    'current'         => true
+                    'routeParameters' => $guest->id,
+                    'index'=>[
+                        'route'   => 'account.guests.index',
+                        'overlay' => __('Guest index')
+                    ],
+                    'modelLabel'=>[
+                        'label'=>__('guest')
+                    ],
+                    'name'            => $guest->nickname,
+
                 ],
+
+
             ]
         );
     }

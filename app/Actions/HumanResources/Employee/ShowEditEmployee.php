@@ -75,10 +75,10 @@ class ShowEditEmployee
         return Inertia::render(
             'edit-model',
             [
+                'breadcrumbs' => $this->getBreadcrumbs($this->employee),
+                'navData'     => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
                 'headerData' => [
-                    'module'      => 'human_resources',
                     'title'       => __('Editing').': '.$this->employee->name,
-                    'breadcrumbs' => $this->breadcrumbs,
 
                     'actionIcons' => [
 
@@ -108,24 +108,11 @@ class ShowEditEmployee
     public function prepareForValidation(ActionRequest $request): void
     {
         $this->fillFromRequest($request);
-        $this->set('breadcrumbs', $this->breadcrumbs());
     }
 
-    private function breadcrumbs(): array
+    public function getBreadcrumbs(Employee $employee): array
     {
-        return array_merge(
-            (new IndexEmployee())->getBreadcrumbs(),
-            [
-                'human_resources.employees.show' => [
-                    'route'           => 'human_resources.employees.show',
-                    'routeParameters' => $this->employee->id,
-                    'name'            => $this->employee->nickname,
-                    'suffix'          => '('.__('editing').')',
-                    'current'         => true
-                ],
-
-            ]
-        );
+        return (new ShowEmployee())->getBreadcrumbs($employee);
     }
 
 

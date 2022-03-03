@@ -7,6 +7,7 @@
 
 <template>
     <font-awesome-icon
+        :title="data['title']"
         :icon="data['icon']"
         :class="[data['class'],getTypeClass(data['type'])]"
         aria-hidden="true"
@@ -17,7 +18,6 @@
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 
 const props = defineProps(['data']);
-
 const getTypeClass = (type) => {
 
     const typeClasses = {
