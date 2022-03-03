@@ -7,8 +7,9 @@
  */
 
 
-use App\Http\Controllers\Marketing\MarketingController;
+use App\Http\Controllers\Inventory\UniqueStockController;
 use App\Http\Controllers\Marketing\CustomerController;
+use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\ShopController;
 
 Route::get('/', [MarketingController::class, 'dashboard'])->name('dashboard');
@@ -21,10 +22,17 @@ Route::get('/orders', [ShopController::class, 'index'])->name('orders.index');
 Route::get('/shops/{shop}', [ShopController::class, 'show'])->name('shops.show');
 
 Route::get('/shops/{shop}/customers', [CustomerController::class, 'indexInShop'])->name('shops.show.customers.index');
-Route::get('/shops/{shop}/customers/{customer}', [CustomerController::class, 'showInShop'])->name('shops.show.customers.show');
+Route::get('/shops/{shop}/unique_stocks', [UniqueStockController::class, 'indexUniqueStocksInShop'])->name('shops.show.unique_stocks.index');
+Route::scopeBindings()->group(function () {
+    Route::get('/shops/{shop}/unique_stocks/{unique_stock}', [UniqueStockController::class, 'showUniqueStocksInShop'])->name('shops.show.unique_stocks.show');
+});
 
-Route::get('/shops/{shop}/customers/{customer}/unique_stocks', [UniqueStockController::class, 'indexUniqueStocksInCustomer'])->name('shops.show.customers.show.unique_stocks.index');
+Route::scopeBindings()->group(function () {
+    Route::get('/shops/{shop}/customers/{customer}', [CustomerController::class, 'showInShop'])->name('shops.show.customers.show');
+    Route::get('/shops/{shop}/customers/{customer}/unique_stocks', [UniqueStockController::class, 'indexUniqueStocksInCustomer'])->name('shops.show.customers.show.unique_stocks.index');
+    Route::get('/shops/{shop}/customers/{customer}/unique_stocks/{unique_stock}', [UniqueStockController::class, 'showUniqueStocksInCustomer'])->name('shops.show.customers.show.unique_stocks.show');
 
+});
 
 Route::get('/shops/{shop}/orders', [ShopController::class, 'index'])->name('shops.show.orders.index');
 

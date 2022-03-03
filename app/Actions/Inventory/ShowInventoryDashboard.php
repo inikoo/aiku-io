@@ -29,7 +29,7 @@ class ShowInventoryDashboard
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("inventory.view");
+        return $request->user()->hasPermissionTo("inventory.stocks.view");
     }
 
 
@@ -44,10 +44,10 @@ class ShowInventoryDashboard
             'show-dashboard',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData' => ['account' => 'inventory'],
+                'navData'     => ['account' => 'inventory'],
 
                 'headerData' => [
-                    'title'       => __('Inventory'),
+                    'title' => __('Inventory'),
 
 
                 ]
@@ -62,13 +62,12 @@ class ShowInventoryDashboard
     }
 
 
-    private function getBreadcrumbs(): array
+    public function getBreadcrumbs(): array
     {
-
         return [
-            'warehouse' => [
-                'route'           => 'inventory.dashboard',
-                'name'            => __('Inventory'),
+            'inventory.dashboard' => [
+                'route' => 'inventory.dashboard',
+                'name'  => __('Inventory'),
             ]
         ];
     }

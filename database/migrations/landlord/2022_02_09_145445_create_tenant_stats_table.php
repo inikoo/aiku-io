@@ -50,6 +50,12 @@ class CreateTenantStatsTable extends Migration
             $table->unsignedBigInteger('filesize_attachments')->default(0);
 
 
+            $table->boolean('has_fulfilment')->default('false');
+            $table->boolean('has_dropshipping')->default('false');
+            $table->boolean('has_production')->default('false');
+            $table->boolean('has_agents')->default('false');
+
+
             $table->timestampsTz();
         });
 

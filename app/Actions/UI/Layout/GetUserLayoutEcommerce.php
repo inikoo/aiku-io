@@ -23,9 +23,6 @@ class GetUserLayoutEcommerce extends GetUserLayout
     use AsAction;
 
 
-
-
-
     protected function initialize($user)
     {
         $this->user = $user;
@@ -43,7 +40,7 @@ class GetUserLayoutEcommerce extends GetUserLayout
             })->mapWithKeys(function ($item) {
                 return [$item['id'] => Arr::except($item, 'id')];
             })->all(),
-            'inventory' =>Warehouse::get()->filter(function ($warehouse) use ($user) {
+            'inventory' => Warehouse::get()->filter(function ($warehouse) use ($user) {
                 return $user->hasPermissionTo("warehouses.view.$warehouse->id");
             })->map(function ($warehouse) {
                 return Arr::only($warehouse->toArray(), ['id', 'code', 'name']);
@@ -52,66 +49,83 @@ class GetUserLayoutEcommerce extends GetUserLayout
             })->all()
         ];
 
-        session(['marketingCount' =>$this->modelsCount['marketing']]);
+        session(['marketingCount' => $this->modelsCount['marketing']]);
 
         if ($this->modelsCount['marketing'] == 1) {
-
-            session(['currentShop' =>array_key_first($this->visibleModels['marketing'])]);
+            session(['currentShop' => array_key_first($this->visibleModels['marketing'])]);
         }
     }
 
     protected function getSections($module)
     {
-        if ($module['code'] == 'marketing') {
-            return [
+        switch ($module['code']) {
+            case 'marketing':
+                return [
+                    'marketing.dashboard'       => [
+                        'metaSection' => 'shops',
+                        'name'        => __('Marketing'),
+                        'shortName'   => __('Marketing'),
+                        'icon'        => ['fal', 'cash-register'],
+                    ],
+                    'marketing.shops.index'     => [
+                        'metaSection' => 'shops',
+                        'name'        => __('Shops'),
+                        'shortName'   => __('Shops'),
+                        'icon'        => ['fal', 'bars'],
+                    ],
+                    'marketing.customers.index' => [
+                        'metaSection' => 'shops',
+                        'name'        => __('Customers'),
+                        'icon'        => ['fal', 'layer-group'],
+                    ],
+                    'marketing.orders.index'    => [
+                        'metaSection' => 'shops',
+                        'name'        => __('Orders'),
+                        'icon'        => ['fal', 'layer-group'],
+                    ],
 
 
-                'marketing.dashboard'       => [
-                    'metaSection' => 'shops',
-                    'name'        => __('Marketing'),
-                    'shortName'   => __('Marketing'),
-                    'icon'        => ['fal', 'cash-register'],
-                ],
-                'marketing.shops.index'     => [
-                    'metaSection' => 'shops',
-                    'name'        => __('Shops'),
-                    'shortName'   => __('Shops'),
-                    'icon'        => ['fal', 'bars'],
-                ],
-                'marketing.customers.index' => [
-                    'metaSection' => 'shops',
-                    'name'        => __('Customers'),
-                    'icon'        => ['fal', 'layer-group'],
-                ],
-                'marketing.orders.index'    => [
-                    'metaSection' => 'shops',
-                    'name'        => __('Orders'),
-                    'icon'        => ['fal', 'layer-group'],
-                ],
+                    'marketing.shops.show.customers.index' => [
+                        'metaSection' => 'shop',
+                        'name'        => __('Customers'),
+                        'icon'        => ['fal', 'user'],
+                    ],
+                    'marketing.shops.show.orders.index'    => [
+                        'metaSection' => 'shop',
+                        'name'        => __('Orders'),
+                        'icon'        => ['fal', 'shopping-cart'],
+                    ],
+
+                ];
+            case 'inventory':
+                $sections = Arr::get($module, 'sections', []);
+
+                if (app('currentTenant')->stats->has_fulfilment) {
+
+                    $sections['inventory.stored_goods.index']=[
+                        'name' => 'Stored goods',
+                        'icon' => ['fal', 'pallet'],
+                    ];
+
+                    $sections['inventory.fulfilment_stocks.index']=[
+                        'name' => 'Fulfilment stock',
+                        'icon' => ['fal', 'pallet'],
+                    ];
+
+                }
 
 
-                'marketing.shops.show.customers.index' => [
-                    'metaSection' => 'shop',
-                    'name'        => __('Customers'),
-                    'icon'        => ['fal', 'user'],
-                ],
-                'marketing.shops.show.orders.index'    => [
-                    'metaSection' => 'shop',
-                    'name'        => __('Orders'),
-                    'icon'        => ['fal', 'shopping-cart'],
-                ],
+                return $sections;
 
-            ];
+            default:
+                return Arr::get($module, 'sections', []);
         }
-
-        return Arr::get($module, 'sections', []);
     }
 
 
     protected function getModelsCount($module): int
     {
-        return $this->modelsCount[$module]??0;
-
+        return $this->modelsCount[$module] ?? 0;
     }
 
     protected function getVisibleModels($user, $module): ?array

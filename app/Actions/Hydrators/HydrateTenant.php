@@ -15,6 +15,7 @@ use App\Models\HumanResources\Employee;
 use App\Models\HumanResources\Guest;
 use App\Models\Marketing\Shop;
 use App\Models\Marketing\ShopStats;
+use App\Models\Production\Workshop;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -33,9 +34,27 @@ class HydrateTenant
         $this->employeeStats();
         $this->userStats();
         $this->shopStats();
+        $this->productionStats();
         //$this->orderStats($tenant);
         //$this->productStats($tenant);
         //$this->invoices($tenant);
+    }
+
+    public function productionStats(){
+
+        $numberWorkshops       = Workshop::count();
+
+        App('currentTenant')->procurementStats->update(
+            [
+                'number_workshops'=>$numberWorkshops
+            ]
+        );
+        App('currentTenant')->stats->update(
+            [
+                'has_production'   => App('currentTenant')->procurementStats->number_workshops > 0,
+            ]
+        );
+
     }
 
     public function shopStats()
@@ -52,6 +71,7 @@ class HydrateTenant
         foreach ($shopTypes as $shopType) {
             $stats['number_shops_type_'.$shopType] = Arr::get($shopTypeCount, $shopType, 0);
         }
+
         $userSubtypes     = ['b2b', 'b2c', 'storage', 'fulfilment', 'dropshipping'];
         $userSubtypeCount = Shop::selectRaw('subtype, count(*) as total')
             ->groupBy('subtype')
@@ -62,6 +82,13 @@ class HydrateTenant
         }
 
         App('currentTenant')->marketingStats->update($stats);
+
+        App('currentTenant')->stats->update(
+            [
+                'has_fulfilment'   => App('currentTenant')->marketingStats->number_shops_subtype_fulfilment > 0,
+                'has_dropshipping' => App('currentTenant')->marketingStats->number_shops_subtype_dropshipping > 0
+            ]
+        );
     }
 
     public function customerStats()
@@ -90,7 +117,6 @@ class HydrateTenant
         }
         App('currentTenant')->stats->update($stats);
     }
-
 
     public function userStats()
     {

@@ -20,22 +20,42 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class IndexCustomerInFulfilmentShop extends IndexCustomerInShop
 {
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
-        $this->select = ['customers.id as id', 'name', 'shop_id','number_unique_stocks'];
+        $this->select = ['customers.id as id', 'name', 'shop_id', 'number_unique_stocks'];
 
-        $this->columns += ['number_unique_stocks' => [
-            'sort'  => 'number_unique_stocks',
-            'label' => __('Stored parcels')
-        ]];
+        $this->columns += [
 
-        $this->allowedSorts[]='number_unique_stocks';
+            'number_unique_stocks' => [
+                'sort'       => 'number_unique_stocks',
+                'label'      => __('Stored goods'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type'       => 'link',
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'marketing.shops.show.customers.show.unique_stocks.index',
+                                    'indices' => ['shop_id', 'id']
+                                ],
+                                'indices' => 'number_unique_stocks'
+                            ],
+                        ]
+                    ]
+                ],
+            ],
 
+        ];
+
+        $this->allowedSorts[] = 'number_unique_stocks';
     }
 
-    public function queryConditions($query){
-        return $query->leftJoin('fulfilment_customers','fulfilment_customers.customer_id','customers.id')
-            ->where('shop_id',$this->shop->id)->select($this->select);
+    public function queryConditions($query)
+    {
+        return $query->leftJoin('fulfilment_customers', 'fulfilment_customers.customer_id', 'customers.id')
+            ->where('shop_id', $this->shop->id)->select($this->select);
     }
 
     protected function getRecords(): AnonymousResourceCollection

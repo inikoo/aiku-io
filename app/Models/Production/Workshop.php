@@ -8,6 +8,7 @@
 
 namespace App\Models\Production;
 
+use App\Actions\Hydrators\HydrateTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,6 +36,20 @@ class Workshop extends Model implements Auditable
         'data'     => '{}',
         'settings' => '{}',
     ];
+
+    protected static function booted()
+    {
+        static::created(
+            function () {
+                HydrateTenant::make()->productionStats();
+            }
+        );
+        static::deleted(
+            function () {
+                HydrateTenant::make()->productionStats();
+            }
+        );
+    }
 
     protected $guarded = [];
 

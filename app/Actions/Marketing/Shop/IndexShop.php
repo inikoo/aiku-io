@@ -38,12 +38,8 @@ class IndexShop
     }
 
 
-
-
     public function asInertia($module = false)
     {
-
-
         $this->set('module', $module);
         $this->validateAttributes();
 
@@ -52,10 +48,10 @@ class IndexShop
             'index-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData' => ['module' => 'marketing', 'metaSection' => 'shops', 'sectionRoot' => 'marketing.shops.index'],
+                'navData'     => ['module' => 'marketing', 'metaSection' => 'shops', 'sectionRoot' => 'marketing.shops.index'],
 
                 'headerData' => [
-                    'title'       => __('Shops'),
+                    'title' => __('Shops'),
 
                 ],
                 'dataTable'  => [
@@ -72,9 +68,9 @@ class IndexShop
                                         'type'       => 'link',
                                         'parameters' => [
                                             'href'    => [
-                                                'route'  =>'marketing.shops.show',
-                                                'indices' => 'id',
-                                                'permission'=>'can_view'
+                                                'route'      => 'marketing.shops.show',
+                                                'indices'    => 'id',
+                                                'permission' => 'can_view'
                                             ],
                                             'indices' => 'code'
                                         ],
@@ -86,10 +82,10 @@ class IndexShop
 
                         ],
 
-                        'name'          => [
-                            'sort'  => 'name',
-                            'label' => __('Name'),
-                            'resolver'=>'name'
+                        'name' => [
+                            'sort'     => 'name',
+                            'label'    => __('Name'),
+                            'resolver' => 'name'
                         ],
                     ]
                 ]
@@ -112,23 +108,21 @@ class IndexShop
     }
 
 
-
-
     public function getBreadcrumbs(): array
     {
-
-
         return array_merge(
             (new ShowMarketingDashboard())->getBreadcrumbs(),
             [
                 'marketing.shops.index' => [
-                    'route'   => 'marketing.shops.index',
-                    'name'    => __('Shops'),
+                    'route'      => 'marketing.shops.index',
+                    'modelLabel' => [
+                        'label' => __('shops')
+                    ],
                 ],
             ]
         );
-
     }
+
 
 
 }

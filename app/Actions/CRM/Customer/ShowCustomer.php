@@ -90,19 +90,42 @@ class ShowCustomer
         }
 
 
-
-
-
         if ($this->customer->shop->type == 'fulfilment_house') {
-            $meta[] = [
-                'href'   => [
-                    'route'           => 'marketing.shops.show.customers.show.unique_stocks.index',
-                    'routeParameters' => [$this->customer->shop_id, $this->customer->id]
-                ],
-                'icon'   => ['fal', 'pallet'],
-                'number' => $this->customer->fulfilmentCustomer->number_unique_stocks
+            $info[] =  [
+                'type' => 'group',
+                'data' => [
+                    'components' => [
+                        [
+                            'type' => 'icon',
+                            'data' => [
+                                'icon' => ['fal', 'pallet'],
+                                'type' => 'page-header'
+                            ]
+                        ],
+                        [
+                            'type' => 'number',
+                            'data' => [
+                                'slot' => $this->customer->fulfilmentCustomer->number_unique_stocks
+                            ]
+                        ],
+                        [
+                            'type' => 'link',
+                            'data' => [
+                                'slot'  => ' '.trans_choice(__('stored good'), $this->customer->fulfilmentCustomer->number_unique_stocks),
+                                'class' => 'pr-1',
+                                'href'  => [
+                                    'route'           => 'marketing.shops.show.customers.show.unique_stocks.index',
+                                    'parameters' => [$this->customer->shop_id, $this->customer->id]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
             ];
         }
+
+
+
 
 
         return Inertia::render(

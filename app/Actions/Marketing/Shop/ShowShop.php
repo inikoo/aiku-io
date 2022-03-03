@@ -8,6 +8,7 @@
 
 namespace App\Actions\Marketing\Shop;
 
+use App\Actions\Marketing\ShowMarketingDashboard;
 use App\Actions\UI\WithInertia;
 use App\Models\Marketing\Shop;
 use Inertia\Inertia;
@@ -35,7 +36,7 @@ class ShowShop
 
     public function asInertia(Shop $shop, array $attributes = []): Response
     {
-        $this->set('shop', $shop)->set('type', 'fulfilment_house')->fill($attributes);
+        $this->set('shop', $shop)->fill($attributes);
 
         $this->validateAttributes();
 
@@ -141,7 +142,7 @@ class ShowShop
     {
         $breadcrumb = [
             'modelLabel'      => [
-                'label' => __('store')
+                'label' => __('shop')
             ],
             'route'           => 'marketing.shops.show',
             'routeParameters' => $shop->id,
@@ -156,7 +157,7 @@ class ShowShop
         }
 
         return array_merge(
-            session('marketingCount') == 1 ? [] : (new IndexShop())->getBreadcrumbs(),
+            session('marketingCount') == 1 ? [] : (new ShowMarketingDashboard())->getBreadcrumbs(),
             [
                 'marketing.shops.show' => $breadcrumb
             ]

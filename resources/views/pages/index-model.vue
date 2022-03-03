@@ -42,6 +42,7 @@
                             }">
                         }
                     </component-group>
+                    <span v-else-if="column.type==='number'">{{ number(record[column['resolver']]) }}</span>
                     <span v-else>{{ record[column['resolver']] }}</span>
 
 
@@ -241,17 +242,6 @@ import ComponentGroup from '../components/elements/component-group.vue';
 const locale = useLocaleStore();
 
 /*
-const getCellValue = (record, columnIdx) => {
-    let value = record[columnIdx];
-    if (Number.isFinite(value)) {
-        return new Intl.NumberFormat(locale.language).format(value);
-    }
-    return value;
-
-};
-*/
-
-/*
 const toggle = (value, blueprint) => {};
 
 const checkRouteParametersIntegrity = (record, indices) => {
@@ -272,6 +262,15 @@ const checkRouteParametersIntegrity = (record, indices) => {
 
 
  */
+
+
+const number = (value) => {
+    if (Number.isFinite(value)) {
+        return new Intl.NumberFormat(locale['language']).format(value);
+    }
+    return value;
+
+};
 
 const getValues = (record, indices) => {
     if (typeof indices === 'string') {

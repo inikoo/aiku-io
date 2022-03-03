@@ -8,6 +8,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Actions\Hydrators\HydrateFulfilmentCustomer;
 use App\Models\CRM\FulfilmentCustomer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,26 @@ class UniqueStock extends Model implements Auditable
 
 
     ];
+
+    protected static function booted()
+    {
+        static::created(
+            function (UniqueStock $uniqueStock) {
+                HydrateFulfilmentCustomer::run(fulfilmentCustomer: $uniqueStock->fulfilmentCustomer);
+            }
+        );
+        static::deleted(
+            function (UniqueStock $uniqueStock) {
+                HydrateFulfilmentCustomer::run(fulfilmentCustomer: $uniqueStock->fulfilmentCustomer);
+            }
+        );
+        static::updated(function (UniqueStock $uniqueStock) {
+            if ($uniqueStock->wasChanged(['state','type'])) {
+                HydrateFulfilmentCustomer::run(fulfilmentCustomer: $uniqueStock->fulfilmentCustomer);
+            }
+        });
+    }
+
 
     protected $guarded = [];
 
