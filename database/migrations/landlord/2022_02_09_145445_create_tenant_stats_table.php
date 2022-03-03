@@ -183,6 +183,18 @@ class CreateTenantStatsTable extends Migration
             $table->timestampsTz();
         });
 
+        Schema::create('tenant_production_stats', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->unsignedMediumInteger('tenant_id')->index();
+            $table->foreign('tenant_id')->references('id')->on('tenants');
+
+
+            $table->unsignedSmallInteger('number_workshops')->default(0);
+
+
+            $table->timestampsTz();
+        });
+
         Schema::create('tenant_sales_stats', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->unsignedMediumInteger('tenant_id')->index();
@@ -223,6 +235,7 @@ class CreateTenantStatsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('tenant_sales_stats');
+        Schema::dropIfExists('tenant_production_stats');
         Schema::dropIfExists('tenant_procurement_stats');
         Schema::dropIfExists('tenant_inventory_stats');
         Schema::dropIfExists('tenant_marketing_stats');

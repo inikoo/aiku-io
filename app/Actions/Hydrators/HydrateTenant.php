@@ -94,8 +94,8 @@ class HydrateTenant
 
     public function userStats()
     {
-        $numberUsers       = User::count();
-        $numberActiveUsers = User::where('status', true)->count();
+        $numberUsers       = (new User())->count();
+        $numberActiveUsers = (new User())->where('status', true)->count();
 
         $numberGuests       = Guest::count();
         $numberActiveGuests = Guest::where('status', true)->count();
@@ -212,8 +212,9 @@ class HydrateTenant
 
     public function asCommand(Command $command): void
     {
+
         if ($command->argument('code')) {
-            $tenants = Tenant::where('code', $command->argument('code'))->get();
+            $tenants = (new Tenant())->where('code', $command->argument('code'))->get();
         } else {
             $tenants = Tenant::all();
         }
