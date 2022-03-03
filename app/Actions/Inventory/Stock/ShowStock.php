@@ -9,6 +9,7 @@
 namespace App\Actions\Inventory\Stock;
 
 
+use App\Actions\Inventory\ShowInventoryDashboard;
 use App\Actions\UI\WithInertia;
 use App\Models\Inventory\Stock;
 use Inertia\Inertia;
@@ -58,10 +59,10 @@ class ShowStock
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs' => $this->getBreadcrumbs($this->stock),
+                'navData'     => ['module' => 'inventory', 'sectionRoot' => 'inventory.stocks.index'],
                 'headerData' => [
-                    'module'      => 'stocks',
                     'title'       => $stock->code,
-                    'breadcrumbs' => $this->getBreadcrumbs($this->stock),
                     'actionIcons' => $actionIcons,
 
                 ],
@@ -79,19 +80,23 @@ class ShowStock
     }
 
 
+
     public function getBreadcrumbs(Stock $stock): array
     {
         return array_merge(
-            (new IndexStock())->getBreadcrumbs(),
+            (new ShowInventoryDashboard())->getBreadcrumbs(),
             [
-                'stocks.show' => [
+                'inventory.stocks.show' => [
                     'route'           => 'inventory.stocks.show',
                     'routeParameters' => $stock->id,
-                    'name'            => $stock->code,
-                    'model'           => [
-                        'label' => __('Stock'),
-                        'icon'  => ['fal', 'box'],
+                    'index'=>[
+                        'route'   => 'inventory.stocks.index',
+                        'overlay' => __('Stock index')
                     ],
+                    'modelLabel'=>[
+                        'label'=>__('stock')
+                    ],
+                    'name'            => $stock->code,
 
                 ],
             ]

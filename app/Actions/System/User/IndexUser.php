@@ -79,7 +79,7 @@ class IndexUser
         return Inertia::render(
             'index-model',
             [
-                'breadcrumbs' => $this->breadcrumbs,
+                'breadcrumbs' => $this->getBreadcrumbs(),
                 'navData'     => ['module' => 'account',  'sectionRoot' => 'account.users.index'],
 
                 'headerData' => [
@@ -183,7 +183,6 @@ class IndexUser
         );
         $this->fillFromRequest($request);
 
-        $this->set('breadcrumbs', $this->getBreadcrumbs());
     }
 
     public function getBreadcrumbs(): array

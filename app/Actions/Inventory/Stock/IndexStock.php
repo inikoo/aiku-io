@@ -43,7 +43,7 @@ class IndexStock
         });
 
         return QueryBuilder::for(Stock::class)
-            ->select(['id','code','description'])
+            ->select(['id', 'code', 'description'])
             ->allowedSorts(['code'])
             ->defaultSort('-id')
             ->allowedFilters([$globalSearch])
@@ -60,26 +60,40 @@ class IndexStock
         return Inertia::render(
             'index-model',
             [
-                'headerData' => [
-                    'module'      => 'inventory',
-                    'title'       => $this->get('title'),
-                    'breadcrumbs' => $this->getBreadcrumbs()
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'navData'     => ['module' => 'inventory', 'sectionRoot' => 'inventory.stocks.index'],
+                'headerData'  => [
+                    'title' => $this->get('title'),
 
                 ],
-                'dataTable'  => [
+                'dataTable'   => [
                     'records' => StockInertiaResource::collection($this->handle()),
                     'columns' => [
+
                         'code'        => [
-                            'sort'  => 'code',
-                            'label' => __('Code'),
-                            'href'  => [
-                                'route'  => 'inventory.stocks.show',
-                                'column' => 'id'
+                            'sort'       => 'code',
+                            'label'      => __('Code'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'   => 'inventory.stocks.show',
+                                                'indices' => 'id'
+                                            ],
+                                            'indices' => 'code'
+                                        ],
+                                    ]
+                                ]
                             ],
                         ],
                         'description' => [
-                            'label' => __('Description')
-                        ]
+                            'label'    => __('Description'),
+                            'resolver' => 'description'
+                        ],
+
                     ]
                 ]
 
@@ -105,20 +119,21 @@ class IndexStock
             ]
         );
         $this->fillFromRequest($request);
-
     }
 
 
     public function getBreadcrumbs(): array
     {
         return [
-            'index' => [
-                'route'   => 'warehouses.index',
-                'name'    => __('Stocks'),
-                'current' => false
+            'inventory.stocks.index' => [
+                'route'      => 'inventory.stocks.index',
+                'modelLabel' => [
+                    'label' => __('stocks')
+                ],
             ],
         ];
     }
 
 
 }
+
