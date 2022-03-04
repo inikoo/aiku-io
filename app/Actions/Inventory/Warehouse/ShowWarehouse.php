@@ -62,7 +62,7 @@ class ShowWarehouse
             'show-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
-                'navData'     => ['module' => 'inventory', 'metaSection' => 'warehouse','sectionRoot'=>'inventory.warehouses.show'],
+                'navData'     => ['module' => 'inventory', 'metaSection' => 'warehouse', 'sectionRoot' => 'inventory.warehouses.show'],
 
                 'headerData' => [
                     'title'       => $warehouse->name,
@@ -79,7 +79,6 @@ class ShowWarehouse
     {
         $this->fillFromRequest($request);
         $this->set('canEdit', $request->user()->can("warehouses.edit.{$this->warehouse->id}"));
-
     }
 
 
@@ -107,9 +106,6 @@ class ShowWarehouse
                 'inventory.warehouses.show' => $breadcrumb
             ]
         );
-
-
-
     }
 
 

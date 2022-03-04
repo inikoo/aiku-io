@@ -127,10 +127,8 @@ class IndexCustomer
             [
                 'breadcrumbs' => $this->breadcrumbs,
                 'navData'     => ['module' => 'shops', 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
-
                 'headerData' => [
                     'title' => $this->title
-
                 ],
                 'dataTable'  => [
                     'records' => $this->getRecords(),
