@@ -9,6 +9,7 @@
 namespace App\Actions\Inventory\Warehouse;
 
 
+use App\Actions\Inventory\ShowInventoryDashboard;
 use App\Actions\UI\WithInertia;
 use App\Models\Inventory\Warehouse;
 use Inertia\Inertia;
@@ -49,7 +50,7 @@ class ShowWarehouse
 
         $actionIcons = [];
         if ($this->get('canEdit')) {
-            $actionIcons['warehouses.edit'] = [
+            $actionIcons['inventory.warehouses.edit'] = [
                 'routeParameters' => $this->warehouse->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -60,10 +61,11 @@ class ShowWarehouse
         return Inertia::render(
             'show-model',
             [
+                'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
+                'navData'     => ['module' => 'inventory', 'metaSection' => 'warehouse','sectionRoot'=>'inventory.warehouses.show'],
+
                 'headerData' => [
-                    'module'      => 'warehouses',
                     'title'       => $warehouse->name,
-                    'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
                     'actionIcons' => $actionIcons,
 
                 ],
@@ -83,21 +85,31 @@ class ShowWarehouse
 
     public function getBreadcrumbs(Warehouse $warehouse): array
     {
-        return array_merge(
-            (new IndexWarehouse())->getBreadcrumbs(),
-            [
-                'warehouses.show' => [
-                    'route'           => 'warehouses.show',
-                    'routeParameters' => $warehouse->id,
-                    'name'            => $warehouse->code,
-                    'model'           => [
-                        'label' => __('Warehouse'),
-                        'icon'  => ['fal', 'warehouse-alt'],
-                    ],
+        $breadcrumb = [
+            'modelLabel'      => [
+                'label' => __('warehouse')
+            ],
+            'route'           => 'inventory.warehouses.show',
+            'routeParameters' => $warehouse->id,
+            'name'            => $warehouse->code,
+        ];
 
-                ],
+        if (session('inventoryCount') > 1) {
+            $breadcrumb['index'] = [
+                'route'   => 'inventory.warehouses.index',
+                'overlay' => __('Warehouses index')
+            ];
+        }
+
+        return array_merge(
+            session('marketingCount') == 1 ? [] : (new ShowInventoryDashboard())->getBreadcrumbs(),
+            [
+                'inventory.warehouses.show' => $breadcrumb
             ]
         );
+
+
+
     }
 
 

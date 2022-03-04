@@ -56,9 +56,12 @@ import {faCashRegister} from '@/private/pro-light-svg-icons';
 library.add(faCashRegister);
 
 // For inventory
-import {faBox} from '@/private/pro-light-svg-icons';
+import {faBox,faDrawSquare} from '@/private/pro-light-svg-icons';
 
-library.add(faBox);
+library.add(faBox,faDrawSquare);
+
+
+
 
 // For account section
 

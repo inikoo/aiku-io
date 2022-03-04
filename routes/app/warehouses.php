@@ -19,24 +19,6 @@ Route::post('/{warehouse}', [WarehouseController::class, 'update'])->name('updat
 Route::get('/{warehouse}/locations', [LocationController::class, 'indexInWarehouse'])->name('show.locations.index');
 Route::get('/{warehouse}/areas', [WarehouseAreaController::class, 'indexInWarehouse'])->name('show.areas.index');
 
-
-
-
-Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
-Route::get('/locations/{location}', [LocationController::class, 'show'])->name('locations.show');
-Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
-Route::post('/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
-
-Route::get('/areas', [WarehouseAreaController::class, 'index'])->name('areas.index');
-Route::get('/areas/{warehouseArea}', [WarehouseAreaController::class, 'show'])->name('areas.show');
-Route::get('/areas/{warehouseArea}/edit', [WarehouseAreaController::class, 'edit'])->name('areas.edit');
-Route::post('/areas/{warehouseArea}', [WarehouseAreaController::class, 'update'])->name('areas.update');
-
-
-
-
-
-
 Route::scopeBindings()->group(function () {
 
     Route::get('/{warehouse}/locations/{location}', [LocationController::class, 'showInWarehouse'])->name('show.locations.show')->scopeBindings();
@@ -54,3 +36,24 @@ Route::scopeBindings()->group(function () {
 });
 
 
+/*
+
+Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+Route::get('/locations/{location}', [LocationController::class, 'show'])->name('locations.show');
+Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
+Route::post('/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
+
+Route::get('/areas', [WarehouseAreaController::class, 'index'])->name('areas.index');
+Route::get('/areas/{warehouseArea}', [WarehouseAreaController::class, 'show'])->name('areas.show');
+Route::get('/areas/{warehouseArea}/edit', [WarehouseAreaController::class, 'edit'])->name('areas.edit');
+Route::post('/areas/{warehouseArea}', [WarehouseAreaController::class, 'update'])->name('areas.update');
+
+
+
+
+
+
+
+
+
+*/

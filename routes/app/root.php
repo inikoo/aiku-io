@@ -28,9 +28,6 @@ Route::prefix('websites')->name('websites.')
 Route::prefix('inventory')->name('inventory.')
     ->group(__DIR__.'/inventory.php');
 
-Route::prefix('warehouses')->name('warehouses.')
-    ->group(__DIR__.'/warehouses.php');
-
 Route::prefix('workshops')->name('workshops.')
     ->group(__DIR__.'/workshops.php');
 

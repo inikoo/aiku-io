@@ -14,10 +14,9 @@
 
 
                         <div class="ml-4 mb-2 ">
-                            <span class="text-3xl text-gray-800 font-light tracking-tighter" >{{ layout.tenant.code }}</span>
+                            <span class="text-3xl text-gray-800 font-light tracking-tighter">{{ layout.tenant.code }}</span>
                             <span class="text-sm text-gray-600 font-light tracking-tighter">@aiku</span>
                         </div>
-
 
 
                         <div class="px-2 space-y-1">
@@ -27,25 +26,30 @@
                                 v-show="getItemVisibility(module.route)"
                             >
 
-                              <sidebar-model-header :module="module" :navData="navData"></sidebar-model-header>
-
-                                <Link
-                                    v-for="(section,href) in module['sections']"
-                                    :href="route(href,getSectionRouteParameters(module, module.fallbackModel))"
-                                    :class="[navData['sectionRoot']===href ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-sm font-medium rounded-md']"
-                                    v-show="navData['metaSection']?  navData['metaSection']===section['metaSection']   : true"
-                                >
-                                    <font-awesome-icon
-                                        fixed-width
-                                        :icon="section['icon']"
-                                        :class="[navData['sectionRoot']===href? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
-                                        aria-hidden="true"
-                                    />
-                                    {{ section['name'] }}
+                                <template v-for="(section,href) in module['sections']">
 
 
 
-                                </Link>
+                                    <sidebar-model-header v-if="section.model" :module="module" :navData="navData"></sidebar-model-header>
+
+                                    <Link
+                                        v-else-if="(navData['metaSection'] && section['metaSection'] ) ?  navData['metaSection']===section['metaSection']   : true"
+                                        :href="route(href,getSectionRouteParameters(module, module['fallbackModel']))"
+                                        :class="[navData['sectionRoot']===href ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-xs 2xl:text-sm   font-medium rounded-md']"
+                                    >
+                                        <font-awesome-icon
+                                            fixed-width
+                                            :icon="section['icon']"
+                                            :class="[navData['sectionRoot']===href? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
+                                            aria-hidden="true"
+                                        />
+                                        {{ section['name'] }}
+
+                                    </Link>
+
+                                </template>
+
+
                             </div>
                         </div>
                         <div class="space-y-1 mt-6">
@@ -72,7 +76,7 @@
                         :href="route('profile.show')"
                     >
                         <div>
-                            <Avatar variant="pixel" name="$page.props.auth.user.name" />
+                            <Avatar variant="pixel" name="$page.props.auth.user.name"/>
                         </div>
                     </Link>
                     <div class="ml-3 w-full">
@@ -85,7 +89,8 @@
                                 <Link
                                     v-if="$page.props.auth.user.userable_type !== 'Tenant'"
                                     :href="route('profile.show')"
-                                >{{ locale.__('View profile') }}</Link>
+                                >{{ locale.__('View profile') }}
+                                </Link>
                                 <span v-else>{{ $page.props.auth.user.name }}</span>
                             </div>
                             <div class="flex-1 text-right">
@@ -106,42 +111,41 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/inertia-vue3';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import Avatar from "vue-boring-avatars";
-import { LogoutIcon } from '@heroicons/vue/outline';
+import {Link} from '@inertiajs/inertia-vue3';
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import Avatar from 'vue-boring-avatars';
+import {LogoutIcon} from '@heroicons/vue/outline';
 import {useLocaleStore} from '../../../../scripts/stores/locale.js';
 import {useLayoutStore} from '../../../../scripts/stores/layout.js';
 import SidebarModelHeader from './sidebar-model-header.vue';
 
-const props = defineProps(['navData','currentRoute']);
+const props = defineProps(['navData', 'currentRoute']);
 
-const locale = useLocaleStore()
+const locale = useLocaleStore();
 const layout = useLayoutStore();
 
-let secondaryNavigation=[];
+let secondaryNavigation = [];
 
-const getItemVisibility=(route)=>{
+const getItemVisibility = (route) => {
 
-    const rootRoute=route.substring(0, route.indexOf('.'));
-    const rootCurrentRoute=props.currentRoute.substring(0, props.currentRoute.indexOf('.'));
-    return rootRoute===rootCurrentRoute;
-}
+    const rootRoute = route.substring(0, route.indexOf('.'));
+    const rootCurrentRoute = props.currentRoute.substring(0, props.currentRoute.indexOf('.'));
+    return rootRoute === rootCurrentRoute;
+};
 
-const getSectionRouteParameters=(module,fallbackModel)=>{
-    let  moduleCode=module.code;
+const getSectionRouteParameters = (module, fallbackModel) => {
+    let moduleCode = module.code;
     if (moduleCode === 'inventory')
         moduleCode = 'warehouse';
     else if (moduleCode === 'marketing')
         moduleCode = 'shop';
 
     if (['shop', 'website', 'warehouse', 'workshop'].includes(moduleCode)) {
-        return layout.currentModels[moduleCode] ?? fallbackModel ?? 1;
+        return layout['currentModels'][moduleCode] ?? fallbackModel ?? 1;
     }
 
     return {};
-}
-
+};
 
 
 </script>

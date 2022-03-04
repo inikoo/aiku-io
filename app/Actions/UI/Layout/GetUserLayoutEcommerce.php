@@ -50,9 +50,12 @@ class GetUserLayoutEcommerce extends GetUserLayout
         ];
 
         session(['marketingCount' => $this->modelsCount['marketing']]);
-
         if ($this->modelsCount['marketing'] == 1) {
             session(['currentShop' => array_key_first($this->visibleModels['marketing'])]);
+        }
+        session(['inventoryCount' => $this->modelsCount['inventory']]);
+        if ($this->modelsCount['inventory'] == 1) {
+            session(['currentWarehouse' => array_key_first($this->visibleModels['inventory'])]);
         }
     }
 
@@ -61,18 +64,27 @@ class GetUserLayoutEcommerce extends GetUserLayout
         switch ($module['code']) {
             case 'marketing':
                 return [
+
+                    'marketing-model' => [
+                        'model' => 'shop',
+                        'indexLabel'=>__('Shops')
+
+                    ],
+
                     'marketing.dashboard'       => [
                         'metaSection' => 'shops',
                         'name'        => __('Marketing'),
                         'shortName'   => __('Marketing'),
                         'icon'        => ['fal', 'cash-register'],
                     ],
+                    /*
                     'marketing.shops.index'     => [
                         'metaSection' => 'shops',
                         'name'        => __('Shops'),
                         'shortName'   => __('Shops'),
                         'icon'        => ['fal', 'bars'],
                     ],
+                    */
                     'marketing.customers.index' => [
                         'metaSection' => 'shops',
                         'name'        => __('Customers'),
@@ -100,20 +112,44 @@ class GetUserLayoutEcommerce extends GetUserLayout
             case 'inventory':
                 $sections = Arr::get($module, 'sections', []);
 
-                if (app('currentTenant')->stats->has_fulfilment) {
 
-                    $sections['inventory.unique_stocks.index']=[
+                if (app('currentTenant')->stats->has_fulfilment) {
+                    $sections['inventory.unique_stocks.index'] = [
                         'name' => 'Stored goods',
                         'icon' => ['fal', 'pallet'],
                     ];
 
-                    $sections['inventory.fulfilment_stocks.index']=[
+                    $sections['inventory.fulfilment_stocks.index'] = [
                         'name' => 'Fulfilment stock',
                         'icon' => ['fal', 'pallet'],
                     ];
-
                 }
 
+                $sections['inventory-model'] = [
+                    'model' => 'warehouse',
+                    'indexLabel'=>__('Warehouses')
+                ];
+
+                $sections['inventory.warehouses.show.areas.index'] = [
+                    'metaSection' => 'warehouse',
+                    'name'        => __('Areas'),
+                    'icon'        => ['fal', 'draw-square'],
+                ];
+                $sections['inventory.warehouses.show.locations.index'] = [
+                    'metaSection' => 'warehouse',
+                    'name'        => __('Locations'),
+                    'icon'        => ['fal', 'inventory'],
+                ];
+
+
+                /*
+
+                $sections['inventory.warehouses.index'] = [
+                    'metaSection' => 'warehouses',
+                    'name'        => __('Warehouses'),
+                    'icon'        => ['fal', 'bars'],
+                ];
+                */
 
                 return $sections;
 

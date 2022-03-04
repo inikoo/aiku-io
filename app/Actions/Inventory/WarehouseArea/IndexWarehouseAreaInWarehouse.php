@@ -38,7 +38,6 @@ class IndexWarehouseAreaInWarehouse
 
     public function handle(): LengthAwarePaginator
     {
-
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
                 $query->where('warehouse_areas.code', $this->likeOperator(), "$value%")
@@ -60,7 +59,6 @@ class IndexWarehouseAreaInWarehouse
 
     public function getUnfilteredCount()
     {
-
     }
 
 
@@ -84,29 +82,54 @@ class IndexWarehouseAreaInWarehouse
                 'dataTable'  => [
                     'records' => WarehouseAreaInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'code' => [
-                            'sort'  => 'code',
-                            'label' => __('Code'),
-                            'href'  => [
-                                'route'  => 'warehouses.show.areas.show',
-                                'column' => ['warehouse_id', 'id'],
-                                'if'     => 'id'
+
+                        'code'=>[
+                            'sort'       => 'code',
+                            'label'      => __('Code'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'  => 'inventory.warehouses.show.areas.show',
+                                                'indices' => ['warehouse_id', 'id'],
+                                            ],
+                                            'indices' => 'code'
+                                        ],
+                                    ]
+                                ]
                             ],
                         ],
+
+
+
                         'name' => [
                             'sort'  => 'name',
-                            'label' => __('Name')
+                            'label' => __('Name'),
+                            'resolver'=>'name'
                         ],
 
-                        'number_locations' => [
-                            'sort'  => 'number_locations',
-                            'label' => __('Locations'),
-                            'href'  => [
-                                'route'  => 'warehouses.show.areas.show.locations.index',
-                                'column' => ['warehouse_id', 'id'],
-                                'if'     => 'id'
-                            ],
 
+                        'number_locations'=>[
+                            'sort'       => 'number_locations',
+                            'label'      => __('Locations'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'   => 'inventory.warehouses.show.areas.show.locations.index',
+                                                'indices' => ['warehouse_id', 'id'],
+                                            ],
+                                            'indices' => 'number_locations'
+                                        ],
+                                    ]
+                                ]
+                            ],
                         ],
 
 

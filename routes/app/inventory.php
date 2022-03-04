@@ -24,3 +24,8 @@ Route::get('/stored_goods/{unique_stock}', [UniqueStockController::class, 'ShowU
 
 
 Route::get('/fulfilment_stocks', [StockController::class, 'index'])->name('fulfilment_stocks.index');
+
+Route::prefix('warehouses')
+    ->name('warehouses.')
+    ->group(__DIR__ . '/warehouses.php');
+

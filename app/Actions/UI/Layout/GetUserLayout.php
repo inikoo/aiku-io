@@ -58,13 +58,19 @@ class GetUserLayout
                 $sectionPermissions = $section['permissions'] ?? false;
 
                 if (!$sectionPermissions or $user->hasAnyPermission($sectionPermissions)) {
-                    $sections[$sectionRoute] = [
-                        'icon'      => Arr::get($section, 'icon', ['fal', 'dot-circle']),
-                        'name'      => __(Arr::get($section, 'name')),
-                        'shortName' => __(Arr::get($section, 'shortName', Arr::get($section, 'name'))),
-                    ];
-                    if (Arr::get($section, 'metaSection')) {
-                        $sections[$sectionRoute]['metaSection'] = Arr::get($section, 'metaSection');
+
+                    if (Arr::get($section, 'model')) {
+                        $sections[$sectionRoute]['model'] = Arr::get($section, 'model');
+                    }else{
+
+                        $sections[$sectionRoute] = [
+                            'icon'      => Arr::get($section, 'icon', ['fal', 'dot-circle']),
+                            'name'      => __(Arr::get($section, 'name')),
+                            'shortName' => __(Arr::get($section, 'shortName', Arr::get($section, 'name'))),
+                        ];
+                        if (Arr::get($section, 'metaSection')) {
+                            $sections[$sectionRoute]['metaSection'] = Arr::get($section, 'metaSection');
+                        }
                     }
                 }
             }
@@ -89,6 +95,8 @@ class GetUserLayout
 
             $layout[] = $moduleData;
         }
+
+
 
 
         return $layout;
