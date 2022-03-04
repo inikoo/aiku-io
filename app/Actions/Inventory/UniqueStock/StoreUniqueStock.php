@@ -8,7 +8,8 @@
 
 namespace App\Actions\Inventory\UniqueStock;
 
-use App\Models\CRM\FulfilmentCustomer;
+
+use App\Models\CRM\Customer;
 use App\Models\Utils\ActionResult;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,7 +18,7 @@ class StoreUniqueStock
 {
     use AsAction;
 
-    public function handle(FulfilmentCustomer $owner,$modelData): ActionResult
+    public function handle(Customer $owner,$modelData): ActionResult
     {
         $res  = new ActionResult();
 

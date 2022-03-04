@@ -144,7 +144,7 @@ class MigrateDeletedCustomer extends MigrateModel
             if ($res->status == 'inserted') {
                 DB::connection('aurora')->table('Customer Fulfilment Dimension')
                     ->where('Customer Fulfilment Customer Key', $this->auModel->id)
-                    ->update(['aiku_id' => $customer->fulfilmentCustomer->id]);
+                    ->update(['aiku_id' => $customer->id]);
             }
 
             foreach (

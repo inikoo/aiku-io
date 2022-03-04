@@ -9,7 +9,7 @@
 namespace App\Models\Inventory;
 
 use App\Actions\Hydrators\HydrateFulfilmentCustomer;
-use App\Models\CRM\FulfilmentCustomer;
+use App\Models\CRM\Customer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,17 +38,17 @@ class UniqueStock extends Model implements Auditable
     {
         static::created(
             function (UniqueStock $uniqueStock) {
-                HydrateFulfilmentCustomer::run(fulfilmentCustomer: $uniqueStock->fulfilmentCustomer);
+                HydrateFulfilmentCustomer::run(customer: $uniqueStock->customer);
             }
         );
         static::deleted(
             function (UniqueStock $uniqueStock) {
-                HydrateFulfilmentCustomer::run(fulfilmentCustomer: $uniqueStock->fulfilmentCustomer);
+                HydrateFulfilmentCustomer::run(customer: $uniqueStock->customer);
             }
         );
         static::updated(function (UniqueStock $uniqueStock) {
             if ($uniqueStock->wasChanged(['state','type'])) {
-                HydrateFulfilmentCustomer::run(fulfilmentCustomer: $uniqueStock->fulfilmentCustomer);
+                HydrateFulfilmentCustomer::run(customer: $uniqueStock->customer);
             }
         });
     }
@@ -56,9 +56,9 @@ class UniqueStock extends Model implements Auditable
 
     protected $guarded = [];
 
-    public function fulfilmentCustomer(): BelongsTo
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(FulfilmentCustomer::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function location(): BelongsTo
@@ -71,6 +71,9 @@ class UniqueStock extends Model implements Auditable
         return $this->morphMany(StockMovement::class, 'stockable');
     }
 
-
+    public function getFormattedId(): string
+    {
+        return sprintf('%05d',$this->id);
+    }
 
 }

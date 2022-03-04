@@ -102,7 +102,7 @@ class GetUserLayoutEcommerce extends GetUserLayout
 
                 if (app('currentTenant')->stats->has_fulfilment) {
 
-                    $sections['inventory.stored_goods.index']=[
+                    $sections['inventory.unique_stocks.index']=[
                         'name' => 'Stored goods',
                         'icon' => ['fal', 'pallet'],
                     ];

@@ -29,8 +29,8 @@ Route::scopeBindings()->group(function () {
 
 Route::scopeBindings()->group(function () {
     Route::get('/shops/{shop}/customers/{customer}', [CustomerController::class, 'showInShop'])->name('shops.show.customers.show');
-    Route::get('/shops/{shop}/customers/{customer}/unique_stocks', [UniqueStockController::class, 'indexUniqueStocksInCustomer'])->name('shops.show.customers.show.unique_stocks.index');
-    Route::get('/shops/{shop}/customers/{customer}/unique_stocks/{unique_stock}', [UniqueStockController::class, 'showUniqueStocksInCustomer'])->name('shops.show.customers.show.unique_stocks.show');
+    Route::get('/shops/{shop}/customers/{customer}/unique_stocks', [UniqueStockController::class, 'indexUniqueStockInCustomer'])->name('shops.show.customers.show.unique_stocks.index');
+    Route::get('/shops/{shop}/customers/{customer}/unique_stocks/{unique_stock}', [UniqueStockController::class, 'showUniqueStockInCustomer'])->name('shops.show.customers.show.unique_stocks.show');
 
 });
 

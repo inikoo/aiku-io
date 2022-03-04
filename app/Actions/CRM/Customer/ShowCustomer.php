@@ -105,13 +105,13 @@ class ShowCustomer
                         [
                             'type' => 'number',
                             'data' => [
-                                'slot' => $this->customer->fulfilmentCustomer->number_unique_stocks
+                                'slot' => $this->customer->customerFulfilmentStats->number_unique_stocks
                             ]
                         ],
                         [
                             'type' => 'link',
                             'data' => [
-                                'slot'  => ' '.trans_choice(__('stored good'), $this->customer->fulfilmentCustomer->number_unique_stocks),
+                                'slot'  => ' '.trans_choice(__('stored good'), $this->customer->customerFulfilmentStats->number_unique_stocks),
                                 'class' => 'pr-1',
                                 'href'  => [
                                     'route'           => 'marketing.shops.show.customers.show.unique_stocks.index',

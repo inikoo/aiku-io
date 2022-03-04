@@ -8,7 +8,7 @@
 
 namespace App\Actions\Hydrators;
 
-use App\Models\CRM\FulfilmentCustomer;
+use App\Models\CRM\Customer;
 use App\Models\Inventory\UniqueStock;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -20,14 +20,17 @@ class HydrateFulfilmentCustomer extends HydrateModel
     public string $commandSignature = 'hydrate:fulfilment_customer {id} {--t|tenant=* : Tenant code}';
 
 
-    public function handle(FulfilmentCustomer $fulfilmentCustomer): void
+    public function handle(Customer $customer): void
     {
-        $this->uniqueStocks($fulfilmentCustomer);
+        if($customer->shop->subtype=='fulfilment'){
+            $this->uniqueStocks($customer);
+        }
+
     }
 
-    public function uniqueStocks(FulfilmentCustomer $fulfilmentCustomer): void
+    public function uniqueStocks(Customer $customer): void
     {
-        $numberUniqueStocks = $fulfilmentCustomer->uniqueStocks->count();
+        $numberUniqueStocks = $customer->uniqueStocks->count();
         $stats = [
             'number_unique_stocks' => $numberUniqueStocks,
         ];
@@ -35,7 +38,7 @@ class HydrateFulfilmentCustomer extends HydrateModel
 
 
         $uniqueStockTypes = ['pallet', 'box', 'oversize','item'];
-        $uniqueStockTypeCounts = UniqueStock::where('fulfilment_customer_id', $fulfilmentCustomer->id)
+        $uniqueStockTypeCounts = UniqueStock::where('customer_id', $customer->id)
             ->selectRaw('type, count(*) as total')
             ->groupBy('type')
             ->pluck('total', 'type')->all();
@@ -47,7 +50,7 @@ class HydrateFulfilmentCustomer extends HydrateModel
 
 
         $uniqueStockStates = ['in-process', 'received', 'booked-in', 'booked-out', 'invoiced', 'lost'];
-        $uniqueStockStateCounts = UniqueStock::where('fulfilment_customer_id', $fulfilmentCustomer->id)
+        $uniqueStockStateCounts = UniqueStock::where('customer_id', $customer->id)
             ->selectRaw('state, count(*) as total')
             ->groupBy('state')
             ->pluck('total', 'state')->all();
@@ -58,19 +61,19 @@ class HydrateFulfilmentCustomer extends HydrateModel
         }
 
 
-        $fulfilmentCustomer->update($stats);
+        $customer->customerFulfilmentStats->update($stats);
     }
 
 
 
-    protected function getModel(int $id): FulfilmentCustomer
+    protected function getModel(int $id): Customer
     {
-        return FulfilmentCustomer::find($id);
+        return Customer::find($id);
     }
 
     protected function getAllModels(): Collection
     {
-        return FulfilmentCustomer::withTrashed()->get();
+        return Customer::withTrashed()->get();
     }
 
 }

@@ -10,7 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\UniqueStock\StoreUniqueStock;
 use App\Actions\Inventory\UniqueStock\UpdateUniqueStock;
-use App\Models\CRM\FulfilmentCustomer;
+use App\Models\CRM\Customer;
 use App\Models\Inventory\UniqueStock;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -29,9 +29,9 @@ class MigrateUniqueStock extends MigrateModel
         $this->auModel->id_field = 'Fulfilment Asset Key';
     }
 
-    public function getParent(): FulfilmentCustomer
+    public function getParent(): Customer
     {
-        return FulfilmentCustomer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Fulfilment Asset Customer Key'});
+        return Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Fulfilment Asset Customer Key'});
     }
 
     public function parseModelData()

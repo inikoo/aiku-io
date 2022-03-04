@@ -54,7 +54,7 @@ class IndexCustomerInFulfilmentShop extends IndexCustomerInShop
 
     public function queryConditions($query)
     {
-        return $query->leftJoin('fulfilment_customers', 'fulfilment_customers.customer_id', 'customers.id')
+        return $query->leftJoin('customer_fulfilment_stats', 'customer_fulfilment_stats.customer_id', 'customers.id')
             ->where('shop_id', $this->shop->id)->select($this->select);
     }
 

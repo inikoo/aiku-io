@@ -27,8 +27,8 @@ class CreateUniqueStocksTable extends Migration
             $table->enum('state', ['in-process', 'received', 'booked-in', 'booked-out', 'invoiced', 'lost'])->default('in-process')->index();
             $table->enum('type', ['pallet', 'box', 'oversize','item'])->default('item')->index();
 
-            $table->unsignedBigInteger('fulfilment_customer_id')->nullable();
-            $table->foreign('fulfilment_customer_id')->references('id')->on('fulfilment_customers');
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreign('customer_id')->references('id')->on('customers');
 
             $table->unsignedBigInteger('location_id')->nullable();
             $table->foreign('location_id')->references('id')->on('locations');

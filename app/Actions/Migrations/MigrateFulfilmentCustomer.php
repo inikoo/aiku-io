@@ -9,9 +9,8 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\CRM\FulfilmentCustomer\UpdateFulfilmentCustomer;
+use App\Actions\CRM\Customer\UpdateCustomer;
 use App\Models\CRM\Customer;
-use App\Models\CRM\FulfilmentCustomer;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
@@ -31,7 +30,7 @@ class MigrateFulfilmentCustomer extends MigrateModel
     public function parseModelData()
     {
 
-
+        //todo: here we will migrate Customer Fulfilment Current Rent Order Key
 
         $this->modelData = $this->sanitizeData(
             [
@@ -44,19 +43,16 @@ class MigrateFulfilmentCustomer extends MigrateModel
         $this->auModel->id = $this->auModel->data->{'Customer Fulfilment Customer Key'};
     }
 
-    public function getParent(): Customer
-    {
-        return Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Fulfilment Customer Key'});
-    }
+
 
     public function setModel()
     {
-        $this->model = FulfilmentCustomer::withTrashed()->find($this->auModel->data->aiku_id);
+        $this->model = Customer::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
     public function updateModel(): ActionResult
     {
-        return UpdateFulfilmentCustomer::run($this->model, $this->modelData);
+        return UpdateCustomer::run($this->model, $this->modelData);
     }
 
     #[Pure] public function storeModel(): ActionResult

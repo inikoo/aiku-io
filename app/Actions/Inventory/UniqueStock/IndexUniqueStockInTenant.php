@@ -30,10 +30,7 @@ class IndexUniqueStockInTenant extends IndexUniqueStock
 
     public function authorize(ActionRequest $request): bool
     {
-
         return $request->user()->hasPermissionTo("inventory.stocks.view");
-
-
     }
 
     public function queryConditions($query)
@@ -44,40 +41,35 @@ class IndexUniqueStockInTenant extends IndexUniqueStock
 
     public function asInertia()
     {
-
         $this->validateAttributes();
 
         return $this->getInertia();
     }
 
-
     public function prepareForValidation(ActionRequest $request): void
     {
-
-        $this->allowedSorts=array_merge($this->allowedSorts,
-                                        ['customer_name']);
+        $this->allowedSorts = array_merge(
+            $this->allowedSorts,
+            ['customer_name']
+        );
 
         $request->merge(
             [
-                'title' => __('Stored goods'),
+                'title'       => __('Stored goods'),
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'sectionRoot' => 'inventory.stored_goods.index',
+                'sectionRoot' => 'inventory.unique_stocks.index',
             ]
         );
         $this->fillFromRequest($request);
     }
-
-
-
-
 
     public function getBreadcrumbs(): array
     {
         return array_merge(
             (new ShowInventoryDashboard())->getBreadcrumbs(),
             [
-                'inventory.stored_goods.index' => [
-                    'route'      => 'inventory.stored_goods.index',
+                'inventory.unique_stocks.index' => [
+                    'route'      => 'inventory.unique_stocks.index',
                     'modelLabel' => [
                         'label' => __('stored goods')
                     ],

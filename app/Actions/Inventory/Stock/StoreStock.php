@@ -9,7 +9,7 @@
 namespace App\Actions\Inventory\Stock;
 
 use App\Models\Account\Tenant;
-use App\Models\CRM\FulfilmentCustomer;
+use App\Models\CRM\CustomerFulfilmentStats;
 use App\Models\Utils\ActionResult;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -18,7 +18,7 @@ class StoreStock
 {
     use AsAction;
 
-    public function handle(Tenant|FulfilmentCustomer $owner, $modelData): ActionResult
+    public function handle(Tenant|CustomerFulfilmentStats $owner, $modelData): ActionResult
     {
         $res = new ActionResult();
 

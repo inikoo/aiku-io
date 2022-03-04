@@ -21,7 +21,6 @@ class ShowCustomerInShop extends ShowCustomer
 {
 
 
-
     public function handle()
     {
     }
@@ -40,16 +39,15 @@ class ShowCustomerInShop extends ShowCustomer
         $this->validateAttributes();
 
         return $this->getInertia();
-
     }
 
     public function prepareForValidation(ActionRequest $request): void
     {
         $request->merge(
             [
-                'title' => $this->customer->name,
-                'breadcrumbs'=>$this->getBreadcrumbs($this->customer),
-                'sectionRoot'=>'marketing.shops.show.customers.index',
+                'title'       => $this->customer->name,
+                'breadcrumbs' => $this->getBreadcrumbs($this->customer),
+                'sectionRoot' => 'marketing.shops.show.customers.index',
                 'metaSection' => 'shop'
 
 
@@ -65,13 +63,13 @@ class ShowCustomerInShop extends ShowCustomer
             (new showShop())->getBreadcrumbs($customer->shop),
             [
                 'marketing.shops.show.customers.show' => [
-                    'index'=>[
-                        'route'   => 'marketing.shops.show.customers.index',
-                        'routeParameters'=>[$customer->shop_id],
-                        'overlay' => __('Customer index')
+                    'index'           => [
+                        'route'           => 'marketing.shops.show.customers.index',
+                        'routeParameters' => [$customer->shop_id],
+                        'overlay'         => __('Customer index')
                     ],
-                    'modelLabel'=>[
-                        'label'=>__('customer')
+                    'modelLabel'      => [
+                        'label' => __('customer')
                     ],
                     'route'           => 'marketing.shops.show.customers.show',
                     'routeParameters' => [$customer->shop_id, $customer->id],

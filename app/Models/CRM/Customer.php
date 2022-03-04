@@ -13,6 +13,8 @@ use App\Models\Financials\Invoice;
 use App\Models\CustomerProduct;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Attachment;
+use App\Models\Inventory\Stock;
+use App\Models\Inventory\UniqueStock;
 use App\Models\Media\Image;
 use App\Models\Marketing\Product;
 use App\Models\Marketing\Shop;
@@ -62,7 +64,7 @@ class Customer extends Model implements Auditable
         static::created(
             function (Customer $customer) {
                 if ($customer->shop->type == 'fulfilment_house') {
-                    $customer->fulfilmentCustomer()->create(
+                    $customer->customerFulfilmentStats()->create(
                         [
                             'aurora_id' => $customer->aurora_id
                         ]
@@ -74,7 +76,7 @@ class Customer extends Model implements Auditable
         static::deleted(
             function (Customer $customer) {
                 if ($customer->shop->type == 'fulfilment_house') {
-                    $customer->fulfilmentCustomer()->delete();
+                    $customer->customerFulfilmentStats()->delete();
                 }
                 HydrateShop::make()->customerStats($customer->shop);
             }
@@ -123,9 +125,9 @@ class Customer extends Model implements Auditable
         return $this->belongsTo(Shop::class);
     }
 
-    public function fulfilmentCustomer(): HasOne
+    public function customerFulfilmentStats(): HasOne
     {
-        return $this->hasOne(FulfilmentCustomer::class);
+        return $this->hasOne(CustomerFulfilmentStats::class);
     }
 
     public function clients(): HasMany
@@ -147,5 +149,16 @@ class Customer extends Model implements Auditable
     {
         return sprintf('%05d', $this->id);
     }
+
+    public function stocks(): MorphMany
+    {
+        return $this->morphMany(Stock::class, 'owner');
+    }
+
+    public function uniqueStocks(): HasMany
+    {
+        return $this->hasMany(UniqueStock::class);
+    }
+
 
 }

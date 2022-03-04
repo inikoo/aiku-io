@@ -9,7 +9,6 @@
 use App\Http\Controllers\Inventory\InventoryController;
 use App\Http\Controllers\Inventory\StockController;
 use App\Http\Controllers\Inventory\UniqueStockController;
-use App\Http\Controllers\Inventory\WarehouseController;
 
 Route::get('/', [InventoryController::class, 'dashboard'])->name('dashboard');
 
@@ -20,8 +19,8 @@ Route::post('/stocks/{stock}', [StockController::class, 'update'])->name('stocks
 
 Route::get('/stock_locations/', [StockController::class, 'show'])->name('stock_locations.index');
 
-Route::get('/stored_goods', [UniqueStockController::class, 'IndexUniqueStockInTenant'])->name('stored_goods.index');
-Route::get('/stored_goods/{unique_stock}', [UniqueStockController::class, 'ShowUniqueStockInTenant'])->name('stored_goods.show');
+Route::get('/stored_goods', [UniqueStockController::class, 'IndexUniqueStockInTenant'])->name('unique_stocks.index');
+Route::get('/stored_goods/{unique_stock}', [UniqueStockController::class, 'ShowUniqueStockInTenant'])->name('unique_stocks.show');
 
 
 Route::get('/fulfilment_stocks', [StockController::class, 'index'])->name('fulfilment_stocks.index');

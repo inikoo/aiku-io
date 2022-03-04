@@ -31,6 +31,7 @@ use function __;
  * @property string $metaSection
  * @property array $allowedSorts
  * @property string $subtitle
+ * @property string $module
  */
 class IndexUniqueStock
 {
@@ -66,7 +67,7 @@ class IndexUniqueStock
                             'type'       => 'link',
                             'parameters' => [
                                 'href'    => [
-                                    'route'   => 'inventory.stored_goods.show',
+                                    'route'   => 'inventory.unique_stocks.show',
                                     'indices' => 'id'
                                 ],
                                 'indices' => 'formatted_id'
@@ -110,7 +111,7 @@ class IndexUniqueStock
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(UniqueStock::class)
-            ->join('customers', 'fulfilment_customer_id', 'customers.id')
+            ->join('customers', 'customer_id', 'customers.id')
             ->when(true, [$this, 'queryConditions'])
             ->defaultSorts('-unique_stocks.id')
             ->allowedSorts($this->allowedSorts)
@@ -125,7 +126,7 @@ class IndexUniqueStock
             'index-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navData'     => ['module' => 'shops', 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
+                'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
 
                 'headerData' => [
                     'title'    => $this->title,

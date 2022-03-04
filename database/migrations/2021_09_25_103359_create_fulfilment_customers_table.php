@@ -19,7 +19,7 @@ class CreateFulfilmentCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::create('fulfilment_customers', function (Blueprint $table) {
+        Schema::create('customer_fulfilment_stats', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id')->index()->nullable();
             $table->foreign('customer_id')->references('id')->on('customers');
@@ -49,6 +49,6 @@ class CreateFulfilmentCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fulfilment_customers');
+        Schema::dropIfExists('customer_fulfilment_stats');
     }
 }
