@@ -17,6 +17,24 @@ return [
     'account.users',
     'account.look-and-field',
 
+    'assets.billing',
+    'assets.create',
+    'assets.create.shop',
+    'assets.create.website',
+    'assets.create.warehouse',
+    'assets.create.workshop',
+    'assets.close',
+    'assets.close.shop',
+    'assets.close.website',
+    'assets.close.warehouse',
+    'assets.close.workshop',
+    'assets.delete',
+    'assets.delete.shop',
+    'assets.delete.website',
+    'assets.delete.warehouse',
+    'assets.delete.workshop',
+    'assets.create.limited',//create models (e.g. Customers,Users,Suppliers) after free allowance
+
     'employees.view',
     'employees.edit',
     'employees.delete',
@@ -39,7 +57,6 @@ return [
     'shops',
     'shops.view',
     'shops.edit',
-    'shops.delete',
 
     'shops.products',
     'shops.products.view',
@@ -59,6 +76,7 @@ return [
 
 
     'websites',
+    'websites.create',
     'websites.view',
     'websites.edit',
     'websites.publish',
@@ -87,8 +105,9 @@ return [
     'inventory.stocks.edit',
     'inventory.stocks.delete',
 
-
+    'warehouses',
     'warehouses.view',
+    'warehouses.create',
     'warehouses.edit',
     'warehouses.delete',
     'warehouses.stock',
@@ -97,15 +116,16 @@ return [
     'warehouses.dispatching.pick',
     'warehouses.dispatching.pack',
 
-    'warehouses',
 
 
+    'workshops',
+    'workshops.create',
     'workshops.view',
     'workshops.edit',
     'workshops.dispatcher',
     'workshops.stock',
     'workshops.delete',
-    'workshops',
+
 
 
 ];

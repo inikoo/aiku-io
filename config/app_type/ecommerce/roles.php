@@ -9,6 +9,7 @@
 return [
 
     'super-admin'           => [
+        'assets',
         'account',
         'employees',
         'procurement',
@@ -19,6 +20,12 @@ return [
         'warehouses',
         'financials',
     ],
+
+
+    'assets-manager'          => [
+        'assets',
+    ],
+
     'system-admin'          => [
         'account.users',
         'account.look-and-field',
