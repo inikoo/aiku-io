@@ -31,6 +31,7 @@ use function __;
  * @property string $title
  * @property string $metaSection
  * @property array $allowedSorts
+ * @property string $module
  */
 class IndexCustomer
 {
@@ -50,28 +51,7 @@ class IndexCustomer
         $this->columns = [
 
 
-            'shop_code' => [
-                'sort'       => 'shop_code',
-                'label'      => __('Shop'),
-                'components' => [
-                    [
-                        'type'     => 'link',
-                        'resolver' => [
-                            'type'       => 'link',
-                            'parameters' => [
-                                'href'    => [
-                                    'route'   => 'marketing.shops.show.customers.index',
-                                    'indices' => 'shop_id'
-                                ],
-                                'indices' => 'shop_code'
-                            ],
 
-
-                        ]
-                    ]
-                ],
-
-            ],
 
             'customer_number' => [
                 'sort'       => 'id',
@@ -87,6 +67,29 @@ class IndexCustomer
                                     'indices' => ['shop_id', 'id']
                                 ],
                                 'indices' => 'customer_number'
+                            ],
+
+
+                        ]
+                    ]
+                ],
+
+            ],
+
+            'shop_code' => [
+                'sort'       => 'shop_code',
+                'label'      => __('Shop'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type'       => 'link',
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'marketing.shops.show',
+                                    'indices' => 'shop_id'
+                                ],
+                                'indices' => 'shop_code'
                             ],
 
 
@@ -126,7 +129,7 @@ class IndexCustomer
             'index-model',
             [
                 'breadcrumbs' => $this->breadcrumbs,
-                'navData'     => ['module' => 'shops', 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
+                'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
                 'headerData' => [
                     'title' => $this->title
                 ],

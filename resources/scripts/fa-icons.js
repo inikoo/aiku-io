@@ -15,9 +15,9 @@ import {faDiceD10} from '@/private/pro-duotone-svg-icons';
 library.add(faDiceD10);
 
 // App icons
-import {faHome, faDotCircle, faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup, faTachometerAltFast, faBars, faDiamond} from '@/private/pro-light-svg-icons';
+import {faHome,faLink,faDotCircle, faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup, faTachometerAltFast, faBars, faDiamond} from '@/private/pro-light-svg-icons';
 
-library.add(faHome, faDotCircle, faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup, faTachometerAltFast, faBars, faDiamond);
+library.add(faHome,faLink,faDotCircle, faSlidersHSquare, faHistory, faPlus, faEdit, faPortalExit, faRobot, faAngleRight, faAngleDown, faLayerGroup, faTachometerAltFast, faBars, faDiamond);
 
 import {faBirthdayCake, faMars, faVenus} from '@/private/pro-regular-svg-icons';
 

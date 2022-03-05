@@ -20,6 +20,7 @@ use Lorisleiva\Actions\Concerns\AsAction;
 
 /**
  * @property Warehouse $warehouse
+ * @property bool $canCreateWarehouse
  */
 class ShowWarehouse
 {
@@ -61,8 +62,12 @@ class ShowWarehouse
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
-                'navData'     => ['module' => 'inventory', 'metaSection' => 'warehouse', 'sectionRoot' => 'inventory.warehouses.show'],
+                'breadcrumbs' => $this->getBreadcrumbs($this->warehouse,$this->canCreateWarehouse),
+                'navData'     => [
+                    'module'      => 'inventory',
+                    'metaSection' => 'warehouse',
+                    'sectionRoot' => 'inventory.warehouses.show'
+                ],
 
                 'headerData' => [
                     'title'       => $warehouse->name,
@@ -79,10 +84,12 @@ class ShowWarehouse
     {
         $this->fillFromRequest($request);
         $this->set('canEdit', $request->user()->can("warehouses.edit.{$this->warehouse->id}"));
+        $this->set('canCreateWarehouse', $request->user()->can("assets.create.warehouse"));
+
     }
 
 
-    public function getBreadcrumbs(Warehouse $warehouse): array
+    public function getBreadcrumbs(Warehouse $warehouse,$canCreateWarehouse=false): array
     {
         $breadcrumb = [
             'modelLabel'      => [
@@ -93,7 +100,7 @@ class ShowWarehouse
             'name'            => $warehouse->code,
         ];
 
-        if (session('inventoryCount') > 1) {
+        if (session('inventoryCount') > 1 or $canCreateWarehouse) {
             $breadcrumb['index'] = [
                 'route'   => 'inventory.warehouses.index',
                 'overlay' => __('Warehouses index')

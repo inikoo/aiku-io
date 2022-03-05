@@ -61,6 +61,8 @@ class GetUserLayout
 
                     if (Arr::get($section, 'model')) {
                         $sections[$sectionRoute]['model'] = Arr::get($section, 'model');
+                        $sections[$sectionRoute]['indexLabel'] = Arr::get($section, 'indexLabel');
+
                     }else{
 
                         $sections[$sectionRoute] = [

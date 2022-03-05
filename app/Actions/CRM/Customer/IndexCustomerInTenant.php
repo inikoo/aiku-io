@@ -9,7 +9,7 @@
 namespace App\Actions\CRM\Customer;
 
 
-use App\Actions\Marketing\Shop\IndexShop;
+use App\Actions\Marketing\ShowMarketingDashboard;
 use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -69,8 +69,10 @@ class IndexCustomerInTenant extends IndexCustomer
             [
                 'title' => __('Customers'),
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'sectionRoot' => 'marketing.customers.index',
-                'metaSection' => 'marketing'
+                'sectionRoot' => 'marketing.dashboard',
+                'module' => 'marketing',
+                'metaSection' => 'shops'
+
             ]
         );
         $this->fillFromRequest($request);
@@ -80,11 +82,13 @@ class IndexCustomerInTenant extends IndexCustomer
     public function getBreadcrumbs(): array
     {
         return array_merge(
-            (new IndexShop())->getBreadcrumbs(),
+            (new ShowMarketingDashboard())->getBreadcrumbs(),
             [
                 'marketing.customers.index' => [
                     'route' => 'marketing.customers.index',
-                    'name'  => __('Customers'),
+                    'modelLabel' => [
+                        'label' => __('customers')
+                    ],
                 ],
             ]
         );

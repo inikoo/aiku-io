@@ -31,12 +31,17 @@ return [
         'shortName' => 'Inventory',
         'icon'      => ['fal', 'box'],
         'sections'  => [
+            'inventory.dashboard'          => [
+                'name' => 'Inventory',
+                'icon' => ['fal', 'tachometer-alt-fast'],
+            ],
             'inventory.stocks.index'          => [
                 'name' => 'Stocks',
                 'icon' => ['fal', 'box'],
             ],
             'inventory.stock_locations.index' => [
                 'name' => 'Stock-Locations',
+                'icon' => ['fal', 'link'],
             ],
 
         ]

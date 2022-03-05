@@ -9,6 +9,7 @@
 namespace App\Actions\Inventory\Warehouse;
 
 
+use App\Actions\Inventory\ShowInventoryDashboard;
 use App\Http\Resources\Inventory\WarehouseInertiaResource;
 use App\Models\Inventory\Warehouse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -31,58 +32,66 @@ class IndexWarehouse
     use WithInertia;
 
 
-
     public function handle(): LengthAwarePaginator
     {
-
-
         return QueryBuilder::for(Warehouse::class)
-            ->select('warehouses.id','code','name','number_locations','number_warehouse_areas')
-            ->leftJoin('warehouse_stats','warehouses.id','=','warehouse_stats.warehouse_id')
-            ->allowedSorts(['code', 'name','number_warehouse_areas','number_locations'])
+            ->select('warehouses.id', 'code', 'name', 'number_locations', 'number_warehouse_areas')
+            ->leftJoin('warehouse_stats', 'warehouses.id', '=', 'warehouse_stats.warehouse_id')
+            ->allowedSorts(['code', 'name', 'number_warehouse_areas', 'number_locations'])
             ->paginate()
             ->withQueryString();
     }
 
 
-
     public function asInertia()
     {
-
-
         $this->validateAttributes();
 
 
         return Inertia::render(
             'index-model',
             [
-                'headerData' => [
-                    'module'      => 'warehouses',
-                    'title'       => $this->get('title'),
-                    'breadcrumbs' => $this->getBreadcrumbs(),
+                'breadcrumbs' => $this->getBreadcrumbs(),
+                'navData'     => ['module' => 'inventory', 'metaSection' => 'warehouses', 'sectionRoot' => 'inventory.warehouses.index'],
+                'headerData'  => [
+                    'title' => $this->get('title'),
 
                 ],
-                'dataTable'  => [
+                'dataTable'   => [
                     'records' => WarehouseInertiaResource::collection($this->handle()),
                     'columns' => [
-                        'code' => [
-                            'sort'  => 'code',
-                            'label' => __('Code'),
-                            'href'  => [
-                                'route'  => 'warehouses.show',
-                                'column' => 'id',
-                                'with_permission'=>'can_view'
+
+                        'code'=>[
+                            'sort'       => 'code',
+                            'label'      => __('Code'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'   => 'inventory.warehouses.show',
+                                                'indices' => 'id',
+                                                'with_permission' => 'can_view'
+                                            ],
+                                            'indices' => 'code'
+                                        ],
+                                    ]
+                                ]
                             ],
                         ],
-                        'name' => [
+                        'name'                   => [
                             'sort'  => 'name',
-                            'label' => __('Name')
+                            'label' => __('Name'),
+                            'resolver'=> 'name'
                         ],
                         'number_warehouse_areas' => [
                             'sort'  => 'number_warehouse_areas',
-                            'label' => __('Areas')
+                            'label' => __('Areas'),
+                            'resolver'=> 'number_warehouse_areas'
                         ],
-                        'number_locations' => [
+                        'number_locations'       => [
                             'sort'  => 'number_locations',
                             'label' => __('Locations'),
                             'href'  => [
@@ -98,33 +107,33 @@ class IndexWarehouse
 
             ]
         )->table(function (InertiaTable $table) {
-
         });
     }
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
         $request->merge(
             [
                 'title' => __('Warehouses'),
             ]
         );
         $this->fillFromRequest($request);
-
     }
 
 
     public function getBreadcrumbs(): array
     {
-        return [
-            'index' => [
-                'route'   => 'warehouses.index',
-                'name'    => __('Warehouses'),
-                'current' => false
-            ],
-        ];
-
+        return array_merge(
+            (new ShowInventoryDashboard())->getBreadcrumbs(),
+            [
+                'inventory.warehouses.index' => [
+                    'route'      => 'inventory.warehouses.index',
+                    'modelLabel' => [
+                        'label' => __('warehouses')
+                    ],
+                ],
+            ]
+        );
     }
 
 

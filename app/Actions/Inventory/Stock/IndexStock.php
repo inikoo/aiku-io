@@ -9,6 +9,7 @@
 namespace App\Actions\Inventory\Stock;
 
 
+use App\Actions\Inventory\ShowInventoryDashboard;
 use App\Http\Resources\Inventory\StockInertiaResource;
 use App\Models\Inventory\Stock;
 use App\Models\Inventory\Warehouse;
@@ -61,7 +62,11 @@ class IndexStock
             'index-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData'     => ['module' => 'inventory', 'sectionRoot' => 'inventory.stocks.index'],
+                'navData'     => [
+                    'module'      => 'inventory',
+                    'metaSection' => session('currentWarehouse') ? 'warehouse' : 'warehouses',
+                    'sectionRoot' => 'inventory.stocks.index'
+                ],
                 'headerData'  => [
                     'title' => $this->get('title'),
 
@@ -124,14 +129,17 @@ class IndexStock
 
     public function getBreadcrumbs(): array
     {
-        return [
-            'inventory.stocks.index' => [
-                'route'      => 'inventory.stocks.index',
-                'modelLabel' => [
-                    'label' => __('stocks')
+        return array_merge(
+            (new ShowInventoryDashboard())->getBreadcrumbs(),
+            [
+                'inventory.stocks.index' => [
+                    'route'      => 'inventory.stocks.index',
+                    'modelLabel' => [
+                        'label' => __('stocks')
+                    ],
                 ],
-            ],
-        ];
+            ]
+        );
     }
 
 

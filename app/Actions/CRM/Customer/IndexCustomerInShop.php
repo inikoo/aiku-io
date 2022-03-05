@@ -35,6 +35,7 @@ class IndexCustomerInShop extends IndexCustomer
     public function asInertia(Shop $shop)
     {
         $this->set('shop', $shop);
+        session(['currentShop' => $shop->id]);
         $this->validateAttributes();
         unset($this->columns['shop_code']);
         return $this->getInertia();

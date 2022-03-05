@@ -52,10 +52,14 @@ class GetUserLayoutEcommerce extends GetUserLayout
         session(['marketingCount' => $this->modelsCount['marketing']]);
         if ($this->modelsCount['marketing'] == 1) {
             session(['currentShop' => array_key_first($this->visibleModels['marketing'])]);
+        }elseif($this->modelsCount['marketing']==0){
+            session(['currentShop' => null]);
         }
         session(['inventoryCount' => $this->modelsCount['inventory']]);
         if ($this->modelsCount['inventory'] == 1) {
             session(['currentWarehouse' => array_key_first($this->visibleModels['inventory'])]);
+        }elseif($this->modelsCount['inventory']==0){
+            session(['currentWarehouse' => null]);
         }
     }
 
@@ -65,26 +69,22 @@ class GetUserLayoutEcommerce extends GetUserLayout
             case 'marketing':
                 return [
 
+
+
+                    'marketing.dashboard'       => [
+                        'name'        => __('Marketing'),
+                        'shortName'   => __('Marketing'),
+                        'icon'        => ['fal', 'cash-register'],
+                    ],
+
                     'marketing-model' => [
                         'model' => 'shop',
                         'indexLabel'=>__('Shops')
 
                     ],
 
-                    'marketing.dashboard'       => [
-                        'metaSection' => 'shops',
-                        'name'        => __('Marketing'),
-                        'shortName'   => __('Marketing'),
-                        'icon'        => ['fal', 'cash-register'],
-                    ],
+
                     /*
-                    'marketing.shops.index'     => [
-                        'metaSection' => 'shops',
-                        'name'        => __('Shops'),
-                        'shortName'   => __('Shops'),
-                        'icon'        => ['fal', 'bars'],
-                    ],
-                    */
                     'marketing.customers.index' => [
                         'metaSection' => 'shops',
                         'name'        => __('Customers'),
@@ -95,7 +95,7 @@ class GetUserLayoutEcommerce extends GetUserLayout
                         'name'        => __('Orders'),
                         'icon'        => ['fal', 'layer-group'],
                     ],
-
+                    */
 
                     'marketing.shops.show.customers.index' => [
                         'metaSection' => 'shop',

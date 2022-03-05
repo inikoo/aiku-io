@@ -12,9 +12,24 @@
             <font-awesome-icon class="ml-1 mr-2" :icon="['fal','store-alt']"></font-awesome-icon>
             <span class="text-sm text-gray-600 font-light tracking-tighter"> {{ getModelLabel(module, 'shop') }} </span>
         </Link>
+        <Link
+            v-else
+            :href="route('marketing.shops.index')"
+            :class="[navData['sectionRoot']==='marketing.shops.index' ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-xs 2xl:text-sm   font-medium rounded-md']"
+        >
+            <font-awesome-icon
+                fixed-width
+                :icon="['fal','bars']"
+                :class="[navData['sectionRoot']==='marketing.shops.index'? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
+                aria-hidden="true"
+            />
+            {{ indexLabel }}
 
+        </Link>
     </template>
     <template v-if="module.code==='inventory'">
+
+
         <Link v-if="layout.currentModels['warehouse'] && navData['metaSection']!=='warehouses'" class="hover:bg-gray-50 rounded-md hover:text-gray-900 ml-4 pt-1 mb-0 mt-2 flex"
               :href="route('inventory.warehouses.show',layout.currentModels['warehouse'])">
             <font-awesome-icon class="ml-1 mr-2" :icon="['fal','warehouse-alt']"></font-awesome-icon>
@@ -31,7 +46,7 @@
                 :class="[navData['sectionRoot']==='inventory.warehouses.index'? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500', 'mr-3 ']"
                 aria-hidden="true"
             />
-           todo
+            {{ indexLabel }}
 
         </Link>
     </template>
@@ -42,11 +57,14 @@ import {Link} from '@inertiajs/inertia-vue3';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {useLayoutStore} from '../../../../scripts/stores/layout';
 
-const props = defineProps(['module', 'navData']);
+const props = defineProps(['indexLabel', 'module', 'navData']);
 const layout = useLayoutStore();
+
 const getModelLabel = (module, model) => {
 
-    if(module['visibleModels'][layout['currentModels'][model]]){
+
+
+    if (module['visibleModels'][layout['currentModels'][model]]) {
         return module['visibleModels'][layout['currentModels'][model]]['code'];
     }
     return '';

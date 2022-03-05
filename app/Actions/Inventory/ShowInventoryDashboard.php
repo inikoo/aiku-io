@@ -43,8 +43,14 @@ class ShowInventoryDashboard
         return Inertia::render(
             'show-dashboard',
             [
+
+
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData'     => ['account' => 'inventory'],
+                'navData'     => [
+                    'module' => 'account',
+                    'metaSection' => session('currentWarehouse') ? 'warehouse' : 'warehouses',
+                    'sectionRoot' => 'inventory.dashboard'
+                ],
 
                 'headerData' => [
                     'title' => __('Inventory'),

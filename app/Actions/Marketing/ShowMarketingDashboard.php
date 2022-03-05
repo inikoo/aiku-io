@@ -36,15 +36,37 @@ class ShowMarketingDashboard
         $this->fill($attributes);
         $this->validateAttributes();
 
+
+        $tenant = app('currentTenant');
+
         return Inertia::render(
-            'show-dashboard',
+            'marketing-dashboard',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData' => ['module' => 'marketing', 'metaSection' => 'shops', 'sectionRoot' => 'marketing.dashboard'],
+                'navData'     => ['module' => 'marketing', 'metaSection' => 'shops', 'sectionRoot' => 'marketing.dashboard'],
                 'headerData'  => [
                     'title' => __('Marketing'),
-
+                ],
+                'stats'       => [
+                    'models' => [
+                        [
+                            'name' => __('Total customers'),
+                            'stat' => $tenant->marketingStats->number_customers,
+                            'href' => [
+                                'route' => 'marketing.customers.index'
+                            ]
+                        ],
+                        [
+                            'name' => __('Total orders'),
+                            'stat' => $tenant->marketingStats->number_orders,
+                            'href' => [
+                                'route' => 'marketing.orders.index'
+                            ]
+                        ],
+                    ]
                 ]
+
+
             ]
 
         );

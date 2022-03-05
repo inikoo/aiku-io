@@ -40,9 +40,7 @@ class ShowShop
 
         $this->validateAttributes();
 
-
         session(['currentShop' => $shop->id]);
-
 
         return Inertia::render(
             'show-model',
