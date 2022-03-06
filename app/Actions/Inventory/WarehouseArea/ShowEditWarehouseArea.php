@@ -39,7 +39,7 @@ class ShowEditWarehouseArea
     public function asInertia(string $parent, WarehouseArea $warehouseArea, array $attributes = []): Response
     {
         $this->set('warehouseArea', $warehouseArea)
-            ->set('parent',$parent)
+            ->set('parent', $parent)
             ->fill($attributes);
         $this->validateAttributes();
 
@@ -51,14 +51,14 @@ class ShowEditWarehouseArea
             'fields'   => [
 
                 'code' => [
-                    'type'    => 'input',
-                    'label'   => __('Code'),
-                    'value'   => $this->warehouseArea->code
+                    'type'  => 'input',
+                    'label' => __('Code'),
+                    'value' => $this->warehouseArea->code
                 ],
                 'name' => [
-                    'type'    => 'input',
-                    'label'   => __('Name'),
-                    'value'   => $this->warehouseArea->name
+                    'type'  => 'input',
+                    'label' => __('Name'),
+                    'value' => $this->warehouseArea->name
                 ],
 
             ]
@@ -68,10 +68,10 @@ class ShowEditWarehouseArea
         return Inertia::render(
             'edit-model',
             [
-                'headerData' => [
-                    'module'      => 'warehouses',
-                    'title'       => __('Editing ').': '.$this->warehouseArea->code,
-                    'breadcrumbs' => $this->getBreadcrumbs($this->parent,$this->warehouseArea),
+                'breadcrumbs' => $this->getBreadcrumbs($this->parent, $this->warehouseArea),
+                'navData'     => ['module' => 'inventory', 'sectionRoot' => $this->parent == 'warehouse' ? 'inventory.warehouses.show.areas.index' : 'inventory.areas.index'],
+                'headerData'  => [
+                    'title' => __('Editing ').': '.$this->warehouseArea->code,
 
                     'actionIcons' => [
 
@@ -83,13 +83,26 @@ class ShowEditWarehouseArea
                     ],
 
 
-
                 ],
-                'employee'       => $this->warehouseArea,
+                'employee'    => $this->warehouseArea,
                 'formData'    => [
                     'blueprint' => $blueprint,
                     'args'      => [
-                        'postURL' => "/warehouses/areas/{$this->warehouseArea->id}",
+                        'postURL' => match ($this->parent) {
+                            'warehouse' => route(
+                                'inventory.warehouses.show.areas.update',
+                                [
+                                    $this->warehouseArea->warehouse_id,
+                                    $this->warehouseArea->id
+                                ]),
+                            default=>route(
+                                'inventory.areas.update',
+                                [
+                                    $this->warehouseArea->id
+                                ])
+                        }
+
+
                     ]
 
                 ],
@@ -103,28 +116,22 @@ class ShowEditWarehouseArea
         $this->fillFromRequest($request);
 
         switch ($this->parent) {
-
             case 'warehouse':
-                $this->set('showRoute', 'warehouses.show.areas.show');
-                $this->set('showRouteParameters',[$this->warehouseArea->warehouse_id, $this->warehouseArea->id]);
+                $this->set('showRoute', 'inventory.warehouses.show.areas.show');
+                $this->set('showRouteParameters', [$this->warehouseArea->warehouse_id, $this->warehouseArea->id]);
                 break;
             case 'tenant':
-                $this->set('showRoute', 'warehouses.areas.show');
+                $this->set('showRoute', 'inventory.warehouses.areas.show');
                 $this->set('showRouteParameters', [$this->warehouseArea->id]);
 
                 break;
-
         }
     }
 
     private function getBreadcrumbs(string $parent, WarehouseArea $warehouseArea): array
     {
-
-
-        return (new ShowWarehouseArea())->getBreadcrumbs($parent,$warehouseArea);
+        return (new ShowWarehouseArea())->getBreadcrumbs($parent, $warehouseArea);
     }
-
-
 
 
 }

@@ -62,7 +62,7 @@ class ShowWarehouse
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs' => $this->getBreadcrumbs($this->warehouse,$this->canCreateWarehouse),
+                'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
                 'navData'     => [
                     'module'      => 'inventory',
                     'metaSection' => 'warehouse',
@@ -89,7 +89,7 @@ class ShowWarehouse
     }
 
 
-    public function getBreadcrumbs(Warehouse $warehouse,$canCreateWarehouse=false): array
+    public function getBreadcrumbs(Warehouse $warehouse): array
     {
         $breadcrumb = [
             'modelLabel'      => [
@@ -100,7 +100,10 @@ class ShowWarehouse
             'name'            => $warehouse->code,
         ];
 
-        if (session('inventoryCount') > 1 or $canCreateWarehouse) {
+        /** @var \App\Models\Auth\User $user */
+        $user= auth()->user();
+
+        if (session('inventoryCount') > 1 or $user->can("assets.create.warehouse")) {
             $breadcrumb['index'] = [
                 'route'   => 'inventory.warehouses.index',
                 'overlay' => __('Warehouses index')

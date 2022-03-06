@@ -42,17 +42,22 @@ class WarehouseAreaController extends Controller
         return ShowWarehouseArea::make()->asInertia(parent: 'warehouse', warehouseArea: $warehouseArea);
     }
 
-    public function edit( WarehouseArea $warehouseArea): Response
+    public function edit(WarehouseArea $warehouseArea): Response
     {
-        return ShowEditWarehouseArea::make()->asInertia(parent: 'tenant',  warehouseArea: $warehouseArea);
+        return ShowEditWarehouseArea::make()->asInertia(parent: 'tenant', warehouseArea: $warehouseArea);
     }
 
     public function editInWarehouse(Warehouse $warehouse, WarehouseArea $warehouseArea): Response
     {
-        return ShowEditWarehouseArea::make()->asInertia(parent: 'warehouse',  warehouseArea: $warehouseArea);
+        return ShowEditWarehouseArea::make()->asInertia(parent: 'warehouse', warehouseArea: $warehouseArea);
     }
 
     public function update(WarehouseArea $warehouseArea, Request $request): RedirectResponse
+    {
+        return UpdateWarehouseArea::make()->asInertia($warehouseArea, $request);
+    }
+
+    public function updateInWarehouse(Warehouse $warehouse, WarehouseArea $warehouseArea, Request $request): RedirectResponse
     {
         return UpdateWarehouseArea::make()->asInertia($warehouseArea, $request);
     }

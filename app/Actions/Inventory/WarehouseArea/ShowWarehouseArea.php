@@ -62,13 +62,56 @@ class ShowWarehouseArea
         return Inertia::render(
             'show-model',
             [
-                'headerData' => [
-                    'module'      => 'warehouses',
-                    'title'       => __('Warehouse area').': '.$warehouseArea->name,
-                    'breadcrumbs' => $this->getBreadcrumbs($this->parent, $warehouseArea),
+                'breadcrumbs' => $this->getBreadcrumbs($this->parent, $warehouseArea),
+                'navData'     => ['module' => 'inventory', 'sectionRoot' => $this->parent == 'warehouse' ? 'inventory.warehouses.show.areas.index' : 'inventory.areas.index'],
+                'headerData'  => [
+                    'module' => 'warehouses',
+                    'title'  => __('Warehouse area').': '.$warehouseArea->name,
+
                     'actionIcons' => $actionIcons,
+                    'info'=>[
+                        [
+                            'type'=>'group',
+                            'data'=>[
+                                'components'=>[
+                                    [
+                                        'type' => 'icon',
+                                        'data' => array_merge(
+                                            [
+                                                'type' => 'page-header',
+                                                'icon' => ['fal','inventory']
+                                            ],
+
+                                        )
+                                    ],
+                                    [
+                                        'type' => 'number',
+                                        'data' => [
+                                            'slot' =>$this->warehouseArea->stats->number_locations
+                                        ]
+                                    ],
+                                    [
+                                        'type' =>'link',
+                                        'data' => [
+                                            'slot' => __('locations'),
+                                            'class'=>' ml-1',
+                                            'href' => [
+                                                'route'=>'inventory.warehouses.show.areas.show.locations.index',
+                                                'parameters'=>[
+                                                    $this->warehouseArea->warehouse_id,
+                                                    $this->warehouseArea->id
+                                                ]
+                                            ]
+                                        ]
+                                    ],
+
+                                ]
+                            ]
+                        ]
+                    ]
+
                 ],
-                'model'      => $warehouseArea
+                'model'       => $warehouseArea
             ]
 
         );
@@ -81,12 +124,12 @@ class ShowWarehouseArea
 
         switch ($this->parent) {
             case 'warehouse':
-                $this->set('editRoute', 'warehouses.show.areas.edit');
+                $this->set('editRoute', 'inventory.warehouses.show.areas.edit');
                 $this->set('editRouteParameters', [$this->warehouseArea->warehouse_id, $this->warehouseArea->id]);
 
                 break;
             case 'tenant':
-                $this->set('editRoute', 'warehouses.areas.edit');
+                $this->set('editRoute', 'inventory.warehouses.areas.edit');
                 $this->set('editRouteParameters', []);
 
                 break;
@@ -108,13 +151,23 @@ class ShowWarehouseArea
             return array_merge(
                 (new ShowWarehouse())->getBreadcrumbs($warehouseArea->warehouse),
                 [
-                    'warehouses.show.areas.show' =>
+                    'inventory.warehouses.show.areas.show' =>
                         array_merge(
                             [
-                                'route'           => 'warehouses.show.areas.show',
+                                'route'           => 'inventory.warehouses.show.areas.show',
                                 'routeParameters' => [
                                     $warehouseArea->warehouse_id,
                                     $warehouseArea->id
+                                ],
+                                'index'           => [
+                                    'route'           => 'inventory.warehouses.show.areas.index',
+                                    'routeParameters' => [
+                                        $warehouseArea->warehouse_id,
+                                    ],
+                                    'overlay'         => __('warehouse areas index')
+                                ],
+                                'modelLabel'      => [
+                                    'label' => __('area')
                                 ],
                             ],
                             $commonItems
@@ -125,9 +178,9 @@ class ShowWarehouseArea
             return array_merge(
                 (new IndexWarehouse())->getBreadcrumbs(),
                 [
-                    'warehouses.areas.index' =>
+                    'inventory.warehouses.areas.index' =>
                         array_merge([
-                                        'route' => 'warehouses.areas.index',
+                                        'route' => 'inventory.warehouses.areas.index',
                                     ], $commonItems),
                 ]
             );

@@ -29,7 +29,6 @@
                                 <template v-for="(section,href) in module['sections']">
 
                                     <sidebar-model-header v-if="section.model"  :indexLabel="section['indexLabel']"  :module="module" :navData="navData"></sidebar-model-header>
-
                                     <Link
                                         v-else-if="(navData['metaSection'] && section['metaSection'] ) ?  navData['metaSection']===section['metaSection']   : true"
                                         :href="route(href,getSectionRouteParameters(module, module['fallbackModel']))"

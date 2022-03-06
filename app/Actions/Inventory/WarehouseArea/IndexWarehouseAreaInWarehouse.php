@@ -41,12 +41,14 @@ class IndexWarehouseAreaInWarehouse extends IndexWarehouseArea
 
     public function prepareForValidation(ActionRequest $request): void
     {
+
+
         $request->merge(
             [
                 'title'       => __('Areas in :warehouse', ['warehouse' => $this->warehouse->code]),
                 'module'      => 'inventory',
                 'metaSection' => 'warehouse',
-                'sectionRoot' => 'inventory.areas.index',
+                'sectionRoot' => 'inventory.warehouses.show.areas.index',
                 'breadcrumbs' => $this->getBreadcrumbs($this->warehouse)
 
 
