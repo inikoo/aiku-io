@@ -118,7 +118,6 @@ class IndexWarehouseArea
 
         return QueryBuilder::for(WarehouseArea::class)
             ->leftJoin('warehouse_area_stats', 'warehouse_areas.id', '=', 'warehouse_area_stats.warehouse_area_id')
-            ->where('warehouse_id', $this->warehouse->id)
             ->allowedSorts($this->allowedSorts)
             ->allowedFilters([$globalSearch])
             ->paginate()

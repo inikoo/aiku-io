@@ -11,6 +11,7 @@
 namespace App\Http\Controllers\Inventory;
 
 
+use App\Actions\Inventory\WarehouseArea\IndexWarehouseAreaInTenant;
 use App\Actions\Inventory\WarehouseArea\IndexWarehouseAreaInWarehouse;
 use App\Actions\Inventory\WarehouseArea\ShowEditWarehouseArea;
 use App\Actions\Inventory\WarehouseArea\ShowWarehouseArea;
@@ -26,6 +27,11 @@ use Inertia\Response;
 class WarehouseAreaController extends Controller
 {
 
+
+    public function indexInTenant(): Response
+    {
+        return IndexWarehouseAreaInTenant::make()->asInertia();
+    }
 
     public function indexInWarehouse(Warehouse $warehouse): Response
     {

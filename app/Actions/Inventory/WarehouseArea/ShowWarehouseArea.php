@@ -9,7 +9,7 @@
 namespace App\Actions\Inventory\WarehouseArea;
 
 
-use App\Actions\Inventory\Warehouse\IndexWarehouse;
+use App\Actions\Inventory\ShowInventoryDashboard;
 use App\Actions\Inventory\Warehouse\ShowWarehouse;
 use App\Actions\UI\WithInertia;
 use App\Models\Inventory\WarehouseArea;
@@ -63,23 +63,27 @@ class ShowWarehouseArea
             'show-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->parent, $warehouseArea),
-                'navData'     => ['module' => 'inventory', 'sectionRoot' => $this->parent == 'warehouse' ? 'inventory.warehouses.show.areas.index' : 'inventory.areas.index'],
+                'navData'     => [
+                    'module'      => 'inventory',
+                    'metaSection' => $this->parent == 'warehouse' ? 'warehouse' : 'warehouses',
+                    'sectionRoot' => $this->parent == 'warehouse' ? 'inventory.warehouses.show.areas.index' : 'inventory.warehouses.index'
+                ],
                 'headerData'  => [
                     'module' => 'warehouses',
                     'title'  => __('Warehouse area').': '.$warehouseArea->name,
 
                     'actionIcons' => $actionIcons,
-                    'info'=>[
+                    'info'        => [
                         [
-                            'type'=>'group',
-                            'data'=>[
-                                'components'=>[
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
                                     [
                                         'type' => 'icon',
                                         'data' => array_merge(
                                             [
                                                 'type' => 'page-header',
-                                                'icon' => ['fal','inventory']
+                                                'icon' => ['fal', 'inventory']
                                             ],
 
                                         )
@@ -87,21 +91,34 @@ class ShowWarehouseArea
                                     [
                                         'type' => 'number',
                                         'data' => [
-                                            'slot' =>$this->warehouseArea->stats->number_locations
+                                            'slot' => $this->warehouseArea->stats->number_locations
                                         ]
                                     ],
                                     [
-                                        'type' =>'link',
+                                        'type' => 'link',
                                         'data' => [
-                                            'slot' => __('locations'),
-                                            'class'=>' ml-1',
-                                            'href' => [
-                                                'route'=>'inventory.warehouses.show.areas.show.locations.index',
-                                                'parameters'=>[
-                                                    $this->warehouseArea->warehouse_id,
-                                                    $this->warehouseArea->id
-                                                ]
-                                            ]
+                                            'slot'  => __('locations'),
+                                            'class' => ' ml-1',
+                                            'href'  =>
+                                                match ($this->parent) {
+                                                    'warehouse' =>
+                                                    [
+                                                        'route'      => 'inventory.warehouses.show.areas.show.locations.index',
+                                                        'parameters' => [
+                                                            $this->warehouseArea->warehouse_id,
+                                                            $this->warehouseArea->id
+                                                        ]
+                                                    ],
+                                                    default =>
+                                                    [
+                                                        'route'      => 'inventory.areas.show.locations.index',
+                                                        'parameters' => [
+                                                            $this->warehouseArea->id
+                                                        ]
+                                                    ]
+                                                }
+
+
                                         ]
                                     ],
 
@@ -129,8 +146,8 @@ class ShowWarehouseArea
 
                 break;
             case 'tenant':
-                $this->set('editRoute', 'inventory.warehouses.areas.edit');
-                $this->set('editRouteParameters', []);
+                $this->set('editRoute', 'inventory.areas.edit');
+                $this->set('editRouteParameters', [$this->warehouseArea->id]);
 
                 break;
         }
@@ -176,12 +193,30 @@ class ShowWarehouseArea
             );
         } else {
             return array_merge(
-                (new IndexWarehouse())->getBreadcrumbs(),
+                (new ShowInventoryDashboard())->getBreadcrumbs(),
                 [
-                    'inventory.warehouses.areas.index' =>
-                        array_merge([
-                                        'route' => 'inventory.warehouses.areas.index',
-                                    ], $commonItems),
+                    'inventory.areas.index' =>
+                        array_merge(
+                            [
+                                'index'           => [
+                                    'route'   => 'inventory.areas.index',
+                                    'overlay' => __(
+                                        'warehouse areas index'
+                                    )
+                                ],
+                                'route'           => 'inventory.areas.show',
+                                'routeParameters' => [
+                                    $warehouseArea->id
+                                ],
+                                'modelLabel'      => [
+                                    'label' => __(
+                                        'areas'
+                                    )
+                                ],
+
+                            ],
+                            $commonItems
+                        ),
                 ]
             );
         }

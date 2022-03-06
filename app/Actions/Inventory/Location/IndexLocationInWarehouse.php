@@ -10,101 +10,69 @@ namespace App\Actions\Inventory\Location;
 
 
 use App\Actions\Inventory\Warehouse\ShowWarehouse;
-use App\Http\Resources\Inventory\LocationInertiaResource;
-use App\Models\Inventory\Location;
 use App\Models\Inventory\Warehouse;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Inertia\Inertia;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
-use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
-use Spatie\QueryBuilder\QueryBuilder;
 
-use App\Actions\UI\WithInertia;
 
 use function __;
+
 
 /**
  * @property Warehouse $warehouse
  */
-class IndexLocationInWarehouse
+class IndexLocationInWarehouse extends IndexLocation
 {
-    use AsAction;
-    use WithInertia;
 
-
-    public function handle(): LengthAwarePaginator
+    public function authorize(ActionRequest $request): bool
     {
-        return QueryBuilder::for(Location::class)
-            ->select(
-                'locations.id as id',
-                'locations.code as code',
-                'locations.warehouse_id',
-                'locations.warehouse_area_id',
-                'warehouse_areas.code as warehouse_area_code'
-            )
-            ->leftJoin('warehouse_areas', 'locations.warehouse_area_id', '=', 'warehouse_areas.id')
-            ->where('locations.warehouse_id', $this->warehouse->id)
-            ->allowedSorts(['code'])
-            ->paginate()
-            ->withQueryString();
+        return $request->user()->hasPermissionTo("warehouses.view.$this->warehouse->id");
     }
 
+    public function queryConditions($query){
+        return $query->where('locations.warehouse_id',$this->warehouse->id)
+            ->leftJoin('warehouse_areas','warehouse_area_id','warehouse_areas.id')
+            ->select($this->select);
+    }
 
     public function asInertia(Warehouse $warehouse)
     {
         $this->set('warehouse', $warehouse);
-
+        session(['currentWarehouse' => $warehouse->id]);
         $this->validateAttributes();
 
+        return $this->getInertia();
 
-        return Inertia::render(
-            'index-model',
-            [
-                'headerData' => [
-                    'module'      => 'warehouses',
-                    'title'       => $this->get('title'),
-                    'breadcrumbs' => $this->getBreadcrumbs($this->warehouse),
-
-                ],
-                'dataTable'  => [
-                    'records' => LocationInertiaResource::collection($this->handle()),
-                    'columns' => [
-                        'code' => [
-                            'sort'  => 'code',
-                            'label' => __('Code'),
-                            'href'  => [
-                                'route'  => 'warehouses.show.locations.show',
-                                'column' => ['warehouse_id', 'id'],
-                                'if'     => 'id'
-                            ],
-                        ],
-
-                        'warehouse_area_code' => [
-                            'label' => __('Warehouse area'),
-                            'href'  => [
-                                'route'       => 'warehouses.show.areas.show',
-                                'column'      => ['warehouse_id', 'warehouse_area_id'],
-                                'if'          => 'warehouse_area_id',
-                                'notSetLabel' => __('Not set')
-                            ],
-                        ],
-
-                    ]
-                ]
-
-
-            ]
-        )->table(function (InertiaTable $table) {
-        });
     }
+
+
 
     public function prepareForValidation(ActionRequest $request): void
     {
+
+        unset($this->columns['warehouse_code']);
+
+
+        $this->select=array_merge(
+            $this->select,[
+                             'warehouse_areas.code as warehouse_area_code',
+                         ]
+        );
+
+        $this->columns['code']['components'][0]['resolver']['parameters']['href']=[
+            'route'  => 'inventory.warehouses.show.locations.show',
+            'indices' => ['warehouse_id', 'id']
+        ];
+        $this->columns['warehouse_area_code']['components'][0]['resolver']['parameters']['href']=[
+            'route'  => 'inventory.warehouses.show.areas.show',
+            'indices' => ['warehouse_id', 'warehouse_area_id']
+        ];
+
         $request->merge(
             [
                 'title' => __('Locations in :warehouse', ['warehouse' => $this->warehouse->code]),
-
+                'breadcrumbs'=>$this->getBreadcrumbs($this->warehouse),
+                'sectionRoot'=>'inventory.warehouses.show.locations.index',
+                'metaSection' => 'warehouse'
 
             ]
         );
@@ -118,8 +86,8 @@ class IndexLocationInWarehouse
         return array_merge(
             (new ShowWarehouse())->getBreadcrumbs($warehouse),
             [
-                'warehouses.show.locations.index' => [
-                    'route'           => 'warehouses.show.locations.index',
+                'inventory.warehouses.show.locations.index' => [
+                    'route'           => 'inventory.warehouses.show.locations.index',
                     'routeParameters' => $warehouse->id,
                     'name'            => __('Locations'),
                     'current'         => false

@@ -13,6 +13,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property int $warehouse_id
+ * @property int $number_locations
+ *
+ */
 class WarehouseAreaInertiaResource extends JsonResource
 {
 

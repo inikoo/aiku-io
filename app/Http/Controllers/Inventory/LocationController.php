@@ -10,9 +10,11 @@
 namespace App\Http\Controllers\Inventory;
 
 
+use App\Actions\Inventory\Location\IndexLocationInTenant;
 use App\Actions\Inventory\Location\IndexLocationInWarehouse;
 
 use App\Actions\Inventory\Location\IndexLocationInWarehouseArea;
+use App\Actions\Inventory\Location\IndexLocationInWarehouseAreaInWarehouse;
 use App\Actions\Inventory\Location\ShowLocation;
 use App\Actions\Inventory\Location\ShowEditLocation;
 
@@ -29,22 +31,29 @@ use Inertia\Response;
 class LocationController extends Controller
 {
 
-    /*
+
     public function index(): Response
     {
-        return IndexLocation::make()->asInertia();
+        return IndexLocationInTenant::make()->asInertia();
     }
-    */
 
     public function indexInWarehouse(Warehouse $warehouse): Response
     {
         return IndexLocationInWarehouse::make()->asInertia($warehouse);
     }
 
-    public function indexInArea(Warehouse $warehouse, WarehouseArea $warehouseArea): Response
+    public function indexInArea( WarehouseArea $warehouseArea): Response
     {
-        return IndexLocationInWarehouseArea::make()->asInertia(warehouse: $warehouse, warehouseArea: $warehouseArea);
+        return IndexLocationInWarehouseArea::make()->asInertia(warehouseArea: $warehouseArea);
     }
+
+    public function indexInAreaInWarehouse(Warehouse $warehouse, WarehouseArea $warehouseArea): Response
+    {
+        return IndexLocationInWarehouseAreaInWarehouse::make()->asInertia(warehouseArea: $warehouseArea);
+    }
+
+
+
 
     public function showInWarehouse(Warehouse $warehouse, Location $location): Response
     {

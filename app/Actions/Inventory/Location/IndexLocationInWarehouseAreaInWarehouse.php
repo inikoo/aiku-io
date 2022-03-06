@@ -13,23 +13,21 @@ use App\Actions\Inventory\WarehouseArea\ShowWarehouseArea;
 use App\Models\Inventory\WarehouseArea;
 use Lorisleiva\Actions\ActionRequest;
 
-
 use function __;
 
 /**
  * @property WarehouseArea $warehouseArea
  */
-class IndexLocationInWarehouseArea extends IndexLocation
+class IndexLocationInWarehouseAreaInWarehouse extends IndexLocation
 {
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("warehouses.view");
+        return $request->user()->hasPermissionTo("warehouses.view.$this->warehouseArea->warehouse_id");
     }
 
-    public function queryConditions($query)
-    {
-        return $query->where('locations.warehouse_area_id', $this->warehouseArea->id)
+    public function queryConditions($query){
+        return $query->where('locations.warehouse_area_id',$this->warehouseArea->id)
             ->select($this->select);
     }
 
@@ -39,27 +37,29 @@ class IndexLocationInWarehouseArea extends IndexLocation
         $this->validateAttributes();
 
         return $this->getInertia();
+
     }
 
 
     public function prepareForValidation(ActionRequest $request): void
     {
+
+
         unset($this->columns['warehouse_code']);
         unset($this->columns['warehouse_area_code']);
 
-
-        $this->columns['code']['components'][0]['resolver']['parameters']['href'] = [
-            'route'   => 'inventory.warehouses.show.areas.show.locations.show',
-            'indices' => ['warehouse_id', 'warehouse_area_id', 'id']
+        $this->columns['code']['components'][0]['resolver']['parameters']['href']=[
+            'route'  => 'inventory.warehouses.show.areas.show.locations.show',
+            'indices' => ['warehouse_id','warehouse_area_id', 'id']
         ];
 
         $request->merge(
             [
 
-                'title'       => __('Locations in :warehouse', ['warehouse' => $this->warehouseArea->code]),
-                'breadcrumbs' => $this->getBreadcrumbs($this->warehouseArea),
-                'sectionRoot' => 'inventory.warehouses.index',
-                'metaSection' => 'warehouses'
+                'title' => __('Locations in :warehouse', ['warehouse' => $this->warehouseArea->code]),
+                'breadcrumbs'=>$this->getBreadcrumbs($this->warehouseArea),
+                'sectionRoot'=>'inventory.warehouses.show.locations.index',
+                'metaSection' => 'warehouse'
 
             ]
         );
@@ -70,11 +70,11 @@ class IndexLocationInWarehouseArea extends IndexLocation
     public function getBreadcrumbs(WarehouseArea $warehouseArea): array
     {
         return array_merge(
-            (new ShowWarehouseArea())->getBreadcrumbs('tenant', $warehouseArea),
+            (new ShowWarehouseArea())->getBreadcrumbs('warehouse', $warehouseArea),
             [
                 'inventory.warehouses.show.locations.index' => [
-                    'route'           => 'inventory.areas.show.locations.index',
-                    'routeParameters' => [$warehouseArea->id],
+                    'route'           => 'inventory.warehouses.show.areas.show.locations.index',
+                    'routeParameters' => [$warehouseArea->warehouse_id, $warehouseArea->id],
                     'modelLabel'=>[
                         'label'=>__('locations')
                     ],

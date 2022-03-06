@@ -1,29 +1,26 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Tue, 08 Feb 2022 15:33:21 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sat, 29 Jan 2022 01:55:22 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\CRM\Customer;
+namespace App\Actions\Inventory\Location;
 
 
-use App\Http\Resources\CRM\CustomerInertiaResource;
-
-use App\Models\CRM\Customer;
+use App\Http\Resources\Inventory\LocationInertiaResource;
+use App\Models\Inventory\Location;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Inertia;
 use Lorisleiva\Actions\Concerns\AsAction;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
+use Spatie\QueryBuilder\QueryBuilder;
 
 use App\Actions\UI\WithInertia;
 
-use Spatie\QueryBuilder\QueryBuilder;
-
 use function __;
-
 
 /**
  * @property array $breadcrumbs
@@ -33,11 +30,10 @@ use function __;
  * @property array $allowedSorts
  * @property string $module
  */
-class IndexCustomer
+class IndexLocation
 {
     use AsAction;
     use WithInertia;
-
 
     protected array $select;
     protected array $columns;
@@ -45,17 +41,21 @@ class IndexCustomer
 
     public function __construct()
     {
-        $this->select       = ['id', 'name', 'shop_id'];
-        $this->allowedSorts = ['name', 'id', 'location'];
+        $this->select       = [
+            'locations.id as id',
+            'locations.code as code',
+            'locations.warehouse_id',
+            'locations.warehouse_area_id',
+
+
+        ];
+        $this->allowedSorts = ['code'];
 
         $this->columns = [
 
-
-
-
-            'customer_number' => [
-                'sort'       => 'id',
-                'label'      => __('Id'),
+            'code' => [
+                'sort'       => 'code',
+                'label'      => __('Code'),
                 'components' => [
                     [
                         'type'     => 'link',
@@ -63,22 +63,19 @@ class IndexCustomer
                             'type'       => 'link',
                             'parameters' => [
                                 'href'    => [
-                                    'route'   => 'marketing.shops.show.customers.show',
-                                    'indices' => ['shop_id', 'id']
+                                    'route'   => 'inventory.locations.show',
+                                    'indices' => ['id']
                                 ],
-                                'indices' => 'customer_number'
+                                'indices' => 'code'
                             ],
-
-
                         ]
                     ]
                 ],
-
             ],
 
-            'shop_code' => [
-                'sort'       => 'shop_code',
-                'label'      => __('Shop'),
+            'warehouse_code' => [
+                'sort'       => 'warehouse_code',
+                'label'      => __('Warehouse'),
                 'components' => [
                     [
                         'type'     => 'link',
@@ -86,42 +83,53 @@ class IndexCustomer
                             'type'       => 'link',
                             'parameters' => [
                                 'href'    => [
-                                    'route'   => 'marketing.shops.show',
-                                    'indices' => 'shop_id'
+                                    'route'   => 'inventory.warehouses.show',
+                                    'indices' => ['warehouse_id']
                                 ],
-                                'indices' => 'shop_code'
+                                'indices' => 'warehouse_code',
                             ],
-
-
                         ]
                     ]
                 ],
-
             ],
 
-            'name' => [
-                'sort'     => 'name',
-                'label'    => __('Name'),
-                'resolver' => 'name'
-            ]
+
+            'warehouse_area_code' => [
+                'sort'       => 'warehouse_area_code',
+                'label'      => __('Area'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type'       => 'link',
+                            'parameters' => [
+                                'href'        => [
+                                    'route'   => 'inventory.areas.show',
+                                    'indices' => ['warehouse_area_id']
+                                ],
+                                'indices'     => 'warehouse_area_code',
+                                'notSetLabel' => __('Not set')
+                            ],
+                        ]
+                    ]
+                ],
+            ],
+
+
+
+
         ];
-    }
-
-    public function queryConditions($query)
-    {
-        return $query->select($this->select);
     }
 
     public function handle(): LengthAwarePaginator
     {
-        return QueryBuilder::for(Customer::class)
+        return QueryBuilder::for(Location::class)
             ->when(true, [$this, 'queryConditions'])
             ->defaultSorts('-id')
             ->allowedSorts($this->allowedSorts)
             ->paginate()
             ->withQueryString();
     }
-
 
     public function getInertia()
     {
@@ -130,10 +138,10 @@ class IndexCustomer
             [
                 'breadcrumbs' => $this->breadcrumbs,
                 'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
-                'headerData' => [
+                'headerData'  => [
                     'title' => $this->title
                 ],
-                'dataTable'  => [
+                'dataTable'   => [
                     'records' => $this->getRecords(),
                     'columns' => $this->columns
                 ]
@@ -149,7 +157,8 @@ class IndexCustomer
 
     protected function getRecords(): AnonymousResourceCollection
     {
-        return CustomerInertiaResource::collection($this->handle());
+        return LocationInertiaResource::collection($this->handle());
     }
+
 
 }

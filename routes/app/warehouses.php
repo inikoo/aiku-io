@@ -30,32 +30,11 @@ Route::scopeBindings()->group(function () {
     Route::post('/{warehouse}/areas/{warehouseArea}', [WarehouseAreaController::class, 'updateInWarehouse'])->name('show.areas.update')->scopeBindings();
 
 
-    Route::get('/{warehouse}/areas/{warehouseArea}/locations', [LocationController::class, 'indexInArea'])->name('show.areas.show.locations.index')->scopeBindings();
-    Route::get('/{warehouse}/areas/{warehouseArea}/locations/{location}', [LocationController::class, 'showInArea'])->name('show.areas.show.locations.show');
+    Route::get('/{warehouse}/areas/{warehouseArea}/locations', [LocationController::class, 'indexInAreaInWarehouse'])->name('show.areas.show.locations.index')->scopeBindings();
+    Route::get('/{warehouse}/areas/{warehouseArea}/locations/{location}', [LocationController::class, 'showInAreaInWarehouse'])->name('show.areas.show.locations.show');
     Route::get('/{warehouse}/areas/{warehouseArea}/locations/{location}/edit', [LocationController::class, 'editInArea'])->name('show.areas.show.locations.edit');
     Route::post('/{warehouse}/areas/{warehouseArea}/locations/{location}', [LocationController::class, 'update'])->name('show.areas.show.locations.update');
 
 });
 
 
-/*
-
-Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
-Route::get('/locations/{location}', [LocationController::class, 'show'])->name('locations.show');
-Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
-Route::post('/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
-
-Route::get('/areas', [WarehouseAreaController::class, 'index'])->name('areas.index');
-Route::get('/areas/{warehouseArea}', [WarehouseAreaController::class, 'show'])->name('areas.show');
-Route::get('/areas/{warehouseArea}/edit', [WarehouseAreaController::class, 'edit'])->name('areas.edit');
-Route::post('/areas/{warehouseArea}', [WarehouseAreaController::class, 'update'])->name('areas.update');
-
-
-
-
-
-
-
-
-
-*/
