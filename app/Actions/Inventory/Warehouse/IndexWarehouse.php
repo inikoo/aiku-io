@@ -86,19 +86,46 @@ class IndexWarehouse
                             'label' => __('Name'),
                             'resolver'=> 'name'
                         ],
-                        'number_warehouse_areas' => [
-                            'sort'  => 'number_warehouse_areas',
-                            'label' => __('Areas'),
-                            'resolver'=> 'number_warehouse_areas'
-                        ],
-                        'number_locations'       => [
-                            'sort'  => 'number_locations',
-                            'label' => __('Locations'),
-                            'href'  => [
-                                'route'  => 'warehouses.show.locations.index',
-                                'column' => 'id',
-                            ],
 
+                        'number_warehouse_areas'=>[
+                            'sort'       => 'number_warehouse_areas',
+                            'label'      => __('Areas'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'  => 'inventory.warehouses.show.areas.index',
+                                                'indices' => 'id'
+                                            ],
+                                            'type'=>'number',
+                                            'indices' => 'number_warehouse_areas'
+                                        ],
+                                    ]
+                                ]
+                            ],
+                        ],
+                        'number_locations'=>[
+                            'sort'       => 'number_locations',
+                            'label'      => __('Locations'),
+                            'components' => [
+                                [
+                                    'type'     => 'link',
+                                    'resolver' => [
+                                        'type'       => 'link',
+                                        'parameters' => [
+                                            'href'    => [
+                                                'route'  => 'inventory.warehouses.show.locations.index',
+                                                'indices' => 'id'
+                                            ],
+                                            'type'=>'number',
+                                            'indices' => 'number_locations'
+                                        ],
+                                    ]
+                                ]
+                            ],
                         ],
 
                     ]

@@ -232,8 +232,7 @@ export default {
 <script setup>
 import PageHeader from '../components/navigation/top/page-header.vue';
 import {Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder';
-
-import {Link} from '@inertiajs/inertia-vue3';
+//import {Link} from '@inertiajs/inertia-vue3';
 import EmptyState from '../components/tables/empty-state.vue';
 
 import {useLocaleStore} from '../../scripts/stores/locale';
@@ -308,6 +307,16 @@ const getComponentsData = (record, components) => {
 
 };
 
+const getLinkSlot =(record,parameters) =>{
+
+    switch(parameters.type??'text'){
+        case 'number':
+            return number(record[parameters.indices] ?? 0)
+        default:
+            return record[parameters.indices] ?? parameters.indices
+    }
+}
+
 const getComponentData = (type, record, resolver) => {
 
     const resolvers = {
@@ -316,7 +325,7 @@ const getComponentData = (type, record, resolver) => {
         },
         link(record, parameters) {
             return {
-                'slot': record[parameters.indices] ?? parameters.indices,
+                'slot': getLinkSlot(record,parameters),
                 'href': {
                     'route'     : parameters.href.route,
                     'parameters': getValues(record, parameters.href.indices),
