@@ -19,6 +19,9 @@ use Lorisleiva\Actions\Concerns\AsAction;
 /**
  * @property Location $location
  * @property string $parent
+ * @property string $module
+ * @property string $metaSection
+ * @property string $sectionRoot
  */
 class ShowEditLocation
 {
@@ -36,11 +39,10 @@ class ShowEditLocation
             || $request->user()->hasPermissionTo("warehouses.edit.{$this->location->warehouse_id}");
     }
 
-    public function asInertia(string $parent, Location $location, array $attributes = []): Response
+    public function asInertia(string $parent, Location $location): Response
     {
         $this->set('location', $location)
-            ->set('parent', $parent)
-            ->fill($attributes);
+            ->set('parent', $parent);
         $this->validateAttributes();
 
         $blueprint = [];
@@ -63,10 +65,10 @@ class ShowEditLocation
         return Inertia::render(
             'edit-model',
             [
-                'headerData' => [
-                    'module'      => 'warehouses',
-                    'title'       => __('Editing').': '.$this->location->code,
-                    'breadcrumbs' => $this->getBreadcrumbs($this->parent, $this->location),
+                'breadcrumbs' => $this->getBreadcrumbs($this->parent, $this->location),
+                'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
+                'headerData'  => [
+                    'title' => __('Editing').': '.$this->location->code,
 
                     'actionIcons' => [
 
@@ -79,11 +81,16 @@ class ShowEditLocation
 
 
                 ],
-                'employee'   => $this->location,
-                'formData'   => [
+                'employee'    => $this->location,
+                'formData'    => [
                     'blueprint' => $blueprint,
                     'args'      => [
-                        'postURL' => "/warehouses/locations/{$this->location->id}",
+                        'postURL' => route(
+                            'inventory.locations.update',
+                            [
+                                $this->location->id
+                            ]
+                        )
                     ]
 
                 ],
@@ -96,18 +103,32 @@ class ShowEditLocation
     {
         $this->fillFromRequest($request);
 
+        $this->module = 'inventory';
+
         switch ($this->parent) {
-            case 'warehouseArea':
-                $this->set('showRoute', 'warehouses.show.areas.show.locations.show');
+            case 'warehouseAreaInWarehouse':
+                $this->set('showRoute', 'inventory.warehouses.show.areas.show.locations.show');
                 $this->set('showRouteParameters', [$this->location->warehouse_id, $this->location->warehouse_area_id, $this->location->id]);
+                $this->metaSection = 'warehouse';
+                $this->sectionRoot = 'inventory.warehouses.show.areas.index';
                 break;
             case 'warehouse':
-                $this->set('showRoute', 'warehouses.show.locations.show');
+                $this->set('showRoute', 'inventory.warehouses.show.locations.show');
                 $this->set('showRouteParameters', [$this->location->warehouse_id, $this->location->id]);
+                $this->metaSection = 'warehouse';
+                $this->sectionRoot = 'inventory.warehouses.show.locations.index';
                 break;
             case 'tenant':
-                $this->set('showRoute', 'warehouses.locations.show');
+                $this->set('showRoute', 'inventory.locations.show');
                 $this->set('showRouteParameters', [$this->location->id]);
+                $this->metaSection = 'warehouses';
+                $this->sectionRoot = 'inventory.warehouses.index';
+                break;
+            case 'warehouseArea':
+                $this->set('showRoute', 'inventory.areas.show.locations.show');
+                $this->set('showRouteParameters', [$this->location->warehouse_area_id, $this->location->id]);
+                $this->metaSection = 'warehouses';
+                $this->sectionRoot = 'inventory.warehouses.index';
                 break;
         }
     }

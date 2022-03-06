@@ -63,9 +63,6 @@ class WarehouseAreaController extends Controller
         return UpdateWarehouseArea::make()->asInertia($warehouseArea, $request);
     }
 
-    public function updateInWarehouse(Warehouse $warehouse, WarehouseArea $warehouseArea, Request $request): RedirectResponse
-    {
-        return UpdateWarehouseArea::make()->asInertia($warehouseArea, $request);
-    }
+
 
 }

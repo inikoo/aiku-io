@@ -88,19 +88,12 @@ class ShowEditWarehouseArea
                 'formData'    => [
                     'blueprint' => $blueprint,
                     'args'      => [
-                        'postURL' => match ($this->parent) {
-                            'warehouse' => route(
-                                'inventory.warehouses.show.areas.update',
-                                [
-                                    $this->warehouseArea->warehouse_id,
-                                    $this->warehouseArea->id
-                                ]),
-                            default=>route(
-                                'inventory.areas.update',
-                                [
-                                    $this->warehouseArea->id
-                                ])
-                        }
+                        'postURL' => route(
+                            'inventory.areas.update',
+                            [
+                                $this->warehouseArea->id
+                            ]
+                        )
 
 
                     ]

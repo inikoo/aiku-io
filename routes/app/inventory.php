@@ -28,7 +28,7 @@ Route::get('/stored_goods/{unique_stock}', [UniqueStockController::class, 'ShowU
 
 Route::get('/locations', [LocationController::class, 'indexInTenant'])->name('locations.index');
 Route::get('/locations/{location}', [LocationController::class, 'showInTenant'])->name('locations.show');
-Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
+Route::get('/locations/{location}/edit', [LocationController::class, 'editInTenant'])->name('locations.edit');
 Route::post('/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
 
 Route::get('/areas', [WarehouseAreaController::class, 'indexInTenant'])->name('areas.index');
@@ -40,7 +40,6 @@ Route::get('/areas/{warehouseArea}/locations', [LocationController::class, 'inde
 Route::scopeBindings()->group(function () {
     Route::get('/areas/{warehouseArea}/locations/{location}', [LocationController::class, 'showInArea'])->name('areas.show.locations.show');
     Route::get('/areas/{warehouseArea}/locations/{location}/edit', [LocationController::class, 'editInArea'])->name('areas.show.locations.edit');
-    Route::post('/areas/{warehouseArea}/locations/{location}', [LocationController::class, 'update'])->name('areas.show.locations.update');
 });
 
 Route::get('/fulfilment_stocks', [StockController::class, 'index'])->name('fulfilment_stocks.index');

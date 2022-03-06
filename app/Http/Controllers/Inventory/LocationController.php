@@ -80,10 +80,21 @@ class LocationController extends Controller
         return ShowEditLocation::make()->asInertia(parent: 'warehouse', location: $location);
     }
 
+    public function editInAreaInWarehouse(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
+    {
+        return ShowEditLocation::make()->asInertia(parent: 'warehouseAreaInWarehouse', location: $location);
+    }
+
     public function editInArea(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
     {
         return ShowEditLocation::make()->asInertia(parent: 'warehouseArea', location: $location);
     }
+
+    public function editInTenant(Location $location): Response
+    {
+        return ShowEditLocation::make()->asInertia(parent: 'tenant', location: $location);
+    }
+
 
     public function update(Location $location, Request $request): RedirectResponse
     {
