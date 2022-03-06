@@ -9,13 +9,11 @@
 namespace App\Actions\Inventory\Location;
 
 
-use App\Actions\Inventory\Warehouse\IndexWarehouse;
+use App\Actions\Inventory\ShowInventoryDashboard;
 use App\Actions\Inventory\Warehouse\ShowWarehouse;
 use App\Actions\Inventory\WarehouseArea\ShowWarehouseArea;
 use App\Actions\UI\WithInertia;
 use App\Models\Inventory\Location;
-use App\Models\Inventory\Warehouse;
-use App\Models\Inventory\WarehouseArea;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -26,6 +24,9 @@ use Lorisleiva\Actions\Concerns\AsAction;
  * @property Location $location
  * @property string $parent
  * @property bool $canEdit
+ * @property string $module
+ * @property string $metaSection
+ * @property string $sectionRoot
  */
 class ShowLocation
 {
@@ -44,18 +45,13 @@ class ShowLocation
     }
 
 
-    public function asInertia(string $parent, ?Warehouse $warehouse, ?WarehouseArea $warehouseArea, Location $location, array $attributes = []): Response
+    public function asInertia(string $parent, Location $location): Response
     {
         $this->set('parent', $parent)
-            ->set('location', $location)
-            ->set('warehouse', $warehouse)
-            ->set('warehouseArea', $warehouseArea)
-            ->fill($attributes);
+            ->set('location', $location);
 
         $this->validateAttributes();
 
-
-        session(['currentWarehouse' => $location->warehouse_id]);
 
         $actionIcons = [];
 
@@ -71,14 +67,13 @@ class ShowLocation
         return Inertia::render(
             'show-model',
             [
-                'headerData' => [
-                    'module'      => 'warehouses',
+                'breadcrumbs' => $this->getBreadcrumbs($this->parent, $this->location),
+                'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
+                'headerData'  => [
                     'title'       => __('Location').': '.$location->code,
-                    'breadcrumbs' => $this->getBreadcrumbs($this->parent, $location),
                     'actionIcons' => $actionIcons,
 
                 ],
-                'model'      => $location
             ]
 
         );
@@ -89,20 +84,35 @@ class ShowLocation
         $this->fillFromRequest($request);
         $this->set('canEdit', $request->user()->can("warehouses.edit.{$this->location->warehouse_id}"));
 
-        switch ($this->parent) {
-            case 'warehouseArea':
-                $this->set('editRoute', 'warehouses.show.areas.show.locations.edit');
-                $this->set('editRouteParameters', [$this->location->warehouse_id, $this->location->warehouse_area_id, $this->location->id]);
+        $this->module = 'inventory';
 
+
+        switch ($this->parent) {
+            case 'warehouseAreaInWarehouse':
+                $this->set('editRoute', 'inventory.warehouses.show.areas.show.locations.edit');
+                $this->set('editRouteParameters', [$this->location->warehouse_id, $this->location->warehouse_area_id, $this->location->id]);
+                $this->metaSection = 'warehouse';
+                $this->sectionRoot = 'inventory.warehouses.show.areas.index';
                 break;
             case 'warehouse':
-                $this->set('editRoute', 'warehouses.show.locations.edit');
+                $this->set('editRoute', 'inventory.warehouses.show.locations.edit');
                 $this->set('editRouteParameters', [$this->location->warehouse_id, $this->location->id]);
+                $this->metaSection = 'warehouse';
+                $this->sectionRoot = 'inventory.warehouses.show.locations.index';
                 break;
             case 'tenant':
-                $this->set('editRoute', 'warehouses.locations.edit');
-                $this->set('editRouteParameters', []);
+                $this->set('editRoute', 'inventory.locations.edit');
+                $this->set('editRouteParameters', [$this->location->id]);
+                $this->metaSection = 'warehouses';
+                $this->sectionRoot = 'inventory.warehouses.index';
 
+                break;
+            case 'warehouseArea':
+
+                $this->set('editRoute', 'inventory.areas.show.locations.edit');
+                $this->set('editRouteParameters', [$this->location->warehouse_area_id, $this->location->id]);
+                $this->metaSection = 'warehouses';
+                $this->sectionRoot = 'inventory.warehouses.index';
                 break;
         }
     }
@@ -112,60 +122,97 @@ class ShowLocation
     {
         $commonItems = [
             'name'  => $location->code,
-            'model' => [
-                'label' => __('Location'),
-                'icon'  => ['fal', 'pallet-alt'],
+            'modelLabel'      => [
+                'label' => __('location')
             ],
         ];
 
-        if ($parent == 'warehouseArea' and $location->warehouse_area_id) {
-            return array_merge(
-                (new ShowWarehouseArea())->getBreadcrumbs('warehouse',$location->warehouseArea),
+        return match ($parent) {
+            'warehouseAreaInWarehouse' => array_merge(
+                (new ShowWarehouseArea())->getBreadcrumbs('warehouse', $location->warehouseArea),
                 [
-                    'warehouses.show.areas.show.locations.show' =>
+                    'inventory.warehouses.show.areas.show.locations.show' =>
                         array_merge(
                             [
-                                'route'           => 'warehouses.show.areas.show.locations.show',
+                                'route'           => 'inventory.warehouses.show.areas.show.locations.show',
                                 'routeParameters' => [
                                     $location->warehouse_id,
                                     $location->warehouse_area_id,
                                     $location->id
                                 ],
-                            ],
-                            $commonItems
-                        ),
-                ]
-            );
-        } elseif ($parent == 'warehouse' and $location->warehouse_id) {
-            return array_merge(
-                (new ShowWarehouse())->getBreadcrumbs($location->warehouse),
-                [
-                    'warehouses.show.locations.show' =>
-                        array_merge(
-                            [
-                                'route'           => 'warehouses.show.locations.show',
-                                'routeParameters' => [
-                                    $location->warehouse_id,
-                                    $location->id
+                                'index'           => [
+                                    'route'           => 'inventory.warehouses.show.areas.show.locations.index',
+                                    'routeParameters' => [
+                                        $location->warehouse_id,
+                                        $location->warehouse_area_id,
+                                    ],
+                                    'overlay'         => __('locations index')
                                 ],
                             ],
                             $commonItems
                         ),
                 ]
-            );
-        } else {
-            return array_merge(
-                (new IndexWarehouse())->getBreadcrumbs(),
+            ),
+            'warehouse' => array_merge(
+                (new ShowWarehouse())->getBreadcrumbs($location->warehouse),
                 [
-                    'warehouses.areas.index' =>
+                    'inventory.warehouses.show.locations.show' =>
+                        array_merge(
+                            [
+                                'route'           => 'inventory.warehouses.show.locations.show',
+                                'routeParameters' => [
+                                    $location->warehouse_id,
+                                    $location->id
+                                ],
+                                'index'           => [
+                                    'route'           => 'inventory.warehouses.show.locations.index',
+                                    'routeParameters' => [
+                                        $location->warehouse_id,
+                                    ],
+                                    'overlay'         => __('locations index')
+                                ],
+                            ],
+                            $commonItems
+                        ),
+                ]
+            ),
+            'warehouseArea' => array_merge(
+                (new ShowWarehouseArea())->getBreadcrumbs('warehouses', $location->warehouseArea),
+                [
+                    'inventory.areas.show.locations.show' =>
+                        array_merge(
+                            [
+                                'route'           => 'inventory.areas.show.locations.show',
+                                'routeParameters' => [
+                                    $location->warehouse_area_id,
+                                    $location->id
+                                ],
+                                'index'           => [
+                                    'route'           => 'inventory.areas.show.locations.index',
+                                    'routeParameters' => [
+                                        $location->warehouse_area_id,
+                                    ],
+                                    'overlay'         => __('locations index')
+                                ],
+                            ],
+                            $commonItems
+                        ),
+                ]
+            ),
+            default => array_merge(
+                (new ShowInventoryDashboard())->getBreadcrumbs(),
+                [
+                    'inventory.locations.index' =>
                         array_merge([
-                                        'route' => 'warehouses.locations.index',
+                                        'route' => 'inventory.locations.index',
+                                        'index'           => [
+                                            'route'           => 'inventory.locations.index',
+                                            'overlay'         => __('locations index')
+                                        ],
                                     ], $commonItems),
                 ]
-            );
-        }
-
-
+            ),
+        };
     }
 
 

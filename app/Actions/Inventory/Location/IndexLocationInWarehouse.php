@@ -89,8 +89,10 @@ class IndexLocationInWarehouse extends IndexLocation
                 'inventory.warehouses.show.locations.index' => [
                     'route'           => 'inventory.warehouses.show.locations.index',
                     'routeParameters' => $warehouse->id,
-                    'name'            => __('Locations'),
-                    'current'         => false
+                    'modelLabel'      => [
+                        'label' => __('location')
+                    ],
+
                 ]
             ]
         );

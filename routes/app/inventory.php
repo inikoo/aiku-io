@@ -26,8 +26,8 @@ Route::get('/stored_goods', [UniqueStockController::class, 'IndexUniqueStockInTe
 Route::get('/stored_goods/{unique_stock}', [UniqueStockController::class, 'ShowUniqueStockInTenant'])->name('unique_stocks.show');
 
 
-Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
-Route::get('/locations/{location}', [LocationController::class, 'show'])->name('locations.show');
+Route::get('/locations', [LocationController::class, 'indexInTenant'])->name('locations.index');
+Route::get('/locations/{location}', [LocationController::class, 'showInTenant'])->name('locations.show');
 Route::get('/locations/{location}/edit', [LocationController::class, 'edit'])->name('locations.edit');
 Route::post('/locations/{location}', [LocationController::class, 'update'])->name('locations.update');
 

@@ -58,7 +58,7 @@ class IndexLocationInWarehouseAreaInWarehouse extends IndexLocation
 
                 'title' => __('Locations in :warehouse', ['warehouse' => $this->warehouseArea->code]),
                 'breadcrumbs'=>$this->getBreadcrumbs($this->warehouseArea),
-                'sectionRoot'=>'inventory.warehouses.show.locations.index',
+                'sectionRoot'=>'inventory.warehouses.show.areas.index',
                 'metaSection' => 'warehouse'
 
             ]

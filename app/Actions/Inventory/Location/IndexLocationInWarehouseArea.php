@@ -49,8 +49,8 @@ class IndexLocationInWarehouseArea extends IndexLocation
 
 
         $this->columns['code']['components'][0]['resolver']['parameters']['href'] = [
-            'route'   => 'inventory.warehouses.show.areas.show.locations.show',
-            'indices' => ['warehouse_id', 'warehouse_area_id', 'id']
+            'route'   => 'inventory.areas.show.locations.show',
+            'indices' => ['warehouse_area_id', 'id']
         ];
 
         $request->merge(
@@ -72,11 +72,11 @@ class IndexLocationInWarehouseArea extends IndexLocation
         return array_merge(
             (new ShowWarehouseArea())->getBreadcrumbs('tenant', $warehouseArea),
             [
-                'inventory.warehouses.show.locations.index' => [
+                'inventory.areas.show.locations.index' => [
                     'route'           => 'inventory.areas.show.locations.index',
                     'routeParameters' => [$warehouseArea->id],
-                    'modelLabel'=>[
-                        'label'=>__('locations')
+                    'modelLabel'      => [
+                        'label' => __('locations')
                     ],
                 ]
             ]

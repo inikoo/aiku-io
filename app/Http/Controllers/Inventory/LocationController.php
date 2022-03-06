@@ -1,4 +1,5 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+/** @noinspection PhpUnusedParameterInspection */
 
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
@@ -32,7 +33,7 @@ class LocationController extends Controller
 {
 
 
-    public function index(): Response
+    public function indexInTenant(): Response
     {
         return IndexLocationInTenant::make()->asInertia();
     }
@@ -42,7 +43,7 @@ class LocationController extends Controller
         return IndexLocationInWarehouse::make()->asInertia($warehouse);
     }
 
-    public function indexInArea( WarehouseArea $warehouseArea): Response
+    public function indexInArea(WarehouseArea $warehouseArea): Response
     {
         return IndexLocationInWarehouseArea::make()->asInertia(warehouseArea: $warehouseArea);
     }
@@ -53,21 +54,30 @@ class LocationController extends Controller
     }
 
 
-
-
     public function showInWarehouse(Warehouse $warehouse, Location $location): Response
     {
-        return ShowLocation::make()->asInertia(parent: 'warehouse', warehouse: $warehouse, warehouseArea: null, location: $location);
+        return ShowLocation::make()->asInertia(parent: 'warehouse', location: $location);
     }
 
-    public function showInArea(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
+    public function showInAreaInWarehouse(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
     {
-        return ShowLocation::make()->asInertia(parent: 'warehouseArea', warehouse: $warehouse, warehouseArea: $warehouseArea, location: $location);
+        return ShowLocation::make()->asInertia(parent: 'warehouseAreaInWarehouse', location: $location);
     }
+
+    public function showInArea(WarehouseArea $warehouseArea, Location $location): Response
+    {
+        return ShowLocation::make()->asInertia(parent: 'warehouseArea', location: $location);
+    }
+
+    public function showInTenant(Location $location): Response
+    {
+        return ShowLocation::make()->asInertia(parent: 'tenant', location: $location);
+    }
+
 
     public function editInWarehouse(Warehouse $warehouse, Location $location): Response
     {
-        return ShowEditLocation::make()->asInertia(parent: 'warehouse',  location: $location);
+        return ShowEditLocation::make()->asInertia(parent: 'warehouse', location: $location);
     }
 
     public function editInArea(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
