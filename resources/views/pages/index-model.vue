@@ -5,32 +5,32 @@
   -  Version 4.0
   -->
 
-<template>
+<template layout="app">
     <page-header :headerData="headerData"/>
 
-    <EmptyState v-if="dataTable.records.meta.total === 0 && queryBuilderProps.search.global.value==null "
+    <EmptyState v-if="dataTable['records'].meta.total === 0 && queryBuilderProps.search.global.value==null "
                 :data="dataTable.empty ?? {}"></EmptyState>
-    <Tailwind2.Table v-else
-                     :filters="queryBuilderProps.filters"
-                     :search="queryBuilderProps.search"
-                     :columns="queryBuilderProps.columns"
-                     :on-update="setQueryBuilder"
-                     :meta="dataTable.records"
-    >
+
+    <Table v-else
+           :filters="queryBuilderProps.filters"
+           :search="queryBuilderProps.search"
+           :columns="queryBuilderProps.columns"
+           :on-update="setQueryBuilder"
+           :meta="dataTable['records']">
+
         <template #head>
             <tr>
-                <Tailwind2.HeaderCell
+                <HeaderCell
                     :cell="header.sort ? sortableHeader(header.sort) : staticHeader(headerIdx)"
                     v-for="(header,headerIdx) in dataTable.columns"
                     v-bind:key="headerIdx"
                 >{{ header.label }}
-                </Tailwind2.HeaderCell>
+                </HeaderCell>
             </tr>
         </template>
-
         <template #body>
-            <tr v-for="(record,recordIdx) in dataTable.records.data" v-bind:key="recordIdx">
-                <td v-for="(column,columnIdx) in dataTable.columns" v-bind:key="columnIdx">
+            <tr v-for="(record,recordIdx) in dataTable['records'].data" v-bind:key="recordIdx" :class="recordIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+                <td v-for="(column,columnIdx) in dataTable.columns" v-bind:key="columnIdx" class="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
 
 
                     <component-group
@@ -42,7 +42,7 @@
                             }">
                         }
                     </component-group>
-                    <span v-else-if="column.type==='number'">{{ number(record[column['resolver']]) }}</span>
+                    <span v-else-if="column.type==='number'">{{ __number(record[column['resolver']]) }}</span>
                     <span v-else>{{ record[column['resolver']] }}</span>
 
 
@@ -50,195 +50,34 @@
             </tr>
         </template>
 
-    </Tailwind2.Table>
+    </Table>
 
 </template>
 
-<script>
-import app from '../layouts/app.vue';
 
-import qs from 'qs';
-import filter from 'lodash-es/filter';
-import forEach from 'lodash-es/forEach';
-import isEqual from 'lodash-es/isEqual';
-import map from 'lodash-es/map';
-import pickBy from 'lodash-es/pickBy';
-
-export default {
-
-    layout: app,
-    props : {
-        headerData       : {}, dataTable: {},
-        queryBuilderProps: {
-            type    : Object,
-            required: true,
-        },
-    },
-    data() {
-        const queryBuilderData = {
-            page   : this.queryBuilderProps.page || 1,
-            sort   : this.queryBuilderProps.sort || '',
-            filter : this.getFilterForQuery(
-                this.queryBuilderProps.search || {},
-                this.queryBuilderProps.filters || {},
-            ),
-            columns: this.getColumnsForQuery(this.queryBuilderProps.columns || {}),
-        };
-
-        return {queryBuilderData, queryBuilderDataIteration: 0};
-    },
-
-    methods: {
-
-        getFilterForQuery(search, filters) {
-            let filtersWithValue = {};
-
-            const filtersAndSearch = Object.assign({}, filters, search);
-
-            forEach(filtersAndSearch, (filterOrSearch) => {
-                if (filterOrSearch.value) {
-                    filtersWithValue[filterOrSearch.key] = filterOrSearch.value;
-                }
-            });
-
-            return filtersWithValue;
-        },
-
-        getColumnsForQuery(columns) {
-            let enabledColumns = filter(columns, (column) => {
-                return column.enabled;
-            });
-
-            if (enabledColumns.length === Object.keys(columns || {}).length) {
-                return [];
-            }
-
-            return map(enabledColumns, (column) => {
-                return column.key;
-            });
-        },
-
-        staticHeader(columnKey) {
-            return this._headerCellData(columnKey, false);
-        },
-
-        sortableHeader(columnKey) {
-            return this._headerCellData(columnKey, true);
-        },
-
-        _headerCellData(columnKey, sortable) {
-            let sort = false;
-
-            if (this.queryBuilderData.sort === columnKey) {
-                sort = 'asc';
-            } else if (this.queryBuilderData.sort === `-${columnKey}`) {
-                sort = 'desc';
-            }
-
-            let show = true;
-
-            if (this.queryBuilderProps.columns) {
-                const columnData = this.queryBuilderProps.columns[columnKey];
-
-                show = columnData ? columnData.enabled : true;
-            }
-
-            return {
-                key   : columnKey,
-                sort,
-                show,
-                sortable,
-                onSort: this.sortBy,
-            };
-        },
-
-        sortBy(column) {
-            this.queryBuilderData.page = 1;
-            this.queryBuilderData.sort =
-                this.queryBuilderData.sort === column ? `-${column}` : column;
-        },
-
-        showColumn(columnKey) {
-            if (!this.queryBuilderProps.columns) {
-                return false;
-            }
-
-            const column = this.queryBuilderProps.columns[columnKey];
-
-            return column ? column.enabled : false;
-        },
-
-        setQueryBuilder(data) {
-            let page = this.queryBuilderData.page || 1;
-
-            let filter = this.getFilterForQuery(
-                data.search || {},
-                data.filters || {},
-            );
-
-            if (!isEqual(filter, this.queryBuilderData.filter)) {
-                page = 1;
-            }
-
-            this.queryBuilderData = {
-                page,
-                sort   : this.queryBuilderData.sort || '',
-                filter,
-                columns: this.getColumnsForQuery(data.columns || {}),
-            };
-
-            this.queryBuilderDataIteration++;
-        },
-    },
-
-    computed: {
-        queryBuilderString() {
-            let query = qs.stringify(this.queryBuilderData, {
-                filter(prefix, value) {
-                    if (typeof value === 'object' && value !== null) {
-                        return pickBy(value);
-                    }
-                    return value;
-                },
-
-                skipNulls         : true,
-                strictNullHandling: true,
-            });
-
-            if (!query || query === 'page=1') {
-                query = 'remember=forget';
-            }
-
-            return query;
-        },
-    },
-
-    watch: {
-        queryBuilderData: {
-            deep: true,
-            handler() {
-                if (this.$inertia) {
-                    const query = this.queryBuilderString;
-
-                    this.$inertia.get(location.pathname + `?${query}`, {}, {replace: true, preserveState: true});
-                }
-            },
-        },
-    },
-
-};
-</script>
-
+<!--suppress NpmUsedModulesInstalled, JSFileReferences -->
 <script setup>
-import PageHeader from '../components/navigation/top/page-header.vue';
-import {Tailwind2} from '@protonemedia/inertiajs-tables-laravel-query-builder';
-//import {Link} from '@inertiajs/inertia-vue3';
-import EmptyState from '../components/tables/empty-state.vue';
+import PageHeader from '@c/navigation/top/page-header.vue';
+import EmptyState from '@c/tables/empty-state.vue';
+import ComponentGroup from '@c/elements/component-group.vue';
+import Table from '@c/tables/table.vue';
+import HeaderCell from '@c/tables/header-cell.vue';
 
-import {useLocaleStore} from '../../scripts/stores/locale';
-import ComponentGroup from '../components/elements/component-group.vue';
+import useTable from '@s/useTable.js';
+import useI18n from '@s/i18n/useI18n.js';
 
-const locale = useLocaleStore();
+const props = defineProps({
+                              headerData       : {},
+                              dataTable        : {},
+                              queryBuilderProps: {
+                                  type    : Object,
+                                  required: true,
+                              },
+                          });
+
+const {__number, __date} = useI18n();
+
+const {sortableHeader, staticHeader, setQueryBuilder} = useTable(props);
 
 /*
 const toggle = (value, blueprint) => {};
@@ -262,15 +101,6 @@ const checkRouteParametersIntegrity = (record, indices) => {
 
  */
 
-
-const number = (value) => {
-    if (Number.isFinite(value)) {
-        return new Intl.NumberFormat(locale['language']).format(value);
-    }
-    return value;
-
-};
-
 const getValues = (record, indices) => {
     if (typeof indices === 'string') {
         indices = [indices];
@@ -288,11 +118,11 @@ const getComponentsData = (record, components) => {
     for (let i in components) {
 
         let type = components[i].type;
-        let resolver=components[i]['resolver'].type;
+        let resolver = components[i]['resolver'].type;
 
         if (type === 'link' && components[i]['resolver'].parameters.href.permission && !record[components[i]['resolver'].parameters.href.permission]) {
             type = 'locked_link';
-            resolver='slot';
+            resolver = 'slot';
         }
 
         componentData.push(
@@ -307,15 +137,17 @@ const getComponentsData = (record, components) => {
 
 };
 
-const getLinkSlot =(record,parameters) =>{
+const getLinkSlot = (record, parameters) => {
 
-    switch(parameters.type??'text'){
+    switch (parameters.type ?? 'text') {
         case 'number':
-            return number(record[parameters.indices] ?? 0)
+            return __number(record[parameters.indices] ?? 0);
+        case 'date':
+            return __date(record[parameters.indices] ?? '');
         default:
-            return record[parameters.indices] ?? parameters.indices
+            return record[parameters.indices] ?? parameters.indices;
     }
-}
+};
 
 const getComponentData = (type, record, resolver) => {
 
@@ -325,7 +157,7 @@ const getComponentData = (type, record, resolver) => {
         },
         link(record, parameters) {
             return {
-                'slot': getLinkSlot(record,parameters),
+                'slot': getLinkSlot(record, parameters),
                 'href': {
                     'route'     : parameters.href.route,
                     'parameters': getValues(record, parameters.href.indices),
@@ -342,7 +174,7 @@ const getComponentData = (type, record, resolver) => {
         country(record, parameters) {
             return {
                 'code': record[parameters.indices][0],
-                'name': record[parameters.indices][1]
+                'name': record[parameters.indices][1],
             };
         },
     };
