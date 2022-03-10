@@ -152,10 +152,9 @@ class UpdateEmployee
             $employee_relationships = json_decode($request->get('employee_relationships'), true);
 
             foreach ($employee_relationships['ids'] as $id) {
-                if ($relatedEmployee = Employee::find($id)) {
-                    if ($employee->id == $relatedEmployee->id) {
-                        $validator->errors()->add('employee_relationships', 'Related employee same as employee.');
-                    }
+                $relatedEmployee = Employee::find($id);
+                if ($relatedEmployee and $employee->id == $relatedEmployee->id) {
+                    $validator->errors()->add('employee_relationships', 'Related employee same as employee.');
                 } else {
                     $validator->errors()->add('employee_relationships', 'Related employee not found.');
                 }
@@ -168,7 +167,8 @@ class UpdateEmployee
             $job_position_slugs = json_decode($request->get('job_position_slugs'), true);
 
             foreach ($job_position_slugs['slugs'] as $slug) {
-                if ($jobPosition = JobPosition::firstWhere('slug', $slug)) {
+                $jobPosition = JobPosition::firstWhere('slug', $slug);
+                if ($jobPosition) {
                     $jobPositions[] = $jobPosition->id;
                 } else {
                     $validator->errors()->add('job_positions', 'Wrong job position slug.');
@@ -208,7 +208,8 @@ class UpdateEmployee
             'job_positions'
 
         );
-        if ($data = $request->only('address')) {
+        $data      = $request->only('address');
+        if ($data) {
             $modelData['data'] = $data;
         }
 
@@ -244,7 +245,8 @@ class UpdateEmployee
             'job_positions'
 
         );
-        if ($data = $request->only('address')) {
+        $data      = $request->only('address');
+        if ($data) {
             $modelData['data'] = $data;
         }
 
