@@ -24,12 +24,6 @@ class MigrateAurora extends Command
     protected int $total = 0;
     protected ProgressBar $bar;
 
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     private function setAuroraConnection($database_name)
     {
         $database_settings = data_get(config('database.connections'), 'aurora');

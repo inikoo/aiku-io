@@ -22,11 +22,6 @@ class MigrateWorkSchedule extends MigrateModel
     use AsAction;
 
 
-    #[Pure] public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function handle($auModel): ActionResult
     {
         $res  = new ActionResult();

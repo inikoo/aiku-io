@@ -15,15 +15,9 @@ use Illuminate\Console\Command;
 class Install extends Command
 {
 
-    protected $signature = '
-    admin:install';
-
+    protected $signature = 'admin:install';
     protected $description = 'Install aiku';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle(): int
     {

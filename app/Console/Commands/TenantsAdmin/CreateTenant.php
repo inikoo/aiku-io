@@ -31,11 +31,6 @@ class CreateTenant extends Command
 
     protected $description = 'Create new tenant';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle(): int
     {
         if (!preg_match('/^[a-z]{1,16}$/', $this->argument('code'))) {

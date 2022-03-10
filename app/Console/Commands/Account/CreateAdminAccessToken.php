@@ -19,10 +19,6 @@ class CreateAdminAccessToken extends Command
 
     protected $description = 'Create new admin access token';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle(): int
     {

@@ -30,13 +30,6 @@ class MigrateHR extends MigrateAurora
     protected $signature = 'au_migration:hr {--reset} {--all} {--t|tenant=* : Tenant slug}';
     protected $description = 'Migrate aurora human resources';
 
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-
     public function handle(): int
     {
         $this->handleMigration();

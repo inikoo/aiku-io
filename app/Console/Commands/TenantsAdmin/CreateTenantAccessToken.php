@@ -21,11 +21,6 @@ class CreateTenantAccessToken extends Command
 
     protected $description = 'Create new tenant access token';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle(): int
     {
         if ($tenant = Tenant::firstWhere('code', $this->argument('code'))) {

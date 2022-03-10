@@ -23,11 +23,6 @@ class CreateAccountAdmin extends Command
 
     protected $description = 'Create new admin';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle(): int
     {
         if ($this->option('randomPassword')) {
