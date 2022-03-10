@@ -108,10 +108,10 @@ class MigrateCustomer extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        $this->modelData['customer']['data'] = $this->parseCustomerMetadata(
+        $this->modelData['customer']['data']            = $this->parseCustomerMetadata(
             auData: $this->auModel->data,
         );
-        $this->modelData['customer']['tax_number_data']  = $this->parseTaxNumberMetadata(
+        $this->modelData['customer']['tax_number_data'] = $this->parseTaxNumberMetadata(
             auData: $this->auModel->data,
         );
 
@@ -123,38 +123,17 @@ class MigrateCustomer extends MigrateModel
         );
     }
 
-    public function postMigrateActions(ActionResult $res): ActionResult
+
+    public function getFavourites(): array
     {
         $products = [];
-
-
-        /** @var Customer $customer */
-        $customer = $this->model;
-
-
-        if ($customer->shop->type == 'fulfilment_house') {
-            if ($res->status == 'inserted') {
-                DB::connection('aurora')->table('Customer Fulfilment Dimension')
-                    ->where('Customer Fulfilment Customer Key', $this->auModel->id)
-                    ->update(['aiku_id' => $customer->id]);
-            }
-
-            foreach (
-                DB::connection('aurora')
-                    ->table('Customer Fulfilment Dimension')
-                    ->where('Customer Fulfilment Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFulfilmentCustomer
-            ) {
-                MigrateFulfilmentCustomer::run($auroraFulfilmentCustomer);
-            }
-        }
-
-
         foreach (
             DB::connection('aurora')
                 ->table('Customer Favourite Product Fact')
                 ->where('Customer Favourite Product Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFavourites
         ) {
-            if ($product = Product::withTrashed()->firstWhere('aurora_id', $auroraFavourites->{'Customer Favourite Product Product ID'})) {
+            $product = Product::withTrashed()->firstWhere('aurora_id', $auroraFavourites->{'Customer Favourite Product Product ID'});
+            if ($product) {
                 $products[$product->id] =
                     [
                         'type'       => 'favourite',
@@ -167,12 +146,19 @@ class MigrateCustomer extends MigrateModel
             }
         }
 
+        return $products;
+    }
+
+    public function getReminders(): array
+    {
+        $products = [];
         foreach (
             DB::connection('aurora')
                 ->table('Back in Stock Reminder Fact')
                 ->where('Back in Stock Reminder Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
         ) {
-            if ($product = Product::withTrashed()->firstWhere('aurora_id', $auroraReminders->{'Back in Stock Reminder Product ID'})) {
+            $product = Product::withTrashed()->firstWhere('aurora_id', $auroraReminders->{'Back in Stock Reminder Product ID'});
+            if ($product) {
                 $products[$product->id] =
                     [
                         'type'       => 'notify-stock',
@@ -184,12 +170,20 @@ class MigrateCustomer extends MigrateModel
             }
         }
 
+        return $products;
+    }
+
+    public function getPortFolio(): array
+    {
+        $products = [];
+
         foreach (
             DB::connection('aurora')
                 ->table('Customer Portfolio Fact')
                 ->where('Customer Portfolio Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
         ) {
-            if ($product = Product::withTrashed()->firstWhere('aurora_id', $auroraReminders->{'Customer Portfolio Product ID'})) {
+            $product = Product::withTrashed()->firstWhere('aurora_id', $auroraReminders->{'Customer Portfolio Product ID'});
+            if ($product) {
                 $products[$product->id] =
                     [
                         'type'       => 'portfolio',
@@ -210,7 +204,37 @@ class MigrateCustomer extends MigrateModel
             }
         }
 
+        return $products;
+    }
 
+    public function postMigrateActions(ActionResult $res): ActionResult
+    {
+        /** @var Customer $customer */
+        $customer = $this->model;
+
+
+        if ($customer->shop->type == 'fulfilment_house') {
+            if ($res->status == 'inserted') {
+                DB::connection('aurora')->table('Customer Fulfilment Dimension')
+                    ->where('Customer Fulfilment Customer Key', $this->auModel->id)
+                    ->update(['aiku_id' => $customer->id]);
+            }
+
+            foreach (
+                DB::connection('aurora')
+                    ->table('Customer Fulfilment Dimension')
+                    ->where('Customer Fulfilment Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFulfilmentCustomer
+            ) {
+                MigrateFulfilmentCustomer::run($auroraFulfilmentCustomer);
+            }
+        }
+
+        //todo this is all wrong , separate in 3 pivots or test when a product is notify and favorite (this code will not work for that)
+        //https://aiku.atlassian.net/browse/AK-201
+        $products = [];
+        $products = array_merge($products, $this->getFavourites());
+        $products = array_merge($products, $this->getReminders());
+        $products = array_merge($products, $this->getPortFolio());
         $customer->products()->sync($products);
 
         foreach ($customer->products as $customerProduct) {
@@ -263,7 +287,8 @@ class MigrateCustomer extends MigrateModel
     public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        if ($auroraData = DB::connection('aurora')->table('Customer Dimension')->where('Customer Key', $auroraID)->first()) {
+        $auroraData = DB::connection('aurora')->table('Customer Dimension')->where('Customer Key', $auroraID)->first();
+        if ($auroraData) {
             return $this->handle($auroraData);
         }
 
