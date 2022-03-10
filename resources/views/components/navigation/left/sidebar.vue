@@ -31,7 +31,7 @@
                                     <sidebar-model-header v-if="section.model"  :indexLabel="section['indexLabel']"  :module="module" :navData="navData"></sidebar-model-header>
                                     <Link
                                         v-else-if="(navData['metaSection'] && section['metaSection'] ) ?  navData['metaSection']===section['metaSection']   : true"
-                                        :href="route(href,getSectionRouteParameters(module, module['fallbackModel']))"
+                                        :href="route(href,getSectionRouteParameters(module, module['fallbackModel'],section['staticParameter']))"
                                         :class="[navData['sectionRoot']===href ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900', 'group flex items-center px-2 py-2 text-xs 2xl:text-sm   font-medium rounded-md']"
                                     >
                                         <font-awesome-icon
@@ -130,7 +130,8 @@ const getItemVisibility = (route) => {
     return rootRoute === rootCurrentRoute;
 };
 
-const getSectionRouteParameters = (module, fallbackModel) => {
+const getSectionRouteParameters = (module, fallbackModel,sectionStaticParameter) => {
+
     let moduleCode = module.code;
     if (moduleCode === 'inventory')
         moduleCode = 'warehouse';
@@ -140,8 +141,8 @@ const getSectionRouteParameters = (module, fallbackModel) => {
     if (['shop', 'website', 'warehouse', 'workshop'].includes(moduleCode)) {
         return layout['currentModels'][moduleCode] ?? fallbackModel ?? 1;
     }
+    return sectionStaticParameter??{}
 
-    return {};
 };
 
 

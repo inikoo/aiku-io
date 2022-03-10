@@ -36,15 +36,28 @@ class CreateWorkTargetsTable extends Migration
         Schema::create('work_targets', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->unsignedBigInteger('employee_id')->index();
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->morphs('subject');
             $table->unsignedBigInteger('work_schedule_id')->index()->nullable();
             $table->foreign('work_schedule_id')->references('id')->on('work_schedules');
+
+            $table->unsignedSmallInteger('number_clockings')->default(0);
+            $table->unsignedSmallInteger('clocked_time')->default(0)->comment('minutes');
+            $table->unsignedSmallInteger('clocked_time_in_schedule')->nullable()->comment('minutes');
+            $table->unsignedSmallInteger('clocked_time_out_schedule')->nullable()->comment('minutes');
+            $table->unsignedSmallInteger('scheduled_time')->nullable()->comment('minutes');
+
+            $table->boolean('has_errors')->default(false);
+            $table->boolean('is_public_break')->nullable()->default(false);
+            $table->boolean('is_workplace_break')->nullable()->default(false);
+            $table->boolean('is_weekday_break')->nullable()->default(false);
+            $table->boolean('is_personal_break')->nullable()->default(false);
+            $table->boolean('is_sick_day')->nullable()->default(false);
+
 
             $table->json('data')->nullable();
             $table->timestampsTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->index();
-            $table->unique(['employee_id', 'date']);
+            $table->unique(['subject_id', 'subject_type', 'date']);
         });
     }
 

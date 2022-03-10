@@ -52,13 +52,13 @@ class GetUserLayoutEcommerce extends GetUserLayout
         session(['marketingCount' => $this->modelsCount['marketing']]);
         if ($this->modelsCount['marketing'] == 1) {
             session(['currentShop' => array_key_first($this->visibleModels['marketing'])]);
-        }elseif($this->modelsCount['marketing']==0){
+        } elseif ($this->modelsCount['marketing'] == 0) {
             session(['currentShop' => null]);
         }
         session(['inventoryCount' => $this->modelsCount['inventory']]);
         if ($this->modelsCount['inventory'] == 1) {
             session(['currentWarehouse' => array_key_first($this->visibleModels['inventory'])]);
-        }elseif($this->modelsCount['inventory']==0){
+        } elseif ($this->modelsCount['inventory'] == 0) {
             session(['currentWarehouse' => null]);
         }
     }
@@ -70,16 +70,15 @@ class GetUserLayoutEcommerce extends GetUserLayout
                 return [
 
 
-
-                    'marketing.dashboard'       => [
-                        'name'        => __('Marketing'),
-                        'shortName'   => __('Marketing'),
-                        'icon'        => ['fal', 'cash-register'],
+                    'marketing.dashboard' => [
+                        'name'      => __('Marketing'),
+                        'shortName' => __('Marketing'),
+                        'icon'      => ['fal', 'cash-register'],
                     ],
 
                     'marketing-model' => [
-                        'model' => 'shop',
-                        'indexLabel'=>__('Shops')
+                        'model'      => 'shop',
+                        'indexLabel' => __('Shops')
 
                     ],
 
@@ -126,11 +125,11 @@ class GetUserLayoutEcommerce extends GetUserLayout
                 }
 
                 $sections['inventory-model'] = [
-                    'model' => 'warehouse',
-                    'indexLabel'=>__('Warehouses')
+                    'model'      => 'warehouse',
+                    'indexLabel' => __('Warehouses')
                 ];
 
-                $sections['inventory.warehouses.show.areas.index'] = [
+                $sections['inventory.warehouses.show.areas.index']     = [
                     'metaSection' => 'warehouse',
                     'name'        => __('Areas'),
                     'icon'        => ['fal', 'draw-square'],
@@ -152,7 +151,13 @@ class GetUserLayoutEcommerce extends GetUserLayout
                 */
 
                 return $sections;
+            case 'human_resources':
 
+                $section = Arr::get($module, 'sections', []);
+
+                $section['human_resources.working_hours.interval']['staticParameter']='today';
+
+                return $section;
             default:
                 return Arr::get($module, 'sections', []);
         }

@@ -36,6 +36,7 @@ class Employee extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     use Searchable;
     use HasPersonalData;
+    use WithTimeTracking;
 
     protected $casts = [
         'data'          => 'array',
@@ -106,29 +107,13 @@ class Employee extends Model implements Auditable
         return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
 
-    public function workTargets(): HasMany
-    {
-        return $this->hasMany(WorkTarget::class);
-    }
+
 
     public function homeOffice(): morphOne
     {
         return $this->morphOne(Workplace::class, 'owner');
     }
 
-    public function clockings(): MorphMany
-    {
-        return $this->morphMany(Clocking::class, 'clockable');
-    }
 
-    public function createdClockings(): MorphMany
-    {
-        return $this->morphMany(Clocking::class, 'generator');
-    }
-
-    public function deletedClockings(): MorphMany
-    {
-        return $this->morphMany(Clocking::class, 'deleter');
-    }
 
 }

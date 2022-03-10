@@ -43,6 +43,8 @@
                         }
                     </component-group>
                     <span v-else-if="column.type==='number'">{{ __number(record[column['resolver']]) }}</span>
+                    <span v-else-if="column.type==='date'">{{ __date(record[column['resolver']]) }}</span>
+
                     <span v-else>{{ record[column['resolver']] }}</span>
 
 
@@ -65,6 +67,7 @@ import HeaderCell from '@c/tables/header-cell.vue';
 
 import useTable from '@s/useTable.js';
 import useI18n from '@s/i18n/useI18n.js';
+import IntervalTabs from '@c/tabs/interval-tabs.vue';
 
 const props = defineProps({
                               headerData       : {},
@@ -79,27 +82,7 @@ const {__number, __date} = useI18n();
 
 const {sortableHeader, staticHeader, setQueryBuilder} = useTable(props);
 
-/*
-const toggle = (value, blueprint) => {};
 
-const checkRouteParametersIntegrity = (record, indices) => {
-
-    if (typeof indices === 'string') {
-        indices = [indices];
-    }
-    let pass = true;
-    for (let index of indices) {
-        if (!record[index]) {
-            pass = false;
-            break;
-        }
-    }
-    return pass;
-
-};
-
-
- */
 
 const getValues = (record, indices) => {
     if (typeof indices === 'string') {
@@ -137,7 +120,7 @@ const getComponentsData = (record, components) => {
 
 };
 
-const getLinkSlot = (record, parameters) => {
+const getSlot = (record, parameters) => {
 
     switch (parameters.type ?? 'text') {
         case 'number':
@@ -157,7 +140,7 @@ const getComponentData = (type, record, resolver) => {
         },
         link(record, parameters) {
             return {
-                'slot': getLinkSlot(record, parameters),
+                'slot': getSlot(record, parameters),
                 'href': {
                     'route'     : parameters.href.route,
                     'parameters': getValues(record, parameters.href.indices),
@@ -168,7 +151,7 @@ const getComponentData = (type, record, resolver) => {
 
         slot(record, parameters) {
             return {
-                'slot': record[parameters.indices] ?? parameters.indices,
+                'slot': getSlot(record, parameters),
             };
         },
         country(record, parameters) {
@@ -179,6 +162,28 @@ const getComponentData = (type, record, resolver) => {
         },
     };
     return resolvers[type](record, resolver.parameters) ?? null;
+
+    /*
+const toggle = (value, blueprint) => {};
+
+const checkRouteParametersIntegrity = (record, indices) => {
+
+    if (typeof indices === 'string') {
+        indices = [indices];
+    }
+    let pass = true;
+    for (let index of indices) {
+        if (!record[index]) {
+            pass = false;
+            break;
+        }
+    }
+    return pass;
+
+};
+
+
+ */
 
 };
 

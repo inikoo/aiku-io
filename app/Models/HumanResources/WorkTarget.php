@@ -10,8 +10,8 @@ namespace App\Models\HumanResources;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 /**
@@ -24,9 +24,9 @@ class WorkTarget extends Model
 
     protected $guarded = [];
 
-    public function employee(): BelongsTo
+    public function subject(): MorphTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->morphTo();
     }
 
     public function timeTrackings(): HasMany

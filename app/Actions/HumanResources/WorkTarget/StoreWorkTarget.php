@@ -19,20 +19,20 @@ class StoreWorkTarget
     use AsAction;
 
 
-    public function handle(Employee|Guest $workplaceUser, array $workTargetData): ActionResult
+    public function handle(Employee|Guest $subject, array $workTargetData): ActionResult
     {
         $res = new ActionResult();
 
         /** @var \App\Models\HumanResources\WorkTarget $workTarget */
 
-        try {
-            $workTarget    = $workplaceUser->workTargets()->create($workTargetData);
+     //   try {
+            $workTarget    = $subject->workTargets()->create($workTargetData);
             $res->model    = $workTarget;
             $res->model_id = $workTarget->id;
             $res->status   = $res->model_id ? 'inserted' : 'error';
-        } catch (Exception) {
-            $res->status = 'error';
-        }
+       // } catch (Exception) {
+      //      $res->status = 'error';
+     //   }
 
 
         return $res;

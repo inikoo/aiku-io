@@ -95,12 +95,15 @@ return [
                 'name' => 'Employees',
                 'icon' => ['fal', 'user-hard-hat'],
             ],
+            'human_resources.working_hours.interval' => [
+                'name' => 'Working hours',
+                'icon' => ['fal', 'business-time'],
+            ],
             'human_resources.timesheets.index' => [
                 'name' => 'Timesheets',
+                'icon' => ['fal', 'chess-clock'],
             ],
-            'human_resources.logbook'          => [
-                'name' => 'Logbook',
-            ],
+
 
         ]
     ],

@@ -73,6 +73,9 @@ class GetUserLayout
                         if (Arr::get($section, 'metaSection')) {
                             $sections[$sectionRoute]['metaSection'] = Arr::get($section, 'metaSection');
                         }
+                        if (Arr::get($section, 'staticParameter')) {
+                            $sections[$sectionRoute]['staticParameter'] = Arr::get($section, 'staticParameter');
+                        }
                     }
                 }
             }
@@ -97,9 +100,6 @@ class GetUserLayout
 
             $layout[] = $moduleData;
         }
-
-
-
 
         return $layout;
     }

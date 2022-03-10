@@ -37,6 +37,7 @@ class MigrateWorkTarget extends MigrateModel
     public function getParent(): Employee|Guest
     {
         $parent = Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Timesheet Staff Key'});
+
         if (!$parent) {
             $parent = Guest::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Timesheet Staff Key'});
         }
@@ -58,12 +59,14 @@ class MigrateWorkTarget extends MigrateModel
 
         $resWorkSchedule = MigrateWorkSchedule::run($this->auModel->data);
 
-        $this->modelData   = [
+        $this->modelData = [
             'date'             => $this->auModel->data->{'Timesheet Date'},
             'work_schedule_id' => $resWorkSchedule->model_id,
             'aurora_id'        => $this->auModel->data->{'Timesheet Key'},
 
         ];
+
+
         $this->auModel->id = $this->auModel->data->{'Timesheet Key'};
     }
 
@@ -80,7 +83,14 @@ class MigrateWorkTarget extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreWorkTarget::run(workplaceUser: $this->parent, workTargetData: $this->modelData);
+        if ($this->parent) {
+            return StoreWorkTarget::run(subject: $this->parent, workTargetData: $this->modelData);
+        } else {
+            $res         = new ActionResult();
+            $res->status = 'error';
+
+            return $res;
+        }
     }
 
     public function postMigrateActions(ActionResult $res): ActionResult
@@ -95,9 +105,10 @@ class MigrateWorkTarget extends MigrateModel
                 ->where('Timesheet Record Type', 'ClockingRecord')
                 ->get() as $auroraData
         ) {
-            $auroraData->employee_id = $workTarget->employee_id;
+            $auroraData->subject = $workTarget->subject;
             MigrateClocking::run($auroraData);
         }
+
 
         return $res;
     }

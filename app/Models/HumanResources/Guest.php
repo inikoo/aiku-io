@@ -33,6 +33,7 @@ class Guest extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
     use Searchable;
     use HasPersonalData;
+    use WithTimeTracking;
 
     protected $casts = [
         'data'          => 'array',
@@ -76,9 +77,6 @@ class Guest extends Model implements Auditable
         return $this->morphOne(Workplace::class, 'owner');
     }
 
-    public function clockings(): MorphMany
-    {
-        return $this->morphMany(Clocking::class, 'clockable');
-    }
+
 
 }

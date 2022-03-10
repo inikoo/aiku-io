@@ -9,6 +9,7 @@
 namespace App\Console\Commands\AuroraMigration;
 
 
+use App\Actions\HumanResources\TimeTracking\CleanTimeTrackings;
 use App\Actions\Migrations\MigrateClockingMachine;
 use App\Actions\Migrations\MigrateDeletedEmployee;
 use App\Actions\Migrations\MigrateDeletedGuest;
@@ -161,12 +162,15 @@ class MigrateHR extends MigrateAurora
 
         DB::connection('aurora')->table('Timesheet Dimension')
             ->where('Timesheet Staff Key', '>', 0)
+            // ->where('Timesheet Date','>','2020-01-01')
             ->orderBy('Timesheet Date')->chunk(1000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
                     $result = MigrateWorkTarget::run($auroraData);
                     $this->recordAction($tenant, $result);
                 }
             });
+
+        CleanTimeTrackings::run();
     }
 
 

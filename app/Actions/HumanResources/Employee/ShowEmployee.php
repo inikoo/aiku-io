@@ -61,6 +61,12 @@ class ShowEmployee
         ];
         */
 
+        $actionIcons['human_resources.employees.show.timesheets.index'] =[
+            'routeParameters' => $this->employee->id,
+            'name'            => __('Timesheets'),
+            'icon'            => ['fal', 'chess-clock']
+        ];
+
         if ($this->canEdit) {
             $actionIcons['human_resources.employees.edit'] = [
                 'routeParameters' => $this->employee->id,

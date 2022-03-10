@@ -29,10 +29,10 @@ class UpdateClocking
             Arr::only($clockingData,
                       [
                           'clocked_at',
-                          'creator_type',
-                          'creator_id',
-                          'deleter_type',
-                          'deleter_id',
+                          'created_by_type',
+                          'created_by_id',
+                          'deleted_by_type',
+                          'deleted_by_id',
                           'created_at',
                           'aurora_id'
                       ]
