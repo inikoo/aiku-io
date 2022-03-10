@@ -1,3 +1,6 @@
+
+[![CodeFactor](https://www.codefactor.io/repository/github/inikoo/aiku-io/badge)](https://www.codefactor.io/repository/github/inikoo/aiku-io)
+
 ### Database preparations
 
 If using psql , a case-insensitive collation need to be created
