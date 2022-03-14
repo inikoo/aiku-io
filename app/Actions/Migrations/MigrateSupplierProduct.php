@@ -126,6 +126,7 @@ class MigrateSupplierProduct extends MigrateModel
     {
         $supplier= Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Supplier Key'});
         if(!$supplier){
+            print "No supplier ";
             dd($this->auModel->data);
         }
 

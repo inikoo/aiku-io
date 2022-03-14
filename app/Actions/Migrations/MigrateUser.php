@@ -50,6 +50,7 @@ class MigrateUser extends MigrateModel
         };
 
         if(!$parent){
+            print "User parent not found";
             dd($this->auModel);
         }
         return $parent;

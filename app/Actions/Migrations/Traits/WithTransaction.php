@@ -50,20 +50,22 @@ trait WithTransaction
             case 'Adjust':
 
 
-                $item = (new Adjust())->where('type', 'refund')->where('shop_id', $this->parent->shop_id)->first();
-                $shop = Shop::withTrashed()->find($this->parent->shop_id);
+            $adjustType=    match ($this->auModel->data->{'Transaction Type'}) {
+                'Adjust' => 'other',
+                default => strtolower($this->auModel->data->{'Transaction Type'})
+            };
+
+
+            $shop = Shop::withTrashed()->find($this->parent->shop_id);
+
+            $item = (new Adjust())->where('type',$adjustType)->where('shop_id', $this->parent->shop_id)->first();
 
 
 
                 if (!$item) {
                     $res  = StoreAdjust::run($shop,
                                              [
-                                                 'type' =>
-                                                     match ($this->auModel->data->{'Transaction Type'}) {
-                                                         'Adjust' => 'other',
-                                                         default => strtolower($this->auModel->data->{'Transaction Type'})
-                                                     },
-
+                                                 'type' =>$adjustType
                                              ]
                     );
                     $item = $res->model;
@@ -73,6 +75,8 @@ trait WithTransaction
 
 
                 break;
+
+
             default:
                 print "===== MigrateNoProductTransaction.php\n";
                 dd($this->auModel->data);

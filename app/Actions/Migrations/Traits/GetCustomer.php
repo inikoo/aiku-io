@@ -9,7 +9,7 @@
 namespace App\Actions\Migrations\Traits;
 
 use App\Actions\Migrations\MigrateCustomer;
-use App\Actions\Migrations\MigrateCustomerClient;
+use App\Actions\Migrations\MigrateDeletedCustomer;
 use App\Models\CRM\Customer;
 use Illuminate\Support\Facades\DB;
 
@@ -28,14 +28,28 @@ trait GetCustomer
                     ->where('Customer Key', $auroraCustomerId)
                     ->get() as $auroraModel
             ) {
-                $_res     = MigrateCustomer::run($auroraModel);
+                $_res = MigrateCustomer::run($auroraModel);
+
                 $customer = $_res->model;
 
-                foreach (DB::connection('aurora')->table('Customer Client Dimension')->where('Customer Client Customer Key', $auroraCustomerId)->get() as $auroraCustomerClientData) {
-                    MigrateCustomerClient::run($auroraCustomerClientData);
+
+            }
+        }
+
+        if (!$customer) {
+            foreach (
+                DB::connection('aurora')
+                    ->table('Customer Deleted Dimension')
+                    ->where('Customer Key', $auroraCustomerId)
+                    ->get() as $auroraModel
+            ) {
+                if ($auroraModel->{'Customer Key'} and $auroraModel->{'Customer Deleted Metadata'} != '') {
+                    $_res     = MigrateDeletedCustomer::run($auroraModel);
+                    $customer = $_res->model;
                 }
             }
         }
+
 
         return $customer;
     }

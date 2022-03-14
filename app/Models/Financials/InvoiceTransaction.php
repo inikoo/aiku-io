@@ -47,7 +47,6 @@ class InvoiceTransaction extends Model
         return $this->belongsTo(Transaction::class);
     }
 
-    /** @noinspection PhpUnused */
     public function setQuantityAttribute($val)
     {
         $this->attributes['quantity'] = sprintf('%.3f', $val);

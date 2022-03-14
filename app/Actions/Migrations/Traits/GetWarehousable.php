@@ -24,9 +24,8 @@ trait GetWarehousable
         if ($auroraWarehouseArea and $auroraWarehouseArea->{'Warehouse Area Place'} == 'Local') {
             $warehousable = (new WarehouseArea())->firstWhere('aurora_id', $auroraId);
         } else {
-            return null;
+            $warehousable = (new Warehouse())->firstWhere('aurora_id', $auroraId);
         }
-
 
         if (!$warehousable) {
             foreach (

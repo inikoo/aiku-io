@@ -82,38 +82,53 @@ class MigrateOrders extends MigrateAurora
     {
         DB::connection('aurora')->table('Order Dimension')
             ->whereNull('aiku_note')
-            ->orderBy('Order Created Date')->chunk(10000, function ($chunk) use ($tenant) {
+            ->orderBy('Order Created Date')
+            ->chunk(10000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraData) {
+
                     $result = MigrateOrder::run($auroraData);
                     $this->recordAction($tenant, $result);
 
 
-                    DB::connection('aurora')->table('Invoice Dimension')
-                        ->where('Invoice Order Key', $auroraData->{'Order Key'})
-                        ->orderBy('Invoice Key')->chunk(1000, function ($chunk) use ($tenant) {
-                            foreach ($chunk as $auroraInvoiceData) {
-                                $result = MigrateInvoice::run($auroraInvoiceData);
-                                $this->recordAction($tenant, $result);
-                            }
-                        });
-                    DB::connection('aurora')->table('Invoice Deleted Dimension')
-                        ->where('Invoice Deleted Order Key', $auroraData->{'Order Key'})
-                        ->orderBy('Invoice Deleted Key')->chunk(1000, function ($chunk) use ($tenant) {
-                            foreach ($chunk as $auroraInvoiceData) {
-                                $result = MigrateDeletedInvoice::run($auroraInvoiceData);
-                                $this->recordAction($tenant, $result);
-                            }
-                        });
+
+                    foreach (
+                        DB::connection('aurora')
+                            ->table('Invoice Dimension')
+                            ->where('Invoice Order Key', $auroraData->{'Order Key'})
+                            ->orderBy('Invoice Key')
+                            ->get() as $auroraInvoiceData
+                    ) {
+
+                        $result = MigrateInvoice::run($auroraInvoiceData);
+                        $this->recordAction($tenant, $result);
+                    }
 
 
-                    DB::connection('aurora')->table('Delivery Note Dimension')
-                        ->where('Delivery Note Order Key', $auroraData->{'Order Key'})
-                        ->orderBy('Delivery Note Key')->chunk(1000, function ($chunk) use ($tenant) {
-                            foreach ($chunk as $auroraDeliveryNoteData) {
-                                $result = MigrateDeliveryNote::run($auroraDeliveryNoteData);
-                                $this->recordAction($tenant, $result);
-                            }
-                        });
+                    foreach (
+                        DB::connection('aurora')
+                            ->table('Invoice Deleted Dimension')
+                            ->where('Invoice Deleted Order Key', $auroraData->{'Order Key'})
+                            ->orderBy('Invoice Deleted Key')
+                            ->get() as $auroraInvoiceData
+                    ) {
+                        $result = MigrateDeletedInvoice::run($auroraInvoiceData);
+                        $this->recordAction($tenant, $result);
+                    }
+
+
+                    foreach (
+                        DB::connection('aurora')
+                            ->table('Delivery Note Dimension')
+                            ->where('Delivery Note Order Key', $auroraData->{'Order Key'})
+                            ->orderBy('Delivery Note Key')
+                            ->get() as $auroraDeliveryNoteData
+                    ) {
+                        $result = MigrateDeliveryNote::run($auroraDeliveryNoteData);
+                        $this->recordAction($tenant, $result);
+                    }
+
+
+
                 }
             });
     }

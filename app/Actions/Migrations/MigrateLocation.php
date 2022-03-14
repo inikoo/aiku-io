@@ -38,7 +38,12 @@ class MigrateLocation extends MigrateModel
     public function getParent(): Warehouse|WarehouseArea
     {
         if ($this->auModel->data->{'Location Warehouse Area Key'}) {
-            return $this->getWarehousable($this->auModel->data->{'Location Warehouse Area Key'});
+            $warehousable= $this->getWarehousable($this->auModel->data->{'Location Warehouse Area Key'});
+            if(!$warehousable){
+                print "Warehousable not found";
+                dd($this->auModel->data);
+            }
+
         }
         return $this->getWarehouse($this->auModel->data->{'Location Warehouse Key'});
     }

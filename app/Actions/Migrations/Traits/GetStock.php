@@ -20,7 +20,7 @@ trait GetStock
     public function getStock($auroraId): ?Stock
     {
         $stock = Stock::withTrashed()->firstWhere('aurora_id', $auroraId);
-        if (!$stock) {
+        if (!$stock ) {
             foreach (
                 DB::connection('aurora')
                     ->table('Part Dimension')

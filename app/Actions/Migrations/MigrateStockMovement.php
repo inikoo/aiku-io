@@ -73,6 +73,7 @@ class MigrateStockMovement extends MigrateModel
         };
 
         if (!$type) {
+            print "No type migrating stock movement\n";
             dd($this->auModel->data->{'Inventory Transaction Type'});
         }
 

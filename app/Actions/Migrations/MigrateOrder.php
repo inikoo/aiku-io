@@ -44,9 +44,9 @@ class MigrateOrder extends MigrateModel
         if ($this->auModel->data->{'Order Customer Client Key'} != '') {
             $parent=$this->getCustomerClient($this->auModel->data->{'Order Customer Client Key'});
         } else {
+
             $parent=$this->getCustomer($this->auModel->data->{'Order Customer Key'});
         }
-
         if (!$parent) {
             print "Migrate order no parent";
             dd($this->auModel->data);
