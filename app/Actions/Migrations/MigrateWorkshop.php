@@ -10,11 +10,12 @@ namespace App\Actions\Migrations;
 
 
 
+use App\Actions\Migrations\Traits\WithWorkshop;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
-use App\Models\Utils\ActionResult;
 
 class MigrateWorkshop extends MigrateModel
 {

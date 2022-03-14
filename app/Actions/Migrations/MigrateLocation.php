@@ -10,6 +10,8 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\Location\StoreLocation;
 use App\Actions\Inventory\Location\UpdateLocation;
+use App\Actions\Migrations\Traits\GetWarehousable;
+use App\Actions\Migrations\Traits\GetWarehouse;
 use App\Models\Inventory\Location;
 use App\Models\Inventory\Warehouse;
 use App\Models\Inventory\WarehouseArea;
@@ -22,6 +24,8 @@ use App\Models\Utils\ActionResult;
 class MigrateLocation extends MigrateModel
 {
     use AsAction;
+    use GetWarehousable;
+    use GetWarehouse;
 
 
     #[Pure] public function __construct()
@@ -34,14 +38,9 @@ class MigrateLocation extends MigrateModel
     public function getParent(): Warehouse|WarehouseArea
     {
         if ($this->auModel->data->{'Location Warehouse Area Key'}) {
-            $auroraWarehouseArea = DB::connection('aurora')->table('Warehouse Area Dimension')->where('Warehouse Area Key', $this->auModel->data->{'Location Warehouse Area Key'})->first();
-
-            if ($auroraWarehouseArea and $auroraWarehouseArea->{'Warehouse Area Place'} == 'Local') {
-                return (new WarehouseArea())->firstWhere('aurora_id', $this->auModel->data->{'Location Warehouse Area Key'});
-            }
+            return $this->getWarehousable($this->auModel->data->{'Location Warehouse Area Key'});
         }
-
-        return (new Warehouse())->firstWhere('aurora_id', $this->auModel->data->{'Location Warehouse Key'});
+        return $this->getWarehouse($this->auModel->data->{'Location Warehouse Key'});
     }
 
     public function parseModelData()

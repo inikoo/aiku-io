@@ -1,24 +1,27 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 25 Nov 2021 21:58:51 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Sun, 13 Mar 2022 23:12:02 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Migrations;
+namespace App\Actions\Migrations\Traits;
 
 
 use App\Actions\Sales\Adjust\StoreAdjust;
+use App\Models\Marketing\Shop;
 use App\Models\Sales\Adjust;
 use App\Models\Sales\Charge;
 use App\Models\Sales\ShippingZone;
 use App\Models\Sales\TaxBand;
-use App\Models\Marketing\Product;
-use App\Models\Marketing\Shop;
+
+use function dd;
 
 trait WithTransaction
 {
+    use GetProduct;
+
     public function parseNoProductTransactionData()
     {
         $taxBand = (new TaxBand())->firstWhere('aurora_id', $this->auModel->data->{'Order No Product Transaction Tax Category Key'});
@@ -96,7 +99,12 @@ trait WithTransaction
     {
         $taxBand = (new TaxBand())->firstWhere('aurora_id', $this->auModel->data->{'Order Transaction Tax Category Key'});
 
-        $product = (new Product())->firstWhere('aurora_id', $this->auModel->data->{'Product ID'});
+
+        $product=$this->getProduct($this->auModel->data->{'Product ID'});
+
+        if(!$product){
+            dd('Product not found while migrating the order');
+        }
 
         $this->modelData   = [
             'item_type'   => 'Product',

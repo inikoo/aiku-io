@@ -9,6 +9,7 @@
 namespace App\Actions\Migrations;
 
 
+use App\Actions\Migrations\Traits\WithUser;
 use App\Actions\System\User\CreateUserToken;
 use App\Models\Auth\User;
 use App\Models\HumanResources\Employee;

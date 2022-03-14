@@ -1,13 +1,15 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Mon, 28 Feb 2022 00:53:04 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sun, 13 Mar 2022 23:12:02 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Migrations;
+namespace App\Actions\Migrations\Traits;
 
+
+use function config;
 
 trait WithInvalidAddress
 {

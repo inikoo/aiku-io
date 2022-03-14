@@ -9,7 +9,8 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\Sales\Order\DestroyOrder;
+use App\Actions\Migrations\Traits\GetCustomer;
+use App\Actions\Migrations\Traits\GetCustomerClient;
 use App\Actions\Sales\Order\StoreOrder;
 use App\Actions\Sales\Order\UpdateOrder;
 use App\Models\CRM\Customer;
@@ -26,7 +27,8 @@ use App\Models\Utils\ActionResult;
 class MigrateOrder extends MigrateModel
 {
     use AsAction;
-
+    use GetCustomerClient;
+    use GetCustomer;
 
     #[Pure] public function __construct()
     {
@@ -38,11 +40,11 @@ class MigrateOrder extends MigrateModel
 
     public function getParent(): Customer|CustomerClient
     {
-        //return Shops::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Store Key'});
+
         if ($this->auModel->data->{'Order Customer Client Key'} != '') {
-            $parent = CustomerClient::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Customer Client Key'});
+            $parent=$this->getCustomerClient($this->auModel->data->{'Order Customer Client Key'});
         } else {
-            $parent = Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Order Customer Key'});
+            $parent=$this->getCustomer($this->auModel->data->{'Order Customer Key'});
         }
 
         if (!$parent) {
@@ -50,19 +52,7 @@ class MigrateOrder extends MigrateModel
             dd($this->auModel->data);
         }
 
-        /*
-        if (
-            $parent->trashed() or
-            (
-                $parent->shop->type == 'fulfilment_house' and
-                !$this->auModel->data->{'Order Customer Client Key'})
-        ) {
-            $this->ignore = true;
-            DB::connection('aurora')->table($this->auModel->table)
-                ->where($this->auModel->id_field, $this->auModel->data->{'Order Key'})
-                ->update(['aiku_note' => 'ignore-basket']);
-        }
-*/
+
 
         return $parent;
     }

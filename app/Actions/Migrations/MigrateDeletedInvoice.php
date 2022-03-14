@@ -12,11 +12,11 @@ namespace App\Actions\Migrations;
 use App\Actions\Financials\Invoice\StoreInvoice;
 use App\Actions\Financials\Invoice\UpdateInvoice;
 use App\Actions\Financials\InvoiceTransaction\StoreInvoiceTransaction;
+use App\Actions\Migrations\Traits\GetProduct;
 use App\Models\Financials\Invoice;
 use App\Models\Helpers\Address;
 use App\Models\Sales\Order;
 use App\Models\Sales\Transaction;
-use App\Models\Marketing\Product;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
@@ -26,7 +26,7 @@ use App\Models\Utils\ActionResult;
 class MigrateDeletedInvoice extends MigrateModel
 {
     use AsAction;
-
+    use GetProduct;
 
     #[Pure] public function __construct()
     {
@@ -115,26 +115,18 @@ class MigrateDeletedInvoice extends MigrateModel
                     }
                 }
 
-
-                $product = (new Product())->firstWhere('aurora_id', $item->product_pid);
-
+                $product = $this->getProduct($item->product_pid);
 
                 $itemData = [
-                    'invoice_id' => $res->model_id,
-                    'order_id'   => $invoice->order_id,
-
+                    'invoice_id'  => $res->model_id,
+                    'order_id'    => $invoice->order_id,
                     'item_type'   => 'Product',
                     'item_id'     => $product->id,
                     'tax_band_id' => null,
                     'quantity'    => preg_replace('/[^0-9.]/', '', strip_tags($item->quantity)),
                     'net'         => preg_replace('/[^0-9.]/', '', $item->net),
                     'deleted_at'  => $invoice->deleted_at
-
-
                 ];
-
-                //print_r($itemData);
-
 
                 StoreInvoiceTransaction::run($transactionParent, $itemData);
             }

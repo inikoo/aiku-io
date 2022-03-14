@@ -11,20 +11,23 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\StockMovement\StoreStockMovement;
 use App\Actions\Inventory\StockMovement\UpdateStockMovement;
-use App\Models\Inventory\Location;
+use App\Actions\Migrations\Traits\GetLocation;
+use App\Actions\Migrations\Traits\GetStock;
+use App\Actions\Migrations\Traits\WithTransaction;
 use App\Models\Inventory\Stock;
 use App\Models\Inventory\StockMovement;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Models\Utils\ActionResult;
 
 class MigrateStockMovement extends MigrateModel
 {
     use AsAction;
     use WithTransaction;
-
+    use GetStock;
+    use GetLocation;
 
     #[Pure] public function __construct()
     {
@@ -36,18 +39,18 @@ class MigrateStockMovement extends MigrateModel
 
     public function getParent(): Stock
     {
-        $stock=Stock::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Part SKU'});
-        if(!$stock){
+        $stock = $this->getStock($this->auModel->data->{'Part SKU'});
+        if (!$stock) {
             print "get parent stock not found\n";
             dd($this->auModel->data);
         }
+
         return $stock;
     }
 
     public function parseModelData()
     {
-        $location = Location::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Location Key'});
-        //enum('Found','Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale','Production')
+        $location=$this->getLocation($this->auModel->data->{'Location Key'});
 
 
         if (!$location) {
@@ -77,8 +80,8 @@ class MigrateStockMovement extends MigrateModel
             [
                 'type'        => $type,
                 'location_id' => $location->id,
-                'quantity'    => round($this->auModel->data->{'Inventory Transaction Quantity'},3),
-                'amount'      => round($this->auModel->data->{'Inventory Transaction Amount'},3),
+                'quantity'    => round($this->auModel->data->{'Inventory Transaction Quantity'}, 3),
+                'amount'      => round($this->auModel->data->{'Inventory Transaction Amount'}, 3),
 
                 'aurora_id'  => $this->auModel->data->{'Inventory Transaction Key'},
                 'created_at' => $this->auModel->data->{'Date'} ?? null,

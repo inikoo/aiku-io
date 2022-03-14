@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Sat, 15 Jan 2022 14:56:33 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Sun, 13 Mar 2022 23:12:02 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Migrations;
+namespace App\Actions\Migrations\Traits;
 
 
 use App\Actions\Production\Workshop\StoreWorkshop;
@@ -14,6 +14,9 @@ use App\Actions\Production\Workshop\UpdateWorkshop;
 use App\Models\Account\Tenant;
 use App\Models\Production\Workshop;
 use App\Models\Utils\ActionResult;
+
+use function app;
+use function data_set;
 
 trait WithWorkshop
 {

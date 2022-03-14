@@ -10,6 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\UniqueStock\StoreUniqueStock;
 use App\Actions\Inventory\UniqueStock\UpdateUniqueStock;
+use App\Actions\Migrations\Traits\GetCustomer;
 use App\Models\CRM\Customer;
 use App\Models\Inventory\UniqueStock;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ use App\Models\Utils\ActionResult;
 class MigrateUniqueStock extends MigrateModel
 {
 
+    use GetCustomer;
 
     #[Pure] public function __construct()
     {
@@ -31,7 +33,7 @@ class MigrateUniqueStock extends MigrateModel
 
     public function getParent(): Customer
     {
-        return Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Fulfilment Asset Customer Key'});
+        return $this->getCustomer($this->auModel->data->{'Fulfilment Asset Customer Key'});
     }
 
     public function parseModelData()

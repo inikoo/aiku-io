@@ -17,11 +17,6 @@ class CreateDeliveryNoteItemsTable extends Migration
             $table->id();
             $table->foreignId('transaction_id')->nullable()->constrained();
 
-            //$table->unsignedBigInteger('shop_id')->index();
-            //$table->foreign('shop_id')->references('id')->on('shops');
-            //$table->unsignedBigInteger('customer_id')->index();
-            //$table->foreign('customer_id')->references('id')->on('customers');
-
 
             $table->unsignedBigInteger('delivery_note_id')->index();
             $table->foreign('delivery_note_id')->references('id')->on('delivery_notes');
@@ -29,7 +24,7 @@ class CreateDeliveryNoteItemsTable extends Migration
             $table->foreignId('order_id')->nullable()->constrained();
 
             $table->foreignId('product_id')->nullable()->constrained();
-            $table->decimal('quantity', 16, 3);
+            $table->decimal('quantity', 16, 3)->nullable();
             $table->jsonb('data');
 
             $table->timestampsTz();

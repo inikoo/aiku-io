@@ -1,18 +1,20 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 07 Oct 2021 02:30:13 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Sun, 13 Mar 2022 23:12:02 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Migrations;
+namespace App\Actions\Migrations\Traits;
 
 use App\Actions\CRM\Customer\UpdateCustomer;
 use App\Actions\Helpers\Address\DeleteAddress;
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Actions\Helpers\Address\UpdateAddress;
 use Illuminate\Support\Arr;
+
+use function data_set;
 
 trait WithCustomer
 {

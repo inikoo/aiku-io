@@ -10,6 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\WarehouseArea\StoreWarehouseArea;
 use App\Actions\Inventory\WarehouseArea\UpdateWarehouseArea;
+use App\Actions\Migrations\Traits\GetWarehouse;
 use App\Models\Inventory\Warehouse;
 use App\Models\Inventory\WarehouseArea;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,8 @@ use App\Models\Utils\ActionResult;
 
 class MigrateWarehouseArea extends MigrateModel
 {
+    use GetWarehouse;
+
     #[Pure] public function __construct()
     {
         parent::__construct();
@@ -41,7 +44,7 @@ class MigrateWarehouseArea extends MigrateModel
 
     public function getParent(): Warehouse|null
     {
-        return (new Warehouse())->firstWhere('aurora_id', $this->auModel->data->{'Warehouse Area Warehouse Key'});
+        return $this->getWarehouse($this->auModel->data->{'Warehouse Area Warehouse Key'});
     }
 
     public function setModel()

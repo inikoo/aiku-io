@@ -39,6 +39,7 @@ class MigrateReset extends Command
 
         $tenants->each(function ($tenant) {
             $tenant->makeCurrent();
+            $this->line("🏃 $tenant->code");
             if (Arr::get($tenant->data, 'aurora_db')) {
                 $this->setAuroraConnection($tenant->data['aurora_db']);
 

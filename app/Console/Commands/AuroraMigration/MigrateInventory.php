@@ -10,7 +10,6 @@ namespace App\Console\Commands\AuroraMigration;
 
 use App\Actions\Migrations\MigrateDeletedStock;
 use App\Actions\Migrations\MigrateStock;
-use App\Actions\Migrations\MigrateUniqueStock;
 use App\Models\Account\Tenant;
 use Illuminate\Support\Facades\DB;
 
@@ -54,7 +53,8 @@ class MigrateInventory extends MigrateAurora
     protected function migrate(Tenant $tenant)
     {
 
-        DB::connection('aurora')->table('Part Dimension')
+        DB::connection('aurora')
+            ->table('Part Dimension')
             ->orderBy('Part Valid From')->chunk(1000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraPartData) {
                     $result = MigrateStock::run($auroraPartData);
@@ -64,7 +64,8 @@ class MigrateInventory extends MigrateAurora
 
 
         foreach (
-            DB::connection('aurora')->table('Part Deleted Dimension')
+            DB::connection('aurora')
+                ->table('Part Deleted Dimension')
                 ->where('Part Deleted Key', '>', 0)
                 ->get() as $auroraPartData
         ) {

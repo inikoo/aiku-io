@@ -10,8 +10,8 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Inventory\Stock\StoreStock;
 use App\Actions\Inventory\Stock\UpdateStock;
+use App\Actions\Migrations\Traits\GetLocation;
 use App\Models\Account\Tenant;
-use App\Models\Inventory\Location;
 use App\Models\Inventory\Stock;
 use App\Models\Marketing\TradeUnit;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +22,7 @@ use App\Models\Utils\ActionResult;
 class MigrateStock extends MigrateModel
 {
 
+    use GetLocation;
 
     #[Pure] public function __construct()
     {
@@ -124,7 +125,8 @@ class MigrateStock extends MigrateModel
                 ]
             );
 
-            if ($location = Location::withTrashed()->firstWhere('aurora_id', $auroraPartLocationData->{'Location Key'})) {
+            $location=$this->getLocation($auroraPartLocationData->{'Location Key'});
+            if ($location) {
                 $locationsData[$location->id] = $locationStockData;
             }
         }

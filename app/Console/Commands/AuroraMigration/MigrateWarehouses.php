@@ -57,7 +57,10 @@ class MigrateWarehouses extends MigrateAurora
             $result = MigrateWarehouse::run($auroraWarehouseData);
             $this->recordAction($tenant, $result);
 
-            DB::connection('aurora')->table('Warehouse Area Dimension')->orderBy('Warehouse Area Key')->chunk(100, function ($chunk) use ($tenant) {
+            DB::connection('aurora')
+                ->table('Warehouse Area Dimension')
+                ->orderBy('Warehouse Area Key')
+                ->chunk(100, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraWarehouseAreaData) {
                     if ($auroraWarehouseAreaData->{'Warehouse Area Place'} == 'Local') {
                         $result = MigrateWarehouseArea::run($auroraWarehouseAreaData);
@@ -74,7 +77,8 @@ class MigrateWarehouses extends MigrateAurora
             });
 
 
-            DB::connection('aurora')->table('Location Dimension')
+            DB::connection('aurora')
+                ->table('Location Dimension')
                 ->orderBy('Location Key')->chunk(100, function ($chunk) use ($tenant) {
                     foreach ($chunk as $auroraData) {
                         $result = MigrateLocation::run($auroraData);
@@ -82,7 +86,8 @@ class MigrateWarehouses extends MigrateAurora
                     }
                 });
 
-            DB::connection('aurora')->table('Location Deleted Dimension')
+            DB::connection('aurora')
+                ->table('Location Deleted Dimension')
                 ->orderBy('Location Deleted Key')->chunk(100, function ($chunk) use ($tenant) {
                     foreach ($chunk as $auroraData) {
                         $result = MigrateDeletedLocation::run($auroraData);

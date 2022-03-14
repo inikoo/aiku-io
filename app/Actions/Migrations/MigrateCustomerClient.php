@@ -14,17 +14,20 @@ use App\Actions\CRM\CustomerClient\UpdateCustomerClient;
 use App\Actions\Helpers\Address\DeleteAddress;
 use App\Actions\Helpers\Address\StoreAddress;
 use App\Actions\Helpers\Address\UpdateAddress;
+use App\Actions\Migrations\Traits\GetCustomer;
+use App\Actions\Migrations\Traits\WithCustomer;
 use App\Models\CRM\Customer;
 use App\Models\CRM\CustomerClient;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
-use App\Models\Utils\ActionResult;
 
 
 class MigrateCustomerClient extends MigrateModel
 {
     use WithCustomer;
+    use GetCustomer;
 
     #[Pure] public function __construct()
     {
@@ -82,7 +85,7 @@ class MigrateCustomerClient extends MigrateModel
 
     public function getParent(): Customer
     {
-        return Customer::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Customer Client Customer Key'});
+        return $this->getCustomer($this->auModel->data->{'Customer Client Customer Key'});
     }
 
     public function setModel()

@@ -9,6 +9,7 @@
 namespace App\Actions\Migrations;
 
 
+use App\Actions\Migrations\Traits\WithUser;
 use App\Models\HumanResources\Employee;
 use App\Models\HumanResources\Guest;
 use App\Models\Procurement\Agent;

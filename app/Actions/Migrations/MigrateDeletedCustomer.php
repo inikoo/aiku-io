@@ -9,14 +9,15 @@
 namespace App\Actions\Migrations;
 
 use App\Actions\CRM\Customer\StoreCustomer;
-
+use App\Actions\Migrations\Traits\WithCustomer;
+use App\Actions\Migrations\Traits\WithInvalidAddress;
 use App\Models\CRM\Customer;
 use App\Models\Marketing\Shop;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
-use App\Models\Utils\ActionResult;
 
 class MigrateDeletedCustomer extends MigrateModel
 {

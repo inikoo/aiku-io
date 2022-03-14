@@ -10,7 +10,7 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Marketing\Product\StoreProduct;
 use App\Actions\Marketing\Product\UpdateProduct;
-use App\Models\Inventory\Stock;
+use App\Actions\Migrations\Traits\GetStock;
 use App\Models\Marketing\Product;
 use App\Models\Marketing\Shop;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +20,7 @@ use App\Models\Utils\ActionResult;
 
 class MigrateProduct extends MigrateModel
 {
+    use GetStock;
 
     #[Pure] public function __construct()
     {
@@ -129,13 +130,20 @@ class MigrateProduct extends MigrateModel
                 ->table('Product Part Bridge')
                 ->where('Product Part Product ID', $this->auModel->data->{'Product ID'})->get() as $auroraProductPartBridge
         ) {
-            if ($stock = Stock::withTrashed()->firstWhere('aurora_id', $auroraProductPartBridge->{'Product Part Part SKU'})) {
+
+
+            $stock=$this->getStock($auroraProductPartBridge->{'Product Part Part SKU'});
+
+            if ($stock) {
                 foreach ($stock->tradeUnits as $tradeUnit) {
                     $tradeUnits[$tradeUnit->id] = [
                         'quantity' => $tradeUnit->pivot->quantity,
                         'notes'    => $auroraProductPartBridge->{'Product Part Note'} ?? null
                     ];
                 }
+            }else{
+                print "Error: Stock not found for product";
+                dd($this->auModel);
             }
         }
 

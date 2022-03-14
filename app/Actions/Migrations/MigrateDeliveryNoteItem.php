@@ -11,14 +11,15 @@ namespace App\Actions\Migrations;
 
 use App\Actions\Delivery\DeliveryNoteItem\StoreDeliveryNoteItem;
 use App\Actions\Delivery\DeliveryNoteItem\UpdateDeliveryNoteItem;
+use App\Actions\Migrations\Traits\WithTransaction;
 use App\Models\Delivery\DeliveryNote;
 use App\Models\Delivery\DeliveryNoteItem;
 use App\Models\Sales\Transaction;
+use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Models\Utils\ActionResult;
 
 class MigrateDeliveryNoteItem extends MigrateModel
 {
@@ -41,21 +42,24 @@ class MigrateDeliveryNoteItem extends MigrateModel
 
     public function parseModelData()
     {
-
-        $transaction=Transaction::firstWhere('aurora_id', $this->auModel->data->{'Map To Order Transaction Fact Key'});
+        $transaction    = Transaction::firstWhere('aurora_id', $this->auModel->data->{'Map To Order Transaction Fact Key'});
         $transaction_id = $transaction?->id;
 
-        $auroraOTF=DB::connection('aurora')->table('Order Transaction Fact')
+
+
+        $auroraOTF = DB::connection('aurora')->table('Order Transaction Fact')
             ->select('Delivery Note Quantity')
             ->where('Order Transaction Fact Key', $this->auModel->data->{'Map To Order Transaction Fact Key'})
             ->first();
 
+        $quantity = $auroraOTF?->{'Delivery Note Quantity'};
+
         $this->modelData   = [
             'transaction_id' => $transaction_id,
-            'quantity'      => $auroraOTF->{'Delivery Note Quantity'},
-            'created_at'    => $this->auModel->data->{'Date Created'},
-            'aurora_itf_id' => $this->auModel->data->{'Inventory Transaction Key'},
-            'aurora_otf_id' => $this->auModel->data->{'Map To Order Transaction Fact Key'},
+            'quantity'       => $quantity,
+            'created_at'     => $this->auModel->data->{'Date Created'},
+            'aurora_itf_id'  => $this->auModel->data->{'Inventory Transaction Key'},
+            'aurora_otf_id'  => $this->auModel->data->{'Map To Order Transaction Fact Key'},
 
         ];
         $this->auModel->id = $this->auModel->data->{'Inventory Transaction Key'};

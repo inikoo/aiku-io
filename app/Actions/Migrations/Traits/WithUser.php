@@ -1,19 +1,19 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 14 Oct 2021 18:02:14 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Sun, 13 Mar 2022 23:12:02 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\Migrations;
+namespace App\Actions\Migrations\Traits;
 
 use App\Actions\System\User\StoreUser;
 use App\Actions\System\User\UpdateUser;
 use App\Models\Auth\User;
+use App\Models\Utils\ActionResult;
 use Exception;
 use Illuminate\Support\Arr;
-use App\Models\Utils\ActionResult;
 
 
 trait WithUser
