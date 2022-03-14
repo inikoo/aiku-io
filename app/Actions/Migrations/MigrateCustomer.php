@@ -124,54 +124,6 @@ class MigrateCustomer extends MigrateModel
     }
 
 
-    public function getFavourites(): array
-    {
-        $products = [];
-        foreach (
-            DB::connection('aurora')
-                ->table('Customer Favourite Product Fact')
-                ->where('Customer Favourite Product Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraFavourites
-        ) {
-            $product = Product::withTrashed()->firstWhere('aurora_id', $auroraFavourites->{'Customer Favourite Product Product ID'});
-            if ($product) {
-                $products[$product->id] =
-                    [
-                        'type'       => 'favourite',
-                        'created_at' => $auroraFavourites->{'Customer Favourite Product Creation Date'},
-                        'data'       => [],
-                        'settings'   => [],
-                        'aurora_id'  => $auroraFavourites->{'Customer Favourite Product Key'},
-
-                    ];
-            }
-        }
-
-        return $products;
-    }
-
-    public function getReminders(): array
-    {
-        $products = [];
-        foreach (
-            DB::connection('aurora')
-                ->table('Back in Stock Reminder Fact')
-                ->where('Back in Stock Reminder Customer Key', $this->auModel->data->{'Customer Key'})->get() as $auroraReminders
-        ) {
-            $product = Product::withTrashed()->firstWhere('aurora_id', $auroraReminders->{'Back in Stock Reminder Product ID'});
-            if ($product) {
-                $products[$product->id] =
-                    [
-                        'type'       => 'notify-stock',
-                        'created_at' => $auroraReminders->{'Back in Stock Reminder Creation Date'},
-                        'data'       => [],
-                        'settings'   => [],
-                        'aurora_id'  => $auroraReminders->{'Back in Stock Reminder Key'},
-                    ];
-            }
-        }
-
-        return $products;
-    }
 
     public function getPortFolio(): array
     {
@@ -229,8 +181,14 @@ class MigrateCustomer extends MigrateModel
             }
         }
 
+
+        //MigrateFavourites::run($customer);
+        //MigrateReminders::run($customer);
+
         //todo this is all wrong , separate in 3 pivots or test when a product is notify and favorite (this code will not work for that)
         //https://aiku.atlassian.net/browse/AK-201
+
+        /*
         $products = [];
         $products = array_merge($products, $this->getFavourites());
         $products = array_merge($products, $this->getReminders());
@@ -256,7 +214,7 @@ class MigrateCustomer extends MigrateModel
                     break;
             }
         }
-
+*/
 
         return $res;
     }

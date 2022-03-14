@@ -31,6 +31,8 @@ class MigrateFulfilment extends MigrateAurora
     {
 
 
+
+
         foreach (DB::connection('aurora')->table('Store Dimension')
             ->where('Store Type', 'Fulfilment')->get() as $auStoreData) {
 

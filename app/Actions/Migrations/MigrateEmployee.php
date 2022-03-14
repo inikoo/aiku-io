@@ -133,7 +133,8 @@ class MigrateEmployee extends MigrateModel
 
         $auroraImagesCollection          = $this->getModelImagesCollection('Staff', $employee->aurora_id);
         $auroraImagesCollectionWithImage = $auroraImagesCollection->each(function ($auroraImage) {
-            if ($rawImage = MigrateRawImage::run($auroraImage)) {
+            $rawImage = MigrateRawImage::run($auroraImage);
+            if ($rawImage) {
                 return $auroraImage->communal_image_id = $rawImage->communalImage->id;
             } else {
                 return $auroraImage->communal_image_id = null;
@@ -194,7 +195,8 @@ class MigrateEmployee extends MigrateModel
             }
 
             if ($roleCode == 'dist-pik') {
-                if ($jobPosition = JobPosition::firstWhere('slug', 'dist-pak')) {
+                $jobPosition = JobPosition::firstWhere('slug', 'dist-pak');
+                if ($jobPosition) {
                     $jobPositions[] = $jobPosition->id;
                 }
             }
@@ -216,7 +218,8 @@ class MigrateEmployee extends MigrateModel
     public function asController(int $auroraID): ActionResult
     {
         $this->setAuroraConnection(app('currentTenant')->data['aurora_db']);
-        if ($auroraData = DB::connection('aurora')->table('Staff Dimension')->where('Staff Key', $auroraID)->first()) {
+        $auroraData = DB::connection('aurora')->table('Staff Dimension')->where('Staff Key', $auroraID)->first();
+        if ($auroraData) {
             return $this->handle($auroraData);
         }
         $res           = new ActionResult();

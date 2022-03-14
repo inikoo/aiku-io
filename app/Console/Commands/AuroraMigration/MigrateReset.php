@@ -235,7 +235,7 @@ class MigrateReset extends Command
         $diff = microtime(true) - $this->timeLastStep;
         $this->timeLastStep=microtime(true);
 
-        return "\t".round($roolTime/60, 2).'m' . "\t\t".round($diff/60, 2).'m';
+        return "\t".round($roolTime, 2).'s' . "\t\t".round($diff, 2).'s';
     }
 
 }

@@ -115,10 +115,24 @@ class Customer extends Model implements Auditable
     }
 
 
-    public function products(): BelongsToMany
+
+    public function favourites(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id', 'status', 'type', 'aurora_id');
+        return $this->belongsToMany(Product::class,'favourites')->using(Favourites::class)->withPivot('id','aurora_id')->withTimestamps();
     }
+
+    public function reminders(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class,'back_to_stock_reminders')->using(Reminders::class)->withPivot('id','aurora_id','status','state','send_at','deleted_at')->withTimestamps();
+    }
+
+   // public function products(): BelongsToMany
+   // {
+   //     return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id', 'status', 'type', 'aurora_id');
+   // }
+
+
+
 
     public function shop(): BelongsTo
     {

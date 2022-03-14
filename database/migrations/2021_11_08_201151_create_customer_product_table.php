@@ -19,10 +19,57 @@ class CreateCustomerProductTable extends Migration
      */
     public function up()
     {
+        Schema::create('favourites', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreign('customer_id')->references('id')->on('customers');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->timestampsTz();
+            $table->unsignedBigInteger('aurora_id')->nullable();
+            $table->unique(['customer_id','product_id']);
+
+        });
+
+        Schema::create('back_to_stock_reminders', function (Blueprint $table) {
+            $table->id();
+            $table->boolean('status')->default('true')->index()->comment('true when standby|ready ');
+            $table->enum('state',['standby','ready','deleted','send'])->default('standby')->index();
+
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreign('customer_id')->references('id')->on('customers');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->timestampsTz();
+            $table->dateTimeTz('send_at')->nullable();
+            $table->dateTimeTz('deleted_at')->nullable();
+
+            $table->unsignedBigInteger('aurora_id')->nullable();
+
+        });
+
+        Schema::create('portfolio', function (Blueprint $table) {
+            $table->id();
+            $table->boolean('status')->default('true')->index();
+
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->foreign('customer_id')->references('id')->on('customers');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->string('customerReference')->nullable();
+            $table->jsonb('data');
+            $table->jsonb('settings');
+            $table->timestampsTz();
+            $table->dateTimeTz('removed_at')->nullable();
+            $table->unsignedBigInteger('aurora_id')->nullable();
+            $table->unique(['customer_id','product_id']);
+
+
+        });
+
+
         Schema::create('customer_product', function (Blueprint $table) {
             $table->id();
-            $table->boolean('status')->default(true)->index();
-            $table->enum('type',['favourite','portfolio','exclusive','notify-stock']);
 
 
             $table->unsignedBigInteger('customer_id')->nullable();
@@ -31,13 +78,15 @@ class CreateCustomerProductTable extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products');
 
-            $table->string('nickname')->nullable();
             $table->jsonb('data');
             $table->jsonb('settings');
 
             $table->timestampsTz();
-            $table->softDeletesTz();
+            $table->dateTimeTz('deleted_at')->nullable();
+
             $table->unsignedBigInteger('aurora_id')->nullable();
+            $table->unique(['customer_id','product_id']);
+
 
         });
     }
