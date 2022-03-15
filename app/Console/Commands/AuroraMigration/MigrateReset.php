@@ -31,7 +31,7 @@ class MigrateReset extends Command
         }
 
         if ($this->option('all')) {
-            $tenants = Tenant::whereNotNull('data->aurora_db')->get();
+            $tenants = Tenant::whereNotNull('data->aurora_db')->orderByDesc('id')->get();
         } else {
             $tenants = Tenant::whereIn('code', $this->option('tenant'))->get();
         }
