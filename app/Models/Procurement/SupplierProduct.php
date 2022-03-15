@@ -76,7 +76,7 @@ class SupplierProduct extends Model implements Auditable
 
     public function setCostAttribute($val)
     {
-        $this->attributes['cost'] = sprintf('%.2f', $val);
+        $this->attributes['cost'] = sprintf('%.4f', $val);
     }
 
     public function tradeUnits(): BelongsToMany

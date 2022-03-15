@@ -56,7 +56,7 @@ class CreateCustomerProductTable extends Migration
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products');
-            $table->string('customerReference')->nullable();
+            $table->string('customer_reference')->nullable();
             $table->jsonb('data');
             $table->jsonb('settings');
             $table->timestampsTz();
@@ -68,21 +68,15 @@ class CreateCustomerProductTable extends Migration
         });
 
 
-        Schema::create('customer_product', function (Blueprint $table) {
+        Schema::create('customised_products', function (Blueprint $table) {
             $table->id();
-
-
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')->references('id')->on('customers');
-
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products');
 
-            $table->jsonb('data');
-            $table->jsonb('settings');
 
             $table->timestampsTz();
-            $table->dateTimeTz('deleted_at')->nullable();
 
             $table->unsignedBigInteger('aurora_id')->nullable();
             $table->unique(['customer_id','product_id']);

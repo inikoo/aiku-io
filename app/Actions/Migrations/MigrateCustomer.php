@@ -182,39 +182,11 @@ class MigrateCustomer extends MigrateModel
         }
 
 
-        //MigrateFavourites::run($customer);
-        //MigrateReminders::run($customer);
+        MigrateFavourites::run($customer);
+        MigrateReminders::run($customer);
+        MigratePortfolio::run($customer);
 
-        //todo this is all wrong , separate in 3 pivots or test when a product is notify and favorite (this code will not work for that)
-        //https://aiku.atlassian.net/browse/AK-201
 
-        /*
-        $products = [];
-        $products = array_merge($products, $this->getFavourites());
-        $products = array_merge($products, $this->getReminders());
-        $products = array_merge($products, $this->getPortFolio());
-        $customer->products()->sync($products);
-
-        foreach ($customer->products as $customerProduct) {
-            switch ($customerProduct->pivot->type) {
-                case 'favourite':
-                    DB::connection('aurora')->table('Customer Favourite Product Fact')
-                        ->where('Customer Favourite Product Key', $customerProduct->pivot->aurora_id)
-                        ->update(['aiku_id' => $customerProduct->pivot->id]);
-                    break;
-                case 'notify-stock':
-                    DB::connection('aurora')->table('Back in Stock Reminder Fact')
-                        ->where('Back in Stock Reminder Key', $customerProduct->pivot->aurora_id)
-                        ->update(['aiku_id' => $customerProduct->pivot->id]);
-                    break;
-                case 'portfolio':
-                    DB::connection('aurora')->table('Customer Portfolio Fact')
-                        ->where('Customer Portfolio Key', $customerProduct->pivot->aurora_id)
-                        ->update(['aiku_id' => $customerProduct->pivot->id]);
-                    break;
-            }
-        }
-*/
 
         return $res;
     }

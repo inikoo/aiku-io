@@ -43,6 +43,17 @@ class MigrateFavourites
             }
         }
 
-        return SyncFavourites::run($customer,$products);
+
+        $res = SyncFavourites::run($customer, $products);
+
+        foreach ($customer->portfolio as $customerProduct) {
+            DB::connection('aurora')->table('Customer Favourite Product Fact')
+                ->where('Customer Favourite Product Key', $customerProduct->pivot->aurora_id)
+                ->update(['aiku_id' => $customerProduct->pivot->id]);
+        }
+
+        return $res;
+
+
     }
 }

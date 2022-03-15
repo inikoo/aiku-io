@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Fri, 11 Mar 2022 18:34:59 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 15 Mar 2022 18:03:44 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
@@ -14,17 +14,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 
-
 /**
- * @mixin IdeHelperReminders
+ * @mixin IdeHelperPortfolio
  */
-class Reminders extends Pivot
+class Portfolio extends Pivot
 {
     use HasFactory;
 
-    protected $table = 'back_to_stock_reminders';
+    protected $table = 'portfolio';
 
     public $incrementing = true;
+    protected $casts = [
+        'data'     => 'array',
+        'settings' => 'array',
+        'status'   => 'boolean'
+
+    ];
+
+    protected $attributes = [
+        'data'     => '{}',
+        'settings' => '{}',
+
+    ];
+
 
     protected $guarded = [];
 

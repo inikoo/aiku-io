@@ -10,7 +10,7 @@ namespace App\Models\CRM;
 
 use App\Actions\Hydrators\HydrateShop;
 use App\Models\Financials\Invoice;
-use App\Models\CustomerProduct;
+use App\Models\CustomisedProduct;
 use App\Models\Helpers\Address;
 use App\Models\Helpers\Attachment;
 use App\Models\Inventory\Stock;
@@ -126,10 +126,15 @@ class Customer extends Model implements Auditable
         return $this->belongsToMany(Product::class,'back_to_stock_reminders')->using(Reminders::class)->withPivot('id','aurora_id','status','state','send_at','deleted_at')->withTimestamps();
     }
 
-   // public function products(): BelongsToMany
-   // {
-   //     return $this->belongsToMany(Product::class)->using(CustomerProduct::class)->withPivot('id', 'status', 'type', 'aurora_id');
-   // }
+    public function portfolio(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class,'portfolio')->using(Portfolio::class)->withPivot('id','aurora_id','status','removed_at','customer_reference')->withTimestamps();
+    }
+
+    public function customisedProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)->using(CustomisedProduct::class)->withPivot('id','aurora_id')->withTimestamps();
+    }
 
 
 

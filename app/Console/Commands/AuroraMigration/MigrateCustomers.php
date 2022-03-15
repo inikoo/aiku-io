@@ -74,6 +74,7 @@ class MigrateCustomers extends MigrateAurora
     {
         foreach (
             DB::connection('aurora')->table('Store Dimension')
+                ->where('Store Key',19)
                 ->where('Store Type', '!=', 'Fulfilment')->get() as $auStoreData
         ) {
             DB::connection('aurora')->table('Customer Dimension')

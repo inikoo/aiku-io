@@ -15,6 +15,7 @@ use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+
 class MigrateReminders
 {
     use AsAction;
@@ -40,8 +41,14 @@ class MigrateReminders
                     ];
             }
         }
+        $res = SyncReminders::run($customer, $products);
 
+        foreach ($customer->reminders as $customerProduct) {
+            DB::connection('aurora')->table('Back in Stock Reminder Fact')
+                ->where('Back in Stock Reminder Key', $customerProduct->pivot->aurora_id)
+                ->update(['aiku_id' => $customerProduct->pivot->id]);
+        }
 
-        return SyncReminders::run($customer,$products);
+        return $res;
     }
 }

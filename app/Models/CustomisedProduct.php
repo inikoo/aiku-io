@@ -14,25 +14,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+
 /**
- * @mixin IdeHelperCustomerProduct
+ * @mixin IdeHelperCustomisedProduct
  */
-class CustomerProduct extends Pivot
+class CustomisedProduct extends Pivot
 {
     use HasFactory;
 
     public $incrementing = true;
 
-    protected $casts = [
-        'data'     => 'array',
-        'settings' => 'array',
-        'status'   => 'boolean'
-    ];
-
-    protected $attributes = [
-        'data'     => '{}',
-        'settings' => '{}',
-    ];
+    protected $table = 'customised_products';
 
 
     protected $guarded = [];
