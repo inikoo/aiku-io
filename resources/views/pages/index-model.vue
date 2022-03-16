@@ -8,6 +8,9 @@
 <template layout="app">
     <page-header :headerData="headerData"/>
 
+
+    <IntervalTabs v-if="intervalTabs" :tabs="intervalTabs"></IntervalTabs>
+
     <EmptyState v-if="dataTable['records'].meta.total === 0 && queryBuilderProps.search.global.value==null "
                 :data="dataTable.empty ?? {}"></EmptyState>
 
@@ -69,8 +72,10 @@ import useTable from '@s/useTable.js';
 import useI18n from '@s/i18n/useI18n.js';
 import IntervalTabs from '@c/tabs/interval-tabs.vue';
 
+
 const props = defineProps({
                               headerData       : {},
+                              intervalTabs             : {},
                               dataTable        : {},
                               queryBuilderProps: {
                                   type    : Object,
