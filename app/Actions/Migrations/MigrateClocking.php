@@ -68,7 +68,7 @@ class MigrateClocking extends MigrateModel
                 $deleted_at = Carbon::parse($this->auModel->data->{'Timesheet Record Date'})->addHours();
             }
 
-
+            /** @var Employee|Guest $deleted_by */
             $deleted_by = Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Timesheet Remover Key'});
             if (!$deleted_by) {
                 $deleted_by = Guest::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Timesheet Remover Key'});
@@ -142,7 +142,7 @@ class MigrateClocking extends MigrateModel
 
     public function setModel()
     {
-        $this->model = Clocking::find($this->auModel->data->aiku_id);
+        $this->model = Clocking::withTrashed()->find($this->auModel->data->aiku_id);
     }
 
     public function updateModel(): ActionResult
