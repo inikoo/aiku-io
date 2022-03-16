@@ -50,9 +50,6 @@ class IndexCustomer
 
         $this->columns = [
 
-
-
-
             'customer_number' => [
                 'sort'       => 'id',
                 'label'      => __('Id'),

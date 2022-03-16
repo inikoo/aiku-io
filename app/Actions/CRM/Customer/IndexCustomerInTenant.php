@@ -12,10 +12,7 @@ namespace App\Actions\CRM\Customer;
 use App\Actions\Marketing\ShowMarketingDashboard;
 use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\ActionRequest;
-use Lorisleiva\Actions\Concerns\AsAction;
 
-
-use App\Actions\UI\WithInertia;
 
 use function __;
 
@@ -25,8 +22,6 @@ use function __;
  */
 class IndexCustomerInTenant extends IndexCustomer
 {
-    use AsAction;
-    use WithInertia;
 
 
     public function authorize(ActionRequest $request): bool
@@ -42,6 +37,7 @@ class IndexCustomerInTenant extends IndexCustomer
 
         return $canView;
     }
+
     public function queryConditions($query){
         $select=array_merge(array_diff( $this->select, ['id','name'] ), ['customers.id as id', 'shops.code as shop_code','customers.name as name']);
 

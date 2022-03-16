@@ -9,11 +9,10 @@
 namespace App\Http\Controllers\Inventory;
 
 
-use App\Actions\Inventory\Stock\IndexStock;
+use App\Actions\Inventory\Stock\IndexStockInTenant;
 use App\Actions\Inventory\Stock\ShowStock;
 use App\Http\Controllers\Controller;
 use App\Models\Inventory\Stock;
-use Illuminate\Http\Request;
 use Inertia\Response;
 
 
@@ -21,9 +20,9 @@ class StockController extends Controller
 {
 
 
-    public function index(): Response
+    public function indexInTenant(): Response
     {
-        return IndexStock::make()->asInertia();
+        return IndexStockInTenant::make()->asInertia();
     }
 
     public function show(Stock $stock): Response

@@ -9,13 +9,11 @@
 namespace App\Actions\Inventory\Stock;
 
 
-use App\Actions\Inventory\ShowInventoryDashboard;
 use App\Http\Resources\Inventory\StockInertiaResource;
 use App\Models\Inventory\Stock;
-use App\Models\Inventory\Warehouse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Inertia;
-use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -26,13 +24,60 @@ use App\Actions\UI\WithInertia;
 use function __;
 
 /**
- * @property Warehouse $warehouse
+ * @property array $breadcrumbs
+ * @property string $sectionRoot
+ * @property string $title
+ * @property string $metaSection
+ * @property array $allowedSorts
+ * @property string $module
  */
 class IndexStock
 {
     use AsAction;
     use WithInertia;
 
+    protected array $select;
+    protected array $columns;
+    protected array $allowedSorts;
+
+
+    public function __construct()
+    {
+        $this->select       = ['id', 'code', 'description'];
+        $this->allowedSorts = ['code'];
+        $this->columns =[
+
+            'code'        => [
+                'sort'       => 'code',
+                'label'      => __('Code'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type'       => 'link',
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'inventory.stocks.show',
+                                    'indices' => 'id'
+                                ],
+                                'indices' => 'code'
+                            ],
+                        ]
+                    ]
+                ],
+            ],
+            'description' => [
+                'label'    => __('Description'),
+                'resolver' => 'description'
+            ],
+
+        ];
+    }
+
+    public function queryConditions($query)
+    {
+        return $query->select($this->select);
+    }
 
     public function handle(): LengthAwarePaginator
     {
@@ -44,103 +89,45 @@ class IndexStock
         });
 
         return QueryBuilder::for(Stock::class)
-            ->select(['id', 'code', 'description'])
-            ->allowedSorts(['code'])
+            ->when(true, [$this, 'queryConditions'])
+            ->allowedSorts($this->allowedSorts)
             ->defaultSort('-id')
             ->allowedFilters([$globalSearch])
             ->paginate()
             ->withQueryString();
     }
 
-
-    public function asInertia()
+    public function getInertia()
     {
-        $this->validateAttributes();
-
-
         return Inertia::render(
             'index-model',
             [
-                'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData'     => [
-                    'module'      => 'inventory',
-                    'metaSection' => session('currentWarehouse') ? 'warehouse' : 'warehouses',
-                    'sectionRoot' => 'inventory.stocks.index'
+                'breadcrumbs' => $this->breadcrumbs,
+                'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
+                'headerData' => [
+                    'title' => $this->title
                 ],
-                'headerData'  => [
-                    'title' => $this->get('title'),
-
-                ],
-                'dataTable'   => [
-                    'records' => StockInertiaResource::collection($this->handle()),
-                    'columns' => [
-
-                        'code'        => [
-                            'sort'       => 'code',
-                            'label'      => __('Code'),
-                            'components' => [
-                                [
-                                    'type'     => 'link',
-                                    'resolver' => [
-                                        'type'       => 'link',
-                                        'parameters' => [
-                                            'href'    => [
-                                                'route'   => 'inventory.stocks.show',
-                                                'indices' => 'id'
-                                            ],
-                                            'indices' => 'code'
-                                        ],
-                                    ]
-                                ]
-                            ],
-                        ],
-                        'description' => [
-                            'label'    => __('Description'),
-                            'resolver' => 'description'
-                        ],
-
-                    ]
+                'dataTable'  => [
+                    'records' => $this->getRecords(),
+                    'columns' => $this->columns
                 ]
 
 
             ]
         )->table(function (InertiaTable $table) {
             $table->addSearchRows(
-                [
-
-
-                ]
+                []
             );
         });
     }
 
-    public function prepareForValidation(ActionRequest $request): void
+    protected function getRecords(): AnonymousResourceCollection
     {
-        $request->merge(
-            [
-                'title' => __('Stocks'),
-
-
-            ]
-        );
-        $this->fillFromRequest($request);
+        return StockInertiaResource::collection($this->handle());
     }
 
 
-    public function getBreadcrumbs(): array
-    {
-        return array_merge(
-            (new ShowInventoryDashboard())->getBreadcrumbs(),
-            [
-                'inventory.stocks.index' => [
-                    'route'      => 'inventory.stocks.index',
-                    'modelLabel' => [
-                        'label' => __('stocks')
-                    ],
-                ],
-            ]
-        );
-    }
+
 
 
 }

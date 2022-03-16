@@ -170,7 +170,7 @@ class IndexWorkTarget
                 ],
 
 
-                'intervalTabs' => $this->intervalTabs,
+                'tabs' => $this->intervalTabs,
 
                 'dataTable' => [
                     'records' => $this->getRecords(),
