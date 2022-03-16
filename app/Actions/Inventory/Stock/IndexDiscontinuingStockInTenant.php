@@ -1,7 +1,7 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 16 Mar 2022 15:46:09 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Wed, 16 Mar 2022 17:39:04 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
@@ -16,31 +16,24 @@ use Lorisleiva\Actions\ActionRequest;
 
 use function __;
 
-/**
- * @property Warehouse $warehouse
- */
-class IndexStockInTenant extends IndexStock
+
+class IndexDiscontinuingStockInTenant extends IndexStockInTenant
 {
 
 
-    public function authorize(ActionRequest $request): bool
+    public function queryConditions($query)
     {
-        return $request->user()->hasPermissionTo("inventory.stocks.view");
+        return $query
+            ->where('state','discontinuing')
+            ->select($this->select);
     }
 
-
-    public function asInertia()
-    {
-        $this->validateAttributes();
-
-        return $this->getInertia();
-    }
 
     public function prepareForValidation(ActionRequest $request): void
     {
         $request->merge(
             [
-                'title'              => __('Stocks'),
+                'title'              => __('Discontinuing stocks'),
                 'breadcrumbs'        => $this->getBreadcrumbs(),
                 'sectionRoot'        => 'inventory.stocks.index',
                 'module'             => 'inventory',
@@ -53,7 +46,7 @@ class IndexStockInTenant extends IndexStock
 
         $this->fillFromRequest($request);
 
-        $this->set('tabs',$this->getTabs('all'));
+        $this->set('tabs',$this->getTabs('discontinuing'));
     }
 
 
@@ -62,8 +55,9 @@ class IndexStockInTenant extends IndexStock
         return array_merge(
             (new ShowInventoryDashboard())->getBreadcrumbs(),
             [
-                'inventory.stocks.index' => [
-                    'route'      => 'inventory.stocks.index',
+                'inventory.stocks.state' => [
+                    'route'      => 'inventory.stocks.state',
+                    'routeParameters'=>['discontinuing'],
                     'modelLabel' => [
                         'label' => __('stocks')
                     ],

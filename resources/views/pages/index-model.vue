@@ -6,10 +6,10 @@
   -->
 
 <template layout="app">
+    <Tabs v-if="tabs" :tabs="tabs"></Tabs>
+
     <page-header :headerData="headerData"/>
 
-
-    <Tabs v-if="tabs" :tabs="tabs"></Tabs>
 
     <EmptyState v-if="dataTable['records'].meta.total === 0 && queryBuilderProps.search.global.value==null "
                 :data="dataTable.empty ?? {}"></EmptyState>
@@ -47,6 +47,7 @@
                     </component-group>
                     <span v-else-if="column.type==='number'">{{ __number(record[column['resolver']]) }}</span>
                     <span v-else-if="column.type==='date'">{{ __date(record[column['resolver']]) }}</span>
+                    <span v-else-if="column.type==='datetime'">{{ __datetime(record[column['resolver']]) }}</span>
 
                     <span v-else>{{ record[column['resolver']] }}</span>
 
@@ -72,7 +73,6 @@ import useTable from '@s/useTable.js';
 import useI18n from '@s/i18n/useI18n.js';
 import Tabs from '@c/tabs/tabs.vue';
 
-
 const props = defineProps({
                               headerData       : {},
                               tabs             : {},
@@ -83,11 +83,9 @@ const props = defineProps({
                               },
                           });
 
-const {__number, __date} = useI18n();
+const {__number, __date, __datetime} = useI18n();
 
 const {sortableHeader, staticHeader, setQueryBuilder} = useTable(props);
-
-
 
 const getValues = (record, indices) => {
     if (typeof indices === 'string') {
@@ -99,6 +97,21 @@ const getValues = (record, indices) => {
     });
 
 };
+const checkRouteParametersIntegrity = (record, indices) => {
+
+    if (typeof indices === 'string') {
+        indices = [indices];
+    }
+    let pass = true;
+    for (let index of indices) {
+        if (!record[index]) {
+            pass = false;
+            break;
+        }
+    }
+    return pass;
+
+};
 
 const getComponentsData = (record, components) => {
 
@@ -108,10 +121,19 @@ const getComponentsData = (record, components) => {
         let type = components[i].type;
         let resolver = components[i]['resolver'].type;
 
-        if (type === 'link' && components[i]['resolver'].parameters.href.permission && !record[components[i]['resolver'].parameters.href.permission]) {
-            type = 'locked_link';
-            resolver = 'slot';
+        if (type === 'link'){
+
+
+            if (components[i]['resolver'].parameters.href.permission && !record[components[i]['resolver'].parameters.href.permission]) {
+                type = 'locked_link';
+                resolver = 'slot';
+            }else if(!checkRouteParametersIntegrity(record,components[i]['resolver'].parameters.href.indices)){
+                type = 'text';
+                resolver = 'slot';
+            }
         }
+
+
 
         componentData.push(
             {
@@ -133,7 +155,7 @@ const getSlot = (record, parameters) => {
         case 'date':
             return __date(record[parameters.indices] ?? '');
         default:
-            return record[parameters.indices] ?? parameters.indices;
+            return record[parameters.indices] ?? '';
     }
 };
 
@@ -168,27 +190,7 @@ const getComponentData = (type, record, resolver) => {
     };
     return resolvers[type](record, resolver.parameters) ?? null;
 
-    /*
-const toggle = (value, blueprint) => {};
 
-const checkRouteParametersIntegrity = (record, indices) => {
-
-    if (typeof indices === 'string') {
-        indices = [indices];
-    }
-    let pass = true;
-    for (let index of indices) {
-        if (!record[index]) {
-            pass = false;
-            break;
-        }
-    }
-    return pass;
-
-};
-
-
- */
 
 };
 

@@ -20,6 +20,7 @@ use JsonSerializable;
  * @property int warehouse_area_id
  * @property string warehouse_area_code
  * @property string $warehouse_code
+ * @property mixed $number_stock_slots
  */
 class LocationInertiaResource extends JsonResource
 {
@@ -33,6 +34,7 @@ class LocationInertiaResource extends JsonResource
             'warehouse_area_id'   => $this->warehouse_area_id,
             'warehouse_area_code' => $this->warehouse_area_code,
             'warehouse_code'      => $this->warehouse_code,
+            'number_stock_slots'  => $this->number_stock_slots,
 
         ];
     }

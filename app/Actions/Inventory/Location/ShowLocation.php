@@ -72,6 +72,58 @@ class ShowLocation
                 'headerData'  => [
                     'title'       => __('Location').': '.$location->code,
                     'actionIcons' => $actionIcons,
+                    'info'        => [
+                        [
+                            'type' => 'group',
+                            'data' => [
+                                'components' => [
+                                    [
+                                        'type' => 'icon',
+                                        'data' => array_merge(
+                                            [
+                                                'type' => 'page-header',
+                                                'icon' => ['fal', 'box']
+                                            ],
+
+                                        )
+                                    ],
+                                    [
+                                        'type' => 'number',
+                                        'data' => [
+                                            'slot' => $this->location->stats->number_stock_slots
+                                        ]
+                                    ],
+                                    [
+                                        'type' => 'link',
+                                        'data' => [
+                                            'slot'  => __('stocks'),
+                                            'class' => ' ml-1',
+                                            'href'  =>
+                                                match ($this->parent) {
+                                                    'warehouseAreaInWarehouse' =>
+                                                    [
+                                                        'route'      => 'inventory.warehouses.show.areas.show.locations.show.stocks,index',
+                                                        'parameters' => [
+                                                            $this->location->warehouse_id, $this->location->warehouse_area_id, $this->location->id
+                                                        ]
+                                                    ],
+                                                    default =>
+                                                    [
+                                                        'route'      => 'inventory.warehouses.show.locations.show.stocks.index',
+                                                        'parameters' => [
+                                                            $this->location->warehouse_id,  $this->location->id
+                                                        ]
+                                                    ]
+                                                }
+
+
+                                        ]
+                                    ],
+
+                                ]
+                            ]
+                        ]
+                    ]
 
                 ],
             ]

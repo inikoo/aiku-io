@@ -46,10 +46,11 @@ class IndexLocation
             'locations.code as code',
             'locations.warehouse_id',
             'locations.warehouse_area_id',
+            'number_stock_slots'
 
 
         ];
-        $this->allowedSorts = ['code'];
+        $this->allowedSorts = ['code', 'warehouse_area_code','number_stock_slots'];
 
         $this->columns = [
 
@@ -114,8 +115,26 @@ class IndexLocation
                     ]
                 ],
             ],
-
-
+            'number_stock_slots'  => [
+                'sort'       => 'number_stock_slots',
+                'label'      => __('Slots'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type'       => 'link',
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'inventory.warehouses.show.locations.show.stocks.index',
+                                    'indices' => ['warehouse_id', 'id']
+                                ],
+                                'type'    => 'number',
+                                'indices' => 'number_stock_slots'
+                            ],
+                        ]
+                    ]
+                ],
+            ],
 
 
         ];
@@ -124,6 +143,7 @@ class IndexLocation
     public function handle(): LengthAwarePaginator
     {
         return QueryBuilder::for(Location::class)
+            ->leftJoin('location_stats','location_stats.location_id','locations.id')
             ->when(true, [$this, 'queryConditions'])
             ->defaultSorts('-id')
             ->allowedSorts($this->allowedSorts)

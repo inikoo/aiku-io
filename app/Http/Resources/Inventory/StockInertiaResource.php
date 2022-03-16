@@ -13,15 +13,22 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 
 
+/**
+ * @property mixed $id
+ * @property mixed $code
+ * @property mixed $description
+ * @property mixed $discontinued_at
+ */
 class StockInertiaResource extends JsonResource
 {
 
     public function toArray($request): array|Arrayable|JsonSerializable
     {
         return [
-            'id'          => $this->id,
-            'code'        => $this->code,
-            'description' => $this->description,
+            'id'              => $this->id,
+            'code'            => $this->code,
+            'description'     => $this->description,
+            'discontinued_at' => $this->discontinued_at,
         ];
     }
 }

@@ -55,6 +55,7 @@ class MigrateInventory extends MigrateAurora
 
         DB::connection('aurora')
             ->table('Part Dimension')
+            ->where('Part Status','Not in Use')
             ->orderBy('Part Valid From')->chunk(1000, function ($chunk) use ($tenant) {
                 foreach ($chunk as $auroraPartData) {
                     $result = MigrateStock::run($auroraPartData);

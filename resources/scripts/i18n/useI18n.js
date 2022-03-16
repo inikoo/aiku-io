@@ -24,7 +24,12 @@ export default function() {
             toLocaleString(DateTime.DATE_FULL);
     };
 
+    const __datetime = (value) => {
+        return DateTime.fromISO(value, {locale: locale['language']}).
+            toLocaleString(DateTime.DATETIME_FULL);
+    };
+
     return {
-        __number, __date,
+        __number, __date, __datetime,
     };
 }

@@ -30,6 +30,9 @@ use function __;
  * @property string $metaSection
  * @property array $allowedSorts
  * @property string $module
+ * @property string $tabRoute
+ * @property array $tabRouteParameters
+ * @property ?array $tabs
  */
 class IndexStock
 {
@@ -39,13 +42,15 @@ class IndexStock
     protected array $select;
     protected array $columns;
     protected array $allowedSorts;
+    protected int $perPage;
 
 
     public function __construct()
     {
-        $this->select       = ['id', 'code', 'description'];
+        $this->select       = ['stocks.id', 'code', 'description'];
+        $this->perPage      = 15;
         $this->allowedSorts = ['code'];
-        $this->columns =[
+        $this->columns      = [
 
             'code'        => [
                 'sort'       => 'code',
@@ -91,29 +96,34 @@ class IndexStock
         return QueryBuilder::for(Stock::class)
             ->when(true, [$this, 'queryConditions'])
             ->allowedSorts($this->allowedSorts)
-            ->defaultSort('-id')
+            ->defaultSort('-stocks.id')
             ->allowedFilters([$globalSearch])
-            ->paginate()
+            ->paginate($this->perPage)
             ->withQueryString();
     }
 
     public function getInertia()
     {
+        $blueprints = [
+            'breadcrumbs' => $this->breadcrumbs,
+            'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
+            'headerData'  => [
+                'title' => $this->title
+            ],
+            'dataTable'   => [
+                'records' => $this->getRecords(),
+                'columns' => $this->columns
+            ]
+
+        ];
+        if ($this->tabs) {
+            $blueprints['tabs'] = $this->tabs;
+        }
+
+
         return Inertia::render(
             'index-model',
-            [
-                'breadcrumbs' => $this->breadcrumbs,
-                'navData'     => ['module' => $this->module, 'metaSection' => $this->metaSection, 'sectionRoot' => $this->sectionRoot],
-                'headerData' => [
-                    'title' => $this->title
-                ],
-                'dataTable'  => [
-                    'records' => $this->getRecords(),
-                    'columns' => $this->columns
-                ]
-
-
-            ]
+            $blueprints
         )->table(function (InertiaTable $table) {
             $table->addSearchRows(
                 []
@@ -127,7 +137,55 @@ class IndexStock
     }
 
 
-
+    protected function getTabs($current = false): array
+    {
+        return [
+            'left'  => [
+                'active'        => [
+                    'name'    => __('Active'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['active'])
+                    ],
+                    'current' => $current === 'active',
+                ],
+                'in-process'    => [
+                    'name'    => __('In process'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['in-process'])
+                    ],
+                    'current' => $current === 'in-process',
+                ],
+                'discontinuing' => [
+                    'name'    => __('Discontinuing'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['discontinuing'])
+                    ],
+                    'current' => $current === 'discontinuing',
+                ],
+                'discontinued'  => [
+                    'name'    => __('Discontinued'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['discontinued'])
+                    ],
+                    'current' => $current === 'discontinued',
+                ],
+            ],
+            'right' => [
+                'all' => [
+                    'class'   => '',
+                    'name'    => __('All'),
+                    'href'    => [
+                        'route' => 'inventory.stocks.index',
+                    ],
+                    'current' => $current === 'all',
+                ],
+            ]
+        ];
+    }
 
 
 }

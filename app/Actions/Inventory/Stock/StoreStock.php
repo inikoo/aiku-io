@@ -24,7 +24,7 @@ class StoreStock
 
         /** @var \App\Models\Inventory\Stock $stock */
         $stock = $owner->stocks()->create($modelData);
-
+        $stock->stats()->create();
         $res->model    = $stock;
         $res->model_id = $stock->id;
         $res->status   = $res->model_id ? 'inserted' : 'error';

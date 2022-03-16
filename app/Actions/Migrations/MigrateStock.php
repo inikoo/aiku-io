@@ -44,6 +44,11 @@ class MigrateStock extends MigrateModel
                 'code'        => strtolower($this->auModel->data->{'Part Reference'}),
                 'aurora_id'   => $this->auModel->data->{'Part SKU'},
                 'created_at'  => $this->auModel->data->{'Part Valid From'} ?? null,
+                'activated_at'  => $this->auModel->data->{'Part Active From'} ?? null,
+                'discontinued_at'  => ($this->auModel->data->{'Part Valid To'} && $this->auModel->data->{'Part Status'}=='Not In Use') ? $this->auModel->data->{'Part Valid To'} : null,
+
+
+
                 'state'       => match ($this->auModel->data->{'Part Status'}) {
                     'In Use' => 'active',
                     'Discontinuing' => 'discontinuing',
@@ -52,6 +57,7 @@ class MigrateStock extends MigrateModel
                 }
             ]
         );
+
 
         $this->auModel->id = $this->auModel->data->{'Part SKU'};
     }
@@ -82,6 +88,7 @@ class MigrateStock extends MigrateModel
         if ($res->status == 'unchanged') {
             $res->status = $res->changes ? 'updated' : 'unchanged';
         }
+        /** @var TradeUnit $tradeUnit */
         $tradeUnit = TradeUnit::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Part SKU'});
 
         /** @var Stock $stock */

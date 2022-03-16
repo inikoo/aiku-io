@@ -16,6 +16,7 @@ use App\Models\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -38,7 +39,10 @@ class Stock extends Model implements Auditable
 
     protected $casts = [
         'data' => 'array',
-        'settings' => 'array'
+        'settings' => 'array',
+        'activated_at' => 'datetime',
+        'discontinuing_at' => 'datetime',
+        'discontinued_at' => 'datetime',
     ];
 
     protected $attributes = [
@@ -56,7 +60,6 @@ class Stock extends Model implements Auditable
             ->doNotGenerateSlugsOnUpdate();
     }
 
-    /** @noinspection PhpUnused */
     public function setQuantityAttribute($val)
     {
         $this->attributes['quantity'] = sprintf('%.3f', $val);
@@ -97,6 +100,11 @@ class Stock extends Model implements Auditable
     public function stockMovements(): MorphMany
     {
         return $this->morphMany(StockMovement::class, 'stockable');
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(StockStats::class);
     }
 
 }

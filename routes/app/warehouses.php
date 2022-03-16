@@ -8,6 +8,7 @@
 
 
 use App\Http\Controllers\Inventory\LocationController;
+use App\Http\Controllers\Inventory\StockController;
 use App\Http\Controllers\Inventory\WarehouseAreaController;
 use App\Http\Controllers\Inventory\WarehouseController;
 
@@ -23,6 +24,8 @@ Route::scopeBindings()->group(function () {
 
     Route::get('/{warehouse}/locations/{location}', [LocationController::class, 'showInWarehouse'])->name('show.locations.show');
     Route::get('/{warehouse}/locations/{location}/edit', [LocationController::class, 'editInWarehouse'])->name('show.locations.edit');
+    Route::get('/{warehouse}/locations/{location}/stocks', [StockController::class, 'indexInLocationInWarehouse'])->name('show.locations.show.stocks.index');
+
 
 
     Route::get('/{warehouse}/areas/{warehouseArea}', [WarehouseAreaController::class, 'showInWarehouse'])->name('show.areas.show');
@@ -32,6 +35,7 @@ Route::scopeBindings()->group(function () {
     Route::get('/{warehouse}/areas/{warehouseArea}/locations', [LocationController::class, 'indexInAreaInWarehouse'])->name('show.areas.show.locations.index');
     Route::get('/{warehouse}/areas/{warehouseArea}/locations/{location}', [LocationController::class, 'showInAreaInWarehouse'])->name('show.areas.show.locations.show');
     Route::get('/{warehouse}/areas/{warehouseArea}/locations/{location}/edit', [LocationController::class, 'editInAreaInWarehouse'])->name('show.areas.show.locations.edit');
+    Route::get('/{warehouse}/areas/{warehouseArea}/locations/{location}/stocks', [StockController::class, 'indexInLocationInArea'])->name('show.areas.show.locations.show.stocks.index');
 
 });
 

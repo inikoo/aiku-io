@@ -8,6 +8,8 @@
 
 namespace App\Models;
 
+use App\Actions\Hydrators\HydrateLocation;
+use App\Actions\Hydrators\HydrateStock;
 use App\Models\Inventory\Location;
 use App\Models\Inventory\Stock;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,16 +26,31 @@ class LocationStock extends Pivot
 
     protected $casts = [
         'data'     => 'array',
-        'settings'     => 'array'
+        'settings' => 'array'
     ];
 
     protected $attributes = [
-        'data' => '{}',
+        'data'     => '{}',
         'settings' => '{}',
     ];
 
-
     protected $guarded = [];
+
+    protected static function booted()
+    {
+        static::created(
+            function (LocationStock $locationStock) {
+                HydrateLocation::make()->stocks($locationStock->location);
+                HydrateStock::make()->stocks($locationStock->stock);
+            }
+        );
+        static::deleted(
+            function (LocationStock $locationStock) {
+                HydrateLocation::make()->stocks($locationStock->location);
+                HydrateStock::make()->stocks($locationStock->stock);
+            }
+        );
+    }
 
     public function stock(): BelongsTo
     {
@@ -44,7 +61,6 @@ class LocationStock extends Pivot
     {
         return $this->belongsTo(Location::class);
     }
-
 
 
 }

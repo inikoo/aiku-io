@@ -15,7 +15,6 @@ class StoreLocation
     {
         $res = new ActionResult();
 
-
         if (class_basename($parent::class) == 'WarehouseArea') {
             $data['warehouse_id'] = $parent->warehouse_id;
         }

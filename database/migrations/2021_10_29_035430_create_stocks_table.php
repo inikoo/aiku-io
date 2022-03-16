@@ -44,8 +44,22 @@ class CreateStocksTable extends Migration
             $table->jsonb('settings');
             $table->jsonb('data');
             $table->timestampsTz();
+            $table->dateTimeTz('activated_at')->nullable();
+            $table->dateTimeTz('discontinuing_at')->nullable();
+            $table->dateTimeTz('discontinued_at')->nullable();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+        });
+
+        Schema::create('stock_stats', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('stock_id')->index();
+            $table->foreign('stock_id')->references('id')->on('stocks');
+            $table->unsignedSmallInteger('number_locations')->default(0);
+            $table->decimal('stock_value',16)->default(0);
+
+            $table->timestampsTz();
+
         });
 
         Schema::create(
