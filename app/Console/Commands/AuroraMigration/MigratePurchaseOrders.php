@@ -9,7 +9,7 @@
 namespace App\Console\Commands\AuroraMigration;
 
 
-
+use App\Actions\Migrations\MigrateProcurementDelivery;
 use App\Actions\Migrations\MigratePurchaseOrder;
 
 use App\Models\Account\Tenant;
@@ -30,21 +30,43 @@ class MigratePurchaseOrders extends MigrateAurora
 
     protected function reset()
     {
-        DB::connection('aurora')->table('Purchase Order Dimension')
+        DB::connection('aurora')->table('Purchase Order Dimension')->where('Purchase Order Parent', 'Supplier')
             ->update(['aiku_id' => null]);
-        DB::connection('aurora')->table('Attachment Bridge')->where('Subject','Purchase Order')
+        DB::connection('aurora')->table('Supplier Delivery Dimension')->where('Supplier Delivery Parent', 'Supplier')
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Purchase Order Transaction Fact')->whereNull('Agent Key')
+            ->update(['aiku_id' => null]);
+        DB::connection('aurora')->table('Attachment Bridge')->where('Subject', 'Purchase Order')
             ->update(['aiku_id' => null]);
     }
 
     protected function count(): int
     {
-        return DB::connection('aurora')->table('Purchase Order Dimension')->count();
+        $count = DB::connection('aurora')->table('Purchase Order Dimension')->where('Purchase Order Parent', 'Supplier')->count();
+        $count += DB::connection('aurora')->table('Supplier Delivery Dimension')->where('Supplier Delivery Parent', 'Supplier')->count();
+
+        return $count;
     }
 
     protected function migrate(Tenant $tenant)
     {
-        foreach (DB::connection('aurora')->table('Purchase Order Dimension')->get() as $auData) {
+        foreach (
+            DB::connection('aurora')
+                ->table('Purchase Order Dimension')
+                ->where('Purchase Order Parent', 'Supplier')
+                ->get() as $auData
+        ) {
             $result = MigratePurchaseOrder::run($auData);
+            $this->recordAction($tenant, $result);
+        }
+
+        foreach (
+            DB::connection('aurora')
+                ->table('Supplier Delivery Dimension')
+                ->where('Supplier Delivery Parent', 'Supplier')
+                ->get() as $auData
+        ) {
+            $result = MigrateProcurementDelivery::run($auData);
             $this->recordAction($tenant, $result);
         }
     }

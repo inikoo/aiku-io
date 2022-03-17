@@ -28,6 +28,57 @@ class CreatePurchaseOrdersTable extends Migration
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
         });
+
+        Schema::create('purchase_order_items', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedMediumInteger('purchase_order_id')->nullable()->index();
+            $table->foreign('purchase_order_id')->references('id')->on('purchase_orders');
+            $table->timestamps();
+        });
+
+        Schema::create('procurement_deliveries', function (Blueprint $table) {
+            $table->id();
+            $table->string('number')->index()->nullable();
+            $table->morphs('vendor');
+
+            //enum('InProcess','Consolidated','Dispatched','Received','Checked','ReadyToPlace','Placed','Costing','Cancelled','InvoiceChecked')
+            $table->enum('state',
+                         [
+                             'in-process',
+                             'consolidated',
+                             'dispatched',
+                             'received',
+                             'checked',
+                             'ready-to-place',
+                             'placed',
+                             'costing',
+                             'costing-done',
+                             'cancelled',
+                         ]
+            )->index();
+
+            $table->json('data')->nullable();
+
+
+            $table->timestampsTz();
+            $table->date('date')->index();
+            $table->dateTimeTz('dispatched_at')->index()->nullable();
+            $table->dateTimeTz('received_at')->index()->nullable();
+            $table->dateTimeTz('placed_at')->index()->nullable();
+            $table->dateTimeTz('cancelled_at')->index()->nullable();
+
+            $table->softDeletesTz();
+            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+
+        });
+
+        Schema::create('procurement_delivery_items', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedMediumInteger('procurement_delivery_id')->nullable()->index();
+            $table->foreign('procurement_delivery_id')->references('id')->on('procurement_deliveries');
+            $table->timestamps();
+        });
+
     }
 
     /**
@@ -38,5 +89,7 @@ class CreatePurchaseOrdersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('purchase_orders');
+        Schema::dropIfExists('purchase_orders');
+
     }
 }

@@ -96,8 +96,6 @@ class MigrateSuppliers extends MigrateAurora
                     ->get() as $auData
             ) {
                 $auroraDeletedData = json_decode(gzuncompress($auData->{'Supplier Deleted Metadata'}));
-
-
                 if (isset($auroraDeletedData->{'Supplier Production'}) and $auroraDeletedData->{'Supplier Production'} == 'Yes') {
                     $result = MigrateDeletedWorkshop::run($auData);
                 } else {

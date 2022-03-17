@@ -62,10 +62,10 @@ library.add(faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
 
 // Procurement
 import {
-    faHandHoldingBox, faUserSecret,
+    faHandHoldingBox, faUserSecret,faHandReceiving
 } from '@/private/pro-light-svg-icons';
 
-library.add(faHandHoldingBox, faUserSecret);
+library.add(faHandHoldingBox, faUserSecret,faHandReceiving);
 
 // Fulfilment
 import {

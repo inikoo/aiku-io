@@ -1,8 +1,8 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Wed, 27 Oct 2021 21:35:33 Malaysia Time, Kuala Lumpur, Malaysia
- *  Copyright (c) 2021, Inikoo
+ *  Created: Thu, 17 Mar 2022 16:44:27 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
@@ -17,10 +17,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
+
 /**
- * @mixin IdeHelperPurchaseOrder
+ * @mixin IdeHelperProcurementDelivery
  */
-class PurchaseOrder extends Model implements Auditable
+class ProcurementDelivery extends Model implements Auditable
 {
     use UsesTenantConnection;
     use \OwenIt\Auditing\Auditable;
@@ -28,8 +29,11 @@ class PurchaseOrder extends Model implements Auditable
     use HasFactory;
 
     protected $casts = [
-        'data' => 'array',
-        'submitted_at' => 'datetime'
+        'data'          => 'array',
+        'dispatched_at' => 'datetime',
+        'received_at'   => 'datetime',
+        'placed_at'     => 'datetime',
+        'cancelled_at'  => 'datetime',
     ];
 
     protected $attributes = [

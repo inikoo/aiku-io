@@ -163,7 +163,16 @@ class MigrateReset extends Command
                             'aiku_workshop_historic_product_id' => null
                         ]
                     );
-                $this->line("✅ supplier products \t".$this->stepTime());
+
+                DB::connection('aurora')->table('Purchase Order Dimension')
+                    ->update(['aiku_id' => null]);
+                DB::connection('aurora')->table('Supplier Delivery Dimension')
+                    ->update(['aiku_id' => null]);
+
+                DB::connection('aurora')->table('Purchase Order Transaction Fact')
+                    ->update(['aiku_id' => null]);
+
+                $this->line("✅ supplier products and PO \t".$this->stepTime());
                 DB::connection('aurora')->table('Inventory Transaction Fact')
                     ->update([
                         'aiku_id' => null,

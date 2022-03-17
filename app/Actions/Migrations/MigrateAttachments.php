@@ -8,6 +8,7 @@
 
 namespace App\Actions\Migrations;
 
+use App\Models\Procurement\ProcurementDelivery;
 use App\Models\Procurement\PurchaseOrder;
 use App\Models\Procurement\Supplier;
 use App\Models\CRM\Customer;
@@ -25,7 +26,7 @@ class MigrateAttachments
 {
     use AsAction;
 
-    public function handle(Employee|Supplier|Customer|Order|PurchaseOrder|Stock $model, $attachmentsData)
+    public function handle(Employee|Supplier|Customer|Order|PurchaseOrder|Stock|ProcurementDelivery $model, $attachmentsData)
     {
         $old = [];
         $new = [];

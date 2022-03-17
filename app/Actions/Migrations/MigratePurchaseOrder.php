@@ -8,6 +8,7 @@
 
 namespace App\Actions\Migrations;
 
+use App\Actions\Migrations\Traits\GetSupplier;
 use App\Actions\Procurement\PurchaseOrder\StorePurchaseOrder;
 use App\Actions\Procurement\PurchaseOrder\UpdatePurchaseOrder;
 use App\Models\Procurement\Agent;
@@ -23,6 +24,7 @@ use App\Models\Utils\ActionResult;
 class MigratePurchaseOrder extends MigrateModel
 {
     use AsAction;
+    use GetSupplier;
 
 
     #[Pure] public function __construct()
@@ -38,7 +40,8 @@ class MigratePurchaseOrder extends MigrateModel
             return Agent::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Purchase Order Parent Key'});
         }
 
-        return Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Purchase Order Parent Key'});
+        return $this->getSupplier($this->auModel->data->{'Purchase Order Parent Key'});
+
     }
 
     public function parseModelData()

@@ -11,6 +11,7 @@ use App\Http\Controllers\Procurement\DeliveriesController;
 use App\Http\Controllers\Procurement\ProcurementController;
 use App\Http\Controllers\Procurement\PurchaseOrderController;
 use App\Http\Controllers\Procurement\SupplierController;
+use App\Http\Controllers\Procurement\SupplierProductController;
 
 Route::get('/', [ProcurementController::class, 'dashboard'])->name('dashboard');
 
@@ -20,13 +21,15 @@ Route::get('/agents/{agent}/edit', [AgentController::class, 'edit'])->name('agen
 Route::post('/agents/{agent}', [AgentController::class, 'update'])->name('agents.update');
 
 Route::get('/agents/{agent}/suppliers', [SupplierController::class, 'indexInAgent'])->name('agents.show.suppliers.index');
-Route::get('/agents/{agent}/suppliers/{supplier}', [SupplierController::class, 'showInAgent'])->name('agents.show.suppliers.show')->scopeBindings();;
-Route::get('/agents/{agent}/suppliers/{supplier}/edit', [SupplierController::class, 'editInAgent'])->name('agents.show.suppliers.edit')->scopeBindings();;
-Route::post('/agents/{agent}/suppliers/{supplier}', [SupplierController::class, 'updateInAgent'])->name('agents.show.suppliers.update')->scopeBindings();;
+Route::scopeBindings()->group(function () {
+    Route::get('/agents/{agent}/suppliers/{supplier}', [SupplierController::class, 'showInAgent'])->name('agents.show.suppliers.show')->scopeBindings();
+    Route::get('/agents/{agent}/suppliers/{supplier}/edit', [SupplierController::class, 'editInAgent'])->name('agents.show.suppliers.edit')->scopeBindings();
+    Route::post('/agents/{agent}/suppliers/{supplier}', [SupplierController::class, 'updateInAgent'])->name('agents.show.suppliers.update')->scopeBindings();
 
 
-Route::get('/agents/{agent}/suppliers/{supplier}/purchase_orders', [PurchaseOrderController::class, 'indexInSupplierInAgent'])->name('agents.show.suppliers.show.purchase_orders.index')->scopeBindings();;
-Route::get('/agents/{agent}/suppliers/{supplier}/purchase_orders/{purchaseOrder}', [PurchaseOrderController::class, 'showInSupplierInAgent'])->name('agents.show.suppliers.show.purchase_orders.show')->scopeBindings();;
+    Route::get('/agents/{agent}/suppliers/{supplier}/purchase_orders', [PurchaseOrderController::class, 'indexInSupplierInAgent'])->name('agents.show.suppliers.show.purchase_orders.index')->scopeBindings();
+    Route::get('/agents/{agent}/suppliers/{supplier}/purchase_orders/{purchaseOrder}', [PurchaseOrderController::class, 'showInSupplierInAgent'])->name('agents.show.suppliers.show.purchase_orders.show')->scopeBindings();
+});
 
 Route::get('/agents/{agent}/purchase_orders', [PurchaseOrderController::class, 'indexInAgent'])->name('agents.show.purchase_orders.index');
 
@@ -38,7 +41,10 @@ Route::post('/suppliers/{supplier}', [AgentController::class, 'update'])->name('
 
 Route::get('/suppliers/{supplier}/purchase_orders', [PurchaseOrderController::class, 'indexInSupplier'])->name('suppliers.show.purchase_orders.index');
 
-
+Route::get('/products', [SupplierProductController::class, 'indexInTenant'])->name('products.index');
+Route::get('/products/{supplierProduct}', [SupplierProductController::class, 'show'])->name('products.show');
+Route::get('/products/{supplierProduct}/edit', [SupplierProductController::class, 'edit'])->name('products.edit');
+Route::post('/products/{supplierProduct}', [SupplierProductController::class, 'update'])->name('products.update');
 
 
 Route::get('/purchase_orders', [PurchaseOrderController::class, 'index'])->name('purchase_orders.index');

@@ -42,8 +42,22 @@ class CreateSuppliersTable extends Migration
             $table->unsignedMediumInteger('supplier_id')->index();
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->unsignedSmallInteger('number_products')->default(0);
+
+
+            $productStates = ['creating', 'active', 'no-available', 'discontinuing', 'discontinued'];
+            foreach ($productStates as $productState) {
+                $table->unsignedBigInteger('number_products_state_'.str_replace('-', '_', $productState))->default(0);
+            }
+
+            $productStockQuantityStatuses = ['surplus','optimal','low','critical','out-of-stock','no_applicable'];
+            foreach ($productStockQuantityStatuses as $productStockQuantityStatus) {
+                $table->unsignedBigInteger('number_products_stock_quantity_status_'.str_replace('-', '_', $productStockQuantityStatus))->default(0);
+            }
+
             $table->unsignedSmallInteger('number_purchase_orders')->default(0);
             $table->unsignedSmallInteger('number_deliveries')->default(0);
+
+
 
             $table->timestampsTz();
 

@@ -31,6 +31,9 @@ class CreateSupplierProductsTable extends Migration
             $table->enum('state', ['creating', 'active', 'no-available', 'discontinuing', 'discontinued'])->nullable()->index();
             $table->boolean('status')->nullable()->index();
 
+            $table->enum('stock_quantity_status',['surplus','optimal','low','critical','out-of-stock','no_applicable'])->default('no_applicable')->nullable()->index();
+
+
             $table->string('code')->index();
             $table->string('name', 255)->nullable();
             $table->text('description')->nullable();

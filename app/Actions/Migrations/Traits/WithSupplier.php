@@ -22,7 +22,7 @@ trait WithSupplier
 {
     public function updateModel(): ActionResult
     {
-        $res = new ActionResult();
+
         /**  @var Supplier $supplier */
         $supplier                                = $this->model;
         $this->modelData['supplier']['data']     = $this->parseMetadata($supplier->data, $this->auModel->data);

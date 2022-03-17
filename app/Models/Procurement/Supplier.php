@@ -13,9 +13,9 @@ use App\Models\Helpers\Attachment;
 use App\Models\Media\Image;
 use App\Models\Auth\User;
 use App\Models\Traits\HasAddress;
+use App\Models\Traits\HasProcurement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -38,6 +38,7 @@ class Supplier extends Model implements Auditable
     use SoftDeletes;
     use Searchable;
     use HasAddress;
+    use HasProcurement;
 
     protected $casts = [
         'data'     => 'array',
@@ -93,19 +94,10 @@ class Supplier extends Model implements Auditable
         return $this->morphTo();
     }
 
-    public function supplierProducts(): HasMany
-    {
-        return $this->hasMany(SupplierProduct::class);
-    }
 
     public function user(): MorphOne
     {
         return $this->morphOne(User::class, 'userable');
-    }
-
-    public function purchaseOrders(): MorphMany
-    {
-        return $this->morphMany(PurchaseOrder::class, 'vendor');
     }
 
     public function stats(): HasOne

@@ -14,6 +14,7 @@ class CreateReceivingNotesTable extends Migration
 {
     /**
      * Run the migrations.
+     * Wrapper around Procurement Deliveries , Fulfilment Asset deliveries and Returns
      *
      * @return void
      */
