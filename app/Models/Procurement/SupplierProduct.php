@@ -8,6 +8,7 @@
 
 namespace App\Models\Procurement;
 
+use App\Actions\Hydrators\HydrateSupplier;
 use App\Models\Media\Image;
 use App\Models\SalesStats;
 use App\Models\Marketing\TradeUnit;
@@ -46,6 +47,19 @@ class SupplierProduct extends Model implements Auditable
     ];
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::created(
+            function (SupplierProduct $supplierProduct) {
+                    HydrateSupplier::run($supplierProduct->supplier);
+            }
+        );
+        static::deleted(
+            function (SupplierProduct $supplierProduct) {
+                    HydrateSupplier::run($supplierProduct->supplier);
+            }
+        );
+    }
 
     public function supplier(): BelongsTo
     {

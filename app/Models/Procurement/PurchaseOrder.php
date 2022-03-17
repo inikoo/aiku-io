@@ -8,6 +8,7 @@
 
 namespace App\Models\Procurement;
 
+use App\Actions\Hydrators\HydrateSupplier;
 use App\Models\Helpers\Attachment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -37,6 +38,24 @@ class PurchaseOrder extends Model implements Auditable
     ];
 
     protected $guarded = [];
+
+    protected static function booted()
+    {
+        static::created(
+            function (PurchaseOrder $purchaseOrder) {
+                if ($purchaseOrder->vendor_type == 'Agent') {
+                    HydrateSupplier::run($purchaseOrder->vendor);
+                }
+            }
+        );
+        static::deleted(
+            function (PurchaseOrder $purchaseOrder) {
+                if ($purchaseOrder->vendor_type == 'Agent') {
+                    HydrateSupplier::run($purchaseOrder->vendor);
+                }
+            }
+        );
+    }
 
     public function vendor(): MorphTo
     {

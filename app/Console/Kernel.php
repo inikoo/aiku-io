@@ -7,6 +7,7 @@ use App\Actions\Hydrators\HydrateEmployee;
 use App\Actions\Hydrators\HydrateFulfilmentCustomer;
 use App\Actions\Hydrators\HydrateGuest;
 use App\Actions\Hydrators\HydrateShop;
+use App\Actions\Hydrators\HydrateSupplier;
 use App\Actions\Hydrators\HydrateTenant;
 use App\Actions\Hydrators\HydrateUser;
 use App\Actions\Hydrators\HydrateWarehouse;
@@ -30,7 +31,8 @@ class Kernel extends ConsoleKernel
         HydrateShop::class,
         HydrateCustomer::class,
         HydrateTenant::class,
-        HydrateFulfilmentCustomer::class
+        HydrateFulfilmentCustomer::class,
+        HydrateSupplier::class
     ];
 
     /**

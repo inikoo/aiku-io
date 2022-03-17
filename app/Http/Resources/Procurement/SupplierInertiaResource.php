@@ -15,6 +15,12 @@ use JsonSerializable;
 
 /**
  * @property mixed $location country/city
+ * @property mixed $id
+ * @property mixed $code
+ * @property mixed $name
+ * @property mixed $number_purchase_orders
+ * @property mixed $owner_id
+ * @property mixed $number_products
  */
 class SupplierInertiaResource extends JsonResource
 {
@@ -29,7 +35,9 @@ class SupplierInertiaResource extends JsonResource
             'location' => $this->location[2],
 
             'number_purchase_orders' => $this->number_purchase_orders,
-            'owner_id'               => $this->owner_id,
+            'number_products'        => $this->number_products,
+
+            'owner_id' => $this->owner_id,
 
         ];
     }

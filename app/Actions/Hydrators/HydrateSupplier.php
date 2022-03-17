@@ -29,7 +29,7 @@ class HydrateSupplier extends HydrateModel
         $supplier->update(
             [
 
-                'location'     => $supplier->getLocation()
+                'location' => $supplier->getLocation()
 
             ]
         );
@@ -39,7 +39,8 @@ class HydrateSupplier extends HydrateModel
     {
         $supplier->stats->update(
             [
-                'number_purchase_orders' => $supplier->purchaseOrders()->count()
+                'number_purchase_orders' => $supplier->purchaseOrders()->count(),
+                'number_products'        => $supplier->supplierProducts()->count()
 
             ]
         );

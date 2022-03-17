@@ -39,12 +39,17 @@ Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])->name('
 Route::get('/suppliers/{supplier}/edit', [AgentController::class, 'edit'])->name('suppliers.edit');
 Route::post('/suppliers/{supplier}', [AgentController::class, 'update'])->name('suppliers.update');
 
-Route::get('/suppliers/{supplier}/purchase_orders', [PurchaseOrderController::class, 'indexInSupplier'])->name('suppliers.show.purchase_orders.index');
+Route::scopeBindings()->group(function () {
+    Route::get('/suppliers/{supplier}/products', [SupplierProductController::class, 'indexInSupplier'])->name('suppliers.show.products.index');
+    Route::get('/suppliers/{supplier}/purchase_orders', [PurchaseOrderController::class, 'indexInSupplier'])->name('suppliers.show.purchase_orders.index');
+});
 
 Route::get('/products', [SupplierProductController::class, 'indexInTenant'])->name('products.index');
+Route::get('/products/{availabilityStatus}', [SupplierProductController::class, 'indexInTenantWithAvailabilityStatus'])->name('products.stock_quantity_status');
 Route::get('/products/{supplierProduct}', [SupplierProductController::class, 'show'])->name('products.show');
 Route::get('/products/{supplierProduct}/edit', [SupplierProductController::class, 'edit'])->name('products.edit');
 Route::post('/products/{supplierProduct}', [SupplierProductController::class, 'update'])->name('products.update');
+Route::get('/products', [SupplierProductController::class, 'indexInTenant'])->name('products.index');
 
 
 Route::get('/purchase_orders', [PurchaseOrderController::class, 'index'])->name('purchase_orders.index');

@@ -40,8 +40,8 @@ class IndexSupplier
 
     public function __construct()
     {
-        $this->select       = ['owner_id', 'suppliers.id', 'code', 'name', 'number_purchase_orders', 'location'];
-        $this->allowedSorts = ['code', 'name', 'number_purchase_orders'];
+        $this->select       = ['owner_id', 'suppliers.id', 'code', 'name', 'number_purchase_orders', 'number_products', 'location'];
+        $this->allowedSorts = ['code', 'name', 'number_products', 'number_purchase_orders'];
 
         $this->columns = [
 
@@ -83,7 +83,7 @@ class IndexSupplier
                     [
                         'type'     => 'flag',
                         'resolver' => [
-                            'type' => 'country',
+                            'type'       => 'country',
                             'parameters' => [
                                 'indices' => 'country'
                             ],
@@ -123,6 +123,29 @@ class IndexSupplier
                                     'indices' => 'id'
                                 ],
                                 'indices' => 'number_purchase_orders'
+                            ],
+
+
+                        ]
+                    ]
+                ],
+
+            ],
+            'number_products'        => [
+                'sort'       => 'number_products',
+                'label'      => __('Products'),
+                'components' => [
+                    [
+                        'type'     => 'link',
+                        'resolver' => [
+                            'type' => 'link',
+
+                            'parameters' => [
+                                'href'    => [
+                                    'route'   => 'procurement.suppliers.show.products.index',
+                                    'indices' => 'id'
+                                ],
+                                'indices' => 'number_products'
                             ],
 
 

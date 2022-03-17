@@ -16,6 +16,7 @@ use App\Models\Procurement\SupplierProduct;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Inertia;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -81,6 +82,11 @@ class IndexSupplierProduct
         ];
     }
 
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->hasPermissionTo("procurement");
+    }
+
     public function queryConditions($query)
     {
         return $query->select($this->select);
@@ -143,37 +149,53 @@ class IndexSupplierProduct
     {
         return [
             'left'  => [
-                'active'        => [
-                    'name'    => __('Active'),
+                'surplus'        => [
+                    'name'    => __('Surplus'),
                     'href'    => [
                         'route'      => $this->tabRoute,
-                        'parameters' => array_merge($this->tabRouteParameters, ['active'])
+                        'parameters' => array_merge($this->tabRouteParameters, ['surplus'])
                     ],
-                    'current' => $current === 'active',
+                    'current' => $current === 'surplus',
                 ],
-                'in-process'    => [
-                    'name'    => __('In process'),
+                'optimal'    => [
+                    'name'    => __('OK'),
                     'href'    => [
                         'route'      => $this->tabRoute,
-                        'parameters' => array_merge($this->tabRouteParameters, ['in-process'])
+                        'parameters' => array_merge($this->tabRouteParameters, ['optimal'])
                     ],
-                    'current' => $current === 'in-process',
+                    'current' => $current === 'optimal',
                 ],
-                'discontinuing' => [
-                    'name'    => __('Discontinuing'),
+                'low' => [
+                    'name'    => __('Low'),
                     'href'    => [
                         'route'      => $this->tabRoute,
-                        'parameters' => array_merge($this->tabRouteParameters, ['discontinuing'])
+                        'parameters' => array_merge($this->tabRouteParameters, ['low'])
                     ],
-                    'current' => $current === 'discontinuing',
+                    'current' => $current === 'low',
                 ],
-                'discontinued'  => [
-                    'name'    => __('Discontinued'),
+                'critical'  => [
+                    'name'    => __('Critical'),
                     'href'    => [
                         'route'      => $this->tabRoute,
-                        'parameters' => array_merge($this->tabRouteParameters, ['discontinued'])
+                        'parameters' => array_merge($this->tabRouteParameters, ['critical'])
                     ],
-                    'current' => $current === 'discontinued',
+                    'current' => $current === 'critical',
+                ],
+                'out-of-stock'  => [
+                    'name'    => __('Out of stock'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['out-of-stock'])
+                    ],
+                    'current' => $current === 'out-of-stock',
+                ],
+                'no-applicable'  => [
+                    'name'    => __('NA'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['no-applicable'])
+                    ],
+                    'current' => $current === 'no-applicable',
                 ],
             ],
             'right' => [
@@ -181,7 +203,7 @@ class IndexSupplierProduct
                     'class'   => '',
                     'name'    => __('All'),
                     'href'    => [
-                        'route' => 'inventory.stocks.index',
+                        'route' => 'procurement.products.index',
                     ],
                     'current' => $current === 'all',
                 ],

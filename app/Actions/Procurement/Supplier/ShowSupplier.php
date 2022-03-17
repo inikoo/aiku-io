@@ -12,6 +12,8 @@ namespace App\Actions\Procurement\Supplier;
 use App\Actions\UI\WithInertia;
 use App\Models\Procurement\Supplier;
 use Inertia\Inertia;
+use Inertia\Response;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
@@ -27,12 +29,16 @@ class ShowSupplier
     use AsAction;
     use WithInertia;
 
+    public function authorize(ActionRequest $request): bool
+    {
+        return $request->user()->hasPermissionTo("procurement.suppliers.view.{$this->supplier->id}");
+    }
 
     public function handle()
     {
     }
 
-    public function getInertia()
+    public function getInertia(): Response
     {
         $actionIcons = [];
 
@@ -46,7 +52,7 @@ class ShowSupplier
         }
 
         $headerData = [
-            'title' => $this->title,
+            'title'       => $this->title,
             'actionIcons' => $actionIcons,
 
         ];
@@ -54,14 +60,54 @@ class ShowSupplier
             $headerData['inModel'] = $this->inModel;
         }
 
+        $headerData['info'] = [
+            [
+                'type' => 'group',
+                'data' => [
+                    'title'      => __('Products'),
+                    'components' => [
+                        [
+                            'type' => 'icon',
+                            'data' => [
+                                'icon' => ['fal', 'hand-receiving'],
+                                'type' => 'page-header'
+                            ]
+                        ],
+                        [
+                            'type' => 'text',
+                            'data' => [
+                                'class'=>'mr-1',
+                                'type'=>'number',
+                                'slot' => $this->supplier->stats->number_products,
+
+                            ]
+                        ],
+
+                        [
+                            'type' => 'link',
+                            'data' => [
+                                'href'      =>  [
+                                    'route'           => 'procurement.suppliers.show.products.index',
+                                    'parameters' => $this->supplier->id
+                                ],
+                                'slot' => __('products')
+
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+
+        ];
 
 
         return Inertia::render(
             'show-model',
             [
-                'navData' => ['procurement' => 'shops', 'sectionRoot' => $this->sectionRoot],
+                'navData'     => ['procurement' => 'shops', 'sectionRoot' => $this->sectionRoot],
                 'breadcrumbs' => $this->breadcrumbs,
                 'headerData'  => $headerData,
+
             ]
 
         );
