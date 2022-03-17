@@ -14,9 +14,10 @@ use JsonSerializable;
 
 
 /**
- * @property mixed $id
- * @property mixed $code
- * @property mixed $name
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property int $supplier_id
  */
 class SupplierProductInertiaResource extends JsonResource
 {
@@ -24,9 +25,10 @@ class SupplierProductInertiaResource extends JsonResource
     public function toArray($request): array|Arrayable|JsonSerializable
     {
         return [
-            'id'   => $this->id,
-            'code' => $this->code,
-            'name' => $this->name,
+            'id'          => $this->id,
+            'code'        => $this->code,
+            'name'        => $this->name,
+            'supplier_id' => $this->supplier_id,
         ];
     }
 }

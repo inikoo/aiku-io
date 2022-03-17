@@ -13,10 +13,12 @@ namespace App\Http\Controllers\Procurement;
 use App\Actions\Procurement\SupplierProduct\IndexSupplierProductInSupplier;
 use App\Actions\Procurement\SupplierProduct\IndexSupplierProductInTenant;
 use App\Actions\Procurement\SupplierProduct\IndexSupplierProductInTenantWithAvailabilityStatus;
+use App\Actions\Procurement\SupplierProduct\ShowSupplierProduct;
 use App\Enums\AvailabilityStatus;
 use App\Http\Controllers\Controller;
 
 use App\Models\Procurement\Supplier;
+use App\Models\Procurement\SupplierProduct;
 use Inertia\Response;
 
 
@@ -39,9 +41,14 @@ class SupplierProductController extends Controller
         return IndexSupplierProductInSupplier::make()->asInertia($supplier);
     }
 
-    public function show(): Response
+    public function showInTenant(SupplierProduct $supplierProduct): Response
     {
-        return ShowSupplierProductInTenant::make()->asInertia();
+        return ShowSupplierProduct::make()->asInertia(parent:'tenant',supplierProduct: $supplierProduct);
+    }
+
+    public function showInSupplier(Supplier $supplier, SupplierProduct $supplierProduct): Response
+    {
+        return ShowSupplierProduct::make()->asInertia(parent:'supplier',supplierProduct: $supplierProduct);
     }
 
 

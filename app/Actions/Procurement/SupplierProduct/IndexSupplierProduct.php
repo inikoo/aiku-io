@@ -9,9 +9,7 @@
 namespace App\Actions\Procurement\SupplierProduct;
 
 
-use App\Http\Resources\Inventory\StockInertiaResource;
 use App\Http\Resources\Procurement\SupplierProductInertiaResource;
-use App\Models\Inventory\Stock;
 use App\Models\Procurement\SupplierProduct;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -50,7 +48,7 @@ class IndexSupplierProduct
 
     public function __construct()
     {
-        $this->select       = ['supplier_products.id', 'code', 'name'];
+        $this->select       = ['supplier_products.id', 'code', 'name','supplier_id'];
         $this->perPage      = 15;
         $this->allowedSorts = ['code'];
         $this->columns      = [

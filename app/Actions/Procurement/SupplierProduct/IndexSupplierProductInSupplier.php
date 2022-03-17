@@ -9,7 +9,6 @@
 namespace App\Actions\Procurement\SupplierProduct;
 
 
-
 use App\Actions\Procurement\Supplier\ShowSupplierInTenant;
 use App\Models\Procurement\Supplier;
 use Lorisleiva\Actions\ActionRequest;
@@ -32,13 +31,13 @@ class IndexSupplierProductInSupplier extends IndexSupplierProduct
     public function queryConditions($query)
     {
         return $query
-            ->where('supplier_id',$this->supplier->id)
+            ->where('supplier_id', $this->supplier->id)
             ->select($this->select);
     }
 
     public function asInertia(Supplier $supplier)
     {
-        $this->supplier=$supplier;
+        $this->supplier = $supplier;
         $this->validateAttributes();
 
         return $this->getInertia();
@@ -46,20 +45,26 @@ class IndexSupplierProductInSupplier extends IndexSupplierProduct
 
     public function prepareForValidation(ActionRequest $request): void
     {
+        $this->columns['code']['components'][0]['resolver']['parameters']['href'] =
+            [
+                'route'   => 'procurement.suppliers.show.products.show',
+                'indices' => ['supplier_id','id']
+            ];
+
+
         $request->merge(
             [
-                'title'              => __('Products'),
-                'breadcrumbs'        => $this->getBreadcrumbs($this->supplier),
-                'sectionRoot'        => 'procurement.suppliers.index',
-                'module'             => 'procurement',
-                'metaSection'        =>  null,
+                'title'       => __('Products'),
+                'breadcrumbs' => $this->getBreadcrumbs($this->supplier),
+                'sectionRoot' => 'procurement.suppliers.index',
+                'module'      => 'procurement',
+                'metaSection' => null,
 
 
             ]
         );
 
         $this->fillFromRequest($request);
-
     }
 
 
@@ -69,9 +74,9 @@ class IndexSupplierProductInSupplier extends IndexSupplierProduct
             (new ShowSupplierInTenant())->getBreadcrumbs($supplier),
             [
                 'procurement.suppliers.show.products.index' => [
-                    'route'      => 'procurement.suppliers.show.products.index',
-                    'routeParameters'=>[$supplier->id],
-                    'modelLabel' => [
+                    'route'           => 'procurement.suppliers.show.products.index',
+                    'routeParameters' => [$supplier->id],
+                    'modelLabel'      => [
                         'label' => __('products')
                     ],
                 ],

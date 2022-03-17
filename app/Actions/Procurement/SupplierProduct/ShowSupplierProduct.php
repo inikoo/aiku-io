@@ -8,16 +8,19 @@
 
 namespace App\Actions\Procurement\SupplierProduct;
 
-use App\Actions\Inventory\ShowInventoryDashboard;
+use App\Actions\Procurement\ShowProcurementDashboard;
+use App\Actions\Procurement\Supplier\ShowSupplierInTenant;
 use App\Actions\UI\WithInertia;
-use App\Models\Inventory\Stock;
+use App\Models\Procurement\SupplierProduct;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 /**
- * @property Stock $stock
+ * @property SupplierProduct $supplierProduct
+ * @property string $parent
+ * @property bool $canEdit
  */
 class ShowSupplierProduct
 {
@@ -36,18 +39,19 @@ class ShowSupplierProduct
     }
 
 
-    public function asInertia(Stock $stock, array $attributes = []): Response
+    public function asInertia(string $parent,SupplierProduct $supplierProduct): Response
     {
-        $this->set('stock', $stock)->fill($attributes);
+        $this->parent=$parent;
+        $this->supplierProduct=$supplierProduct;
 
         $this->validateAttributes();
 
 
 
         $actionIcons = [];
-        if ($this->get('canEdit')) {
-            $actionIcons['inventory.stocks.edit'] = [
-                'routeParameters' => $this->stock->id,
+        if ($this->canEdit) {
+            $actionIcons['procurement.products.edit'] = [
+                'routeParameters' => $this->supplierProduct->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
             ];
@@ -57,14 +61,13 @@ class ShowSupplierProduct
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs' => $this->getBreadcrumbs($this->stock),
-                'navData'     => ['module' => 'inventory', 'sectionRoot' => 'inventory.stocks.index'],
+                'breadcrumbs' => $this->getBreadcrumbs($this->parent,$this->supplierProduct),
+                'navData'     => ['module' => 'procurement', 'sectionRoot' => 'procurement.suppliers.index'],
                 'headerData' => [
-                    'title'       => $stock->code,
+                    'title'       => $this->supplierProduct->code,
                     'actionIcons' => $actionIcons,
 
                 ],
-                'model'      => $stock
             ]
 
         );
@@ -73,32 +76,56 @@ class ShowSupplierProduct
     public function prepareForValidation(ActionRequest $request): void
     {
         $this->fillFromRequest($request);
-        $this->set('canEdit', $request->user()->can("inventory.stocks.edit"));
+        $this->set('canEdit', $request->user()->can("procurement.suppliers.edit"));
 
     }
 
 
 
-    public function getBreadcrumbs(Stock $stock): array
+    public function getBreadcrumbs(string $parent,SupplierProduct $supplierProduct): array
     {
+
+        if($parent=='supplier'){
+            return array_merge(
+                (new ShowSupplierInTenant())->getBreadcrumbs($this->supplierProduct->supplier),
+                [
+                    'procurement.suppliers.show.products.show' => [
+                        'route'           => 'procurement.suppliers.show.products.show',
+                        'routeParameters' =>[$this->supplierProduct->supplier_id,$this->supplierProduct->id],
+                        'index'=>[
+                            'route'   => 'procurement.suppliers.show.products.index',
+                            'routeParameters' =>[$this->supplierProduct->supplier_id],
+
+                            'overlay' => __('Product index')
+                        ],
+                        'modelLabel'=>[
+                            'label'=>__('product')
+                        ],
+                        'name'            => $supplierProduct->code,
+
+                    ],
+                ]
+            );
+        }
         return array_merge(
-            (new ShowInventoryDashboard())->getBreadcrumbs(),
+            (new ShowProcurementDashboard())->getBreadcrumbs(),
             [
-                'inventory.stocks.show' => [
-                    'route'           => 'inventory.stocks.show',
-                    'routeParameters' => $stock->id,
+                'procurement.products.show' => [
+                    'route'           => 'procurement.products.show',
+                    'routeParameters' => $supplierProduct->id,
                     'index'=>[
-                        'route'   => 'inventory.stocks.index',
-                        'overlay' => __('Stock index')
+                        'route'   => 'procurement.products.index',
+                        'overlay' => __('Product index')
                     ],
                     'modelLabel'=>[
-                        'label'=>__('stock')
+                        'label'=>__('product')
                     ],
-                    'name'            => $stock->code,
+                    'name'            => $supplierProduct->code,
 
                 ],
             ]
         );
+
     }
 
 
