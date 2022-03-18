@@ -61,10 +61,12 @@ return [
                 'name' => 'Suppliers',
                 'icon' => ['fal', 'hand-holding-box'],
             ],
+            /*
             'procurement.products.index'       => [
                 'name' => 'Products',
                 'icon' => ['fal', 'hand-receiving'],
             ],
+            */
             'procurement.purchase_orders.index' => [
                 'name' => 'Purchase orders',
                 'icon' => ['fal', 'clipboard'],
