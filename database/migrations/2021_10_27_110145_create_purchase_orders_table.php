@@ -17,16 +17,24 @@ class CreatePurchaseOrdersTable extends Migration
             $table->id();
             $table->string('number')->index()->nullable();
             $table->morphs('vendor');
-            $table->enum('state',
-                         ['in-process','submitted','no-received','confirmed','manufactured','qc-pass','inputted','dispatched','received','checked','placed','costing','invoice-checked','cancelled']
-            )->index()->default('in-process');
+
+            $purchaseOrderStates = ['in-process', 'submitted',  'confirmed', 'dispatched', 'delivered','cancelled'];
+            $table->enum('state',$purchaseOrderStates)->index()->default('in-process');
+
+            $table->boolean('has_backorder')->default(false);
+            $table->unsignedSmallInteger('number_deliveries')->default(0);
+            $table->enum('backorder_state',
+                         ['na',  'confirmed', 'dispatched']
+            )->index()->default('na');
+            $table->enum('frontorder_state',
+                         ['na',  'dispatched', 'delivered']
+            )->index()->default('na');
             $table->json('data')->nullable();
             $table->date('date')->index();
             $table->timestampsTz();
             $table->dateTimeTz('submitted_at')->nullable();
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-
         });
 
         Schema::create('purchase_order_items', function (Blueprint $table) {
@@ -69,7 +77,6 @@ class CreatePurchaseOrdersTable extends Migration
 
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-
         });
 
         Schema::create('procurement_delivery_items', function (Blueprint $table) {
@@ -78,7 +85,6 @@ class CreatePurchaseOrdersTable extends Migration
             $table->foreign('procurement_delivery_id')->references('id')->on('procurement_deliveries');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -90,6 +96,5 @@ class CreatePurchaseOrdersTable extends Migration
     {
         Schema::dropIfExists('purchase_orders');
         Schema::dropIfExists('purchase_orders');
-
     }
 }

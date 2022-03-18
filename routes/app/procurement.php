@@ -54,5 +54,10 @@ Route::post('/products/{supplierProduct}', [SupplierProductController::class, 'u
 Route::get('/products', [SupplierProductController::class, 'indexInTenant'])->name('products.index');
 
 
-Route::get('/purchase_orders', [PurchaseOrderController::class, 'index'])->name('purchase_orders.index');
+Route::get('/purchase_orders', [PurchaseOrderController::class, 'indexInTenant'])->name('purchase_orders.index');
+Route::get('/purchase_orders/state/{purchaseOrderState}', [PurchaseOrderController::class, 'indexInTenantWithState'])->name('purchase_orders.state');
+Route::get('/purchase_orders/{purchaseOrder}', [PurchaseOrderController::class, 'showInTenant'])->name('purchase_orders.show');
+Route::get('/purchase_orders/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('purchase_orders.edit');
+Route::post('/purchase_orders/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('purchase_orders.update');
+
 Route::get('/deliveries', [DeliveriesController::class, 'index'])->name('deliveries.index');

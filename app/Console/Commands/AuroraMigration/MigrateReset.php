@@ -96,7 +96,7 @@ class MigrateReset extends Command
                 $this->line("✅ warehouses \t\t".$this->stepTime());
 
 
-                DB::connection('aurora')->table('Supplier Dimension')->whereNotIn('Supplier Type', ['Agent'])
+                DB::connection('aurora')->table('Supplier Dimension')
                     ->update(
                         [
                             'aiku_id'          => null,

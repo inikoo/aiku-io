@@ -15,7 +15,7 @@ use App\Http\Controllers\Inventory\WarehouseAreaController;
 Route::get('/', [InventoryController::class, 'dashboard'])->name('dashboard');
 
 Route::get('/stocks', [StockController::class, 'indexInTenant'])->name('stocks.index');
-Route::get('/stocks/{stockState}', [StockController::class, 'indexInTenantWithState'])->name('stocks.state');
+Route::get('/stocks/state/{stockState}', [StockController::class, 'indexInTenantWithState'])->name('stocks.state');
 
 Route::get('/stocks/{stock}', [StockController::class, 'show'])->name('stocks.show');
 Route::get('/stocks/{stock}/edit', [StockController::class, 'edit'])->name('stocks.edit');

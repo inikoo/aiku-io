@@ -15,6 +15,9 @@ use App\Models\HumanResources\Employee;
 use App\Models\HumanResources\Guest;
 use App\Models\Marketing\Shop;
 use App\Models\Marketing\ShopStats;
+use App\Models\Procurement\Agent;
+use App\Models\Procurement\PurchaseOrder;
+use App\Models\Procurement\Supplier;
 use App\Models\Production\Workshop;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
@@ -35,27 +38,76 @@ class HydrateTenant
         $this->userStats();
         $this->shopStats();
         $this->productionStats();
+        $this->suppliersStats();
+        $this->agentsStats();
+        $this->purchaseOrdersStats();
         //$this->orderStats($tenant);
         //$this->productStats($tenant);
         //$this->invoices($tenant);
     }
 
-    public function productionStats(){
 
-        $numberWorkshops       = Workshop::count();
+    public function suppliersStats()
+    {
+        $numberAgents = Agent::count();
 
         App('currentTenant')->procurementStats->update(
             [
-                'number_workshops'=>$numberWorkshops
+                'number_agents' => $numberAgents
+            ]
+        );
+    }
+
+    public function agentsStats()
+    {
+        $numberSuppliers = Supplier::count();
+
+        App('currentTenant')->procurementStats->update(
+            [
+                'number_suppliers' => $numberSuppliers
+            ]
+        );
+
+        App('currentTenant')->stats->update(
+            [
+                'has_agents' => App('currentTenant')->procurementStats->number_suppliers > 0,
+            ]
+        );
+    }
+
+    public function purchaseOrdersStats()
+    {
+        $stats = [
+            'number_purchase_orders' => PurchaseOrder::count()
+        ];
+
+        $purchaseOrderStates = ['in-process', 'submitted',  'confirmed', 'dispatched', 'delivered','cancelled'];
+        $purchaseOrderStateCount = PurchaseOrder::selectRaw('state, count(*) as total')
+            ->groupBy('state')
+            ->pluck('total', 'state')->all();
+
+        foreach ($purchaseOrderStates as $purchaseOrderState) {
+            $stats['number_purchase_orders_state_'.str_replace('-', '_',$purchaseOrderState)] = Arr::get($purchaseOrderStateCount, $purchaseOrderState, 0);
+        }
+        App('currentTenant')->procurementStats->update($stats);
+    }
+
+    public function productionStats()
+    {
+        $numberWorkshops = Workshop::count();
+
+        App('currentTenant')->procurementStats->update(
+            [
+                'number_workshops' => $numberWorkshops
             ]
         );
         App('currentTenant')->stats->update(
             [
-                'has_production'   => App('currentTenant')->procurementStats->number_workshops > 0,
+                'has_production' => App('currentTenant')->procurementStats->number_workshops > 0,
             ]
         );
-
     }
+
 
     public function shopStats()
     {
@@ -140,7 +192,7 @@ class HydrateTenant
 
 
         $userTypes     = ['tenant', 'employee', 'guest', 'supplier', 'agent', 'customer'];
-        $userTypeCount = User::selectRaw('LOWER(userable_type) as userable_type, count(*) as total')
+        $userTypeCount = (new User())->selectRaw('LOWER(userable_type) as userable_type, count(*) as total')
             ->groupBy('userable_type')
             ->pluck('total', 'userable_type')->all();
 
@@ -238,7 +290,6 @@ class HydrateTenant
 
     public function asCommand(Command $command): void
     {
-
         if ($command->argument('code')) {
             $tenants = (new Tenant())->where('code', $command->argument('code'))->get();
         } else {

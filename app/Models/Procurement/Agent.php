@@ -8,6 +8,7 @@
 
 namespace App\Models\Procurement;
 
+use App\Actions\Hydrators\HydrateTenant;
 use App\Models\Media\Image;
 use App\Models\Auth\User;
 use App\Models\Traits\HasAddress;
@@ -50,7 +51,20 @@ class Agent extends Model implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::created(
+            function () {
+                HydrateTenant::make()->agentsStats();
 
+            }
+        );
+        static::deleted(
+            function () {
+                HydrateTenant::make()->agentsStats();
+            }
+        );
+    }
 
 
     public function addresses(): MorphToMany

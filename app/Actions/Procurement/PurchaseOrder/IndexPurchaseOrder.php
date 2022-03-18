@@ -9,8 +9,8 @@
 namespace App\Actions\Procurement\PurchaseOrder;
 
 
-use App\Http\Resources\Inventory\StockInertiaResource;
-use App\Models\Inventory\Stock;
+use App\Http\Resources\Procurement\PurchaseOrderInertiaResource;
+use App\Models\Procurement\PurchaseOrder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Inertia\Inertia;
@@ -47,14 +47,14 @@ class IndexPurchaseOrder
 
     public function __construct()
     {
-        $this->select       = ['stocks.id', 'code', 'description'];
+        $this->select       = ['purchase_orders.id', 'number'];
         $this->perPage      = 15;
-        $this->allowedSorts = ['code'];
+        $this->allowedSorts = ['number'];
         $this->columns      = [
 
             'code'        => [
-                'sort'       => 'code',
-                'label'      => __('Code'),
+                'sort'       => 'number',
+                'label'      => __('Number'),
                 'components' => [
                     [
                         'type'     => 'link',
@@ -62,19 +62,16 @@ class IndexPurchaseOrder
                             'type'       => 'link',
                             'parameters' => [
                                 'href'    => [
-                                    'route'   => 'inventory.stocks.show',
+                                    'route'   => 'procurement.purchase_orders.show',
                                     'indices' => 'id'
                                 ],
-                                'indices' => 'code'
+                                'indices' => 'number'
                             ],
                         ]
                     ]
                 ],
             ],
-            'description' => [
-                'label'    => __('Description'),
-                'resolver' => 'description'
-            ],
+
 
         ];
     }
@@ -93,10 +90,10 @@ class IndexPurchaseOrder
             });
         });
 
-        return QueryBuilder::for(Stock::class)
+        return QueryBuilder::for(PurchaseOrder::class)
             ->when(true, [$this, 'queryConditions'])
             ->allowedSorts($this->allowedSorts)
-            ->defaultSort('-stocks.id')
+            ->defaultSort('-purchase_orders.id')
             ->allowedFilters([$globalSearch])
             ->paginate($this->perPage)
             ->withQueryString();
@@ -133,7 +130,7 @@ class IndexPurchaseOrder
 
     protected function getRecords(): AnonymousResourceCollection
     {
-        return StockInertiaResource::collection($this->handle());
+        return PurchaseOrderInertiaResource::collection($this->handle());
     }
 
 
@@ -141,15 +138,7 @@ class IndexPurchaseOrder
     {
         return [
             'left'  => [
-                'active'        => [
-                    'name'    => __('Active'),
-                    'href'    => [
-                        'route'      => $this->tabRoute,
-                        'parameters' => array_merge($this->tabRouteParameters, ['active'])
-                    ],
-                    'current' => $current === 'active',
-                ],
-                'in-process'    => [
+                'in-process'        => [
                     'name'    => __('In process'),
                     'href'    => [
                         'route'      => $this->tabRoute,
@@ -157,21 +146,45 @@ class IndexPurchaseOrder
                     ],
                     'current' => $current === 'in-process',
                 ],
-                'discontinuing' => [
-                    'name'    => __('Discontinuing'),
+                'submitted'    => [
+                    'name'    => __('Submitted'),
                     'href'    => [
                         'route'      => $this->tabRoute,
-                        'parameters' => array_merge($this->tabRouteParameters, ['discontinuing'])
+                        'parameters' => array_merge($this->tabRouteParameters, ['submitted'])
                     ],
-                    'current' => $current === 'discontinuing',
+                    'current' => $current === 'submitted',
                 ],
-                'discontinued'  => [
-                    'name'    => __('Discontinued'),
+                'confirmed' => [
+                    'name'    => __('Confirmed'),
                     'href'    => [
                         'route'      => $this->tabRoute,
-                        'parameters' => array_merge($this->tabRouteParameters, ['discontinued'])
+                        'parameters' => array_merge($this->tabRouteParameters, ['confirmed'])
                     ],
-                    'current' => $current === 'discontinued',
+                    'current' => $current === 'confirmed',
+                ],
+                'dispatched'  => [
+                    'name'    => __('Dispatched'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['dispatched'])
+                    ],
+                    'current' => $current === 'dispatched',
+                ],
+                'delivered'  => [
+                    'name'    => __('Delivered'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['delivered'])
+                    ],
+                    'current' => $current === 'delivered',
+                ],
+                'cancelled'  => [
+                    'name'    => __('Cancelled'),
+                    'href'    => [
+                        'route'      => $this->tabRoute,
+                        'parameters' => array_merge($this->tabRouteParameters, ['cancelled'])
+                    ],
+                    'current' => $current === 'cancelled',
                 ],
             ],
             'right' => [
@@ -179,7 +192,7 @@ class IndexPurchaseOrder
                     'class'   => '',
                     'name'    => __('All'),
                     'href'    => [
-                        'route' => 'inventory.stocks.index',
+                        'route' => 'procurement.purchase_orders.index',
                     ],
                     'current' => $current === 'all',
                 ],

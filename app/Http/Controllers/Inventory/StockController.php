@@ -1,4 +1,5 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php
+/** @noinspection PhpUnusedParameterInspection */
 
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
@@ -37,24 +38,22 @@ class StockController extends Controller
 
     public function indexInTenantWithState(StockState $stockState): Response
     {
-       return match ($stockState->name){
-           'Active'=> IndexActiveStockInTenant::make()->asInertia(),
-           'InProcess'=> IndexInProcessStockInTenant::make()->asInertia(),
-           'Discontinuing'=> IndexDiscontinuingStockInTenant::make()->asInertia(),
-           'Discontinued'=> IndexDiscontinuedStockInTenant::make()->asInertia()
-
-       };
-
+        return match ($stockState->name) {
+            'Active' => IndexActiveStockInTenant::make()->asInertia(),
+            'InProcess' => IndexInProcessStockInTenant::make()->asInertia(),
+            'Discontinuing' => IndexDiscontinuingStockInTenant::make()->asInertia(),
+            'Discontinued' => IndexDiscontinuedStockInTenant::make()->asInertia()
+        };
     }
 
     public function indexInLocationInWarehouse(Warehouse $warehouse, Location $location): Response
     {
-        return IndexStockInLocation::make()->asInertia(parent:'warehouse',location:$location);
+        return IndexStockInLocation::make()->asInertia(parent: 'warehouse', location: $location);
     }
 
-    public function indexInLocationInArea(Warehouse $warehouse,WarehouseArea $warehouseArea, Location $location): Response
+    public function indexInLocationInArea(Warehouse $warehouse, WarehouseArea $warehouseArea, Location $location): Response
     {
-        return IndexStockInLocation::make()->asInertia(parent:'warehouseAreaInWarehouse',location:$location);
+        return IndexStockInLocation::make()->asInertia(parent: 'warehouseAreaInWarehouse', location: $location);
     }
 
     public function show(Stock $stock): Response

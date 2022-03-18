@@ -67,9 +67,11 @@ return [
             ],
             'procurement.purchase_orders.index' => [
                 'name' => 'Purchase orders',
+                'icon' => ['fal', 'clipboard'],
             ],
             'procurement.deliveries.index'      => [
                 'name' => 'Deliveries',
+                'icon' => ['fal', 'container-storage'],
             ],
 
         ]

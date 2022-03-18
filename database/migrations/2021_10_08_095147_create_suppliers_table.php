@@ -55,6 +55,11 @@ class CreateSuppliersTable extends Migration
             }
 
             $table->unsignedSmallInteger('number_purchase_orders')->default(0);
+            $purchaseOrderStates = ['in-process', 'submitted',  'confirmed', 'dispatched', 'delivered','cancelled'];
+            foreach ($purchaseOrderStates as $purchaseOrderState) {
+                $table->unsignedBigInteger('number_purchase_orders_state_'.str_replace('-', '_', $purchaseOrderState))->default(0);
+            }
+
             $table->unsignedSmallInteger('number_deliveries')->default(0);
 
 

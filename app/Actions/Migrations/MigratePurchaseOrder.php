@@ -65,11 +65,15 @@ class MigratePurchaseOrder extends MigrateModel
 
         ksort($data);
 
+        //enum('Cancelled','NoReceived','InProcess','Submitted','Confirmed','Manufactured','QC_Pass','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked')
 
         $this->modelData   = [
             'number'       => $this->auModel->data->{'Purchase Order Public ID'},
             'state'        => match ($this->auModel->data->{'Purchase Order State'}) {
-                'QC_Pass' => 'qc-pass',
+                'NoReceived' => 'cancelled',
+                'Inputted' => 'confirmed',
+                'Received','Checked','Placed','Costing','InvoiceChecked' => 'delivered',
+                'Manufactured','QC_Pass' => null,
                 default => Str::snake($this->auModel->data->{'Purchase Order State'}, '-'),
             },
             'date'         => $date,

@@ -8,7 +8,9 @@
 
 namespace App\Models\Procurement;
 
+use App\Actions\Hydrators\HydrateAgent;
 use App\Actions\Hydrators\HydrateSupplier;
+use App\Actions\Hydrators\HydrateTenant;
 use App\Models\Helpers\Attachment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -43,23 +45,32 @@ class PurchaseOrder extends Model implements Auditable
     {
         static::created(
             function (PurchaseOrder $purchaseOrder) {
-                if ($purchaseOrder->vendor_type == 'Agent') {
-                    HydrateSupplier::run($purchaseOrder->vendor);
+
+                if ($purchaseOrder->vendor_type == 'Supplier') {
+                    HydrateSupplier::make()->stats($purchaseOrder->vendor);
+                }elseif ($purchaseOrder->vendor_type == 'Agent') {
+                    HydrateAgent::make()->stats($purchaseOrder->vendor);
                 }
+                HydrateTenant::make()->purchaseOrdersStats();
+
             }
         );
         static::deleted(
             function (PurchaseOrder $purchaseOrder) {
-                if ($purchaseOrder->vendor_type == 'Agent') {
-                    HydrateSupplier::run($purchaseOrder->vendor);
+                if ($purchaseOrder->vendor_type == 'Supplier') {
+                    HydrateSupplier::make()->stats($purchaseOrder->vendor);
+                }elseif ($purchaseOrder->vendor_type == 'Agent') {
+                    HydrateAgent::make()->stats($purchaseOrder->vendor);
                 }
+                HydrateTenant::make()->purchaseOrdersStats();
+
             }
         );
     }
 
     public function vendor(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function attachments(): MorphMany

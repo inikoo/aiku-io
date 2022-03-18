@@ -9,6 +9,7 @@
 namespace App\Models\Procurement;
 
 use App\Actions\Hydrators\HydrateAgent;
+use App\Actions\Hydrators\HydrateTenant;
 use App\Models\Helpers\Attachment;
 use App\Models\Media\Image;
 use App\Models\Auth\User;
@@ -58,7 +59,10 @@ class Supplier extends Model implements Auditable
             function (Supplier $supplier) {
                 if ($supplier->owner_type == 'Agent') {
                     HydrateAgent::run($supplier->owner);
+
                 }
+                HydrateTenant::make()->suppliersStats();
+
             }
         );
         static::deleted(
@@ -66,6 +70,8 @@ class Supplier extends Model implements Auditable
                 if ($supplier->owner_type == 'Agent') {
                     HydrateAgent::run($supplier->owner);
                 }
+                HydrateTenant::make()->suppliersStats();
+
             }
         );
     }

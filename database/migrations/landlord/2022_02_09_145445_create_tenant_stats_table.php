@@ -176,7 +176,7 @@ class CreateTenantStatsTable extends Migration
 
 
             $table->unsignedBigInteger('number_purchase_orders')->default(0);
-            $purchaseOrderStates = ['in-process', 'submitted', 'no-received', 'confirmed', 'manufactured', 'qc-pass', 'inputted', 'dispatched', 'received', 'checked', 'placed', 'costing', 'invoice-checked', 'cancelled'];
+            $purchaseOrderStates = ['in-process', 'submitted',  'confirmed', 'dispatched', 'delivered','cancelled'];
             foreach ($purchaseOrderStates as $purchaseOrderState) {
                 $table->unsignedBigInteger('number_purchase_orders_state_'.str_replace('-', '_', $purchaseOrderState))->default(0);
             }

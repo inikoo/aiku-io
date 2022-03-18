@@ -62,10 +62,11 @@ library.add(faClipboardUser, faDiceD4, faStoreAlt, faPersonCarry, faGlobe,
 
 // Procurement
 import {
-    faHandHoldingBox, faUserSecret,faHandReceiving
+    faHandHoldingBox, faUserSecret, faHandReceiving, faClipboard, faContainerStorage,
 } from '@/private/pro-light-svg-icons';
 
-library.add(faHandHoldingBox, faUserSecret,faHandReceiving);
+library.add(faHandHoldingBox, faUserSecret, faHandReceiving, faClipboard,
+            faContainerStorage);
 
 // Fulfilment
 import {
@@ -102,5 +103,6 @@ import {
     faBusinessTime,
 } from '@/private/pro-light-svg-icons';
 
-library.add(faTasks, faUserHardHat, faClipboardUser, faChessClock,faBusinessTime);
+library.add(faTasks, faUserHardHat, faClipboardUser, faChessClock,
+            faBusinessTime);
 export default FontAwesomeIcon;

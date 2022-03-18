@@ -64,6 +64,14 @@ class MigrateSupplierProduct extends MigrateModel
 
         $data['raw_price'] = $this->auModel->data->{'Supplier Part Unit Cost'} ?? 0;
 
+
+
+        $stock_quantity_status=match($this->auModel->partData->{'Part Stock Status'}){
+            'Out_Of_Stock','Error'=>'out-of-stock',
+            default=>strtolower($this->auModel->partData->{'Part Stock Status'})
+        };
+
+
         $this->modelData = $this->sanitizeData(
             [
                 'code' => $this->auModel->data->{'Supplier Part Reference'},
@@ -76,6 +84,7 @@ class MigrateSupplierProduct extends MigrateModel
 
                 'status' => $status,
                 'state'  => $state,
+                'stock_quantity_status'=>$stock_quantity_status,
 
                 'data'       => $data,
                 'settings'   => $settings,
@@ -144,6 +153,7 @@ class MigrateSupplierProduct extends MigrateModel
         if ($res->status == 'unchanged') {
             $res->status = $res->changes ? 'updated' : 'unchanged';
         }
+        /** @var TradeUnit $tradeUnit */
         $tradeUnit = TradeUnit::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'Supplier Part Part SKU'});
 
         /** @var Product $product */

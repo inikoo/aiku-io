@@ -8,7 +8,9 @@
 
 namespace App\Actions\Hydrators;
 
+use App\Models\Procurement\PurchaseOrder;
 use App\Models\Procurement\Supplier;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 
@@ -37,13 +39,24 @@ class HydrateSupplier extends HydrateModel
 
     public function stats(Supplier $supplier)
     {
-        $supplier->stats->update(
-            [
-                'number_purchase_orders' => $supplier->purchaseOrders()->count(),
-                'number_products'        => $supplier->supplierProducts()->count()
 
-            ]
-        );
+        $stats = [
+            'number_purchase_orders' => $supplier->purchaseOrders()->count(),
+            'number_products'        => $supplier->supplierProducts()->count()
+        ];
+        $purchaseOrderStates = ['in-process', 'submitted',  'confirmed', 'dispatched', 'delivered','cancelled'];
+        $purchaseOrderStateCount = PurchaseOrder::selectRaw('state, count(*) as total')
+            ->where('vendor_type','Supplier')
+            ->where('vendor_id',$supplier->id)
+            ->groupBy('state')
+            ->pluck('total', 'state')->all();
+
+        foreach ($purchaseOrderStates as $purchaseOrderState) {
+            $stats['number_purchase_orders_state_'.str_replace('-', '_',$purchaseOrderState)] = Arr::get($purchaseOrderStateCount, $purchaseOrderState, 0);
+        }
+
+        $supplier->stats->update($stats);
+
     }
 
 

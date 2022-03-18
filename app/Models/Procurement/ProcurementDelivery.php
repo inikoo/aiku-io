@@ -44,7 +44,7 @@ class ProcurementDelivery extends Model implements Auditable
 
     public function vendor(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function attachments(): MorphMany
