@@ -46,6 +46,22 @@ class MigrateReset extends Command
                 $this->timeStart = microtime(true);
                 $this->timeLastStep =  microtime(true);
 
+                DB::connection('aurora')->table('Agent Dimension')
+                    ->update(
+                        [
+                            'aiku_id' => null,
+                            'agent_aiku_id' => null,
+                        ]
+                    );
+
+
+                DB::connection('aurora')->table('Part Dimension')
+                    ->update(['aiku_agent_unit_id' => null]);
+
+                DB::connection('aurora')->table('Supplier Part Dimension')
+                    ->update(['aiku_agent_unit_id' => null]);
+                DB::connection('aurora')->table('Supplier Part Historic Dimension')
+                    ->update(['aiku_agent_unit_id' => null]);
 
                 DB::connection('aurora')->table('User Dimension')
                     ->update(['aiku_id' => null]);

@@ -9,7 +9,7 @@
 namespace App\Console\Commands\AuroraMigration;
 
 
-use App\Actions\Migrations\MigrateAgent;
+use App\Actions\Migrations\MigrateAgentStore;
 use App\Actions\Migrations\MigrateDeletedSupplier;
 use App\Actions\Migrations\MigrateSupplier;
 use App\Actions\Migrations\MigrateSupplierHistoricProduct;
@@ -42,6 +42,7 @@ class MigrateAgentTenant extends Command
 
             if ($agent_tenant_code === array_key_first($tenant->data['aurora_agent'])) {
                 $this->migrateAgent($auroraAgentKey, $auroraAccountCode);
+
 
                 foreach (
                     DB::connection('aurora')->table('Supplier Dimension')
@@ -96,7 +97,7 @@ class MigrateAgentTenant extends Command
     {
         foreach (DB::connection('aurora')->table('Agent Dimension')->where('Agent Key', $auroraAgentKey)->get() as $auData) {
             $auData->aurora_account = $auroraAccountCode;
-            MigrateAgent::run($auData);
+            MigrateAgentStore::run($auData);
         }
     }
 
@@ -135,7 +136,6 @@ class MigrateAgentTenant extends Command
                 ->update(['aiku_id' => null]);
         }
     }
-
 
 
 }

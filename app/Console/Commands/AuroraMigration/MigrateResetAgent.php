@@ -41,6 +41,13 @@ class MigrateResetAgent extends Command
             if (Arr::get($tenant->data, 'aurora_db')) {
                 $this->setAuroraConnection($tenant->data['aurora_db']);
 
+                DB::connection('aurora')->table('Agent Dimension')
+                    ->update(
+                        [
+                            'agent_aiku_id' => null,
+                        ]
+                    );
+
                 DB::connection('aurora')->table('Part Dimension')
                     ->update(['aiku_agent_unit_id' => null]);
 
