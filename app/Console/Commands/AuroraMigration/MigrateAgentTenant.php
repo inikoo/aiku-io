@@ -9,7 +9,7 @@
 namespace App\Console\Commands\AuroraMigration;
 
 
-use App\Actions\Migrations\MigrateAgentStore;
+use App\Actions\Migrations\MigrateAgentShop;
 use App\Actions\Migrations\MigrateDeletedSupplier;
 use App\Actions\Migrations\MigrateSupplier;
 use App\Actions\Migrations\MigrateSupplierHistoricProduct;
@@ -97,7 +97,7 @@ class MigrateAgentTenant extends Command
     {
         foreach (DB::connection('aurora')->table('Agent Dimension')->where('Agent Key', $auroraAgentKey)->get() as $auData) {
             $auData->aurora_account = $auroraAccountCode;
-            MigrateAgentStore::run($auData);
+            MigrateAgentShop::run($auData);
         }
     }
 

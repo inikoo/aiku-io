@@ -19,6 +19,26 @@ return [
 
 
 
+    'shops',
+    'shops.view',
+    'shops.edit',
+
+    'shops.products',
+    'shops.products.view',
+    'shops.products.edit',
+    'shops.products.delete',
+
+    'shops.customers',
+    'shops.customers.view',
+    'shops.customers.edit',
+    'shops.customers.delete',
+
+
+    'shops.orders',
+    'shops.orders.view',
+    'shops.orders.edit',
+    'shops.orders.delete',
+
 
     'procurement',
     'procurement.agents.view',

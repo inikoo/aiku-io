@@ -18,6 +18,23 @@ return [
     ],
 
     [
+        'code'      => 'agent_dispatch',
+        'route'     => 'agent_dispatch.dashboard',
+        'name'      => 'Dispatch',
+        'shortName' => 'Dispatch',
+        'icon'      => ['fal', 'store'],
+        'sections'  => [
+            'agent_dispatch.clients.index'       => [
+                'name' => 'Clients',
+                'icon' => ['fal', 'user'],
+            ],
+            'agent_dispatch.orders.index'       => [
+                'name' => 'Orders',
+                'icon' => ['fal', 'clipboard'],
+            ],
+        ]
+    ],
+    [
         'code'      => 'inventory',
         'route'     => 'inventory.dashboard',
         'name'      => 'Inventory',
@@ -41,13 +58,10 @@ return [
         'shortName' => 'Procurement',
         'icon'      => ['fal', 'apple-crate'],
         'sections'  => [
-           
+
             'procurement.suppliers.index'       => [
                 'name' => 'Suppliers',
                 'icon' => ['fal', 'hand-holding-box'],
-
-
-
             ],
             'procurement.purchase_orders.index' => [
                 'name' => 'Purchase orders',

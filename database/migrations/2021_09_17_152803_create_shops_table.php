@@ -34,7 +34,7 @@ class CreateShopsTable extends Migration
 
 
             $table->enum('state', ['in-process', 'open', 'closing-down', 'closed'])->index();
-            $table->enum('type', ['shop', 'fulfilment_house'])->index();
+            $table->enum('type', ['shop', 'fulfilment_house','agent'])->index();
             $table->enum('subtype', ['b2b', 'b2c', 'storage', 'fulfilment', 'dropshipping'])->nullable();
 
             $table->date('open_at')->nullable();

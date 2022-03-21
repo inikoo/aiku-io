@@ -22,6 +22,9 @@ Route::prefix('account')->name('account.')
 Route::prefix('marketing')->name('marketing.')
     ->group(__DIR__.'/marketing.php');
 
+Route::prefix('agent_dispatch')->name('agent_dispatch.')
+    ->group(__DIR__.'/agent_dispatch.php');
+
 Route::prefix('websites')->name('websites.')
     ->group(__DIR__.'/websites.php');
 

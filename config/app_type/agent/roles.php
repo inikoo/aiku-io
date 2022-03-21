@@ -10,6 +10,7 @@ return [
 
     'super-admin'           => [
         'account',
+        'shops',
         'procurement',
 
     ],
