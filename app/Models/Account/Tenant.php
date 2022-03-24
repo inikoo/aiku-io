@@ -147,5 +147,10 @@ class Tenant extends SpatieTenant
         return $this->hasMany(User::class);
     }
 
+    public function tenantWebsites(): HasMany
+    {
+        return $this->hasMany(TenantWebsite::class);
+    }
+
 
 }

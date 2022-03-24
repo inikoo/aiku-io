@@ -14,8 +14,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
-use App\Models\Traits\HasSlug;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 
 /**
@@ -42,11 +43,12 @@ class Website extends Model implements Auditable
 
     protected $guarded = [];
 
-
-    /** @noinspection PhpUnused */
-    public function getSlugSourceAttribute(): string
+    public function getSlugOptions(): SlugOptions
     {
-        return $this->code.'-'.$this->shop->code;
+        return SlugOptions::create()
+            ->generateSlugsFrom('code')
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate();
     }
 
     public function shop(): BelongsTo

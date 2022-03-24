@@ -176,7 +176,19 @@ class CreateTenantTables extends Migration
 
         });
 
-
+        Schema::create('tenant_websites', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->enum('type', ['b2b', 'b2c', 'storage', 'fulfilment', 'dropshipping']);
+            $table->string('slug')->index()->unique();
+            $table->string('code')->index();
+            $table->string('domain')->index()->unique();
+            $table->unsignedMediumInteger('tenant_id')->index();
+            $table->foreign('tenant_id')->references('id')->on('tenants');
+            $table->unsignedMediumInteger('website_id')->index();
+            $table->timestampsTz();
+            $table->softDeletesTz();
+            $table->unique(['tenant_id','website_id']);
+        });
 
 
     }
@@ -184,7 +196,7 @@ class CreateTenantTables extends Migration
     public function down()
     {
 
-
+        Schema::dropIfExists('tenant_websites');
         Schema::dropIfExists('tenants');
         Schema::dropIfExists('user_agents');
         Schema::dropIfExists('ip_geolocations');

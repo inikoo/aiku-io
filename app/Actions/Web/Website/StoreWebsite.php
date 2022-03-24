@@ -27,6 +27,14 @@ class StoreWebsite
 
         /** @var \App\Models\Web\Website $website */
         $website = $shop->website()->create($data);
+        app('currentTenant')->tenantWebsites()->create(
+            [
+                'code'=>$website->code,
+                'domain'=>$website->url,
+                'website_id'=>$website->id,
+                'type'=>$website->shop->subtype
+            ]
+        );
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */
