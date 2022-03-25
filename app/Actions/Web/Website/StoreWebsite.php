@@ -27,6 +27,8 @@ class StoreWebsite
 
         /** @var \App\Models\Web\Website $website */
         $website = $shop->website()->create($data);
+        $website->stats()->create();
+        $website->layout()->create();
         app('currentTenant')->tenantWebsites()->create(
             [
                 'code'=>$website->code,
@@ -53,11 +55,11 @@ class StoreWebsite
         $roles->keys()
             ->map(function ($role) use ($website) {
                 return preg_replace('/#/', $website->id, $role);})
-            ->diff(Role::where('team_id',$tenant->appType->id)->pluck('name'))->each(function ($role) use ($tenant,$website) {
+            ->diff((new Role())->where('team_id', $tenant->appType->id)->pluck('name'))->each(function ($role) use ($tenant,$website) {
             Role::create(['name' => preg_replace('/#/', $website->id, $role), 'team_id' => $tenant->appType->id]);
         });
         $roles->each(function ($permissions, $role_name) use ($website,$tenant) {
-            Role::where('name', preg_replace('/#/', $website->id, $role_name))
+            (new Role())->where('name', preg_replace('/#/', $website->id, $role_name))
                 ->where('team_id', $tenant->appType->id)
                 ->first()->syncPermissions($permissions);
         });

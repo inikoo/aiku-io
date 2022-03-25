@@ -5,6 +5,7 @@
   -  Version 4.0
   -->
 <!-- This example requires Tailwind CSS v2.0+ -->
+<!--suppress NpmUsedModulesInstalled, JSFileReferences -->
 <template>
     <div class="flex h-screen flex-col ">
         <navbar-dark  :current-route="route().current()"></navbar-dark>
@@ -188,20 +189,20 @@
 
 <script setup>
 import {Link} from '@inertiajs/inertia-vue3';
-import FontAwesomeIcon from '../../scripts/fa-icons';
+import FontAwesomeIcon from '@s/fa-icons';
 import {usePage} from '@inertiajs/inertia-vue3';
 import {ref, watchEffect} from 'vue';
 
-import NavbarDark from '../components/navigation/top/navbar-dark.vue';
+import NavbarDark from '@c/navigation/top/navbar-dark.vue';
 import {Dialog, DialogOverlay, TransitionChild, TransitionRoot} from '@headlessui/vue';
 import {LogoutIcon, XIcon} from '@heroicons/vue/outline';
 
 import Avatar from 'vue-boring-avatars';
-import Breadcrumbs from '../components/navigation/top/breadcrumbs.vue';
-import Sidebar from '../components/navigation/left/sidebar.vue';
+import Breadcrumbs from '@c/navigation/top/breadcrumbs.vue';
+import Sidebar from '@c/navigation/left/sidebar.vue';
 
-import {useLocaleStore} from '../../scripts/stores/locale.js';
-import {useLayoutStore} from '../../scripts/stores/layout.js';
+import {useLocaleStore} from '@s/stores/locale.js';
+import {useLayoutStore} from '@s/stores/layout.js';
 
 
 const locale = useLocaleStore();

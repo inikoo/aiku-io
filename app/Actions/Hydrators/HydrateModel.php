@@ -32,14 +32,12 @@ class HydrateModel
 
     public function asCommand(Command $command): void
     {
-
         $tenants = match ($command->option('tenant')) {
             [] => Tenant::all(),
             default => (new Tenant())->where('code', $command->option('tenant'))->get()
         };
 
-
-
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
         $tenants->eachCurrent(function (Tenant $tenant) use ($command) {
 
             $command->info("Tenant: $tenant->code");
@@ -56,7 +54,6 @@ class HydrateModel
 
     protected function loopAll(Command $command)
     {
-
         $command->withProgressBar($this->getAllModels(), function ($model) {
             $this->handle($model);
         });

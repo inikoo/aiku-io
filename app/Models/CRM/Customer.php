@@ -44,7 +44,7 @@ class Customer extends Model implements Auditable
     use Searchable;
 
     protected $casts = [
-        'data'            => 'array',
+        'arguments'            => 'array',
         'tax_number_data' => 'array',
         'location'        => 'array',
 

@@ -20,10 +20,10 @@ class CreateWebsitesTable extends Migration
     public function up()
     {
         Schema::create('websites', function (Blueprint $table) {
-            $table->mediumIncrements('id');
+            $table->smallIncrements('id');
             $table->unsignedMediumInteger('shop_id')->index();
             $table->foreign('shop_id')->references('id')->on('shops');
-            $table->enum('state',['in-process','active','maintenance','closed'])->index();
+            $table->enum('state',['in-process','active','maintenance','closed'])->default('in-process')->index();
             $table->string('slug')->index();
             $table->string('code')->index();
             $table->string('url');
@@ -38,6 +38,14 @@ class CreateWebsitesTable extends Migration
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
         });
+
+        Schema::create('website_stats', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->unsignedSmallInteger('website_id')->index();
+            $table->foreign('website_id')->references('id')->on('websites');
+            $table->unsignedBigInteger('number_webpages')->default(0);
+            $table->timestampsTz();
+        });
     }
 
     /**
@@ -47,6 +55,7 @@ class CreateWebsitesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('website_stats');
         Schema::dropIfExists('websites');
     }
 }

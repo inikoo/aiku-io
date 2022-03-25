@@ -12,6 +12,7 @@ use App\Models\Marketing\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -54,6 +55,16 @@ class Website extends Model implements Auditable
     public function shop(): BelongsTo
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    public function stats(): HasOne
+    {
+        return $this->hasOne(WebsiteStats::class);
+    }
+
+    public function layout(): HasOne
+    {
+        return $this->hasOne(WebsiteLayout::class);
     }
 
 }

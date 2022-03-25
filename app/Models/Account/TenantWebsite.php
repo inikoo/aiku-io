@@ -17,6 +17,9 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 
+/**
+ * @mixin IdeHelperTenantWebsite
+ */
 class TenantWebsite extends Model
 {
 
