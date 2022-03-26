@@ -44,7 +44,7 @@ class Customer extends Model implements Auditable
     use Searchable;
 
     protected $casts = [
-        'arguments'            => 'array',
+        'data'            => 'array',
         'tax_number_data' => 'array',
         'location'        => 'array',
 
@@ -115,28 +115,25 @@ class Customer extends Model implements Auditable
     }
 
 
-
     public function favourites(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class,'favourites')->using(Favourites::class)->withPivot('id','aurora_id')->withTimestamps();
+        return $this->belongsToMany(Product::class, 'favourites')->using(Favourites::class)->withPivot('id', 'aurora_id')->withTimestamps();
     }
 
     public function reminders(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class,'back_to_stock_reminders')->using(Reminders::class)->withPivot('id','aurora_id','status','state','send_at','deleted_at')->withTimestamps();
+        return $this->belongsToMany(Product::class, 'back_to_stock_reminders')->using(Reminders::class)->withPivot('id', 'aurora_id', 'status', 'state', 'send_at', 'deleted_at')->withTimestamps();
     }
 
     public function portfolio(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class,'portfolio')->using(Portfolio::class)->withPivot('id','aurora_id','status','removed_at','customer_reference')->withTimestamps();
+        return $this->belongsToMany(Product::class, 'portfolio')->using(Portfolio::class)->withPivot('id', 'aurora_id', 'status', 'removed_at', 'customer_reference')->withTimestamps();
     }
 
     public function customisedProducts(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class)->using(CustomisedProduct::class)->withPivot('id','aurora_id')->withTimestamps();
+        return $this->belongsToMany(Product::class)->using(CustomisedProduct::class)->withPivot('id', 'aurora_id')->withTimestamps();
     }
-
-
 
 
     public function shop(): BelongsTo
