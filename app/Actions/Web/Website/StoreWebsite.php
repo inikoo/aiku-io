@@ -8,6 +8,7 @@
 
 namespace App\Actions\Web\Website;
 
+use App\Actions\Hydrators\HydrateWebsite;
 use App\Models\Auth\Permission;
 use App\Models\Auth\Role;
 use App\Models\Marketing\Shop;
@@ -21,9 +22,9 @@ class StoreWebsite
 {
     use AsAction;
 
-    public function handle(Shop $shop,array $data): ActionResult
+    public function handle(Shop $shop, array $data): ActionResult
     {
-        $res  = new ActionResult();
+        $res = new ActionResult();
 
         /** @var \App\Models\Web\Website $website */
         $website = $shop->website()->create($data);
@@ -31,10 +32,10 @@ class StoreWebsite
         $website->layout()->create();
         app('currentTenant')->tenantWebsites()->create(
             [
-                'code'=>$website->code,
-                'domain'=>$website->url,
-                'website_id'=>$website->id,
-                'type'=>$website->shop->subtype
+                'code'       => $website->code,
+                'domain'     => $website->url,
+                'website_id' => $website->id,
+                'type'       => $website->shop->subtype
             ]
         );
 
@@ -54,16 +55,19 @@ class StoreWebsite
 
         $roles->keys()
             ->map(function ($role) use ($website) {
-                return preg_replace('/#/', $website->id, $role);})
-            ->diff((new Role())->where('team_id', $tenant->appType->id)->pluck('name'))->each(function ($role) use ($tenant,$website) {
-            Role::create(['name' => preg_replace('/#/', $website->id, $role), 'team_id' => $tenant->appType->id]);
-        });
-        $roles->each(function ($permissions, $role_name) use ($website,$tenant) {
+                return preg_replace('/#/', $website->id, $role);
+            })
+            ->diff((new Role())->where('team_id', $tenant->appType->id)->pluck('name'))->each(function ($role) use ($tenant, $website) {
+                Role::create(['name' => preg_replace('/#/', $website->id, $role), 'team_id' => $tenant->appType->id]);
+            });
+        $roles->each(function ($permissions, $role_name) use ($website, $tenant) {
             (new Role())->where('name', preg_replace('/#/', $website->id, $role_name))
                 ->where('team_id', $tenant->appType->id)
                 ->first()->syncPermissions($permissions);
         });
 
+
+        HydrateWebsite::make()->syncUsers($website);
 
         $res->model    = $website;
         $res->model_id = $website->id;

@@ -9,8 +9,8 @@
 namespace App\Console\Commands\TenantsAdmin;
 
 use App\Actions\Account\Tenant\StoreTenant;
+use App\Actions\Auth\User\StoreUser;
 use App\Actions\HumanResources\Workplace\StoreWorkplace;
-use App\Actions\System\User\StoreUser;
 use App\Models\Account\Tenant;
 use App\Models\Aiku\AppType;
 use App\Models\Assets\Country;

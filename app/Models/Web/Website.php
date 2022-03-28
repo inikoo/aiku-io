@@ -8,10 +8,12 @@
 
 namespace App\Models\Web;
 
+use App\Models\Auth\WebsiteUser;
 use App\Models\Marketing\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
@@ -65,6 +67,11 @@ class Website extends Model implements Auditable
     public function layout(): HasOne
     {
         return $this->hasOne(WebsiteLayout::class);
+    }
+
+    public function websiteUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(WebsiteUser::class);
     }
 
 }

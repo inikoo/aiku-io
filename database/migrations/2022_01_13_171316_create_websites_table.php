@@ -46,6 +46,16 @@ class CreateWebsitesTable extends Migration
             $table->unsignedBigInteger('number_webpages')->default(0);
             $table->timestampsTz();
         });
+
+        Schema::create('website_users', function (Blueprint $table) {
+            $table->id();
+
+            $table->unsignedSmallInteger('website_id')->index();
+            $table->foreign('website_id')->references('id')->on('websites');
+            $table->unsignedSmallInteger('user_id')->index();
+            $table->timestampsTz();
+            $table->unique(['website_id','user_id']);
+        });
     }
 
     /**
@@ -55,6 +65,7 @@ class CreateWebsitesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('website_users');
         Schema::dropIfExists('website_stats');
         Schema::dropIfExists('websites');
     }

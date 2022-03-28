@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 27 Jan 2022 19:20:38 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 29 Mar 2022 00:42:49 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\System\Guest;
+namespace App\Actions\HumanResources\Guest;
 
 use App\Actions\Account\Tenant\ShowTenant;
 use App\Actions\UI\WithInertia;
@@ -21,6 +21,8 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use ProtoneMedia\LaravelQueryBuilderInertiaJs\InertiaTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+
+use function __;
 
 /**
  * @property array $breadcrumbs

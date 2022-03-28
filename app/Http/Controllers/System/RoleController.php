@@ -9,11 +9,10 @@
 namespace App\Http\Controllers\System;
 
 
-use App\Actions\System\Role\IndexRole;
+use App\Actions\Auth\Role\IndexRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
 use Inertia\Response;
 
 class RoleController extends Controller

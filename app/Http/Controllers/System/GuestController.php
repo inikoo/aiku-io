@@ -8,10 +8,10 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Actions\System\Guest\IndexGuest;
-use App\Actions\System\Guest\ShowEditGuest;
-use App\Actions\System\Guest\ShowGuest;
-use App\Actions\System\Guest\UpdateGuest;
+use App\Actions\HumanResources\Guest\IndexGuest;
+use App\Actions\HumanResources\Guest\ShowEditGuest;
+use App\Actions\HumanResources\Guest\ShowGuest;
+use App\Actions\HumanResources\Guest\UpdateGuest;
 use App\Http\Controllers\Controller;
 use App\Models\HumanResources\Guest;
 use Illuminate\Http\RedirectResponse;

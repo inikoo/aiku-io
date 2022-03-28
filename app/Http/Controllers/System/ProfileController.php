@@ -8,14 +8,13 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Actions\Auth\Role\IndexUserRole;
 use App\Actions\System\Profile\ShowEditProfile;
 use App\Actions\System\Profile\ShowProfile;
 use App\Actions\System\Profile\UpdateProfile;
-use App\Actions\System\Role\IndexUserRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
 use Inertia\Response;
 
 class ProfileController extends Controller

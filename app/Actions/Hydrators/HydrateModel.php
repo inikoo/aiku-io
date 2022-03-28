@@ -29,7 +29,6 @@ class HydrateModel
     }
 
 
-
     public function asCommand(Command $command): void
     {
         $tenants = match ($command->option('tenant')) {
@@ -45,8 +44,12 @@ class HydrateModel
             if ($command->argument('id') == 'all') {
                 $this->loopAll($command);
             } else {
-                $this->handle($this->getModel($command->argument('id')));
-                $command->info('Done!');
+                $model=$this->getModel($command->argument('id'));
+                if($model){
+                    $this->handle($model);
+                    $command->info('Done!');
+                }
+
             }
         });
     }
@@ -55,7 +58,9 @@ class HydrateModel
     protected function loopAll(Command $command)
     {
         $command->withProgressBar($this->getAllModels(), function ($model) {
-            $this->handle($model);
+            if($model){
+                $this->handle($model);
+            }
         });
         $command->info("");
     }

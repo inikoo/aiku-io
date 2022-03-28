@@ -9,8 +9,9 @@
 namespace App\Actions\Migrations;
 
 
+use App\Actions\Auth\User\CreateUserToken;
+use App\Actions\Auth\User\SyncUserRoles;
 use App\Actions\Migrations\Traits\WithUser;
-use App\Actions\System\User\CreateUserToken;
 use App\Models\Auth\User;
 use App\Models\HumanResources\Employee;
 use App\Models\HumanResources\Guest;
@@ -40,7 +41,7 @@ class MigrateUser extends MigrateModel
 
     public function getParent(): Employee|Supplier|Agent|Guest
     {
-        $parent= match ($this->auModel->data->{'User Type'}) {
+        $parent = match ($this->auModel->data->{'User Type'}) {
             'Staff' => Employee::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Contractor' => Guest::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
             'Supplier' => Supplier::withTrashed()->firstWhere('aurora_id', $this->auModel->data->{'User Parent Key'}),
@@ -49,10 +50,11 @@ class MigrateUser extends MigrateModel
             default => null
         };
 
-        if(!$parent){
+        if (!$parent) {
             print "User parent not found";
             dd($this->auModel);
         }
+
         return $parent;
     }
 
@@ -167,7 +169,7 @@ class MigrateUser extends MigrateModel
     private function getWorkshopScopedRoles($role): array
     {
         $roles = [];
-
+        /** @var Workshop $workshop */
         foreach (Workshop::all() as $workshop) {
             $roles[] = preg_replace('/#/', $workshop->id, $role);
         }
@@ -178,7 +180,7 @@ class MigrateUser extends MigrateModel
     private function getWarehouseScopedRoles($role): array
     {
         $roles = [];
-
+        /** @var Warehouse $warehouse */
         foreach (Warehouse::all() as $warehouse) {
             $roles[] = preg_replace('/#/', $warehouse->id, $role);
         }
@@ -199,8 +201,7 @@ class MigrateUser extends MigrateModel
                 ->update(['aiku_token' => $token]);
         }
 
-
-        $user->syncRoles($this->modelData['roles']);
+        SyncUserRoles::run($user, $this->modelData['roles']);
 
         return $res;
     }

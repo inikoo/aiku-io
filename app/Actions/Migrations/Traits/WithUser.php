@@ -8,8 +8,8 @@
 
 namespace App\Actions\Migrations\Traits;
 
-use App\Actions\System\User\StoreUser;
-use App\Actions\System\User\UpdateUser;
+use App\Actions\Auth\User\StoreUser;
+use App\Actions\Auth\User\UpdateUser;
 use App\Models\Auth\User;
 use App\Models\Utils\ActionResult;
 use Exception;

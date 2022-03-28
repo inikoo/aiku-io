@@ -5,12 +5,14 @@
  *  Copyright (c) 2021, Inikoo
  *  Version 4.0
  */
-use App\Actions\System\Role\IndexRole;
-use App\Actions\System\User\ShowUser;
-use App\Actions\System\User\IndexUser;
-use App\Actions\System\User\StoreUser;
-use App\Actions\System\User\UpdateUser;
+
+use App\Actions\Auth\Role\IndexRole;
+use App\Actions\Auth\User\IndexUser;
+use App\Actions\Auth\User\ShowUser;
+use App\Actions\Auth\User\StoreUser;
+use App\Actions\Auth\User\UpdateUser;
 use Illuminate\Support\Facades\Route;
+
 Route::prefix('employees')->name('api.employees.')
     ->group(__DIR__ . '/api/employees.php');
 

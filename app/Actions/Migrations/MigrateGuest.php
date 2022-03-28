@@ -9,8 +9,8 @@
 namespace App\Actions\Migrations;
 
 
-use App\Actions\System\Guest\StoreGuest;
-use App\Actions\System\Guest\UpdateGuest;
+use App\Actions\HumanResources\Guest\StoreGuest;
+use App\Actions\HumanResources\Guest\UpdateGuest;
 use App\Models\HumanResources\Guest;
 use App\Models\Utils\ActionResult;
 use Illuminate\Support\Facades\DB;

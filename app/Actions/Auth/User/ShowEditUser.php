@@ -1,12 +1,12 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Mon, 17 Jan 2022 23:34:19 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Tue, 29 Mar 2022 00:42:13 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\System\User;
+namespace App\Actions\Auth\User;
 
 use App\Actions\UI\WithInertia;
 use App\Models\Auth\User;
@@ -14,6 +14,9 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
+
+use function __;
+use function app;
 
 
 /**

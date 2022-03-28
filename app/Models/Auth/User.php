@@ -11,8 +11,10 @@ namespace App\Models\Auth;
 use App\Models\Account\Tenant;
 use App\Models\Assets\Language;
 use App\Models\Media\Image;
+use App\Models\Web\Website;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -105,6 +107,11 @@ class User extends Authenticatable
             'Tenant' => __('Account administrator'),
             default => $this->userable_type
         };
+    }
+
+    public function websiteUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(WebsiteUser::class);
     }
 
 

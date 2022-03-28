@@ -8,16 +8,15 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Actions\System\User\IndexUser;
-use App\Actions\System\User\ShowEditUser;
-use App\Actions\System\User\ShowUser;
-use App\Actions\System\User\UpdateUser;
+use App\Actions\Auth\User\IndexUser;
+use App\Actions\Auth\User\ShowEditUser;
+use App\Actions\Auth\User\ShowUser;
+use App\Actions\Auth\User\UpdateUser;
 use App\Http\Controllers\Controller;
-
 use App\Models\Auth\User;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Response;
 use Illuminate\Http\Request;
+use Inertia\Response;
 
 
 class UserController extends Controller
