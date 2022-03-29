@@ -13,6 +13,9 @@ namespace App\Models\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
+/**
+ * @mixin IdeHelperWebsiteUser
+ */
 class WebsiteUser extends Model
 {
     use UsesTenantConnection;

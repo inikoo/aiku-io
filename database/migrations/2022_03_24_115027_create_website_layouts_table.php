@@ -39,6 +39,7 @@ return new class extends Migration
             $table->enum('state',['in-process','launched','closed'])->default('in-process')->index();
             $table->enum('status',['in-process','online','maintenance','offline'])->default('in-process')->index();
 
+            $table->unsignedBigInteger('home_webpage_id')->index()->nullable();
 
             $table->unsignedBigInteger('footer_preview_id')->index()->nullable();
             $table->foreign('footer_preview_id')->references('id')->on('website_components');

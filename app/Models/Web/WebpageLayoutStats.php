@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
-
 /**
  * @mixin IdeHelperWebpageLayoutStats
  */
@@ -21,7 +20,7 @@ class WebpageLayoutStats extends Model
 
     use UsesTenantConnection;
 
-    protected $table = 'website_stats';
+    protected $table = 'webpage_layout_stats';
 
     protected $guarded = [];
 

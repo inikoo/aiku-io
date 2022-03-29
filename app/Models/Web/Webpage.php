@@ -15,19 +15,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+
 /**
- * @property int $website_id
  * @mixin IdeHelperWebpage
  */
 class Webpage extends Model implements Auditable
 {
     use HasFactory;
+    use UsesTenantConnection;
     use HasSlug;
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
+
+    protected $casts = [
+        'locked'            => 'boolean',
+    ];
+    protected $guarded = [];
 
     public function getSlugOptions() : SlugOptions
     {

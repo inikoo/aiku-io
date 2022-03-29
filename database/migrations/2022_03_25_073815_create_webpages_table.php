@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,16 +17,17 @@ return new class extends Migration
             $table->string('slug')->index();
             $table->string('name');
 
-            $webpageTypes=[
-                'home','info'
+            $webpageTypes = [
+                'home',
+                'info'
             ];
 
-            $table->enum('type',$webpageTypes);
+            $table->enum('type', $webpageTypes)->nullable();
             $table->unsignedSmallInteger('website_id')->index();
             $table->foreign('website_id')->references('id')->on('websites');
-            $table->enum('state',['in-process','launched','archived'])->default('created')->index();
-            $table->enum('status',['in-process','online','maintenance','offline','archived'])->default('in-process')->index();
-            $table->boolean('locked')->default(true);
+            $table->enum('state', ['in-process', 'launched', 'archived'])->default('in-process')->index();
+            $table->enum('status', ['in-process', 'online', 'maintenance', 'offline', 'archived'])->default('in-process')->index();
+            $table->boolean('locked')->default(false);
             $table->timestampsTz();
             $table->softDeletesTz();
         });
@@ -63,6 +63,10 @@ return new class extends Migration
             $table->unsignedBigInteger('views')->default(0);
             $table->timestampsTz();
         });
+
+        Schema::table('website_layouts', function (Blueprint $table) {
+            $table->foreign('home_webpage_id')->references('id')->on('webpages');
+        });
     }
 
     /**
@@ -72,8 +76,10 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('website_layouts', function (Blueprint $table) {
+            $table->dropForeign('home_webpage_id');
+        });
         Schema::dropIfExists('webpage_layouts');
         Schema::dropIfExists('webpages');
-
     }
 };

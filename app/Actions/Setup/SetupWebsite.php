@@ -8,6 +8,7 @@
 
 namespace App\Actions\Setup;
 
+use App\Actions\Web\Webpage\StoreWebpage;
 use App\Actions\Web\WebsiteComponent\StoreWebsiteComponent;
 use App\Actions\Web\WebsiteLayout\PublishFooter;
 use App\Models\Web\Website;
@@ -26,6 +27,8 @@ class SetupWebsite
     {
         $this->website = $website;
         $this->setupFooter();
+        $this->setupHome();
+        $this->setupEssentialWebpages();
     }
 
     public function setupFooter()
@@ -58,6 +61,55 @@ class SetupWebsite
 
     public function getFooterComponent()
     {
+    }
+
+    public function setupHome($force = false)
+    {
+        if (!$this->website->layout->home_webpage_id or $force) {
+            $res = StoreWebpage::run($this->website,
+                                     [
+                                         'name'   => 'home',
+                                         'type'   => 'home',
+                                         'locked' => true
+                                     ]
+            );
+
+            $this->website->layout->home_webpage_id = $res->model_id;
+
+            $this->website->layout->save();
+        }
+    }
+
+    public function setupEssentialWebpages()
+    {
+        $essentialWebpages = [
+            [
+                'name' => 'about',
+            ],
+            [
+                'name' => 'contact',
+            ],
+            [
+                'name' => 'privacy',
+            ],
+            [
+                'name' => 'terms-and_conditions',
+            ]
+        ];
+
+        foreach ($essentialWebpages as $essentialWebpage) {
+            StoreWebpage::run(
+                $this->website,
+                array_merge(
+                    $essentialWebpage,
+                    [
+                        'type'   => 'info',
+                        'locked' => false
+                    ]
+                )
+
+            );
+        }
     }
 
 
