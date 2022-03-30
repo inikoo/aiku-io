@@ -27,6 +27,7 @@ return new class extends Migration
             $table->enum('status', ['published', 'archived', 'preview','library'])->index();
             $table->unsignedSmallInteger('website_id')->index();
             $table->foreign('website_id')->references('id')->on('websites');
+            $table->string('name');
             $table->json('arguments');
             $table->timestampsTz();
             $table->softDeletesTz();

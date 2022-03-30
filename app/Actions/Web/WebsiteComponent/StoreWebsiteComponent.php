@@ -23,6 +23,7 @@ class StoreWebsiteComponent
         $res  = new ActionResult();
 
         $modelData['type']=$websiteComponentBlueprint->type;
+        $modelData['name']=$websiteComponentBlueprint->name;
         $modelData['arguments']=$websiteComponentBlueprint->sample_arguments;
 
         /** @var \App\Models\Web\WebsiteComponent $websiteComponent */

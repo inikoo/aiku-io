@@ -49,7 +49,11 @@ class SetupWebsite
             }
 
             $this->website->layout->footer_preview_id = $footerComponent->id;
+            $footerComponent->status='preview';
+
             $this->website->layout->save();
+            $footerComponent->save();
+
         }
 
 
