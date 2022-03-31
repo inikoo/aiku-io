@@ -9,9 +9,11 @@
 namespace App\Console\Commands\TenantsAdmin;
 
 use App\Models\Account\Tenant;
+use App\Models\Auth\LandlordPersonalAccessToken;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\Sanctum;
 
 
 class CreateTenantAccessToken extends Command
@@ -25,6 +27,7 @@ class CreateTenantAccessToken extends Command
     {
         if ($tenant = Tenant::firstWhere('code', $this->argument('code'))) {
             $tenant->makeCurrent();
+            Sanctum::usePersonalAccessTokenModel(LandlordPersonalAccessToken::class);
             $token= $tenant->getAdminUser()->createToken($this->argument('token_name'),$this->argument('scopes'))->plainTextToken;
 
             if(Arr::get($tenant->data,'aurora_db')){

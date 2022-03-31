@@ -47,6 +47,19 @@ class Website extends Model implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::created(
+            function (Website $website) {
+                $website->iris_api_key=$website->createToken('admin',['root'])->plainTextToken;
+                $website->save();
+            }
+        );
+
+
+    }
+
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

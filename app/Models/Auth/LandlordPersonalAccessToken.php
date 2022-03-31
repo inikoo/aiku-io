@@ -9,13 +9,13 @@
 
 namespace App\Models\Auth;
 
+use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 
-/**
- * @mixin IdeHelperPersonalAccessToken
- */
-class PersonalAccessToken extends \Laravel\Sanctum\PersonalAccessToken
+class LandlordPersonalAccessToken extends PersonalAccessToken
 {
     use UsesLandlordConnection;
+
+    protected $table='personal_access_tokens';
 }

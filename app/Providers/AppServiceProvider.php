@@ -49,6 +49,10 @@ class AppServiceProvider extends ServiceProvider
                 'Product'         => 'App\Models\Marketing\Product',
                 'HistoricProduct' => 'App\Models\Marketing\HistoricProduct',
 
+                'Website'     => 'App\Models\Web\Website',
+                'WebsiteUser' => 'App\Models\Auth\WebsiteUser',
+
+
                 'WorkshopProduct'         => 'App\Models\Production\WorkshopProduct',
                 'HistoricWorkshopProduct' => 'App\Models\Production\HistoricWorkshopProduct',
 

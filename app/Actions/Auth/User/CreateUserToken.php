@@ -8,7 +8,9 @@
 
 namespace App\Actions\Auth\User;
 
+use App\Models\Auth\LandlordPersonalAccessToken;
 use App\Models\Auth\User;
+use Laravel\Sanctum\Sanctum;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateUserToken
@@ -17,6 +19,7 @@ class CreateUserToken
 
     public function handle(User $user): string
     {
+        Sanctum::usePersonalAccessTokenModel(LandlordPersonalAccessToken::class);
         return $user->createToken('user-api')->plainTextToken;
     }
 

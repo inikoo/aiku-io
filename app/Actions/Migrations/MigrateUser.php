@@ -194,12 +194,14 @@ class MigrateUser extends MigrateModel
         /** @var User $user */
         $user = $this->model;
 
+        /*
         if ($res->status == 'inserted') {
             $token = CreateUserToken::run($user);
             DB::connection('aurora')->table($this->auModel->table)
                 ->where($this->auModel->id_field, $this->auModel->id)
                 ->update(['aiku_token' => $token]);
         }
+        */
 
         SyncUserRoles::run($user, $this->modelData['roles']);
 
