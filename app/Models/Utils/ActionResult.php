@@ -19,16 +19,18 @@ class ActionResult
 
     public int|null $model_id;
     public array $data;
+    public string $message;
 
     public function __construct()
     {
         $this->changes = [];
         $this->errors  = [];
+        $this->message = '';
 
         $this->status = 'unchanged';
 
         $this->model    = null;
         $this->model_id = null;
-        $this->data = [];
+        $this->data     = [];
     }
 }

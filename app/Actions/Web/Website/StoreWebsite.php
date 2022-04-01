@@ -9,6 +9,7 @@
 namespace App\Actions\Web\Website;
 
 use App\Actions\Hydrators\HydrateWebsite;
+use App\Actions\Setup\SetupIrisWebsite;
 use App\Models\Auth\Permission;
 use App\Models\Auth\Role;
 use App\Models\Marketing\Shop;
@@ -30,14 +31,29 @@ class StoreWebsite
         $website = $shop->website()->create($data);
         $website->stats()->create();
         $website->layout()->create();
-        app('currentTenant')->tenantWebsites()->create(
-            [
-                'code'       => $website->code,
-                'domain'     => $website->url,
-                'website_id' => $website->id,
-                'type'       => $website->shop->subtype
-            ]
-        );
+
+
+        if($website->state!='closed'){
+            $tenantWebsite=app('currentTenant')->tenantWebsites()->create(
+                [
+                    'code'       => $website->code,
+                    'domain'     => $website->url,
+                    'website_id' => $website->id,
+                    'type'       => $website->shop->subtype
+                ]
+            );
+
+            SetupIrisWebsite::run($tenantWebsite,
+                                  app()->environment('local')
+            );
+
+
+
+
+
+        }
+
+
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
         /** @var \App\Models\Account\Tenant $tenant */

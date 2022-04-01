@@ -185,6 +185,7 @@ class CreateTenantTables extends Migration
             $table->unsignedMediumInteger('tenant_id')->index();
             $table->foreign('tenant_id')->references('id')->on('tenants');
             $table->unsignedMediumInteger('website_id')->index();
+            $table->string('iris_api_key')->nullable();
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unique(['tenant_id','website_id']);

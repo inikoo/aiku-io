@@ -12,6 +12,9 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 
 
+/**
+ * @mixin IdeHelperTenantPersonalAccessToken
+ */
 class TenantPersonalAccessToken extends PersonalAccessToken
 {
     use UsesTenantConnection;

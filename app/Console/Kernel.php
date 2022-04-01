@@ -13,6 +13,7 @@ use App\Actions\Hydrators\HydrateUser;
 use App\Actions\Hydrators\HydrateWarehouse;
 use App\Actions\Hydrators\HydrateWarehouseArea;
 use App\Actions\Hydrators\HydrateWebsite;
+use App\Actions\Setup\SetupIrisWebsite;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -34,7 +35,8 @@ class Kernel extends ConsoleKernel
         HydrateTenant::class,
         HydrateFulfilmentCustomer::class,
         HydrateSupplier::class,
-        HydrateWebsite::class
+        HydrateWebsite::class,
+        SetupIrisWebsite::class
 
     ];
 
