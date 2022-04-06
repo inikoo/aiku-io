@@ -13,10 +13,12 @@ class CreateRentTrackingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('rent_trackings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        if (app('currentTenant')->appType->code == 'ecommerce') {
+            Schema::create('rent_trackings', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

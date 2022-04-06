@@ -13,49 +13,53 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('orders', function (Blueprint $table) {
+                $table->id();
 
-            $table->unsignedMediumInteger('shop_id')->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
-
-
-            $table->unsignedBigInteger('customer_id')->index();
-            $table->foreign('customer_id')->references('id')->on('customers');
-
-            $table->unsignedBigInteger('customer_client_id')->nullable()->index();
-            $table->foreign('customer_client_id')->references('id')->on('customers');
-
-            $table->string('number')->nullable()->index();
-
-            $table->enum('state',['in-basket','in-process','in-warehouse','packed','packed-done','dispatched','returned','cancelled'])->default('in-basket')->index();
+                $table->unsignedMediumInteger('shop_id')->index();
+                if (app('currentTenant')->appType->code == 'ecommerce') {
+                    $table->foreign('shop_id')->references('id')->on('shops');
+                }
 
 
-            $table->unsignedMediumInteger('billing_address_id')->nullable()->index();
-            $table->foreign('billing_address_id')->references('id')->on('addresses');
+                $table->unsignedBigInteger('customer_id')->index();
+                $table->foreign('customer_id')->references('id')->on('customers');
 
-            $table->unsignedMediumInteger('delivery_address_id')->nullable()->index();
-            $table->foreign('delivery_address_id')->references('id')->on('addresses');
+                $table->unsignedBigInteger('customer_client_id')->nullable()->index();
+                $table->foreign('customer_client_id')->references('id')->on('customers');
 
-            $table->unsignedBigInteger('items')->default(0)->comment('number of items');
+                $table->string('number')->nullable()->index();
 
-            $table->decimal('items_discounts', 16)->default(0);
-            $table->decimal('items_net', 16)->default(0);
+                $table->enum('state', ['in-basket', 'in-process', 'in-warehouse', 'packed', 'packed-done', 'dispatched', 'returned', 'cancelled'])->default('in-basket')->index();
 
-            $table->unsignedSmallInteger('currency_id');
-            $table->decimal('exchange', 16, 6)->default(1);
 
-            $table->decimal('charges', 16)->default(0);
-            $table->decimal('shipping', 16)->default(null)->nullable();
-            $table->decimal('net', 16)->default(0);
-            $table->decimal('tax', 16)->default(0);
+                $table->unsignedMediumInteger('billing_address_id')->nullable()->index();
+                $table->foreign('billing_address_id')->references('id')->on('addresses');
 
-            $table->jsonb('data');
+                $table->unsignedMediumInteger('delivery_address_id')->nullable()->index();
+                $table->foreign('delivery_address_id')->references('id')->on('addresses');
 
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable();
-        });
+                $table->unsignedBigInteger('items')->default(0)->comment('number of items');
+
+                $table->decimal('items_discounts', 16)->default(0);
+                $table->decimal('items_net', 16)->default(0);
+
+                $table->unsignedSmallInteger('currency_id');
+                $table->decimal('exchange', 16, 6)->default(1);
+
+                $table->decimal('charges', 16)->default(0);
+                $table->decimal('shipping', 16)->default(null)->nullable();
+                $table->decimal('net', 16)->default(0);
+                $table->decimal('tax', 16)->default(0);
+
+                $table->jsonb('data');
+
+                $table->timestampsTz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable();
+            });
+        }
     }
 
     /**

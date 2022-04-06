@@ -13,28 +13,28 @@ class CreateDeliveryNoteItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('delivery_note_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('transaction_id')->nullable()->constrained();
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('delivery_note_items', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('transaction_id')->nullable()->constrained();
 
 
-            $table->unsignedBigInteger('delivery_note_id')->index();
-            $table->foreign('delivery_note_id')->references('id')->on('delivery_notes');
+                $table->unsignedBigInteger('delivery_note_id')->index();
+                $table->foreign('delivery_note_id')->references('id')->on('delivery_notes');
 
-            $table->foreignId('order_id')->nullable()->constrained();
+                $table->foreignId('order_id')->nullable()->constrained();
 
-            $table->foreignId('product_id')->nullable()->constrained();
-            $table->decimal('quantity', 16, 3)->nullable();
-            $table->jsonb('data');
+                $table->foreignId('product_id')->nullable()->constrained();
+                $table->decimal('quantity', 16, 3)->nullable();
+                $table->jsonb('data');
 
-            $table->timestampsTz();
-            $table->softDeletesTz();
+                $table->timestampsTz();
+                $table->softDeletesTz();
 
-            $table->unsignedBigInteger('aurora_otf_id')->nullable()->index();
-            $table->unsignedBigInteger('aurora_itf_id')->nullable()->index();
-
-
-        });
+                $table->unsignedBigInteger('aurora_otf_id')->nullable()->index();
+                $table->unsignedBigInteger('aurora_itf_id')->nullable()->index();
+            });
+        }
     }
 
     /**

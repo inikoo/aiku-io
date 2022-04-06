@@ -22,7 +22,9 @@ class CreateChargesTable extends Migration
         Schema::create('charges', function (Blueprint $table) {
             $table->mediumIncrements('id');
             $table->unsignedMediumInteger('shop_id')->nullable()->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
+            if (app('currentTenant')->appType->code == 'ecommerce') {
+                $table->foreign('shop_id')->references('id')->on('shops');
+            }
             $table->boolean('status')->default(true)->index();
             $table->enum('type',['hanging','premium','insurance','tracking'])->index();
             $table->string('slug')->index();

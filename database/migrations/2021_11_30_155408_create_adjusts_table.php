@@ -22,7 +22,9 @@ class CreateAdjustsTable extends Migration
         Schema::create('adjusts', function (Blueprint $table) {
             $table->mediumIncrements('id');
             $table->unsignedMediumInteger('shop_id')->nullable()->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
+            if (app('currentTenant')->appType->code == 'ecommerce') {
+                $table->foreign('shop_id')->references('id')->on('shops');
+            }
             $table->enum('type',['refund','credit','other'])->index();
             $table->string('slug')->index();
             $table->timestampsTz();

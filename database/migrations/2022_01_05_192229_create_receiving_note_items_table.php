@@ -13,10 +13,12 @@ class CreateReceivingNoteItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('receiving_note_items', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('receiving_note_items', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

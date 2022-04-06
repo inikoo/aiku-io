@@ -19,44 +19,45 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->smallIncrements('id');
-            $table->string('slug')->nullable()->index();
+        if (app('currentTenant')->appType->code == 'ecommerce') {
+            Schema::create('departments', function (Blueprint $table) {
+                $table->smallIncrements('id');
+                $table->string('slug')->nullable()->index();
 
-            $table->unsignedMediumInteger('shop_id')->nullable();
-            $table->foreign('shop_id')->references('id')->on('shops');
-            $table->enum('state', ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'])->nullable()->index();
-            $table->string('code')->index();
-            $table->string('name', 255)->nullable();
-            $table->text('description')->nullable();
-
-
-            $table->timestampstz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-        });
-
-        Schema::create('department_stats', function (Blueprint $table) {
-            $table->smallIncrements('id');
-            $table->unsignedSmallInteger('department_id')->index();
-            $table->foreign('department_id')->references('id')->on('departments');
+                $table->unsignedMediumInteger('shop_id')->nullable();
+                $table->foreign('shop_id')->references('id')->on('shops');
+                $table->enum('state', ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'])->nullable()->index();
+                $table->string('code')->index();
+                $table->string('name', 255)->nullable();
+                $table->text('description')->nullable();
 
 
-            $table->unsignedBigInteger('number_families')->default(0);
-            $familyStates = ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'];
-            foreach ($familyStates as $familyState) {
-                $table->unsignedBigInteger('number_families_state_'.str_replace('-', '_', $familyState))->default(0);
-            }
+                $table->timestampstz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
 
-            $table->unsignedBigInteger('number_products')->default(0);
-            $productStates = ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'];
-            foreach ($productStates as $productState) {
-                $table->unsignedBigInteger('number_products_state_'.str_replace('-', '_', $productState))->default(0);
-            }
+            Schema::create('department_stats', function (Blueprint $table) {
+                $table->smallIncrements('id');
+                $table->unsignedSmallInteger('department_id')->index();
+                $table->foreign('department_id')->references('id')->on('departments');
 
-            $table->timestampsTz();
 
-        });
+                $table->unsignedBigInteger('number_families')->default(0);
+                $familyStates = ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'];
+                foreach ($familyStates as $familyState) {
+                    $table->unsignedBigInteger('number_families_state_'.str_replace('-', '_', $familyState))->default(0);
+                }
+
+                $table->unsignedBigInteger('number_products')->default(0);
+                $productStates = ['creating', 'active', 'suspended', 'discontinuing', 'discontinued'];
+                foreach ($productStates as $productState) {
+                    $table->unsignedBigInteger('number_products_state_'.str_replace('-', '_', $productState))->default(0);
+                }
+
+                $table->timestampsTz();
+            });
+        }
     }
 
     /**

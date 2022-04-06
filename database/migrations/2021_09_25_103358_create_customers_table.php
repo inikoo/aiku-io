@@ -16,8 +16,9 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->unsignedMediumInteger('shop_id')->index()->nullable();
-            $table->foreign('shop_id')->references('id')->on('shops');
-
+            if (app('currentTenant')->appType->code == 'ecommerce') {
+                $table->foreign('shop_id')->references('id')->on('shops');
+            }
 
             $table->string('name', 256)->nullable()->fulltext();
             $table->string('contact_name',256)->nullable()->index()->fulltext();

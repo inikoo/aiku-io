@@ -19,30 +19,29 @@ class CreateStockMovementsTable extends Migration
      */
     public function up()
     {
-        Schema::create('stock_movements', function (Blueprint $table) {
-            $table->id();
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('stock_movements', function (Blueprint $table) {
+                $table->id();
 
-            $table->enum('type',['purchase','return','delivery','lost','found','location-transfer','cancelled-to-restock','cancelled-restocked','amendment','consumption'])->index();
+                $table->enum('type', ['purchase', 'return', 'delivery', 'lost', 'found', 'location-transfer', 'cancelled-to-restock', 'cancelled-restocked', 'amendment', 'consumption'])->index();
 
-            $table->morphs('stockable');
+                $table->morphs('stockable');
 
-            //$table->unsignedBigInteger('stock_id')->nullable()->index();
-            //$table->foreign('stock_id')->references('id')->on('stocks');
+                //$table->unsignedBigInteger('stock_id')->nullable()->index();
+                //$table->foreign('stock_id')->references('id')->on('stocks');
 
-            $table->unsignedMediumInteger('location_id')->nullable()->index();
-            $table->foreign('location_id')->references('id')->on('locations');
+                $table->unsignedMediumInteger('location_id')->nullable()->index();
+                $table->foreign('location_id')->references('id')->on('locations');
 
-            $table->decimal('quantity', 16, 3);
-            $table->decimal('amount', 16,3);
+                $table->decimal('quantity', 16, 3);
+                $table->decimal('amount', 16, 3);
 
-            $table->jsonb('data');
+                $table->jsonb('data');
 
-            $table->timestampsTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-
-
-
-        });
+                $table->timestampsTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
+        }
     }
 
     /**

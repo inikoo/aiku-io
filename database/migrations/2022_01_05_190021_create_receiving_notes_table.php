@@ -20,30 +20,32 @@ class CreateReceivingNotesTable extends Migration
      */
     public function up()
     {
-        Schema::create('receiving_notes', function (Blueprint $table) {
-            $table->id();
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('receiving_notes', function (Blueprint $table) {
+                $table->id();
 
-            $table->morphs('sender');
-            $table->string('reference')->index();
-            $table->enum('state',
-                         [
-                             'in-process',
-                             'consolidated',
-                             'dispatched',
-                             'received',
-                             'checked',
-                             'ready-to-place',
-                             'placed',
-                             'costing',
-                             'costing-done',
-                             'cancelled',
-                         ]
-            )->index();
+                $table->morphs('sender');
+                $table->string('reference')->index();
+                $table->enum('state',
+                             [
+                                 'in-process',
+                                 'consolidated',
+                                 'dispatched',
+                                 'received',
+                                 'checked',
+                                 'ready-to-place',
+                                 'placed',
+                                 'costing',
+                                 'costing-done',
+                                 'cancelled',
+                             ]
+                )->index();
 
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->index();
-        });
+                $table->timestampsTz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->index();
+            });
+        }
     }
 
     /**

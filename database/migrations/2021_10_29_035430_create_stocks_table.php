@@ -19,61 +19,62 @@ class CreateStocksTable extends Migration
      */
     public function up()
     {
-        Schema::create('stocks', function (Blueprint $table) {
-            $table->id();
-            $table->morphs('owner');
-            $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
-            $table->enum('state',['in-process','active','discontinuing','discontinued'])->nullable()->index();
-            $table->enum('quantity_status',['surplus','optimal','low','critical','out-of-stock','error'])->nullable()->index();
-            $table->boolean('sellable')->default(1)->index();
-            $table->boolean('raw_material')->default(0)->index();
-            $table->string('slug')->index();
-            $table->string('code')->index();
-            $table->string('barcode')->index()->nullable();
-            $table->text('description')->nullable();
-            $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
-            $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
-            $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
-            $table->decimal('quantity', 16, 3)->nullable()->comment('stock quantity in units');
-            $table->float('available_forecast')->nullable()->comment('days');
-            $table->decimal('value', 16)->nullable();
-            $table->unsignedBigInteger('image_id')->nullable();
-            $table->foreign('image_id')->references('id')->on('images');
-            $table->unsignedBigInteger('package_image_id')->nullable();
-            $table->foreign('package_image_id')->references('id')->on('images');
-            $table->jsonb('settings');
-            $table->jsonb('data');
-            $table->timestampsTz();
-            $table->dateTimeTz('activated_at')->nullable();
-            $table->dateTimeTz('discontinuing_at')->nullable();
-            $table->dateTimeTz('discontinued_at')->nullable();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-        });
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('stocks', function (Blueprint $table) {
+                $table->id();
+                $table->morphs('owner');
+                $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
+                $table->enum('state', ['in-process', 'active', 'discontinuing', 'discontinued'])->nullable()->index();
+                $table->enum('quantity_status', ['surplus', 'optimal', 'low', 'critical', 'out-of-stock', 'error'])->nullable()->index();
+                $table->boolean('sellable')->default(1)->index();
+                $table->boolean('raw_material')->default(0)->index();
+                $table->string('slug')->index();
+                $table->string('code')->index();
+                $table->string('barcode')->index()->nullable();
+                $table->text('description')->nullable();
+                $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
+                $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
+                $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
+                $table->decimal('quantity', 16, 3)->nullable()->comment('stock quantity in units');
+                $table->float('available_forecast')->nullable()->comment('days');
+                $table->decimal('value', 16)->nullable();
+                $table->unsignedBigInteger('image_id')->nullable();
+                $table->foreign('image_id')->references('id')->on('images');
+                $table->unsignedBigInteger('package_image_id')->nullable();
+                $table->foreign('package_image_id')->references('id')->on('images');
+                $table->jsonb('settings');
+                $table->jsonb('data');
+                $table->timestampsTz();
+                $table->dateTimeTz('activated_at')->nullable();
+                $table->dateTimeTz('discontinuing_at')->nullable();
+                $table->dateTimeTz('discontinued_at')->nullable();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
 
-        Schema::create('stock_stats', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('stock_id')->index();
-            $table->foreign('stock_id')->references('id')->on('stocks');
-            $table->unsignedSmallInteger('number_locations')->default(0);
-            $table->decimal('stock_value',16)->default(0);
-
-            $table->timestampsTz();
-
-        });
-
-        Schema::create(
-            'stock_trade_unit',
-            function (Blueprint $table) {
-                $table->unsignedBigInteger('stock_id')->nullable();
+            Schema::create('stock_stats', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('stock_id')->index();
                 $table->foreign('stock_id')->references('id')->on('stocks');
-                $table->unsignedBigInteger('trade_unit_id')->nullable();
-                $table->foreign('trade_unit_id')->references('id')->on('trade_units');
-                $table->decimal('quantity', 12, 3);
+                $table->unsignedSmallInteger('number_locations')->default(0);
+                $table->decimal('stock_value', 16)->default(0);
 
                 $table->timestampsTz();
-            }
-        );
+            });
+
+            Schema::create(
+                'stock_trade_unit',
+                function (Blueprint $table) {
+                    $table->unsignedBigInteger('stock_id')->nullable();
+                    $table->foreign('stock_id')->references('id')->on('stocks');
+                    $table->unsignedBigInteger('trade_unit_id')->nullable();
+                    $table->foreign('trade_unit_id')->references('id')->on('trade_units');
+                    $table->decimal('quantity', 12, 3);
+
+                    $table->timestampsTz();
+                }
+            );
+        }
     }
 
     /**
@@ -84,6 +85,7 @@ class CreateStocksTable extends Migration
     public function down()
     {
         Schema::dropIfExists('stock_trade_unit');
+        Schema::dropIfExists('stock_stats');
         Schema::dropIfExists('stocks');
     }
 }

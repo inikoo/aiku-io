@@ -16,14 +16,16 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('shop_id')->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
+            if (app('currentTenant')->appType->code == 'ecommerce') {
+                $table->foreign('shop_id')->references('id')->on('shops');
+            }
             $table->unsignedBigInteger('customer_id')->index();
             $table->foreign('customer_id')->references('id')->on('customers');
 
-
-            $table->unsignedBigInteger('order_id')->index();
-            $table->foreign('order_id')->references('id')->on('orders');
-
+            if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+                $table->unsignedBigInteger('order_id')->index();
+                $table->foreign('order_id')->references('id')->on('orders');
+            }
 
             $table->nullableMorphs('item');
             $table->decimal('quantity', 16, 3);
@@ -35,7 +37,6 @@ class CreateTransactionsTable extends Migration
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->index();
             $table->unsignedBigInteger('aurora_no_product_id')->nullable()->index();
-
         });
     }
 

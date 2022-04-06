@@ -19,31 +19,29 @@ class CreateShippersTable extends Migration
      */
     public function up()
     {
-        Schema::create('shippers', function (Blueprint $table) {
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('shippers', function (Blueprint $table) {
+                $table->smallIncrements('id');
+                $table->unsignedSmallInteger('api_shipper_id')->nullable()->index();
 
 
-            $table->smallIncrements('id');
-            $table->unsignedSmallInteger('api_shipper_id')->nullable()->index();
+                $table->boolean('status')->default('true')->index();
+                $table->string('code')->index();
+                $table->string('name')->index();
+                $table->string('contact_name', 256)->nullable();
+                $table->string('company_name', 256)->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone')->nullable();
+                $table->string('website', 256)->nullable();
 
+                $table->string('tracking_url')->nullable();
 
-            $table->boolean('status')->default('true')->index();
-            $table->string('code')->index();
-            $table->string('name')->index();
-            $table->string('contact_name',256)->nullable();
-            $table->string('company_name',256)->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('website',256)->nullable();
-
-            $table->string('tracking_url')->nullable();
-
-            $table->jsonb('data');
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->index();
-
-
-        });
+                $table->jsonb('data');
+                $table->timestampsTz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->index();
+            });
+        }
     }
 
     /**

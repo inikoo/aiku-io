@@ -19,33 +19,31 @@ class CreateLocationStocksTable extends Migration
      */
     public function up()
     {
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('location_stock', function (Blueprint $table) {
+                $table->id();
 
+                $table->unsignedBigInteger('stock_id');
+                $table->foreign('stock_id')->references('id')->on('stocks');
+                $table->unsignedMediumInteger('location_id');
+                $table->foreign('location_id')->references('id')->on('locations');
 
-        Schema::create('location_stock', function (Blueprint $table) {
-            $table->id();
+                $table->decimal('quantity', 16, 3);
+                $table->smallInteger('picking_priority')->default(0)->index();
 
-            $table->unsignedBigInteger('stock_id');
-            $table->foreign('stock_id')->references('id')->on('stocks');
-            $table->unsignedMediumInteger('location_id');
-            $table->foreign('location_id')->references('id')->on('locations');
+                $table->string('notes')->nullable();
 
-            $table->decimal('quantity', 16, 3);
-            $table->smallInteger('picking_priority')->default(0)->index();
+                $table->jsonb('data');
+                $table->jsonb('settings');
 
-            $table->string('notes')->nullable();
+                $table->dateTimeTz('audited_at')->nullable()->index();
+                $table->timestampsTz();
+                $table->unsignedBigInteger('aurora_part_id')->nullable();
+                $table->unsignedBigInteger('aurora_location_id')->nullable();
 
-            $table->jsonb('data');
-            $table->jsonb('settings');
-
-            $table->dateTimeTz('audited_at')->nullable()->index();
-            $table->timestampsTz();
-            $table->unsignedBigInteger('aurora_part_id')->nullable();
-            $table->unsignedBigInteger('aurora_location_id')->nullable();
-
-            $table->unique(['stock_id','location_id']);
-
-
-        });
+                $table->unique(['stock_id', 'location_id']);
+            });
+        }
     }
 
     /**

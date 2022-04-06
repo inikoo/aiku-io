@@ -19,28 +19,29 @@ class CreateShippingSchemasTable extends Migration
      */
     public function up()
     {
-        Schema::create('shipping_schemas', function (Blueprint $table) {
-            $table->mediumIncrements('id');
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('shipping_schemas', function (Blueprint $table) {
+                $table->mediumIncrements('id');
 
 
-            $table->unsignedMediumInteger('shop_id')->nullable()->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
+                $table->unsignedMediumInteger('shop_id')->nullable()->index();
+                if (app('currentTenant')->appType->code == 'ecommerce') {
+                    $table->foreign('shop_id')->references('id')->on('shops');
+                }
 
-            $table->boolean('status')->default(true)->index();
-            $table->string('slug')->index();
+                $table->boolean('status')->default(true)->index();
+                $table->string('slug')->index();
 
-            $table->enum('type',['current','in-reserve','deal'])->index();
+                $table->enum('type', ['current', 'in-reserve', 'deal'])->index();
 
-            $table->string('name')->index();
-
-
-
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+                $table->string('name')->index();
 
 
-        });
+                $table->timestampsTz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
+        }
     }
 
     /**

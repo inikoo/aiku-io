@@ -118,13 +118,12 @@ class CreateTenantStatsTable extends Migration
             $table->unsignedMediumInteger('number_locations_state_broken')->default(0);
 
 
-
             $table->unsignedBigInteger('number_stocks')->default(0);
-            $stockStates = ['in-process','active','discontinuing','discontinued'];
+            $stockStates = ['in-process', 'active', 'discontinuing', 'discontinued'];
             foreach ($stockStates as $stockState) {
                 $table->unsignedBigInteger('number_stocks_state_'.str_replace('-', '_', $stockState))->default(0);
             }
-            $stockQuantityStatuses = ['surplus','optimal','low','critical','out-of-stock','error'];
+            $stockQuantityStatuses = ['surplus', 'optimal', 'low', 'critical', 'out-of-stock', 'error'];
             foreach ($stockQuantityStatuses as $stockQuantityStatus) {
                 $table->unsignedBigInteger('number_stocks_quantity_status_'.str_replace('-', '_', $stockQuantityStatus))->default(0);
             }
@@ -176,7 +175,7 @@ class CreateTenantStatsTable extends Migration
 
 
             $table->unsignedBigInteger('number_purchase_orders')->default(0);
-            $purchaseOrderStates = ['in-process', 'submitted',  'confirmed', 'dispatched', 'delivered','cancelled'];
+            $purchaseOrderStates = ['in-process', 'submitted', 'confirmed', 'dispatched', 'delivered', 'cancelled'];
             foreach ($purchaseOrderStates as $purchaseOrderState) {
                 $table->unsignedBigInteger('number_purchase_orders_state_'.str_replace('-', '_', $purchaseOrderState))->default(0);
             }
@@ -230,6 +229,17 @@ class CreateTenantStatsTable extends Migration
 
             $table->timestamps();
             $table->unique(['tenant_id', 'currency_id']);
+        });
+
+        Schema::create('tenant_staffing_stats', function (Blueprint $table) {
+            $table->smallIncrements('id');
+            $table->unsignedMediumInteger('tenant_id')->index();
+            $table->foreign('tenant_id')->references('id')->on('tenants');
+
+
+            $table->unsignedSmallInteger('number_applicants')->default(0);
+
+            $table->timestamps();
         });
     }
 

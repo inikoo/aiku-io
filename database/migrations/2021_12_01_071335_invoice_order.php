@@ -19,20 +19,22 @@ class InvoiceOrder extends Migration
      */
     public function up()
     {
-        Schema::create(
-            'invoice_order', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained();
-            $table->foreignId('invoice_id')->constrained();
-            $table->timestampsTz();
-            $table->unique(
-                [
-                    'order_id',
-                    'invoice_id'
-                ]
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create(
+                'invoice_order', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('order_id')->constrained();
+                $table->foreignId('invoice_id')->constrained();
+                $table->timestampsTz();
+                $table->unique(
+                    [
+                        'order_id',
+                        'invoice_id'
+                    ]
+                );
+            }
             );
         }
-        );
     }
 
     /**

@@ -19,71 +19,73 @@ class CreateWorkshopProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('workshop_products', function (Blueprint $table) {
-            $table->id();
-            $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
+        if (app('currentTenant')->appType->code == 'ecommerce') {
+            Schema::create('workshop_products', function (Blueprint $table) {
+                $table->id();
+                $table->enum('composition', ['unit', 'multiple', 'mix'])->default('unit');
 
-            $table->string('slug')->nullable()->index();
-
-
-            $table->unsignedMediumInteger('workshop_id')->nullable();
-            $table->foreign('workshop_id')->references('id')->on('workshops');
+                $table->string('slug')->nullable()->index();
 
 
-            $table->enum('state', ['creating', 'active', 'no-available', 'discontinuing', 'discontinued'])->nullable()->index();
-            $table->boolean('status')->nullable()->index();
+                $table->unsignedMediumInteger('workshop_id')->nullable();
+                $table->foreign('workshop_id')->references('id')->on('workshops');
 
-            $table->string('code')->index();
-            $table->string('name', 255)->nullable();
-            $table->text('description')->nullable();
 
-            $table->unsignedDecimal('cost', 18)->comment('unit cost');
-            $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
-            $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
-            $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
-            $table->unsignedMediumInteger('batch')->nullable()->comment('units per batch');
+                $table->enum('state', ['creating', 'active', 'no-available', 'discontinuing', 'discontinued'])->nullable()->index();
+                $table->boolean('status')->nullable()->index();
 
-            $table->unsignedBigInteger('image_id')->nullable();
-            $table->foreign('image_id')->references('id')->on('images');
-            $table->jsonb('settings');
-            $table->jsonb('data');
+                $table->string('code')->index();
+                $table->string('name', 255)->nullable();
+                $table->text('description')->nullable();
 
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-        });
+                $table->unsignedDecimal('cost', 18)->comment('unit cost');
+                $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
+                $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
+                $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
+                $table->unsignedMediumInteger('batch')->nullable()->comment('units per batch');
 
-        Schema::create('historic_workshop_products', function (Blueprint $table) {
-            $table->id();
-            $table->boolean('status')->index();
-            $table->dateTimeTz('created_at')->nullable();
-            $table->dateTimeTz('deleted_at')->nullable();
-            $table->unsignedBigInteger('workshop_product_id')->nullable()->index();
-            $table->foreign('workshop_product_id')->references('id')->on('workshop_products');
-            $table->string('code')->nullable();
-            $table->string('name',255)->nullable();
-            $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
-            $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
-            $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
-            $table->unsignedMediumInteger('batch')->nullable()->comment('units per batch');
-
-            //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-        });
-
-        Schema::create(
-            'trade_unit_workshop_product',
-            function (Blueprint $table) {
-                $table->unsignedBigInteger('workshop_product_id')->nullable();
-                $table->foreign('workshop_product_id')->references('id')->on('workshop_products');
-                $table->unsignedBigInteger('trade_unit_id')->nullable();
-                $table->foreign('trade_unit_id')->references('id')->on('trade_units');
-                $table->decimal('quantity', 12, 3);
-                $table->string('notes')->nullable();
+                $table->unsignedBigInteger('image_id')->nullable();
+                $table->foreign('image_id')->references('id')->on('images');
+                $table->jsonb('settings');
+                $table->jsonb('data');
 
                 $table->timestampsTz();
-            }
-        );
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
+
+            Schema::create('historic_workshop_products', function (Blueprint $table) {
+                $table->id();
+                $table->boolean('status')->index();
+                $table->dateTimeTz('created_at')->nullable();
+                $table->dateTimeTz('deleted_at')->nullable();
+                $table->unsignedBigInteger('workshop_product_id')->nullable()->index();
+                $table->foreign('workshop_product_id')->references('id')->on('workshop_products');
+                $table->string('code')->nullable();
+                $table->string('name', 255)->nullable();
+                $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
+                $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
+                $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
+                $table->unsignedMediumInteger('batch')->nullable()->comment('units per batch');
+
+                //$table->foreign('currency_id')->references('id')->on('aiku.currencies');
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
+
+            Schema::create(
+                'trade_unit_workshop_product',
+                function (Blueprint $table) {
+                    $table->unsignedBigInteger('workshop_product_id')->nullable();
+                    $table->foreign('workshop_product_id')->references('id')->on('workshop_products');
+                    $table->unsignedBigInteger('trade_unit_id')->nullable();
+                    $table->foreign('trade_unit_id')->references('id')->on('trade_units');
+                    $table->decimal('quantity', 12, 3);
+                    $table->string('notes')->nullable();
+
+                    $table->timestampsTz();
+                }
+            );
+        }
     }
 
     /**

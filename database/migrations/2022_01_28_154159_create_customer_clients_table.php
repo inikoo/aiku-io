@@ -13,36 +13,39 @@ class CreateCustomerClientsTable extends Migration
      */
     public function up()
     {
-        Schema::create('customer_clients', function (Blueprint $table) {
-            $table->id();
-            $table->boolean('status')->default(true)->index();
-            $table->unsignedMediumInteger('shop_id')->index()->nullable();
-            $table->foreign('shop_id')->references('id')->on('shops');
-            $table->unsignedMediumInteger('customer_id')->index()->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers');
+
+        if (app('currentTenant')->appType->code == 'ecommerce') {
+            Schema::create('customer_clients', function (Blueprint $table) {
+                $table->id();
+                $table->boolean('status')->default(true)->index();
+                $table->unsignedMediumInteger('shop_id')->index()->nullable();
+                $table->foreign('shop_id')->references('id')->on('shops');
+                $table->unsignedMediumInteger('customer_id')->index()->nullable();
+                $table->foreign('customer_id')->references('id')->on('customers');
 
 
-            $table->string('name', 256)->nullable();
+                $table->string('name', 256)->nullable();
 
-            $table->string('contact_name',256)->nullable()->index();
-            $table->string('company_name',256)->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->jsonb('location');
-
-
-            $table->unsignedBigInteger('delivery_address_id')->nullable()->index();
-            $table->foreign('delivery_address_id')->references('id')->on('addresses');
+                $table->string('contact_name', 256)->nullable()->index();
+                $table->string('company_name', 256)->nullable();
+                $table->string('email')->nullable();
+                $table->string('phone')->nullable();
+                $table->jsonb('location');
 
 
-            $table->dateTimeTz('deactivated_at')->nullable();
-            $table->timestampsTz();
-            $table->softDeletesTz();
+                $table->unsignedBigInteger('delivery_address_id')->nullable()->index();
+                $table->foreign('delivery_address_id')->references('id')->on('addresses');
 
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
 
-            $table->index([DB::raw('name(64)')]);
-        });
+                $table->dateTimeTz('deactivated_at')->nullable();
+                $table->timestampsTz();
+                $table->softDeletesTz();
+
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+
+                $table->index([DB::raw('name(64)')]);
+            });
+        }
     }
 
     /**

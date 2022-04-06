@@ -23,13 +23,16 @@ class CreateInvoiceTransactionsTable extends Migration
             $table->id();
 
             $table->unsignedBigInteger('shop_id')->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
+            if (app('currentTenant')->appType->code == 'ecommerce') {
+                $table->foreign('shop_id')->references('id')->on('shops');
+            }
             $table->unsignedBigInteger('customer_id')->index();
             $table->foreign('customer_id')->references('id')->on('customers');
 
             $table->foreignId('invoice_id')->constrained();
-            $table->foreignId('order_id')->nullable()->constrained();
-
+            if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+                $table->foreignId('order_id')->nullable()->constrained();
+            }
             $table->foreignId('transaction_id')->nullable()->constrained();
 
 

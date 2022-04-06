@@ -19,23 +19,24 @@ class CreateShippingZonesTable extends Migration
      */
     public function up()
     {
-        Schema::create('shipping_zones', function (Blueprint $table) {
-            $table->mediumIncrements('id');
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('shipping_zones', function (Blueprint $table) {
+                $table->mediumIncrements('id');
 
-            $table->unsignedMediumInteger('shipping_schema_id')->nullable()->index();
-            $table->foreign('shipping_schema_id')->references('id')->on('shipping_schemas');
-            $table->boolean('status')->default(true)->index();
-            $table->string('slug')->index();
-            $table->string('code')->index();
+                $table->unsignedMediumInteger('shipping_schema_id')->nullable()->index();
+                $table->foreign('shipping_schema_id')->references('id')->on('shipping_schemas');
+                $table->boolean('status')->default(true)->index();
+                $table->string('slug')->index();
+                $table->string('code')->index();
 
-            $table->string('name')->index();
-            $table->smallInteger('rank')->default(0);
-            $table->jsonb('settings');
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-
-        });
+                $table->string('name')->index();
+                $table->smallInteger('rank')->default(0);
+                $table->jsonb('settings');
+                $table->timestampsTz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
+        }
     }
 
     /**

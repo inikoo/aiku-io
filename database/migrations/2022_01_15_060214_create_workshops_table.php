@@ -19,17 +19,19 @@ class CreateWorkshopsTable extends Migration
      */
     public function up()
     {
-        Schema::create('workshops', function (Blueprint $table) {
-            $table->mediumIncrements('id');
-            $table->string('code')->index();
-            $table->morphs('owner');
-            $table->string('name');
-            $table->jsonb('settings');
-            $table->jsonb('data');
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id');
-        });
+        if (app('currentTenant')->appType->code == 'ecommerce') {
+            Schema::create('workshops', function (Blueprint $table) {
+                $table->mediumIncrements('id');
+                $table->string('code')->index();
+                $table->morphs('owner');
+                $table->string('name');
+                $table->jsonb('settings');
+                $table->jsonb('data');
+                $table->timestampsTz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id');
+            });
+        }
     }
 
     /**

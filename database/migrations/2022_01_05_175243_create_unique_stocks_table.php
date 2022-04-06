@@ -19,25 +19,27 @@ class CreateUniqueStocksTable extends Migration
      */
     public function up()
     {
-        Schema::create('unique_stocks', function (Blueprint $table) {
-            $table->id();
-            $table->boolean('status')->default('true')->index();
-            $table->string('reference')->nullable()->index();
+        if (app('currentTenant')->appType->code == 'ecommerce') {
+            Schema::create('unique_stocks', function (Blueprint $table) {
+                $table->id();
+                $table->boolean('status')->default('true')->index();
+                $table->string('reference')->nullable()->index();
 
-            $table->enum('state', ['in-process', 'received', 'booked-in', 'booked-out', 'invoiced', 'lost'])->default('in-process')->index();
-            $table->enum('type', ['pallet', 'box', 'oversize','item'])->default('item')->index();
+                $table->enum('state', ['in-process', 'received', 'booked-in', 'booked-out', 'invoiced', 'lost'])->default('in-process')->index();
+                $table->enum('type', ['pallet', 'box', 'oversize', 'item'])->default('item')->index();
 
-            $table->unsignedBigInteger('customer_id')->nullable();
-            $table->foreign('customer_id')->references('id')->on('customers');
+                $table->unsignedBigInteger('customer_id')->nullable();
+                $table->foreign('customer_id')->references('id')->on('customers');
 
-            $table->unsignedBigInteger('location_id')->nullable();
-            $table->foreign('location_id')->references('id')->on('locations');
-            $table->text('notes')->nullable();
-            $table->dateTimeTz('delivered_at')->nullable();
-            $table->timestampsTz();
-            $table->softDeletesTz();
-            $table->unsignedBigInteger('aurora_id')->nullable()->unique();
-        });
+                $table->unsignedBigInteger('location_id')->nullable();
+                $table->foreign('location_id')->references('id')->on('locations');
+                $table->text('notes')->nullable();
+                $table->dateTimeTz('delivered_at')->nullable();
+                $table->timestampsTz();
+                $table->softDeletesTz();
+                $table->unsignedBigInteger('aurora_id')->nullable()->unique();
+            });
+        }
     }
 
     /**

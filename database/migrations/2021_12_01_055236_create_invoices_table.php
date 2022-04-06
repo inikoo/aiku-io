@@ -23,12 +23,16 @@ class CreateInvoicesTable extends Migration
             $table->id();
 
             $table->unsignedMediumInteger('shop_id')->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
+            if (app('currentTenant')->appType->code == 'ecommerce') {
+                $table->foreign('shop_id')->references('id')->on('shops');
+            }
             $table->unsignedBigInteger('customer_id')->index();
             $table->foreign('customer_id')->references('id')->on('customers');
 
-            $table->unsignedBigInteger('order_id')->index()->comment('Main order, usually the only one (used for performance)');
-            $table->foreign('order_id')->references('id')->on('orders');
+            if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+                $table->unsignedBigInteger('order_id')->index()->comment('Main order, usually the only one (used for performance)');
+                $table->foreign('order_id')->references('id')->on('orders');
+            }
 
             $table->string('number')->index();
             $table->enum('type',['invoice','refund'])->index();

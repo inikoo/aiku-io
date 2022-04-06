@@ -19,20 +19,22 @@ class DeliveryNoteOrder extends Migration
      */
     public function up()
     {
-        Schema::create(
-            'delivery_note_order', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained();
-            $table->foreignId('delivery_note_id')->constrained();
-            $table->timestampsTz();
-            $table->unique(
-                [
-                    'order_id',
-                    'delivery_note_id'
-                ]
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create(
+                'delivery_note_order', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('order_id')->constrained();
+                $table->foreignId('delivery_note_id')->constrained();
+                $table->timestampsTz();
+                $table->unique(
+                    [
+                        'order_id',
+                        'delivery_note_id'
+                    ]
+                );
+            }
             );
         }
-        );
     }
 
     /**

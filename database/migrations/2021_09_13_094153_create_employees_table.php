@@ -19,6 +19,8 @@ class CreateEmployeesTable extends Migration
      */
     public function up()
     {
+
+
         Schema::create('job_positions', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('slug')->unique();
@@ -69,8 +71,18 @@ class CreateEmployeesTable extends Migration
             $table->unique(['job_position_id','employee_id']);
         });
 
+        if(app('currentTenant')->appType->code=='staffing') {
+            Schema::create('employee_staffing_stats', function (Blueprint $table) {
+                $table->smallIncrements('id');
+                $table->unsignedMediumInteger('employee_id')->index();
+                $table->foreign('employee_id')->references('id')->on('employees');
 
 
+                $table->unsignedSmallInteger('number_applicants')->default(0);
+
+                $table->timestamps();
+            });
+        }
 
 
 

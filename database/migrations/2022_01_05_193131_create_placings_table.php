@@ -13,10 +13,12 @@ class CreatePlacingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('placings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create('placings', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->unsignedMediumInteger('department_id')->nullable();
-            $table->foreign('department_id')->references('id')->on('departments');
-            $table->unsignedMediumInteger('family_id')->nullable();
-            $table->foreign('family_id')->references('id')->on('families');
-        });
+        if (app('currentTenant')->appType->code == 'ecommerce') {
+            Schema::table('products', function (Blueprint $table) {
+                $table->unsignedMediumInteger('department_id')->nullable();
+                $table->foreign('department_id')->references('id')->on('departments');
+                $table->unsignedMediumInteger('family_id')->nullable();
+                $table->foreign('family_id')->references('id')->on('families');
+            });
+        }
     }
 
     /**

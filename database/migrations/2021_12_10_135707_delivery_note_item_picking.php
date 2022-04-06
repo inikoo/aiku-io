@@ -19,20 +19,22 @@ class DeliveryNoteItemPicking extends Migration
      */
     public function up()
     {
-        Schema::create(
-            'delivery_note_item_picking', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('delivery_note_item_id')->constrained();
-            $table->foreignId('picking_id')->constrained();
-            $table->timestampsTz();
-            $table->unique(
-                [
-                    'delivery_note_item_id',
-                    'picking_id'
-                ]
+        if (in_array(app('currentTenant')->appType->code, ['ecommerce', 'agent'])) {
+            Schema::create(
+                'delivery_note_item_picking', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('delivery_note_item_id')->constrained();
+                $table->foreignId('picking_id')->constrained();
+                $table->timestampsTz();
+                $table->unique(
+                    [
+                        'delivery_note_item_id',
+                        'picking_id'
+                    ]
+                );
+            }
             );
         }
-        );
     }
 
     /**
@@ -43,6 +45,5 @@ class DeliveryNoteItemPicking extends Migration
     public function down()
     {
         Schema::dropIfExists('delivery_note_item_picking');
-
     }
 }
