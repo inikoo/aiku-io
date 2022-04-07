@@ -15,6 +15,8 @@ Route::get('/', [HumanResourcesController::class, 'dashboard'])->name('dashboard
 Route::get('/logbook', [HumanResourcesController::class, 'logbook'])->name('logbook');
 
 Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+Route::post('/employees/create', [EmployeeController::class, 'store'])->name('employees.store');
 Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
 Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
 Route::post('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
@@ -28,8 +30,7 @@ Route::scopeBindings()->group(function () {
 
 Route::get('/employees/logbook', [EmployeeController::class, 'logbook'])->name('employees.logbook');
 
-Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-Route::post('/employees/create', [EmployeeController::class, 'store'])->name('employees.store');
+
 
 
 Route::get('/timesheets', [WorkTargetsController::class, 'indexInTenant'])->name('timesheets.index');

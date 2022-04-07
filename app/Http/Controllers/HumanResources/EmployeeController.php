@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HumanResources;
 
 
 use App\Actions\HumanResources\Employee\IndexEmployee;
+use App\Actions\HumanResources\Employee\ShowCreateEmployee;
 use App\Actions\HumanResources\Employee\ShowEditEmployee;
 use App\Actions\HumanResources\Employee\ShowEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
@@ -39,6 +40,16 @@ class EmployeeController extends HumanResourcesController
     public function edit(Employee $employee): Response
     {
         return ShowEditEmployee::make()->asInertia($employee);
+    }
+
+    public function create(): Response
+    {
+        return ShowCreateEmployee::make()->asInertia();
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        return StoreEmployee::make()->asInertia($request);
     }
 
     public function update(Employee $employee, Request $request): RedirectResponse
