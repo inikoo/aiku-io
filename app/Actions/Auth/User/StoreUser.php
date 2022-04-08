@@ -81,8 +81,6 @@ class StoreUser
 
     public function asController(Employee|Tenant $userable, ActionRequest $request): ActionResult
     {
-
-
         return $this->handle(
             $userable,
             $request->only('username', 'password'),
