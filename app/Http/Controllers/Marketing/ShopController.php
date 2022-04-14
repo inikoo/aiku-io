@@ -8,10 +8,14 @@
 
 namespace App\Http\Controllers\Marketing;
 
+use App\Actions\Marketing\Department\IndexDepartment;
+use App\Actions\Marketing\Family\IndexFamilyInShop;
+use App\Actions\Marketing\Product\IndexProductInShop;
 use App\Actions\Marketing\Shop\IndexShop;
 use App\Actions\Marketing\Shop\ShowShop;
 use App\Http\Controllers\Controller;
 use App\Models\Marketing\Shop;
+use Illuminate\Http\Request;
 use Inertia\Response;
 
 
@@ -23,6 +27,29 @@ class ShopController extends Controller
     {
         return IndexShop::make()->asInertia();
     }
+
+    public function catalogue(Shop $shop): Response
+    {
+        return match (session('catalogue')) {
+            'families' => IndexFamilyInShop::make()->asInertia($shop),
+            'products' => IndexProductInShop::make()->asInertia($shop),
+            default => IndexDepartment::make()->asInertia($shop)
+        };
+    }
+
+    public function setCatalogue(Shop $shop, Request $request): Response
+    {
+
+        session(['catalogue' => $request->input('catalogue', 'departments')]);
+
+
+        return match ($request->input('catalogue')) {
+            'families' => IndexFamilyInShop::make()->asInertia($shop),
+            'products' => IndexProductInShop::make()->asInertia($shop),
+            default => IndexDepartment::make()->asInertia($shop)
+        };
+    }
+
 
     public function show(Shop $shop): Response
     {

@@ -103,6 +103,8 @@ const checkRouteParametersIntegrity = (record, indices) => {
         indices = [indices];
     }
     let pass = true;
+
+
     for (let index of indices) {
         if (!record[index]) {
             pass = false;
@@ -116,7 +118,11 @@ const checkRouteParametersIntegrity = (record, indices) => {
 const getComponentsData = (record, components) => {
 
     let componentData = [];
+
+
+
     for (let i in components) {
+
 
         let type = components[i].type;
         let resolver = components[i]['resolver'].type;
@@ -166,6 +172,7 @@ const getComponentData = (type, record, resolver) => {
             return record[parameters.indices] ? parameters.values[0] : parameters.values[1];
         },
         link(record, parameters) {
+
             return {
                 'slot': getSlot(record, parameters),
                 'href': {

@@ -9,6 +9,27 @@
     <Head :title="headerData['pageTitle']??headerData.title??''"/>
     <div class="mb-6">
 
+        <div v-if="headerData['topTabs']">
+            <div class="sm:hidden">
+                <label for="tabs" class="sr-only">Select a tab</label>
+                <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
+                <select id="tabs" name="tabs" class="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                    <option v-for="tab in headerData['topTabs']"  :data="tab.href['data']"  :key="tab.name" :selected="tab.current">{{ tab.name }}</option>
+                </select>
+            </div>
+            <div class="hidden sm:block">
+                <nav class="flex space-x-4" aria-label="Tabs">
+                    <Link v-for="tab in headerData['topTabs']"
+                       :key="tab.name"
+                          :href="route(tab.href.route,tab.href['routeParameters'])"
+                          as="button" type="button"  :data="tab.href['data']" method="patch"
+                       :class="[tab.current ? 'bg-gray-700 text-gray-200' : 'text-gray-500 hover:text-gray-700', 'px-3 py-1 font-medium text-sm rounded-md']" :aria-current="tab.current ? 'page' : undefined">
+                        {{ tab.name }}
+                    </Link>
+                </nav>
+            </div>
+        </div>
+
         <div class="mt-2 md:flex md:items-center md:justify-between">
             <div class="flex-1 min-w-0">
                 <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
@@ -69,6 +90,10 @@
             <slot name="action_options"></slot>
         </div>
     </div>
+
+
+
+
 </template>
 
 <script setup>

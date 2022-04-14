@@ -76,9 +76,9 @@ import {
 library.add(faPallet);
 
 // For Marketing
-import {faCashRegister} from '@/private/pro-light-svg-icons';
+import {faCashRegister,faAlbumCollection} from '@/private/pro-light-svg-icons';
 
-library.add(faCashRegister);
+library.add(faCashRegister,faAlbumCollection);
 
 // For inventory
 import {faBox, faDrawSquare} from '@/private/pro-light-svg-icons';

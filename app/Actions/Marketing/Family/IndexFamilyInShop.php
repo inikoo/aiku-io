@@ -6,10 +6,11 @@
  *  Version 4.0
  */
 
-namespace App\Actions\CRM\Customer;
+namespace App\Actions\Marketing\Family;
 
 
 use App\Actions\Marketing\Shop\ShowShop;
+use App\Actions\Marketing\UseCatalogue;
 use App\Models\Marketing\Shop;
 use Lorisleiva\Actions\ActionRequest;
 
@@ -19,17 +20,19 @@ use function __;
 /**
  * @property Shop $shop
  */
-class IndexCustomerInShop extends IndexCustomer
+class IndexFamilyInShop extends IndexFamily
 {
 
+    use UseCatalogue;
 
     public function authorize(ActionRequest $request): bool
     {
-        return  $request->user()->hasPermissionTo("shops.customers.view.{$this->shop->id}");
+        return $request->user()->hasPermissionTo("shops.products.view.{$this->shop->id}");
     }
 
-    public function queryConditions($query){
-        return $query->where('shop_id',$this->shop->id)->select($this->select);
+    public function queryConditions($query)
+    {
+        return $query->where('shop_id', $this->shop->id)->select($this->select);
     }
 
     public function asInertia(Shop $shop)
@@ -37,23 +40,23 @@ class IndexCustomerInShop extends IndexCustomer
         $this->set('shop', $shop);
         session(['currentShop' => $shop->id]);
         $this->validateAttributes();
-        unset($this->columns['shop_code']);
-        return $this->getInertia();
 
+        return $this->getInertia();
     }
 
     public function prepareForValidation(ActionRequest $request): void
     {
         $request->merge(
             [
-                'title' => __('Customers in :shop', ['shop' => $this->shop->code]),
-                'breadcrumbs'=>$this->getBreadcrumbs($this->shop),
-                'sectionRoot'=>'marketing.shops.show.customers.index',
-                'metaSection' => 'shop'
+                'title'       => __('Families'),
+                'breadcrumbs' => $this->getBreadcrumbs($this->shop),
+                'sectionRoot' => 'marketing.shops.show.catalogue',
+                'metaSection' => 'shop',
+                'topTabs'     => $this->getCatalogueTabs('families')
+
             ]
         );
         $this->fillFromRequest($request);
-
     }
 
     public function getBreadcrumbs(Shop $shop): array
@@ -61,19 +64,18 @@ class IndexCustomerInShop extends IndexCustomer
         return array_merge(
             (new ShowShop())->getBreadcrumbs($shop),
             [
-                'marketing.shops.show.customers.index' => [
-                    'route'   => 'marketing.shops.show.customers.index',
+                'marketing.shops.show.families.index' => [
+                    'route'           => 'marketing.shops.show.families.index',
                     'routeParameters' => $shop->id,
 
-                    'modelLabel'=>[
-                        'label'=>__('customers')
+                    'modelLabel' => [
+                        'label' => __('families')
                     ],
 
                 ],
             ]
         );
     }
-
 
 
 }
