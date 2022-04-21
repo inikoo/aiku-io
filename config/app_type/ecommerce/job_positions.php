@@ -7,123 +7,191 @@
  */
 
 return [
-    [
-        'slug'  => 'dir',
-        'name'  => 'director',
-        'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'hr-m',
-        'name'  => 'Human resources supervisor',
-        'roles' => [
-            'human-resources-admin'
-        ]
-    ],
-    [
-        'slug'  => 'hr',
-        'name'  => 'Human resources',
-        'roles' => [
-            'human-resources-clerk'
-        ]
-    ],
-    [
-        'slug'  => 'acc',
-        'name'  => 'Accounts',
-        'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'mrk',
-        'name'  => 'Marketing',
-        'roles' => [
+    'positions' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'app',
-        'name'  => 'Web designer',
-        'roles' => [
+        'dir'   => [
+            'slug'  => 'dir',
+            'name'  => 'director',
+            'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'buy',
-        'name'  => 'Buyer',
-        'roles' => [
+            ]
+        ],
+        'hr-m'  => [
+            'slug'  => 'hr-m',
+            'grade' => 'manager',
+            'name'  => 'Human resources supervisor',
+            'roles' => [
+                'human-resources-admin'
+            ]
+        ],
+        'hr-c'  => [
+            'slug'  => 'hr-c',
+            'name'  => 'Human resources clerk',
+            'grade' => 'clerk',
+            'roles' => [
+                'human-resources-clerk'
+            ]
+        ],
+        'acc'   => [
+            'slug'  => 'acc',
+            'name'  => 'Accounts',
+            'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'wah-m',
-        'name'  => 'Warehouse supervisor',
-        'roles' => [
+            ]
+        ],
+        'mrk-m' => [
+            'slug'  => 'mrk-m',
+            'grade' => 'manager',
+            'name'  => 'Marketing supervisor',
+            'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'wah-sk',
-        'name'  => 'Warehouse stock keeper',
-        'roles' => [
+            ]
+        ],
+        'mrk-c' => [
+            'slug'  => 'mrk-c',
+            'grade' => 'clerk',
+            'name'  => 'Marketing clerk',
+            'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'wah-sc',
-        'name'  => 'Stock Controller',
-        'roles' => [
+            ]
+        ],
 
-        ]
-    ],
-    [
-        'slug'  => 'dist-m',
-        'name'  => 'Dispatch supervisor',
-        'roles' => [
+        'buy'      => [
+            'slug'  => 'buy',
+            'name'  => 'Buyer',
+            'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'dist-pik',
-        'name'  => 'Picker',
-        'roles' => [
+            ]
+        ],
+        'wah-m'    => [
+            'slug'       => 'wah-m',
+            'team'       => 'warehouse',
+            'department' => 'procurement',
+            'name'       => 'Warehouse supervisor',
+            'roles'      => [
 
-        ]
-    ],
-    [
-        'slug'  => 'dist-pak',
-        'name'  => 'Packer',
-        'roles' => [
+            ]
+        ],
+        'wah-sk'   => [
+            'slug'       => 'wah-sk',
+            'team'       => 'warehouse',
+            'department' => 'warehouse',
 
-        ]
-    ],
-    [
-        'slug'  => 'prod-m',
-        'name'  => 'Production supervisor',
-        'roles' => [
+            'name'  => 'Warehouse stock keeper',
+            'roles' => [
 
-        ]
-    ],
-    [
-        'slug'  => 'prod-w',
-        'name'  => 'Production operative',
-        'roles' => [
+            ]
+        ],
+        'wah-sc'   => [
+            'slug'       => 'wah-sc',
+            'name'       => 'Stock Controller',
+            'team'       => 'warehouse',
+            'department' => 'warehouse',
+            'roles'      => [
 
-        ]
-    ],
-    [
-        'slug'  => 'cus-m',
-        'name'  => 'Customer service supervisor',
-        'roles' => [
+            ]
+        ],
+        'dist-m'    => [
+            'slug'       => 'dist-m',
+            'name'       => 'Dispatch supervisor',
+            'team'       => 'warehouse',
+            'department' => 'warehouse',
+            'roles'      => [
 
-        ]
-    ],
-    [
-        'slug'  => 'cus',
-        'name'  => 'Customer service',
-        'roles' => [
+            ]
+        ],
+        'dist-pik' => [
+            'slug'       => 'dist-pik',
+            'team'       => 'warehouse',
+            'department' => 'warehouse',
+            'name'       => 'Picker',
+            'roles'      => [
 
-        ]
+            ]
+        ],
+        'dist-pak' => [
+            'slug'       => 'dist-pak',
+            'team'       => 'warehouse',
+            'department' => 'warehouse',
+            'name'       => 'Packer',
+            'roles'      => [
+
+            ]
+        ],
+        'prod-m'   => [
+            'slug'       => 'prod-m',
+            'team'       => 'production',
+            'department' => 'production',
+            'name'       => 'Production supervisor',
+            'roles'      => [
+
+            ]
+        ],
+        'prod-w'   => [
+            'slug'       => 'prod-w',
+            'team'       => 'production',
+            'department' => 'production',
+            'name'       => 'Production operative',
+            'roles'      => [
+
+            ]
+        ],
+        'cus-m'    => [
+            'slug'  => 'cus-m',
+            'grade' => 'manager',
+            'name'  => 'Customer service supervisor',
+            'roles' => [
+
+            ]
+        ],
+        'cus-c'    => [
+            'slug'  => 'cus-c',
+            'grade' => 'clerk',
+            'name'  => 'Customer service',
+            'roles' => [
+
+            ]
+        ],
     ],
+    'wrappers'=>[
+        'hr'=>['hr-m', 'hr-c'],
+        'mrk'=>['mrk-m', 'mrk-c'],
+        'cus'=>['cus-m', 'cus-c']
+    ],
+
+    'blueprint' => [
+        'management' => [
+            'title'     => 'management and operations',
+            'positions' => [
+                'dir' => 'dir',
+                'acc' => 'acc',
+                'buy' => 'buy',
+                'hr'  => ['hr-m', 'hr-c'],
+
+
+            ]
+        ],
+        'marketing'  => [
+            'title'     => 'marketing and customer services',
+            'positions' => [
+                'mrk' => ['mrk-m', 'mrk-c'],
+                'cus' => ['cus-m', 'cus-c'],
+
+
+            ],
+            'scope'=>'shops'
+        ],
+        'inventory'  => [
+            'title'     => 'warehousing',
+            'positions' => [
+
+
+
+            ],
+            'scope'=>'warehouses'
+        ],
+
+    ]
 ];

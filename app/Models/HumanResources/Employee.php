@@ -39,19 +39,21 @@ class Employee extends Model implements Auditable
     use WithTimeTracking;
 
     protected $casts = [
-        'data'          => 'array',
-        'errors'        => 'array',
-        'salary'        => 'array',
-        'working_hours' => 'array',
-        'date_of_birth' => 'datetime:Y-m-d',
+        'data'                => 'array',
+        'errors'              => 'array',
+        'salary'              => 'array',
+        'working_hours'       => 'array',
+        'job_position_scopes' => 'array',
+        'date_of_birth'       => 'datetime:Y-m-d',
 
     ];
 
     protected $attributes = [
-        'data'          => '{}',
-        'errors'        => '{}',
-        'salary'        => '{}',
-        'working_hours' => '{}',
+        'data'                => '{}',
+        'errors'              => '{}',
+        'salary'              => '{}',
+        'working_hours'       => '{}',
+        'job_position_scopes' => '{}',
     ];
 
     protected $guarded = [];
@@ -74,7 +76,6 @@ class Employee extends Model implements Auditable
             }
         });
     }
-
 
 
     public function user(): MorphOne
@@ -113,7 +114,6 @@ class Employee extends Model implements Auditable
     {
         return $this->morphOne(Workplace::class, 'owner');
     }
-
 
 
 }

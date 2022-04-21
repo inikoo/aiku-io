@@ -21,7 +21,7 @@ class JobPositionSeeder extends Seeder
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant = Tenant::current();
 
-        $jobPositions = collect(config("app_type.{$tenant->appType->code}.job_positions"));
+        $jobPositions = collect(config("app_type.{$tenant->appType->code}.job_positions.positions"));
 
 
         foreach ($jobPositions as $jobPositionData) {

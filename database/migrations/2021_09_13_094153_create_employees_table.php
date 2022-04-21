@@ -19,8 +19,6 @@ class CreateEmployeesTable extends Migration
      */
     public function up()
     {
-
-
         Schema::create('job_positions', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('slug')->unique();
@@ -28,14 +26,13 @@ class CreateEmployeesTable extends Migration
             $table->json('roles');
             $table->json('data')->nullable();
             $table->timestampsTz();
-
         });
 
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('nickname')->index();
             //these are no normal, hydra-table from contact
-            $table->string('name',256)->nullable()->index();
+            $table->string('name', 256)->nullable()->index();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('identity_document_type')->nullable();
@@ -55,6 +52,8 @@ class CreateEmployeesTable extends Migration
             $table->jsonb('working_hours')->nullable();
 
             $table->jsonb('data');
+            $table->jsonb('job_position_scopes');
+
             $table->jsonb('errors');
             $table->timestampsTz();
             $table->softDeletesTz();
@@ -68,10 +67,10 @@ class CreateEmployeesTable extends Migration
             $table->unsignedBigInteger('employee_id')->index();
             $table->foreign('employee_id')->references('id')->on('employees');
             $table->timestampsTz();
-            $table->unique(['job_position_id','employee_id']);
+            $table->unique(['job_position_id', 'employee_id']);
         });
 
-        if(app('currentTenant')->appType->code=='staffing') {
+        if (app('currentTenant')->appType->code == 'staffing') {
             Schema::create('employee_staffing_stats', function (Blueprint $table) {
                 $table->smallIncrements('id');
                 $table->unsignedMediumInteger('employee_id')->index();
@@ -83,9 +82,6 @@ class CreateEmployeesTable extends Migration
                 $table->timestamps();
             });
         }
-
-
-
     }
 
     /**

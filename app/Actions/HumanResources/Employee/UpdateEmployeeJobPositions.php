@@ -28,6 +28,7 @@ class UpdateEmployeeJobPositions
 
                 $result=$employee->jobPositions()->sync($ids);
 
+
                 if($result['attached'] ){
                     $res->changes['attached']=$result['attached'];
                 }
@@ -60,6 +61,7 @@ class UpdateEmployeeJobPositions
                 break;
 
         }
+
 
 
         $res->model = $employee;

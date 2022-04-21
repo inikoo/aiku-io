@@ -3,8 +3,7 @@ import NProgress from 'nprogress'
 
 import {createInertiaApp, Link} from '@inertiajs/inertia-vue3'
 import { importPageComponent } from '@/scripts/vite/import-page-component'
-//import { InertiaProgress } from '@inertiajs/progress';
-//InertiaProgress.init();
+
 
 import '@/css/nprogress.css';
 import { Inertia } from '@inertiajs/inertia'

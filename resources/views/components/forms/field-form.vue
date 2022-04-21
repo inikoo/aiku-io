@@ -58,8 +58,11 @@
 </template>
 
 <script setup>
+
+import {defineAsyncComponent} from 'vue';
+
 import {useForm} from '@inertiajs/inertia-vue3';
-import {ExclamationCircleIcon, CheckCircleIcon, SaveIcon} from '@heroicons/vue/solid';
+import {SaveIcon} from '@heroicons/vue/solid';
 import Select from './select.vue';
 import {DatePicker} from 'v-calendar';
 import Radio from './radio.vue';
@@ -72,7 +75,21 @@ const props = defineProps(['fieldData', 'field', 'args']);
 
 const locale = useLocaleStore();
 
-const handleChange = (form) => form.clearErrors();
+const Date = defineAsyncComponent(() => import('@c/forms/fields/date.vue'));
+
+const JobPositions = defineAsyncComponent(() => import('@c/forms/fields/job-positions.vue'));
+
+const getComponent = (componentName) => {
+
+    const components = {
+        'input'        : Input,
+        'date'         : Date,
+        'job-positions': JobPositions,
+
+    };
+    return components[componentName] ?? null;
+
+};
 
 const postURL = props.fieldData['postURL'] ?? props.args['postURL'];
 let formFields = {};

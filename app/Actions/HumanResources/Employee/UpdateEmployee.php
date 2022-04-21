@@ -51,11 +51,14 @@ class UpdateEmployee
         if (Arr::exists($employeeData, 'job_positions')) {
             $res          = UpdateEmployeeJobPositions::run(
                 employee:  $employee,
-                operation: $employeeData['job_positions']['operation'],
-                ids:       $employeeData['job_positions']['ids'],
+                operation: Arr::get($employeeData, 'job_positions.operation'),
+                ids:       Arr::get($employeeData, 'job_positions.ids'),
 
             );
             $res->changes = array_merge($res->changes, $res->changes);
+
+            $employee->update(['job_position_scopes' => Arr::get($employeeData, 'job_positions.scopes')]);
+            $res->changes = array_merge($res->changes, $employee->getChanges());
         }
 
         if (Arr::exists($employeeData, 'employee_relationships')) {
@@ -111,6 +114,29 @@ class UpdateEmployee
 
     public function prepareForValidation(ActionRequest $request): void
     {
+        if ($request->exists('job_positions')) {
+            $rawData = $request->get('job_positions');
+
+            $positionIds = [];
+            foreach (Arr::get($rawData, 'positions', []) as $slug => $value) {
+                if ($value && $position = JobPosition::where('slug', $slug)->first()) {
+                    $positionIds[] = $position->id;
+                }
+            }
+
+
+            $request->merge([
+                                'job_positions' =>
+                                    [
+                                        'operation' => 'sync',
+                                        'ids'       => $positionIds,
+                                        'scopes'    => $rawData['scopes']
+                                    ],
+
+
+                            ]);
+        }
+
         if ($request->exists('salary')) {
             $request->merge(
                 [
@@ -142,7 +168,7 @@ class UpdateEmployee
                 ]
 
             );
-        }
+        };
     }
 
 
