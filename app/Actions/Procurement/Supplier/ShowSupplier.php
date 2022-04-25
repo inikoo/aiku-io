@@ -44,7 +44,8 @@ class ShowSupplier
 
 
         if ($this->edit['can']) {
-            $actionIcons[$this->edit['route']] = [
+            $actionIcons[] = [
+                'route'           => $this->edit['route'],
                 'routeParameters' => $this->edit['routeParameters'],
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -76,9 +77,9 @@ class ShowSupplier
                         [
                             'type' => 'text',
                             'data' => [
-                                'class'=>'mr-1',
-                                'type'=>'number',
-                                'slot' => $this->supplier->stats->number_products,
+                                'class' => 'mr-1',
+                                'type'  => 'number',
+                                'slot'  => $this->supplier->stats->number_products,
 
                             ]
                         ],
@@ -86,8 +87,8 @@ class ShowSupplier
                         [
                             'type' => 'link',
                             'data' => [
-                                'href'      =>  [
-                                    'route'           => 'procurement.suppliers.show.products.index',
+                                'href' => [
+                                    'route'      => 'procurement.suppliers.show.products.index',
                                     'parameters' => $this->supplier->id
                                 ],
                                 'slot' => __('products')

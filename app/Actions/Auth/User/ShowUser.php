@@ -67,7 +67,8 @@ class ShowUser
         */
 
         if ($this->canEdit) {
-            $actionIcons['account.users.edit'] = [
+            $actionIcons[] = [
+                'route'           => 'account.users.edit',
                 'routeParameters' => $this->user->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -102,16 +103,16 @@ class ShowUser
                                         )
                                     ],
                                     [
-                                        'type' => ($this->user->userable_type=='Guest' ||  $this->canViewEmployees) ? 'link' : 'text',
+                                        'type' => ($this->user->userable_type == 'Guest' || $this->canViewEmployees) ? 'link' : 'text',
                                         'data' => [
                                             'slot' => $userable->name,
                                             'href' => match ($this->user->userable_type) {
                                                 'Employee' => [
-                                                    'route'           => 'human_resources.employees.show',
+                                                    'route'      => 'human_resources.employees.show',
                                                     'parameters' => $this->user->userable_id
                                                 ],
                                                 'Guest' => [
-                                                    'route'           => 'account.guests.show',
+                                                    'route'      => 'account.guests.show',
                                                     'parameters' => $this->user->userable_id
                                                 ],
                                                 default => null
@@ -121,7 +122,7 @@ class ShowUser
                                     [
                                         'type' => 'text',
                                         'data' => [
-                                            'slot' =>" ({$this->user->localised_userable_type})"
+                                            'slot' => " ({$this->user->localised_userable_type})"
                                         ]
                                     ]
                                 ]
@@ -181,7 +182,6 @@ class ShowUser
         );
 
         $this->set('canViewEmployees', $request->user()->can('employees.view'));
-
     }
 
     public function getBreadcrumbs(User $user): array
@@ -192,12 +192,12 @@ class ShowUser
                 'account.users.show' => [
                     'route'           => 'account.users.show',
                     'routeParameters' => $user->id,
-                    'index'=>[
+                    'index'           => [
                         'route'   => 'account.users.index',
                         'overlay' => __('User index')
                     ],
-                    'modelLabel'=>[
-                        'label'=>__('user')
+                    'modelLabel'      => [
+                        'label' => __('user')
                     ],
                     'name'            => $user->username,
 

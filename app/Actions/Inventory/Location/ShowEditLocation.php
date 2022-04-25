@@ -28,7 +28,7 @@ class ShowEditLocation
     use AsAction;
     use WithInertia;
 
-    public function handle()
+    public function handle(): void
     {
     }
 
@@ -72,7 +72,8 @@ class ShowEditLocation
 
                     'actionIcons' => [
 
-                        $this->get('showRoute') => [
+                        [
+                            'route'           => $this->get('showRoute'),
                             'routeParameters' => $this->get('showRouteParameters'),
                             'name'            => __('Exit edit'),
                             'icon'            => ['fal', 'portal-exit']

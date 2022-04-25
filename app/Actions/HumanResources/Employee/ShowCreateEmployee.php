@@ -9,7 +9,6 @@
 namespace App\Actions\HumanResources\Employee;
 
 use App\Actions\UI\WithInertia;
-use App\Models\HumanResources\Employee;
 use Inertia\Inertia;
 use Inertia\Response;
 use Lorisleiva\Actions\ActionRequest;
@@ -24,7 +23,7 @@ class ShowCreateEmployee
     use AsAction;
     use WithInertia;
 
-    public function handle()
+    public function handle(): void
     {
     }
 
@@ -85,9 +84,10 @@ class ShowCreateEmployee
 
                     'actionIcons' => [
 
-                        'human_resources.employees.index' => [
+                         [
                             'name' => __('Cancel'),
-                            'icon' => ['fal', 'portal-exit']
+                            'icon' => ['fal', 'portal-exit'],
+                            'route'=>'human_resources.employees.index'
                         ],
                     ],
 

@@ -61,14 +61,16 @@ class ShowEmployee
         ];
         */
 
-        $actionIcons['human_resources.employees.show.timesheets.index'] =[
+        $actionIcons[] = [
+            'route'           => 'human_resources.employees.show.timesheets.index',
             'routeParameters' => $this->employee->id,
             'name'            => __('Timesheets'),
             'icon'            => ['fal', 'chess-clock']
         ];
 
         if ($this->canEdit) {
-            $actionIcons['human_resources.employees.edit'] = [
+            $actionIcons[] = [
+                'route'           => 'human_resources.employees.edit',
                 'routeParameters' => $this->employee->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit'],
@@ -97,22 +99,22 @@ class ShowEmployee
                                 'working' => [
                                     'type'  => 'ok',
                                     'title' => __('Status'),
-                                    'slot'  =>  __('Working')
+                                    'slot'  => __('Working')
                                 ],
                                 'hired' => [
-                                    'type'      => 'in-process',
+                                    'type'       => 'in-process',
                                     'badgeClass' => 'text-green-600',
                                     'slot'       => __('Hired')
                                 ],
                                 'left' => [
-                                    'type'      => 'cancelled',
+                                    'type'  => 'cancelled',
                                     'class' => 'text-green-600',
-                                    'slot'       => __('Left')
+                                    'slot'  => __('Left')
                                 ],
                                 default => [
-                                    'type'      => 'cancelled',
+                                    'type'  => 'cancelled',
                                     'class' => 'text-gray-700',
-                                    'slot'       => 'Unknown'
+                                    'slot'  => 'Unknown'
                                 ]
                             }
                         ],
@@ -181,10 +183,10 @@ class ShowEmployee
                                     $this->employee->user
                                         ?
                                         [
-                                            'type' => $this->canViewUsers?'link':'text',
+                                            'type' => $this->canViewUsers ? 'link' : 'text',
                                             'data' => [
-                                                'href'      =>  [
-                                                    'route'           => 'account.users.show',
+                                                'href' => [
+                                                    'route'      => 'account.users.show',
                                                     'parameters' => $this->employee->user->id
                                                 ],
                                                 'slot' => $this->employee->user->username
@@ -209,7 +211,6 @@ class ShowEmployee
                     ],
 
 
-
                     'actionIcons' => $actionIcons,
 
 
@@ -225,7 +226,6 @@ class ShowEmployee
 
         $this->set('canEdit', $request->user()->can('employees.edit'));
         $this->set('canViewUsers', $request->user()->can('users.view'));
-
     }
 
     public function getBreadcrumbs(Employee $employee): array

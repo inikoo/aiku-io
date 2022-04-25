@@ -56,7 +56,8 @@ class ShowLocation
         $actionIcons = [];
 
         if ($this->canEdit) {
-            $actionIcons[$this->get('editRoute')] = [
+            $actionIcons[] = [
+                'route'=>$this->get('editRoute'),
                 'routeParameters' => $this->get('editRouteParameters'),
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']

@@ -134,9 +134,10 @@ class ShowAccount
                             'icon' => ['fal', 'history']
                         ],
                         */
-                        'account.edit' => [
+                         [
                             'name' => 'Settings',
-                            'icon' => ['fal', 'sliders-h-square']
+                            'icon' => ['fal', 'sliders-h-square'],
+                            'route'=> 'account.edit'
                         ],
 
                     ]

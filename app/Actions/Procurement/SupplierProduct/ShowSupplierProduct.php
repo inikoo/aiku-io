@@ -39,18 +39,18 @@ class ShowSupplierProduct
     }
 
 
-    public function asInertia(string $parent,SupplierProduct $supplierProduct): Response
+    public function asInertia(string $parent, SupplierProduct $supplierProduct): Response
     {
-        $this->parent=$parent;
-        $this->supplierProduct=$supplierProduct;
+        $this->parent          = $parent;
+        $this->supplierProduct = $supplierProduct;
 
         $this->validateAttributes();
 
 
-
         $actionIcons = [];
         if ($this->canEdit) {
-            $actionIcons['procurement.products.edit'] = [
+            $actionIcons[] = [
+                'route'           => 'procurement.products.edit',
                 'routeParameters' => $this->supplierProduct->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -61,9 +61,9 @@ class ShowSupplierProduct
         return Inertia::render(
             'show-model',
             [
-                'breadcrumbs' => $this->getBreadcrumbs($this->parent,$this->supplierProduct),
+                'breadcrumbs' => $this->getBreadcrumbs($this->parent, $this->supplierProduct),
                 'navData'     => ['module' => 'procurement', 'sectionRoot' => 'procurement.suppliers.index'],
-                'headerData' => [
+                'headerData'  => [
                     'title'       => $this->supplierProduct->code,
                     'actionIcons' => $actionIcons,
 
@@ -77,29 +77,26 @@ class ShowSupplierProduct
     {
         $this->fillFromRequest($request);
         $this->set('canEdit', $request->user()->can("procurement.suppliers.edit"));
-
     }
 
 
-
-    public function getBreadcrumbs(string $parent,SupplierProduct $supplierProduct): array
+    public function getBreadcrumbs(string $parent, SupplierProduct $supplierProduct): array
     {
-
-        if($parent=='supplier'){
+        if ($parent == 'supplier') {
             return array_merge(
                 (new ShowSupplierInTenant())->getBreadcrumbs($this->supplierProduct->supplier),
                 [
                     'procurement.suppliers.show.products.show' => [
                         'route'           => 'procurement.suppliers.show.products.show',
-                        'routeParameters' =>[$this->supplierProduct->supplier_id,$this->supplierProduct->id],
-                        'index'=>[
-                            'route'   => 'procurement.suppliers.show.products.index',
-                            'routeParameters' =>[$this->supplierProduct->supplier_id],
+                        'routeParameters' => [$this->supplierProduct->supplier_id, $this->supplierProduct->id],
+                        'index'           => [
+                            'route'           => 'procurement.suppliers.show.products.index',
+                            'routeParameters' => [$this->supplierProduct->supplier_id],
 
                             'overlay' => __('Product index')
                         ],
-                        'modelLabel'=>[
-                            'label'=>__('product')
+                        'modelLabel'      => [
+                            'label' => __('product')
                         ],
                         'name'            => $supplierProduct->code,
 
@@ -107,25 +104,25 @@ class ShowSupplierProduct
                 ]
             );
         }
+
         return array_merge(
             (new ShowProcurementDashboard())->getBreadcrumbs(),
             [
                 'procurement.products.show' => [
                     'route'           => 'procurement.products.show',
                     'routeParameters' => $supplierProduct->id,
-                    'index'=>[
+                    'index'           => [
                         'route'   => 'procurement.products.index',
                         'overlay' => __('Product index')
                     ],
-                    'modelLabel'=>[
-                        'label'=>__('product')
+                    'modelLabel'      => [
+                        'label' => __('product')
                     ],
                     'name'            => $supplierProduct->code,
 
                 ],
             ]
         );
-
     }
 
 

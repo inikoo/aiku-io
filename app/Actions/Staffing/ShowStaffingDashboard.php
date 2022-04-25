@@ -1,16 +1,15 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Mon, 07 Feb 2022 14:24:56 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Wed, 06 Apr 2022 18:08:11 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Actions\HumanResources;
+namespace App\Actions\Staffing;
 
 
 use App\Actions\UI\WithInertia;
-use App\Models\HumanResources\Employee;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,7 +17,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 
-class ShowHumanResourcesDashboard
+class ShowStaffingDashboard
 {
     use AsAction;
     use WithInertia;
@@ -31,7 +30,9 @@ class ShowHumanResourcesDashboard
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->hasPermissionTo("employees.view");
+
+
+        return $request->user()->hasPermissionTo("staffing.view");
     }
 
 
@@ -41,26 +42,15 @@ class ShowHumanResourcesDashboard
 
         $this->validateAttributes();
 
-        $page = 'show-dashboard';
-        if (Employee::count() == 0) {
-            $page       = 'empty-state';
-            $emptyState = [
-                'title'    => __('No employees'),
-                'subtitle' => __('Get started by creating a new employee.'),
-                'action'   => __('New employee'),
-                'route'    => 'human_resources.employees.create'
-            ];
-        }
-
 
         return Inertia::render(
-            $page,
+            'show-dashboard',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData'     => ['module' => 'human_resources'],
+                'navData' => ['module' => 'staffing'],
                 'headerData'  => [
-                    'title' => __('Human resources'),
-                    'info'  => [
+                    'title' => __('Staffing'),
+                    'info' => [
                         [
                             'type' => 'group',
                             'data' => [
@@ -68,23 +58,23 @@ class ShowHumanResourcesDashboard
                                     [
                                         'type' => 'icon',
                                         'data' => [
-                                            'icon' => ['fal', 'user-hard-hat'],
+                                            'icon' => ['fal', 'people-arrows'],
                                             'type' => 'page-header'
                                         ]
                                     ],
                                     [
                                         'type' => 'number',
                                         'data' => [
-                                            'slot' => App('currentTenant')->stats->number_employees_state_working
+                                            'slot' => App('currentTenant')->staffingStats->number_applicants
                                         ]
                                     ],
                                     [
                                         'type' => 'link',
                                         'data' => [
-                                            'slot'  => ' '.trans_choice(__('employee'), App('currentTenant')->stats->number_employees_state_working),
+                                            'slot'  => ' '.trans_choice(__('applicant'), App('currentTenant')->staffingStats->number_applicants),
                                             'class' => 'pr-1',
                                             'href'  => [
-                                                'route' => 'human_resources.employees.index',
+                                                'route' => 'staffing.applicants.index',
                                             ]
                                         ]
                                     ]
@@ -94,8 +84,7 @@ class ShowHumanResourcesDashboard
 
                     ],
 
-                ],
-                'emptyState'  => $emptyState ?? null
+                ]
             ]
 
         );
@@ -110,9 +99,9 @@ class ShowHumanResourcesDashboard
     public function getBreadcrumbs(): array
     {
         return [
-            'human_resources.dashboard' => [
-                'route' => 'human_resources.dashboard',
-                'name'  => __('Human resources'),
+            'staffing.dashboard' => [
+                'route' => 'staffing.dashboard',
+                'name'  => __('Staffing'),
             ]
         ];
     }

@@ -31,7 +31,7 @@ class ShowEditWarehouse
 
     public function authorize(ActionRequest $request): bool
     {
-        return  $request->user()->tokenCan('root')
+        return $request->user()->tokenCan('root')
             || $request->user()->tokenCan('inventory:edit')
             || $request->user()->hasPermissionTo("warehouses.edit.{$this->warehouse->id}");
     }
@@ -50,20 +50,18 @@ class ShowEditWarehouse
             'fields'   => [
 
                 'code' => [
-                    'type'    => 'input',
-                    'label'   => __('Code'),
-                    'value'   => $this->warehouse->code
+                    'type'  => 'input',
+                    'label' => __('Code'),
+                    'value' => $this->warehouse->code
                 ],
                 'name' => [
-                    'type'    => 'input',
-                    'label'   => __('Name'),
-                    'value'   => $this->warehouse->name
+                    'type'  => 'input',
+                    'label' => __('Name'),
+                    'value' => $this->warehouse->name
                 ],
 
             ]
         ];
-
-
 
 
         return Inertia::render(
@@ -77,6 +75,7 @@ class ShowEditWarehouse
                     'actionIcons' => [
 
                         'warehouses.show' => [
+                            'route'           => 'warehouses.show',
                             'routeParameters' => $this->warehouse->id,
                             'name'            => __('Exit edit'),
                             'icon'            => ['fal', 'portal-exit']
@@ -84,9 +83,8 @@ class ShowEditWarehouse
                     ],
 
 
-
                 ],
-                'formData'    => [
+                'formData'   => [
                     'blueprint' => $blueprint,
                     'args'      => [
                         'postURL' => "/warehouses/{$this->warehouse->id}",
@@ -96,25 +94,17 @@ class ShowEditWarehouse
             ]
 
         );
-
-
     }
 
     public function prepareForValidation(ActionRequest $request): void
     {
         $this->fillFromRequest($request);
-
-
     }
 
-    private function getBreadcrumbs( Warehouse $warehouse): array
+    private function getBreadcrumbs(Warehouse $warehouse): array
     {
-
-
         return (new ShowWarehouse())->getBreadcrumbs($warehouse);
     }
-
-
 
 
 }

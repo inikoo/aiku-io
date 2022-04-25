@@ -64,9 +64,10 @@ class ShowEditAccount
                     'title'       => __('Account settings', ['name' => $this->account->name]),
                     'actionIcons' => [
 
-                        'account.show' => [
+                         [
                             'name' => __('Exit edit'),
-                            'icon' => ['fal', 'portal-exit']
+                            'icon' => ['fal', 'portal-exit'],
+                            'route'=>'account.show'
                         ],
 
                     ]

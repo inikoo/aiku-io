@@ -51,7 +51,8 @@ class ShowWarehouseArea
 
         $actionIcons = [];
         if ($this->get('canEdit')) {
-            $actionIcons[$this->get('editRoute')] = [
+            $actionIcons[] = [
+                'route'           => $this->get('editRoute'),
                 'routeParameters' => $this->get('editRouteParameters'),
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']

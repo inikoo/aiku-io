@@ -37,7 +37,8 @@ class ShowEditUser
         if ($this->user->userable_type == 'Tenant') {
             return false;
         }
-        return $this->user->tenant_id===App('currentTenant')->id  && $request->user()->hasPermissionTo("account.users.edit");
+
+        return $this->user->tenant_id === App('currentTenant')->id && $request->user()->hasPermissionTo("account.users.edit");
     }
 
     public function asInertia(User $user, array $attributes = []): Response
@@ -53,9 +54,9 @@ class ShowEditUser
             'fields'   => [
 
                 'status' => [
-                    'type'    => 'toggleWithIcon',
-                    'label'   => __('Status'),
-                    'value'   => $this->user->status
+                    'type'  => 'toggleWithIcon',
+                    'label' => __('Status'),
+                    'value' => $this->user->status
                 ],
             ]
         ];
@@ -68,22 +69,23 @@ class ShowEditUser
                 'navData'     => ['module' => 'account', 'sectionRoot' => 'account.users.index'],
 
                 'headerData' => [
-                    'title'       => __('Editing').': '.$this->user->username,
+                    'title' => __('Editing').': '.$this->user->username,
 
                     'actionIcons' => [
 
-                        'account.users.show' => [
+                        [
+                            'route'           => 'account.users.show',
                             'routeParameters' => $this->user->id,
                             'name'            => __('Exit edit'),
-                            'icon'            => ['fal', 'portal-exit']
+                            'icon'            => ['fal', 'portal-exit'],
+
                         ],
                     ],
 
 
-
                 ],
 
-                'formData'    => [
+                'formData' => [
                     'blueprint' => $blueprint,
                     'args'      => [
                         'postURL' => "/account/users/{$this->user->id}",
@@ -97,10 +99,8 @@ class ShowEditUser
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
         $this->fillFromRequest($request);
     }
-
 
 
     public function getBreadcrumbs(User $user): array

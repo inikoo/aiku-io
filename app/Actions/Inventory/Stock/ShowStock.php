@@ -45,10 +45,10 @@ class ShowStock
         $this->validateAttributes();
 
 
-
         $actionIcons = [];
         if ($this->get('canEdit')) {
-            $actionIcons['inventory.stocks.edit'] = [
+            $actionIcons[] = [
+                'route'           => 'inventory.stocks.edit',
                 'routeParameters' => $this->stock->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -61,12 +61,12 @@ class ShowStock
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->stock),
                 'navData'     => ['module' => 'inventory', 'sectionRoot' => 'inventory.stocks.index'],
-                'headerData' => [
+                'headerData'  => [
                     'title'       => $stock->code,
                     'actionIcons' => $actionIcons,
 
                 ],
-                'model'      => $stock
+                'model'       => $stock
             ]
 
         );
@@ -76,9 +76,7 @@ class ShowStock
     {
         $this->fillFromRequest($request);
         $this->set('canEdit', $request->user()->can("inventory.stocks.edit"));
-
     }
-
 
 
     public function getBreadcrumbs(Stock $stock): array
@@ -89,12 +87,12 @@ class ShowStock
                 'inventory.stocks.show' => [
                     'route'           => 'inventory.stocks.show',
                     'routeParameters' => $stock->id,
-                    'index'=>[
+                    'index'           => [
                         'route'   => 'inventory.stocks.index',
                         'overlay' => __('Stock index')
                     ],
-                    'modelLabel'=>[
-                        'label'=>__('stock')
+                    'modelLabel'      => [
+                        'label' => __('stock')
                     ],
                     'name'            => $stock->code,
 

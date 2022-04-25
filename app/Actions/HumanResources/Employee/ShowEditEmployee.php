@@ -47,6 +47,24 @@ class ShowEditEmployee
         $blueprint = [];
 
         $blueprint[] = [
+            'title'    => __('Personal information'),
+            'subtitle' => '',
+            'fields'   => [
+
+                'name'          => [
+                    'type'  => 'input',
+                    'label' => __('Name'),
+                    'value' => $this->employee->name
+                ],
+                'date_of_birth' => [
+                    'type'  => 'date',
+                    'label' => __('Date of birth'),
+                    'value' => $this->employee->date_of_birth
+                ],
+            ]
+        ];
+
+        $blueprint[] = [
             'title'    => __('Employee data'),
             'subtitle' => '',
             'fields'   => [
@@ -61,18 +79,10 @@ class ShowEditEmployee
                     'label' => __('Nickname'),
                     'value' => $this->employee->nickname
                 ],
-            ]
-        ];
-
-        $blueprint[] = [
-            'title'    => __('Personal information'),
-            'subtitle' => '',
-            'fields'   => [
-
-                'name' => [
-                    'type'    => 'input',
-                    'label'   => __('Name'),
-                    'value'   => $this->employee->name
+                'job_title'     => [
+                    'type'  => 'input',
+                    'label' => __('Job title'),
+                    'value' => $this->employee->job_title
                 ],
                 'job_positions' => [
                     'type'    => 'job-positions',
@@ -85,6 +95,7 @@ class ShowEditEmployee
             ]
         ];
 
+
         return Inertia::render(
             'edit-model',
             [
@@ -95,10 +106,11 @@ class ShowEditEmployee
 
                     'actionIcons' => [
 
-                        'human_resources.employees.show' => [
+                        [
+                            'route'           => 'human_resources.employees.show',
                             'routeParameters' => $this->employee->id,
                             'name'            => __('Exit edit'),
-                            'icon'            => ['fal', 'portal-exit']
+                            'icon'            => ['fal', 'portal-exit'],
                         ],
                     ],
 
@@ -119,9 +131,7 @@ class ShowEditEmployee
 
     protected function getJobPositionValue(): array
     {
-
-
-        $currentPositions=$this->employee->jobPositions()->pluck('job_positions.id','slug')->all();
+        $currentPositions = $this->employee->jobPositions()->pluck('job_positions.id', 'slug')->all();
 
 
         $value['scopes'] = [];
@@ -130,12 +140,10 @@ class ShowEditEmployee
             config("app_type.".app('currentTenant')->appType->code.".job_positions.blueprint")
             as $i => $foo
         ) {
-          if(!empty($foo['scope'])){
-              $value['scopes'][$i]=Arr::get($this->employee->job_position_scopes,$i);
-
-          }
+            if (!empty($foo['scope'])) {
+                $value['scopes'][$i] = Arr::get($this->employee->job_position_scopes, $i);
+            }
         }
-
 
 
         $positions = [];
@@ -143,7 +151,7 @@ class ShowEditEmployee
             config("app_type.".app('currentTenant')->appType->code.".job_positions.positions")
             as $i => $foo
         ) {
-            $positions[$i] = Arr::exists($currentPositions,$i);
+            $positions[$i] = Arr::exists($currentPositions, $i);
         }
 
 
@@ -151,12 +159,12 @@ class ShowEditEmployee
             config("app_type.".app('currentTenant')->appType->code.".job_positions.wrappers")
             as $i => $foo
         ) {
-
-            $positions[$i] = Arr::hasAny($currentPositions,$foo);
+            $positions[$i] = Arr::hasAny($currentPositions, $foo);
         }
 
 
         $value['positions'] = $positions;
+
         return $value;
     }
 
@@ -209,10 +217,10 @@ class ShowEditEmployee
                 $_blueprint['scopes']['title']       = __('Shops');
                 $_blueprint['scopes']['placeholder'] = __('Select shops');
             } elseif ($scope == 'warehouses' and Warehouse::count() > 1) {
-                $_blueprint['scopes']['options'] = Warehouse::all()->map(function ($item) {
+                $_blueprint['scopes']['options']     = Warehouse::all()->map(function ($item) {
                     return $item->only(['id', 'code', 'name']);
                 })->all();
-                $_blueprint['scopes']['title'] = __('Warehouses');
+                $_blueprint['scopes']['title']       = __('Warehouses');
                 $_blueprint['scopes']['placeholder'] = __('Select warehouses');
             }
 

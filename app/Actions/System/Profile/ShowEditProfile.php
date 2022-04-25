@@ -57,26 +57,25 @@ class ShowEditProfile
         return Inertia::render(
             'edit-model',
             [
-                'translations'  => GetUITranslations::run(),
-                'language'        => App::currentLocale(),
-                'headerData' => [
+                'translations' => GetUITranslations::run(),
+                'language'     => App::currentLocale(),
+                'headerData'   => [
                     'module'      => 'users',
                     'title'       => __('Editing profile'),
                     'breadcrumbs' => $this->breadcrumbs,
 
                     'actionIcons' => [
-
-                        'profile.show' => [
-                            'name'            => __('Exit edit'),
-                            'icon'            => ['fal', 'portal-exit']
+                        [
+                            'route' => 'profile.show',
+                            'name'  => __('Exit edit'),
+                            'icon'  => ['fal', 'portal-exit']
                         ],
                     ],
 
 
-
                 ],
 
-                'formData'    => [
+                'formData' => [
                     'blueprint' => $blueprint,
                     'args'      => [
                         'postURL' => "/profile",
@@ -90,7 +89,6 @@ class ShowEditProfile
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
         $this->fillFromRequest($request);
         $this->set('breadcrumbs', $this->breadcrumbs());
     }

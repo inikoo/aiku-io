@@ -48,14 +48,14 @@ class ShowEditAgent
             'fields'   => [
 
                 'code' => [
-                    'type'    => 'input',
-                    'label'   => __('Code'),
-                    'value'   => $this->agent->code
+                    'type'  => 'input',
+                    'label' => __('Code'),
+                    'value' => $this->agent->code
                 ],
                 'name' => [
-                    'type'    => 'input',
-                    'label'   => __('Name'),
-                    'value'   => $this->agent->name
+                    'type'  => 'input',
+                    'label' => __('Name'),
+                    'value' => $this->agent->name
                 ],
             ]
         ];
@@ -66,24 +66,24 @@ class ShowEditAgent
             'fields'   => [
 
                 'contact_name' => [
-                    'type'    => 'input',
-                    'label'   => __('Contact name'),
-                    'value'   => $this->agent->contact_name
+                    'type'  => 'input',
+                    'label' => __('Contact name'),
+                    'value' => $this->agent->contact_name
                 ],
                 'company_name' => [
-                    'type'    => 'input',
-                    'label'   => __('Company name'),
-                    'value'   => $this->agent->company_name
+                    'type'  => 'input',
+                    'label' => __('Company name'),
+                    'value' => $this->agent->company_name
                 ],
-                'email' => [
-                    'type'    => 'input',
-                    'label'   => __('Email'),
-                    'value'   => $this->agent->email
+                'email'        => [
+                    'type'  => 'input',
+                    'label' => __('Email'),
+                    'value' => $this->agent->email
                 ],
-                'phone' => [
-                    'type'    => 'phone',
-                    'label'   => __('Phone'),
-                    'value'   => $this->agent->phone
+                'phone'        => [
+                    'type'  => 'phone',
+                    'label' => __('Phone'),
+                    'value' => $this->agent->phone
                 ],
             ]
         ];
@@ -92,20 +92,19 @@ class ShowEditAgent
             'edit-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->agent),
-                'headerData' => [
+                'headerData'  => [
 
-                    'title'       => __('Editing').': '.$this->agent->name,
+                    'title' => __('Editing').': '.$this->agent->name,
 
 
                     'actionIcons' => [
-
-                        'procurement.agents.show' => [
+                        [
+                            'route'           => 'procurement.agents.show',
                             'routeParameters' => $this->agent->id,
                             'name'            => __('Exit edit'),
                             'icon'            => ['fal', 'portal-exit']
                         ],
                     ],
-
 
 
                 ],
@@ -136,12 +135,12 @@ class ShowEditAgent
                     'route'           => 'procurement.agents.show',
                     'routeParameters' => $agent->id,
                     'name'            => $agent->code,
-                    'index'=>[
+                    'index'           => [
                         'route'   => 'procurement.agents.index',
                         'overlay' => __('Agents index')
                     ],
-                    'modelLabel'=>[
-                        'label'=>__('agent')
+                    'modelLabel'      => [
+                        'label' => __('agent')
                     ],
 
                 ],

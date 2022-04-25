@@ -41,7 +41,6 @@ class ShowProfile
     }
 
 
-
     public function asInertia(Request $request, array $attributes = []): Response
     {
         $this->set('user', $request->user())->fill($attributes);
@@ -50,10 +49,11 @@ class ShowProfile
 
         $actionIcons = [];
 
-        $actionIcons['profile.edit'] = [
-                'name'            => __('Edit'),
-                'icon'            => ['fal', 'edit']
-            ];
+        $actionIcons[] = [
+            'route' => 'profile.edit',
+            'name'  => __('Edit'),
+            'icon'  => ['fal', 'edit']
+        ];
 
 
         return Inertia::render(
@@ -76,7 +76,6 @@ class ShowProfile
 
     public function prepareForValidation(ActionRequest $request): void
     {
-
         $this->fillFromRequest($request);
 
 
@@ -86,13 +85,12 @@ class ShowProfile
     public function getBreadcrumbs(): array
     {
         return [
-                'shop' => [
-                    'route'           => 'profile.show',
-                    'name'            =>  __('Profile'),
-                    'current'         => true
-                ],
-            ];
-
+            'shop' => [
+                'route'   => 'profile.show',
+                'name'    => __('Profile'),
+                'current' => true
+            ],
+        ];
     }
 
 

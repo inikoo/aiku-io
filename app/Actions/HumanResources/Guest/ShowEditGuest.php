@@ -47,21 +47,21 @@ class ShowEditGuest
             'title'    => __('Guest/User data'),
             'subtitle' => '',
             'fields'   => [
-                'status' => [
-                    'type'    => 'toggleWithIcon',
-                    'label'   => __('Status'),
-                    'value'   => $this->guest->status
+                'status'   => [
+                    'type'  => 'toggleWithIcon',
+                    'label' => __('Status'),
+                    'value' => $this->guest->status
                 ],
                 'username' => [
-                    'type'    => 'input',
-                    'label'   => __('Username'),
-                    'value'   => $this->guest->user->username
+                    'type'  => 'input',
+                    'label' => __('Username'),
+                    'value' => $this->guest->user->username
                 ],
                 'password' => [
-                    'type'    => 'input',
-                    'label'   => __('Password'),
-                    'placeholder'=>__('Password'),
-                    'value'   => ''
+                    'type'        => 'input',
+                    'label'       => __('Password'),
+                    'placeholder' => __('Password'),
+                    'value'       => ''
                 ],
             ]
         ];
@@ -71,24 +71,24 @@ class ShowEditGuest
             'subtitle' => '',
             'fields'   => [
                 'nickname' => [
-                    'type'    => 'input',
-                    'label'   => __('Nickname'),
-                    'value'   => $this->guest->nickname
+                    'type'  => 'input',
+                    'label' => __('Nickname'),
+                    'value' => $this->guest->nickname
                 ],
-                'name' => [
-                    'type'    => 'input',
-                    'label'   => __('Name'),
-                    'value'   => $this->guest->name
+                'name'     => [
+                    'type'  => 'input',
+                    'label' => __('Name'),
+                    'value' => $this->guest->name
                 ],
-                'email' => [
-                    'type'    => 'input',
-                    'label'   => __('Email'),
-                    'value'   => $this->guest->email
+                'email'    => [
+                    'type'  => 'input',
+                    'label' => __('Email'),
+                    'value' => $this->guest->email
                 ],
-                'phone' => [
-                    'type'    => 'phone',
-                    'label'   => __('Phone'),
-                    'value'   => $this->guest->phone
+                'phone'    => [
+                    'type'  => 'phone',
+                    'label' => __('Phone'),
+                    'value' => $this->guest->phone
                 ],
             ]
         ];
@@ -98,11 +98,12 @@ class ShowEditGuest
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->guest),
                 'navData'     => ['module' => 'account', 'sectionRoot' => 'account.guests.index'],
-                'headerData' => [
+                'headerData'  => [
                     'title'       => __('Editing').': '.$this->guest->name,
                     'actionIcons' => [
 
-                        'account.guests.show' => [
+                        [
+                            'route'           => 'account.guests.show',
                             'routeParameters' => $this->guest->id,
                             'name'            => __('Exit edit'),
                             'icon'            => ['fal', 'portal-exit']

@@ -51,7 +51,8 @@ class ShowWarehouse
 
         $actionIcons = [];
         if ($this->get('canEdit')) {
-            $actionIcons['inventory.warehouses.edit'] = [
+            $actionIcons[] = [
+                'route'           => 'inventory.warehouses.edit',
                 'routeParameters' => $this->warehouse->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -85,7 +86,6 @@ class ShowWarehouse
         $this->fillFromRequest($request);
         $this->set('canEdit', $request->user()->can("warehouses.edit.{$this->warehouse->id}"));
         $this->set('canCreateWarehouse', $request->user()->can("assets.create.warehouse"));
-
     }
 
 
@@ -101,7 +101,7 @@ class ShowWarehouse
         ];
 
         /** @var \App\Models\Auth\User $user */
-        $user= auth()->user();
+        $user = auth()->user();
 
         if (session('inventoryCount') > 1 or $user->can("assets.create.warehouse")) {
             $breadcrumb['index'] = [

@@ -75,7 +75,8 @@ class ShowEditWarehouseArea
 
                     'actionIcons' => [
 
-                        $this->get('showRoute') => [
+                        [
+                            'route'           => $this->get('showRoute'),
                             'routeParameters' => $this->get('showRouteParameters'),
                             'name'            => __('Exit edit'),
                             'icon'            => ['fal', 'portal-exit']

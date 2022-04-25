@@ -46,7 +46,8 @@ class ShowAgent
 
         $actionIcons = [];
         if ($this->get('canEdit')) {
-            $actionIcons['procurement.agents.edit'] = [
+            $actionIcons[] = [
+                'route'           => 'procurement.agents.edit',
                 'routeParameters' => $this->agent->id,
                 'name'            => __('Edit'),
                 'icon'            => ['fal', 'edit']
@@ -57,22 +58,22 @@ class ShowAgent
             'show-model',
             [
                 'breadcrumbs' => $this->getBreadcrumbs($this->agent),
-                'headerData' => [
+                'headerData'  => [
                     'title'       => $agent->name,
                     'actionIcons' => $actionIcons,
-                    'meta'=>[
+                    'meta'        => [
                         [
-                            'icon'=>['fal','hand-holding-box'],
+                            'icon' => ['fal', 'hand-holding-box'],
                             'name' => $this->agent->stats->number_suppliers.'  '.__('suppliers'),
-                            'href'=>[
-                                'route'=>'procurement.agents.show.suppliers.index',
-                                'routeParameters'=>$this->agent->id
+                            'href' => [
+                                'route'           => 'procurement.agents.show.suppliers.index',
+                                'routeParameters' => $this->agent->id
                             ]
                         ]
                     ]
 
                 ],
-                'model'      => $agent
+                'model'       => $agent
             ]
 
         );
@@ -94,12 +95,12 @@ class ShowAgent
                     'route'           => 'procurement.agents.show',
                     'routeParameters' => $agent->id,
                     'name'            => $agent->code,
-                    'index'=>[
+                    'index'           => [
                         'route'   => 'procurement.agents.index',
                         'overlay' => __('Agents index')
                     ],
-                    'modelLabel'=>[
-                        'label'=>__('agent')
+                    'modelLabel'      => [
+                        'label' => __('agent')
                     ],
 
                 ],
