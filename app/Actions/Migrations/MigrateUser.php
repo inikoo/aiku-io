@@ -108,7 +108,7 @@ class MigrateUser extends MigrateModel
                 'language_id'      => $this->parseLanguageID($this->auModel->data->{'User Preferred Locale'}),
                 'status'           => $this->auModel->data->{'User Active'} == 'Yes' ? 1 : 0,
                 'created_at'       => $this->auModel->data->{'User Created'},
-                'middleware_group' => $this->auModel->data->middleware_group ?? 'ecommerce'
+                'middleware_group' => $this->auModel->data->middleware_group ?? 'standalone'
             ]
         );
 

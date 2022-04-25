@@ -11,7 +11,6 @@ namespace App\Models\Auth;
 use App\Models\Account\Tenant;
 use App\Models\Assets\Language;
 use App\Models\Media\Image;
-use App\Models\Web\Website;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -56,6 +55,10 @@ class User extends Authenticatable
     protected $guarded = [];
 
 
+
+
+
+
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
@@ -83,7 +86,7 @@ class User extends Authenticatable
 
     public function getUsername(): ?string
     {
-        if ($this->middleware_group == 'ecommerce') {
+        if ($this->middleware_group == 'standalone') {
             return $this->username;
         }
 

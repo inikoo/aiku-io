@@ -155,12 +155,12 @@ class CreateTenant extends Command
         if ($this->option('domain')) {
             $userData = [
                 'username'         => 'admin',
-                'middleware_group' => 'ecommerce'
+                'middleware_group' => 'standalone'
             ];
         } else {
             $userData = [
                 'jar_username'     => 'admin',
-                'middleware_group' => $appType->code == 'ecommerce' ? 'jar_ecommerce' : $appType->code,
+                'middleware_group' => 'jar'
 
             ];
         }

@@ -29,6 +29,7 @@ class ShowEditEmployee
 {
     use AsAction;
     use WithInertia;
+    use WithJobPositionBlueprint;
 
     public function handle(): void
     {
@@ -69,7 +70,7 @@ class ShowEditEmployee
             'subtitle' => '',
             'fields'   => [
 
-                'name'          => [
+                'worker_number'          => [
                     'type'  => 'input',
                     'label' => __('Worker number'),
                     'value' => $this->employee->worker_number
@@ -168,67 +169,7 @@ class ShowEditEmployee
         return $value;
     }
 
-    protected function getJobPositionBlueprint(): array
-    {
-        $blueprint = [];
-        foreach (
-            config("app_type.".app('currentTenant')->appType->code.".job_positions.blueprint")
-            as $fieldSetKey => $fieldSet
-        ) {
-            $options = [];
-            foreach ($fieldSet['positions'] as $positionKey => $positions) {
-                $option = [
-                    'key'         => $positionKey,
-                    'name'        => ucfirst(Lang::get("job_positions.$positionKey.name")),
-                    'description' => Str::ucfirst(Lang::get("job_positions.$positionKey.description"))
 
-                ];
-                if (is_array($positions)) {
-                    $subOptions = [];
-                    foreach ($positions as $positionKey) {
-                        $subOptions[] = [
-                            'key'  => $positionKey,
-                            'name' => ucfirst(
-                                Lang::get(
-                                    'job_positions.grade.'.
-                                    config("app_type.".app('currentTenant')->appType->code.".job_positions.positions.$positionKey.grade")
-                                )
-                            ),
-                        ];
-                    }
-                    $option['subOptions'] = $subOptions;
-                }
-                $options[] = $option;
-            }
-
-            $_blueprint = [
-                'title'   => Str::ucfirst(__($fieldSet['title'])),
-                'options' => $options,
-                'key'     => $fieldSetKey
-            ];
-
-            $scope = Arr::get($fieldSet, 'scope');
-
-
-            if ($scope == 'shops' and Shop::count() > 1) {
-                $_blueprint['scopes']['options']     = Shop::all()->map(function ($item) {
-                    return $item->only(['id', 'code', 'name']);
-                })->all();
-                $_blueprint['scopes']['title']       = __('Shops');
-                $_blueprint['scopes']['placeholder'] = __('Select shops');
-            } elseif ($scope == 'warehouses' and Warehouse::count() > 1) {
-                $_blueprint['scopes']['options']     = Warehouse::all()->map(function ($item) {
-                    return $item->only(['id', 'code', 'name']);
-                })->all();
-                $_blueprint['scopes']['title']       = __('Warehouses');
-                $_blueprint['scopes']['placeholder'] = __('Select warehouses');
-            }
-
-            $blueprint[] = $_blueprint;
-        }
-
-        return $blueprint;
-    }
 
 
     public function prepareForValidation(ActionRequest $request): void

@@ -7,28 +7,20 @@ use App\Actions\HumanResources\Employee\IndexEmployee;
 use App\Actions\HumanResources\Employee\ShowCreateEmployee;
 use App\Actions\HumanResources\Employee\ShowEditEmployee;
 use App\Actions\HumanResources\Employee\ShowEmployee;
+use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\HumanResources\Employee\UpdateEmployee;
+use App\Http\Controllers\Controller;
 use App\Models\HumanResources\Employee;
-use App\Http\Controllers\Traits\HasContact;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
 
-class EmployeeController extends HumanResourcesController
+class EmployeeController extends Controller
 {
-    use HasContact;
-
-    private array $identityDocumentTypes;
-    private mixed $defaultCountry;
-
-
-
 
     public function index(): Response
     {
-
-
         return IndexEmployee::make()->asInertia();
     }
 

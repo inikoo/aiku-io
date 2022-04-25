@@ -22,6 +22,7 @@ class ShowCreateEmployee
 {
     use AsAction;
     use WithInertia;
+    use WithJobPositionBlueprint;
 
     public function handle(): void
     {
@@ -39,11 +40,35 @@ class ShowCreateEmployee
         $blueprint = [];
 
         $blueprint[] = [
+            'title'    => __('Personal information'),
+            'subtitle' => '',
+            'fields'   => [
+
+                'name'          => [
+                    'type'  => 'input',
+                    'label' => __('Name'),
+                    'value' => ''
+                ],
+
+                'identity_document_number'          => [
+                    'type'  => 'input',
+                    'label' => __('Identity document number'),
+                    'value' => ''
+                ],
+                'date_of_birth' => [
+                    'type'  => 'date',
+                    'label' => __('Date of birth'),
+                    'value' => ''
+                ],
+            ]
+        ];
+
+        $blueprint[] = [
             'title'    => __('Employee data'),
             'subtitle' => '',
             'fields'   => [
 
-                'worker_number' => [
+                'worker_number'          => [
                     'type'  => 'input',
                     'label' => __('Worker number'),
                     'value' => ''
@@ -53,23 +78,26 @@ class ShowCreateEmployee
                     'label' => __('Nickname'),
                     'value' => ''
                 ],
-            ]
-        ];
-
-        $blueprint[] = [
-            'title'    => __('Personal information'),
-            'subtitle' => '',
-            'fields'   => [
-
-                'name' => [
+                'create_user'   => [
+                    'type'  => 'toggle',
+                    'label' => __('Create user'),
+                    'value' => true
+                ],
+                'job_title'     => [
                     'type'  => 'input',
-                    'label' => __('Name'),
+                    'label' => __('Job title'),
                     'value' => ''
                 ],
-                'identity_document_number' => [
-                    'type'  => 'input',
-                    'label' => __('Identity document number'),
-                    'value' => ''
+                'job_positions' => [
+                    'type'    => 'job-positions',
+                    'label'   => __('Job positions'),
+                    'value'   => [
+                        'positions' => [],
+                        'scopes' => [],
+                    ],
+                    'options' => [
+                        'blueprint' => $this->getJobPositionBlueprint()
+                    ]
                 ],
             ]
         ];
@@ -84,10 +112,10 @@ class ShowCreateEmployee
 
                     'actionIcons' => [
 
-                         [
-                            'name' => __('Cancel'),
-                            'icon' => ['fal', 'portal-exit'],
-                            'route'=>'human_resources.employees.index'
+                        [
+                            'name'  => __('Cancel'),
+                            'icon'  => ['fal', 'portal-exit'],
+                            'route' => 'human_resources.employees.index'
                         ],
                     ],
 

@@ -49,6 +49,14 @@ return [
     ],
     'cus-c' => [
         'name' => 'customer service clerk',
-    ]
+    ],
+    'rec'    => [
+        'name'        => 'recruiter',
+        'description' => 'applicants'
+    ],
+    'job'    => [
+        'name'        => 'job positioning',
+        'description' => 'Jobs offers, job broadcasting'
+    ],
 
 ];

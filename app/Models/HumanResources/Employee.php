@@ -13,10 +13,11 @@ use App\Models\Auth\User;
 use App\Models\Helpers\Attachment;
 use App\Models\Media\Image;
 use App\Models\Traits\HasPersonalData;
+use App\Models\Traits\WithStaffing;
+use App\Models\Traits\WithTimeTracking;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -37,6 +38,7 @@ class Employee extends Model implements Auditable
     use Searchable;
     use HasPersonalData;
     use WithTimeTracking;
+    use WithStaffing;
 
     protected $casts = [
         'data'                => 'array',
@@ -107,8 +109,6 @@ class Employee extends Model implements Auditable
     {
         return $this->morphMany(Attachment::class, 'attachment_model', 'attachmentable_type', 'attachmentable_id');
     }
-
-
 
     public function homeOffice(): morphOne
     {
