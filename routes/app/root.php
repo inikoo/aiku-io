@@ -43,6 +43,9 @@ Route::prefix('financials')->name('financials.')
 Route::prefix('reports')->name('reports.')
     ->group(__DIR__.'/reports.php');
 
+Route::prefix('staffing')->name('staffing.')
+    ->group(__DIR__.'/staffing.php');
+
 Route::middleware(['auth'])->get('/profile', function () {
 })->name('profile.show');
 

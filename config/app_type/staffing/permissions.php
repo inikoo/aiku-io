@@ -90,12 +90,15 @@ return [
     'financials.accounts_payable.delete',
 
 
-    'talent_pool',
-    'talent_pool.applicants',
-    'talent_pool.applicants.view',
-    'talent_pool.applicants.edit',
-    'talent_pool.applicants.delete',
-
+    'staffing',
+    'staffing.applicants',
+    'staffing.applicants.view',
+    'staffing.applicants.edit',
+    'staffing.applicants.delete',
+    'staffing.recruiters',
+    'staffing.recruiters.view',
+    'staffing.recruiters.edit',
+    'staffing.recruiters.delete',
 
 
 

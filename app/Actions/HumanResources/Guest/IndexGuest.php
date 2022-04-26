@@ -80,7 +80,8 @@ class IndexGuest
 
 
         if ($this->canEdit) {
-            $actionIcons['account.guests.create'] = [
+            $actionIcons[] = [
+                'route'=>'account.guests.create',
                 'name' => __('Create guest'),
                 'icon' => ['fal', 'plus']
             ];

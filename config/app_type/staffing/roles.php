@@ -8,21 +8,18 @@
 
 return [
 
-    'super-admin'           => [
+    'super-admin' => [
         'assets',
         'account',
         'employees',
-        'procurement',
-        'workshops',
         'shops',
         'websites',
-        'inventory',
-        'warehouses',
         'financials',
+        'staffing',
     ],
 
 
-    'assets-manager'          => [
+    'assets-manager' => [
         'assets',
     ],
 
@@ -38,21 +35,6 @@ return [
     ],
     'human-resources-admin' => [
         'employees',
-    ],
-    'buyer-clerk'           => [
-        'procurement.agents.view',
-        'procurement.agents.edit',
-        'procurement.suppliers.view',
-        'procurement.suppliers.edit',
-    ],
-    'buyer-admin'           => [
-        'procurement',
-    ],
-    'workshop-operative'    => [
-        'workshops.view',
-    ],
-    'workshops-admin'       => [
-        'workshops',
     ],
 
     'shops-admin'             => [
@@ -77,56 +59,40 @@ return [
             'shops.customers.view',
             'shops.customers.edit',
         ],
+    'recruiter-admin' =>
+        [
+            'staffing.view',
+            'staffing.applicants',
+        ],
+    'recruiter-clerk' =>
+        [
+            'staffing.view',
+            'staffing.applicants.view',
+            'staffing.applicants.edit',
+        ],
 
-    'distribution-admin'             => [
-        'inventory',
-        'warehouses',
-    ],
-    'distribution-clerk'             => [
-        'inventory.stocks',
-        'warehouses.view',
-        'warehouses.stock',
-    ],
-    'distribution-dispatcher-admin'  => [
-
-        'inventory.stocks.view',
-        'warehouses.view',
-        'warehouses.dispatching',
-    ],
-    'distribution-dispatcher-picker' => [
-
-        'inventory.stocks.view',
-        'warehouses.view',
-        'warehouses.dispatching.pick',
-    ],
-    'distribution-dispatcher-packer' => [
-
-        'inventory.stocks.view',
-        'warehouses.view',
-        'warehouses.dispatching.pack',
-    ],
-    'accounts-admin'                 => [
+    'accounts-admin'                => [
         'financials',
     ],
-    'accounts-clerk'                 => [
+    'accounts-clerk'                => [
         'financials.view',
         'financials.edit',
     ],
-    'accounts-receivable-admin'      => [
+    'accounts-receivable-admin'     => [
         'financials.accounts_receivable',
     ],
-    'accounts-receivable-clerk'      => [
+    'accounts-receivable-clerk'     => [
         'financials.accounts_receivable.view',
         'financials.accounts_receivable.edit',
     ],
-    'accounts-payable-admin'         => [
+    'accounts-payable-admin'        => [
         'financials.accounts_payable',
     ],
-    'accounts-payable-clerk'         => [
+    'accounts-payable-clerk'        => [
         'financials.accounts_payable.view',
         'financials.accounts_payable.edit',
     ],
-    'business-intelligence-analyst'  => [
+    'business-intelligence-analyst' => [
         'financials.view',
         'shops.view',
         'websites.view',

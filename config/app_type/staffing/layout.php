@@ -16,28 +16,25 @@ return [
         'icon'      => ['fal', 'tachometer-alt-fast'],
         'sections'  => []
     ],
+
     [
-        'code'      => 'marketing',
-        'route'     => 'marketing.dashboard',
-        'name'      => 'Marketing',
-        'shortName' => 'Marketing',
-        'icon'      => ['fal', 'store-alt'],
-        'sections'  => []
-    ],
-    [
-        'code'      => 'talent_pool',
-        'route'     => 'talent_pool.dashboard',
-        'name'      => 'Talent pool',
-        'shortName' => 'Talent poo',
+        'code'      => 'staffing',
+        'route'     => 'staffing.dashboard',
+        'name'      => 'Staffing',
+        'shortName' => 'Staffing',
         'icon'      => ['fal', 'box'],
         'sections'  => [
-            'talent_pool.dashboard'          => [
-                'name' => 'Inventory',
+            'staffing.dashboard'          => [
+                'name' => 'Dashboard',
                 'icon' => ['fal', 'tachometer-alt-fast'],
             ],
-            'talent_pool.applicants'          => [
+            'staffing.recruiters.index'          => [
+                'name' => 'Recruiters',
+                'icon' => ['fal', 'user-secret'],
+            ],
+            'staffing.applicants.index'          => [
                 'name' => 'Applicants',
-                'icon' => ['fal', 'tachometer-alt-fast'],
+                'icon' => ['fal', 'user'],
             ],
 
         ]

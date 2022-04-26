@@ -52,6 +52,8 @@ class GetUserLayout
             */
 
 
+
+
             $sections = [];
 
             foreach ($this->getSections($module) as $sectionRoute => $section) {

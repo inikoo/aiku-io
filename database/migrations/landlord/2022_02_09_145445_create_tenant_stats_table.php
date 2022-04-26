@@ -250,6 +250,7 @@ class CreateTenantStatsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('tenant_staffing_stats');
         Schema::dropIfExists('tenant_sales_stats');
         Schema::dropIfExists('tenant_production_stats');
         Schema::dropIfExists('tenant_procurement_stats');

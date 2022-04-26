@@ -23,6 +23,8 @@ class CreateEmployeesTable extends Migration
             $table->smallIncrements('id');
             $table->string('slug')->unique();
             $table->string('name');
+            $table->string('department')->nullable();
+            $table->string('team')->nullable();
             $table->json('roles');
             $table->json('data')->nullable();
             $table->timestampsTz();

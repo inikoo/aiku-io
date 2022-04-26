@@ -11,15 +11,15 @@ namespace App\Models\HumanResources;
 use App\Actions\Hydrators\HydrateTenant;
 use App\Models\Auth\User;
 use App\Models\Traits\HasPersonalData;
+use App\Models\Traits\WithStaffing;
+use App\Models\Traits\WithTimeTracking;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
-
 
 
 /**
@@ -34,6 +34,7 @@ class Guest extends Model implements Auditable
     use Searchable;
     use HasPersonalData;
     use WithTimeTracking;
+    use WithStaffing;
 
     protected $casts = [
         'data'          => 'array',

@@ -1,14 +1,17 @@
 <?php
 /*
  *  Author: Raul Perusquia <raul@inikoo.com>
- *  Created: Thu, 10 Mar 2022 01:28:30 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Created: Thu, 07 Apr 2022 15:14:40 Malaysia Time, Kuala Lumpur, Malaysia
  *  Copyright (c) 2022, Inikoo
  *  Version 4.0
  */
 
-namespace App\Models\HumanResources;
+namespace App\Models\Traits;
 
 
+use App\Models\HumanResources\Clocking;
+use App\Models\HumanResources\TimeTracking;
+use App\Models\HumanResources\WorkTarget;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait WithTimeTracking{

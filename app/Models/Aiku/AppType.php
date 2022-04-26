@@ -10,6 +10,8 @@ namespace App\Models\Aiku;
 
 use App\Actions\UI\Layout\GetUserLayoutAgent;
 use App\Actions\UI\Layout\GetUserLayoutEcommerce;
+use App\Actions\UI\Layout\GetUserLayoutHealth;
+use App\Actions\UI\Layout\GetUserLayoutStaffing;
 use App\Models\Account\Tenant;
 use App\Models\Auth\User;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Multitenancy\Models\Concerns\UsesLandlordConnection;
 
 use function config;
-
 
 
 /**
@@ -46,7 +47,7 @@ class AppType extends Model
         return $this->hasOne(Aiku::class);
     }
 
-    public function getLayout(): Array
+    public function getLayout(): array
     {
         return config('app_type.'.app('currentTenant')->appType->code.'.layout', []);
     }
@@ -61,10 +62,11 @@ class AppType extends Model
             'ecommerce' => GetUserLayoutEcommerce::run($user, $this->getLayout()),
             'agent' => GetUserLayoutAgent::run($user, $this->getLayout()),
             'health' => GetUserLayoutHealth::run($user, $this->getLayout()),
+            'staffing' => GetUserLayoutStaffing::run($user, $this->getLayout()),
+
             default => [],
         };
     }
-
 
 
 }

@@ -21,13 +21,25 @@ class StoreTenant
     {
         $res = new ActionResult();
 
+
         /** @var \App\Models\Account\Tenant $tenant */
         $tenant = $appType->tenants()->create($tenantData);
         $tenant->stats()->create();
-        $tenant->marketingStats()->create();
-        $tenant->inventoryStats()->create();
-        $tenant->procurementStats()->create();
 
+        if ($appType->code == 'ecommerce') {
+            $tenant->marketingStats()->create();
+        }
+
+        if (in_array($appType->code, ['ecommerce', 'agent'])) {
+            $tenant->inventoryStats()->create();
+            $tenant->procurementStats()->create();
+        }
+
+
+        if ($appType->code == 'staffing') {
+            $tenant->staffingStats()->create();
+
+        }
 
         $tenant->salesStats()->create(['currency_id' => $tenant->currency_id]);
 

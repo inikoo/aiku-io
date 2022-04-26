@@ -105,4 +105,12 @@ import {
 
 library.add(faTasks, faUserHardHat, faClipboardUser, faChessClock,
             faBusinessTime);
+
+// Staffing
+import {
+    faPeopleArrows,
+} from '@/private/pro-light-svg-icons';
+
+library.add(faPeopleArrows);
+
 export default FontAwesomeIcon;

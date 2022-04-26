@@ -11,6 +11,7 @@ namespace Database\Seeders;
 use App\Models\Auth\Role;
 use App\Models\HumanResources\JobPosition;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 use Spatie\Multitenancy\Models\Tenant;
 
 class JobPositionSeeder extends Seeder
@@ -29,6 +30,8 @@ class JobPositionSeeder extends Seeder
                                     [
                                         'slug' => $jobPositionData['slug'],
                                         'name' => $jobPositionData['name'],
+                                        'department' => Arr::get($jobPositionData, 'department'),
+                                        'team' => Arr::get($jobPositionData, 'team'),
                                         'data' => '{}',
                                         'roles' => '{}'
                                     ],
@@ -41,7 +44,7 @@ class JobPositionSeeder extends Seeder
             $jobPosition = JobPosition::firstWhere('slug', $jobPositionData['slug']);
             $roles       = [];
             foreach ($jobPositionData['roles'] as $roleName) {
-                if ($role = Role::where('name', $roleName)->where('team_id', $tenant->appType->id)->first()) {
+                if ($role = (new Role())->where('name', $roleName)->where('team_id', $tenant->appType->id)->first()) {
                     $roles[] = $role->id;
                 }
             }
@@ -54,3 +57,4 @@ class JobPositionSeeder extends Seeder
         }
     }
 }
+
