@@ -14,7 +14,6 @@ use App\Actions\Web\Website\UpdateWebsite;
 use App\Models\Marketing\Shop;
 use App\Models\Web\Website;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use JetBrains\PhpStorm\Pure;
 use Lorisleiva\Actions\ActionRequest;
 use App\Models\Utils\ActionResult;
@@ -30,13 +29,19 @@ class MigrateWebsite extends MigrateModel
 
     public function parseModelData()
     {
+        $status = match ($this->auModel->data->{'Website Status'}) {
+            'Maintenance' => 'maintenance',
+            'Closed' => 'closed',
+            default => 'construction',
+        };
+
         $this->modelData['website'] = $this->sanitizeData(
             [
 
                 'name'        => $this->auModel->data->{'Website Name'},
                 'code'        => $this->auModel->data->{'Website Code'},
-                'url'        => strtolower($this->auModel->data->{'Website URL'}),
-                'state'       => Str::snake($this->auModel->data->{'Website Status'}, '-'),
+                'url'         => strtolower($this->auModel->data->{'Website URL'}),
+                'status'      => $status,
                 'launched_at' => $this->getDate($this->auModel->data->{'Website Launched'}),
                 'created_at'  => $this->getDate($this->auModel->data->{'Website From'}),
                 'aurora_id'   => $this->auModel->data->{'Website Key'},
@@ -63,7 +68,7 @@ class MigrateWebsite extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreWebsite::run(shop:$this->parent,data: $this->modelData['website']);
+        return StoreWebsite::run(shop: $this->parent, data: $this->modelData['website']);
     }
 
     public function authorize(ActionRequest $request): bool

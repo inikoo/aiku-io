@@ -30,14 +30,25 @@ class StoreWebsite
         /** @var \App\Models\Web\Website $website */
         $website = $shop->website()->create($data);
         $website->stats()->create();
-        $website->layout()->create();
+        /** @var \App\Models\Web\WebsiteLayout $websiteLayout */
+        $websiteLayout=$website->layouts()->create();
+        $websiteLayout->update(
+            ['status'=>true]
+        );
 
+        $website->update(
+            [
+                'current_layout_id'=>$websiteLayout->id
+            ]
+        );
+        HydrateWebsite::make()->setup($website);
 
-        if($website->state!='closed'){
+        if($website->status!='closed'){
             $tenantWebsite=app('currentTenant')->tenantWebsites()->create(
                 [
                     'code'       => $website->code,
                     'domain'     => $website->url,
+                    'status'     => $website->status,
                     'website_id' => $website->id,
                     'type'       => $website->shop->subtype
                 ]

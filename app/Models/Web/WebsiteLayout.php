@@ -24,17 +24,7 @@ class WebsiteLayout extends Model
 
     protected $guarded = [];
 
-    protected static function booted()
-    {
-        static::created(
-            function (WebsiteLayout $websiteLayout) {
 
-                HydrateWebsite::make()->setup($websiteLayout->website);
-            }
-        );
-
-
-    }
 
     public function website(): BelongsTo
     {
