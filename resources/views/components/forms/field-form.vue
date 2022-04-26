@@ -66,8 +66,8 @@ import {SaveIcon} from '@heroicons/vue/solid';
 import Select from './select.vue';
 import {DatePicker} from 'v-calendar';
 import Radio from './radio.vue';
-import Address from './address.vue';
-import Phone from './phone.vue';
+import Address from './fields/address.vue';
+import Phone from './fields/phone.vue';
 import ToggleWithIcon from './toggle-with-icon.vue';
 import {useLocaleStore} from '../../../scripts/stores/locale.js';
 
@@ -84,6 +84,7 @@ const getComponent = (componentName) => {
     const components = {
         'input'        : Input,
         'date'         : Date,
+        'phone'        : Phone,
         'job-positions': JobPositions,
 
     };

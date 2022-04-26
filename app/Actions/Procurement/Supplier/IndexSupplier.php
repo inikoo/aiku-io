@@ -34,14 +34,16 @@ class IndexSupplier
     use AsAction;
     use WithInertia;
 
+    protected ?array $createSupplier;
     protected array $select;
     protected array $columns;
     protected array $allowedSorts;
 
     public function __construct()
     {
-        $this->select       = ['owner_id', 'suppliers.id', 'code', 'name', 'number_purchase_orders', 'number_products', 'location'];
-        $this->allowedSorts = ['code', 'name', 'number_products', 'number_purchase_orders'];
+        $this->createSupplier = null;
+        $this->select         = ['owner_id', 'suppliers.id', 'code', 'name', 'number_purchase_orders', 'number_products', 'location'];
+        $this->allowedSorts   = ['code', 'name', 'number_products', 'number_purchase_orders'];
 
         $this->columns = [
 
@@ -188,6 +190,16 @@ class IndexSupplier
         ];
         if (!empty($this->inModel)) {
             $headerData['inModel'] = $this->inModel;
+        }
+
+
+        if ($this->createSupplier) {
+            $headerData['actionIcons'][] = [
+                'name'            => __('Create supplier'),
+                'icon'            => ['fal', 'plus'],
+                'route'           => $this->createSupplier['route'],
+                'routeParameters' => $this->createSupplier['route'] ?? null
+            ];
         }
 
         return Inertia::render(

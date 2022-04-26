@@ -22,7 +22,7 @@ class ShowProcurementDashboard
     use WithInertia;
 
 
-    public function handle()
+    public function handle(): void
     {
     }
 
@@ -47,7 +47,7 @@ class ShowProcurementDashboard
             'show-dashboard',
             [
                 'breadcrumbs' => $this->getBreadcrumbs(),
-                'navData' => ['account' => 'procurement'],
+                'navData'     => ['module' => 'procurement'],
 
                 'headerData' => [
                     'title'       => __('Procurement'),
@@ -69,10 +69,9 @@ class ShowProcurementDashboard
     {
 
         return [
-            'warehouse' => [
+            'procurement.dashboard' => [
                 'route'           => 'procurement.dashboard',
                 'name'            => __('Procurement'),
-                'current'         => false
             ]
         ];
     }

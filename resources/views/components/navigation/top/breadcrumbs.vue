@@ -80,5 +80,4 @@ const locale = useLocaleStore();
 
 let displayBreadcrumbs = Object.keys(props.breadcrumbs).length > 0;
 
-
 </script>

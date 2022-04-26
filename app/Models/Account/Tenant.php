@@ -8,6 +8,7 @@
 
 namespace App\Models\Account;
 
+use App\Models\Assets\Country;
 use App\Models\Assets\Language;
 use App\Models\HumanResources\Workplace;
 use App\Models\Inventory\Stock;
@@ -152,5 +153,9 @@ class Tenant extends SpatieTenant
         return $this->hasMany(TenantWebsite::class);
     }
 
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
 
 }

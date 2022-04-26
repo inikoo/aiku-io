@@ -85,9 +85,10 @@ class IndexEmployee
         */
 
         if ($this->canEdit) {
-            $actionIcons['human_resources.employees.create'] = [
-                'name' => __('Create employee'),
-                'icon' => ['fal', 'plus']
+            $actionIcons[] = [
+                'name'  => __('Create employee'),
+                'icon'  => ['fal', 'plus'],
+                'route' => 'human_resources.employees.create'
             ];
         }
 
@@ -110,7 +111,7 @@ class IndexEmployee
 
                         [
                             'sort'       => 'code',
-                            'label' => __('Code'),
+                            'label'      => __('Code'),
                             'components' => [
                                 [
                                     'type'     => 'link',
@@ -119,7 +120,7 @@ class IndexEmployee
 
                                         'parameters' => [
                                             'href'    => [
-                                                'route'  => 'human_resources.employees.show',
+                                                'route'   => 'human_resources.employees.show',
                                                 'indices' => 'id'
                                             ],
                                             'indices' => 'nickname'
@@ -133,18 +134,17 @@ class IndexEmployee
                         ],
 
 
-
                         [
-                            'sort'  => 'worker_number',
-                            'label' => __('Worker #'),
-                            'resolver'  => 'worker_number',
+                            'sort'     => 'worker_number',
+                            'label'    => __('Worker #'),
+                            'resolver' => 'worker_number',
 
                         ],
 
                         [
-                            'sort'  => 'name',
-                            'label' => __('Name'),
-                            'resolver'=>'name'
+                            'sort'     => 'name',
+                            'label'    => __('Name'),
+                            'resolver' => 'name'
                         ],
                     ]
                 ]
@@ -177,10 +177,7 @@ class IndexEmployee
         );
         $this->fillFromRequest($request);
 
-        $this->set(
-            'canEdit',
-            ($request->user()->can('employees.edit'))
-        );
+        $this->canEdit = $request->user()->can('employees.edit');
     }
 
 

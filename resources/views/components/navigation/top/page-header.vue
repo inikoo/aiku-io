@@ -41,11 +41,11 @@
 
 
                 <div class="md:hidden mt-4 flex-shrink-0 flex ">
-                    <button v-for="(button,href) in headerData['actionIcons']" :key="button.name" type="button" :class="[button['primary'] ?
+                    <button v-for="(button,idx) in headerData['actionIcons']" :key="idx" type="button" :class="[button['primary'] ?
                         'border-transparent text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' :
                         'border-gray-300    text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
                         'mb-3 inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium']">
-                        <Link :href="route(href,button['routeParameters'])">{{ button.name }}</Link>
+                        <Link :href="route(button['route'],button['routeParameters'])">{{ button.name }}</Link>
                     </button>
 
 
@@ -78,8 +78,8 @@
 
 
             <div class="hidden md:block mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
-                <span class="ml-2" v-for="(actionIcon,href) in headerData['actionIcons']" :key="actionIcon.name">
-                    <Link :href="route(href,actionIcon['routeParameters'])" as="button">
+                <span class="ml-2" v-for="(actionIcon,idx) in headerData['actionIcons']" :key="idx">
+                    <Link :href="route(actionIcon['route'],actionIcon['routeParameters'])" as="button">
                     <font-awesome-icon
                         :flip="actionIcon.flip"
                         :title="actionIcon.name" :icon="actionIcon.icon" class="text-gray-400 hover:text-gray-500 ml-3" size="lg" aria-hidden="true"/>

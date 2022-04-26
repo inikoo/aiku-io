@@ -51,6 +51,12 @@ class IndexSupplierInTenant extends IndexSupplier
             ]
         );
         $this->fillFromRequest($request);
+
+        if ($request->user()->can('procurement.suppliers.edit')) {
+            $this->createSupplier = [
+                'route' => 'procurement.suppliers.create'
+            ];
+        }
     }
 
     public function getBreadcrumbs(): array

@@ -108,7 +108,7 @@ class ShowCreateEmployee
                 'breadcrumbs' => $this->getBreadcrumbs(),
                 'navData'     => ['module' => 'human_resources', 'sectionRoot' => 'human_resources.employees.index'],
                 'headerData'  => [
-                    'title' => __('Creating new employee'),
+                    'title' => __('New employee'),
 
                     'actionIcons' => [
 

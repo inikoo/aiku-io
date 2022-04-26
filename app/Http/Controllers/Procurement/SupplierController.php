@@ -8,10 +8,13 @@
 
 namespace App\Http\Controllers\Procurement;
 
+use App\Actions\HumanResources\Employee\StoreEmployee;
 use App\Actions\Procurement\Supplier\IndexSupplierInTenant;
 use App\Actions\Procurement\Supplier\IndexSupplierInAgent;
+use App\Actions\Procurement\Supplier\ShowCreateSupplierInTenant;
 use App\Actions\Procurement\Supplier\ShowSupplierInAgent;
 use App\Actions\Procurement\Supplier\ShowSupplierInTenant;
+use App\Actions\Procurement\Supplier\StoreSupplier;
 use App\Http\Controllers\Controller;
 use App\Models\Procurement\Agent;
 use App\Models\Procurement\Supplier;
@@ -54,6 +57,16 @@ class SupplierController extends Controller
     public function update(Supplier $supplier, Request $request): RedirectResponse
     {
         return UpdateSupplier::make()->asInertia(supplier: $supplier, request: $request);
+    }
+
+    public function createInTenant(): Response
+    {
+        return ShowCreateSupplierInTenant::make()->asInertia();
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        return StoreSupplier::make()->asInertia($request,app('currentTenant'));
     }
 
 }

@@ -35,6 +35,9 @@ Route::get('/agents/{agent}/purchase_orders', [PurchaseOrderController::class, '
 
 
 Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+Route::get('/suppliers/create', [SupplierController::class, 'createInTenant'])->name('suppliers.create');
+Route::post('/suppliers/create', [SupplierController::class, 'store'])->name('suppliers.store');
+
 Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])->name('suppliers.show');
 Route::get('/suppliers/{supplier}/edit', [AgentController::class, 'edit'])->name('suppliers.edit');
 Route::post('/suppliers/{supplier}', [AgentController::class, 'update'])->name('suppliers.update');
