@@ -106,6 +106,11 @@ class GetUserLayoutEcommerce extends GetUserLayout
                         'name'        => __('Orders'),
                         'icon'        => ['fal', 'shopping-cart'],
                     ],
+                    'marketing.shops.show.catalogue'    => [
+                        'metaSection' => 'shop',
+                        'name'        => __('Catalogue'),
+                        'icon'        => ['fal', 'album-collection'],
+                    ],
 
                 ];
             case 'inventory':

@@ -9,16 +9,34 @@
     <PageHeader :headerData="headerData"/>
     <div class="px-4 sm:px-6 md:px-0">
         <div class="pb-6">
-            <template v-for="(sectionData,sectionIdx ) in formData['blueprint']" :key="sectionIdx">
-                <FormSection :sectionData="sectionData"  :args="formData['args']"/>
-            </template>
+
+
+            <div class="mt-10 divide-y divide-gray-200" v-for="(sectionData,sectionIdx ) in formData['blueprint']" :key="sectionIdx">
+                <div class="space-y-1">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        {{ sectionData.title }}
+                    </h3>
+                    <p v-show="sectionData['subtitle']" class="max-w-2xl text-sm text-gray-500">
+                        {{ sectionData['subtitle'] }}
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 sm:pt-5 ">
+                    <template v-for="(fieldData,field ) in sectionData.fields">
+                        <FieldForm :field="field" :fieldData="fieldData" :args="formData['args']"/>
+                    </template>
+
+                </div>
+            </div>
+
+
         </div>
     </div>
 </template>
 
 <script setup>
-import FormSection from '../components/forms/form-section.vue';
-import PageHeader from '../components/navigation/top/page-header.vue';
+import PageHeader from '@c/navigation/top/page-header.vue';
+import FieldForm from '@c/forms/field-form.vue';
+
 const props = defineProps(['headerData', 'formData']);
 </script>
 

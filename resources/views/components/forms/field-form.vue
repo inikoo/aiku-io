@@ -18,39 +18,24 @@
                     <div class="mt-1 flex text-sm text-gray-900 sm:mt-0">
                         <div class=" relative  flex-grow">
 
-                            <Select v-if="fieldData.type === 'select'" :options="fieldData['options']" v-model="form[field]"/>
-                            <Radio v-else-if="fieldData.type === 'radio'" :fieldData="fieldData" v-model="form[field]" :form="form"/>
-                            <DatePicker v-else-if="fieldData.type === 'date'" v-model="form[field]">
-                                <template v-slot="{ inputValue, inputEvents }">
-                                    <input type="text"
-                                           class="focus:ring-indigo-500 focus:border-indigo-500 block  sm:text-sm border-gray-300 rounded-md   "
-                                           :value="inputValue"
-                                           v-on="inputEvents"
+                            <component
+                                :is="getComponent(fieldData['type'])"
+                                :form=form
+                                :fieldName=field
 
-                                    />
-                                </template>
-                            </DatePicker>
+                                :options="fieldData['options']">
 
-                            <Phone v-else-if="fieldData.type === 'phone'" v-model="form[field]"></Phone>
 
-                            <Address v-else-if="fieldData.type === 'address'" :fieldData="fieldData" :form="form" :countriesAddressData="args['countriesAddressData']"/>
-                            <ToggleWithIcon v-else-if="fieldData.type === 'toggleWithIcon'" :initial-value="form[field]" v-model="form[field]"></ToggleWithIcon>
-
-                            <input v-else @input="handleChange(form)" v-model="form[field]" type="text" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"/>
-
+                            </component>
 
                         </div>
-                        <span class="ml-4 flex-shrink-0 w-5 ">
-                               <ExclamationCircleIcon v-if="form.errors[field]" class="mt-1.5  h-5 w-5 text-red-500" aria-hidden="true"/>
-                                <CheckCircleIcon v-if="form.recentlySuccessful" class="mt-1.5  h-5 w-5 text-green-500" aria-hidden="true"/>
-                        </span>
+
                         <span class="ml-2 flex-shrink-0">
                             <button :title="locale.__('Update')" :disabled="form.processing  || !form.isDirty " type="submit">
                                 <SaveIcon class="h-7 w-7 " :class="form.isDirty ? 'text-indigo-500' : 'text-gray-200'" aria-hidden="true"/>
                             </button>
                         </span>
                     </div>
-                    <p v-if="form.errors[field]" class="mt-2 text-sm text-red-600">{{ form.errors[field] }}</p>
                 </dd>
             </div>
         </dl>
@@ -64,12 +49,12 @@ import {defineAsyncComponent} from 'vue';
 import {useForm} from '@inertiajs/inertia-vue3';
 import {SaveIcon} from '@heroicons/vue/solid';
 import Select from './select.vue';
-import {DatePicker} from 'v-calendar';
 import Radio from './radio.vue';
 import Address from './fields/address.vue';
 import Phone from './fields/phone.vue';
 import ToggleWithIcon from './toggle-with-icon.vue';
 import {useLocaleStore} from '../../../scripts/stores/locale.js';
+import Input from '@c/forms/fields/input.vue';
 
 const props = defineProps(['fieldData', 'field', 'args']);
 
@@ -118,5 +103,7 @@ if (props.fieldData['type'] === 'address') {
 }
 
 const form = useForm(formFields);
+form.type = 'edit';
+
 
 </script>

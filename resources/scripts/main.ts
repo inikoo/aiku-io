@@ -6,6 +6,7 @@ import { importPageComponent } from '@/scripts/vite/import-page-component'
 
 
 import '@/css/nprogress.css';
+
 import { Inertia } from '@inertiajs/inertia'
 
 
