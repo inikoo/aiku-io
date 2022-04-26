@@ -24,13 +24,13 @@ class WebsiteComponentBlueprint extends Model
     use SoftDeletes;
 
     protected $casts = [
-        'data'             => 'array',
+        'settings'             => 'array',
         'sample_arguments' => 'array',
 
     ];
 
     protected $attributes = [
-        'data'             => '{}',
+        'settings'             => '{}',
         'sample_arguments' => '{}',
 
     ];

@@ -22,8 +22,10 @@ class CreateWebsitesTable extends Migration
         Schema::create('websites', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->unsignedMediumInteger('shop_id')->index();
-            $table->foreign('shop_id')->references('id')->on('shops');
-            $table->enum('state',['in-process','active','maintenance','closed'])->default('in-process')->index();
+            if (app('currentTenant')->appType->code == 'ecommerce') {
+                $table->foreign('shop_id')->references('id')->on('shops');
+            }
+            $table->enum('status',['construction','live','maintenance','closed'])->default('construction')->index();
             $table->string('slug')->index();
             $table->string('code')->index();
             $table->string('url');
@@ -33,6 +35,7 @@ class CreateWebsitesTable extends Migration
             $table->timestampsTz();
             $table->timestampTz('launched_at')->nullable();
             $table->timestampTz('closed_at')->nullable();
+            $table->unsignedBigInteger('current_layout_id')->index()->nullable();
 
             $table->softDeletesTz();
             $table->unsignedBigInteger('aurora_id')->nullable()->unique();
@@ -53,6 +56,7 @@ class CreateWebsitesTable extends Migration
             $table->unsignedSmallInteger('website_id')->index();
             $table->foreign('website_id')->references('id')->on('websites');
             $table->unsignedSmallInteger('user_id')->index();
+            $table->string('iris_api_key')->nullable();
             $table->timestampsTz();
             $table->unique(['website_id','user_id']);
         });

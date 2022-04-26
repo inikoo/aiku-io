@@ -27,8 +27,11 @@ return new class extends Migration
             $table->enum('status', ['published', 'archived', 'preview','library'])->index();
             $table->unsignedSmallInteger('website_id')->index();
             $table->foreign('website_id')->references('id')->on('websites');
+            $table->string('template');
             $table->string('name');
-            $table->json('arguments');
+            $table->jsonb('arguments');
+            $table->jsonb('settings');
+
             $table->timestampsTz();
             $table->softDeletesTz();
         });
@@ -37,8 +40,11 @@ return new class extends Migration
             $table->mediumIncrements('id');
             $table->unsignedSmallInteger('website_id')->index();
             $table->foreign('website_id')->references('id')->on('websites');
-            $table->enum('state',['in-process','launched','closed'])->default('in-process')->index();
-            $table->enum('status',['in-process','online','maintenance','offline'])->default('in-process')->index();
+
+            //$table->enum('state',['construction','launched','closed'])->default('in-process')->index();
+            //$table->enum('status',['construction','live','maintenance','offline'])->default('in-process')->index();
+
+            $table->boolean('status')->nullable();
 
             $table->unsignedBigInteger('home_webpage_id')->index()->nullable();
 
@@ -57,6 +63,11 @@ return new class extends Migration
             $table->timestampsTz();
             $table->softDeletesTz();
         });
+
+        Schema::table('websites', function (Blueprint $table) {
+            $table->foreign('current_layout_id')->references('id')->on('website_layouts');
+        });
+
     }
 
     /**

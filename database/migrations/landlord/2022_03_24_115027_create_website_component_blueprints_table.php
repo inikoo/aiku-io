@@ -22,12 +22,13 @@ return new class extends Migration {
             $table->mediumIncrements('id');
             $table->enum('source', ['aiku', 'tenant'])->default('aiku');
             $table->enum('type', ['footer', 'header', 'block']);
+            $table->string('template');
             $table->string('name');
             $table->jsonb('sample_arguments');
-            $table->jsonb('data');
+            $table->jsonb('settings');
             $table->timestampsTz();
             $table->softDeletesTz();
-            $table->unique(['type', 'name']);
+            $table->unique(['type', 'template','name']);
         });
     }
 

@@ -11,6 +11,7 @@ namespace App\Actions\Setup;
 use App\Actions\Web\Webpage\StoreWebpage;
 use App\Actions\Web\WebsiteComponent\StoreWebsiteComponent;
 use App\Actions\Web\WebsiteLayout\PublishFooter;
+use App\Actions\Web\WebsiteLayout\PublishHeader;
 use App\Models\Web\Website;
 use App\Models\Web\WebsiteComponent;
 use App\Models\Web\WebsiteComponentBlueprint;
@@ -26,14 +27,46 @@ class SetupWebsite
     public function handle(Website $website): void
     {
         $this->website = $website;
+        $this->setupHeader();
         $this->setupFooter();
         $this->setupHome();
         $this->setupEssentialWebpages();
     }
 
+    public function setupHeader()
+    {
+        if (!$this->website->currentLayout->header_preview_id) {
+            $headerComponent = WebsiteComponent::where('type', 'header')->whereIn('status', ['published', 'preview', 'library'])
+                ->orderByRaw("case status when 'published' then 1 when 'preview' then 2 when 'library' then 3 end") // <- valid only for postgres
+                ->first();
+            if (!$headerComponent) {
+                $headerComponentBlueprint = WebsiteComponentBlueprint::where('type', 'header')->first();
+                $res                      = StoreWebsiteComponent::run($headerComponentBlueprint,
+                                                                       [
+                                                                           'website_id' => $this->website->id,
+                                                                           'status'     => 'library',
+                                                                           'name'       => 'example'
+                                                                       ]
+                );
+                $headerComponent          = $res->model;
+            }
+
+            $this->website->currentLayout->header_preview_id = $headerComponent->id;
+            $headerComponent->status                  = 'preview';
+
+            $this->website->currentLayout->save();
+            $headerComponent->save();
+        }
+
+
+        if ($this->website->currentLayout->state == 'launched') {
+            PublishHeader::run($this->website->layout);
+        }
+    }
+
     public function setupFooter()
     {
-        if (!$this->website->layout->footer_preview_id) {
+        if (!$this->website->currentLayout->footer_preview_id) {
             $footerComponent = WebsiteComponent::where('type', 'footer')->whereIn('status', ['published', 'preview', 'library'])
                 ->orderByRaw("case status when 'published' then 1 when 'preview' then 2 when 'library' then 3 end") // <- valid only for postgres
                 ->first();
@@ -43,21 +76,21 @@ class SetupWebsite
                                                                        [
                                                                            'website_id' => $this->website->id,
                                                                            'status'     => 'library',
+                                                                           'name'       => 'example'
                                                                        ]
                 );
                 $footerComponent          = $res->model;
             }
 
-            $this->website->layout->footer_preview_id = $footerComponent->id;
-            $footerComponent->status='preview';
+            $this->website->currentLayout->footer_preview_id = $footerComponent->id;
+            $footerComponent->status                  = 'preview';
 
-            $this->website->layout->save();
+            $this->website->currentLayout->save();
             $footerComponent->save();
-
         }
 
 
-        if ($this->website->layout->state == 'launched') {
+        if ($this->website->currentLayout->state == 'launched') {
             PublishFooter::run($this->website->layout);
         }
     }
@@ -69,7 +102,7 @@ class SetupWebsite
 
     public function setupHome($force = false)
     {
-        if (!$this->website->layout->home_webpage_id or $force) {
+        if (!$this->website->currentLayout->home_webpage_id or $force) {
             $res = StoreWebpage::run($this->website,
                                      [
                                          'name'   => 'home',
@@ -78,9 +111,9 @@ class SetupWebsite
                                      ]
             );
 
-            $this->website->layout->home_webpage_id = $res->model_id;
+            $this->website->currentLayout->home_webpage_id = $res->model_id;
 
-            $this->website->layout->save();
+            $this->website->currentLayout->save();
         }
     }
 

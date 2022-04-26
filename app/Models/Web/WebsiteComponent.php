@@ -28,11 +28,15 @@ class WebsiteComponent extends Model implements Auditable
     use SoftDeletes;
 
     protected $casts = [
-        'arguments'            => 'array',
+        'arguments' => 'array',
+        'settings'  => 'array',
+
     ];
 
     protected $attributes = [
-        'arguments'            => '{}',
+        'arguments' => '{}',
+        'settings'  => '{}',
+
     ];
 
     protected $guarded = [];
@@ -47,7 +51,6 @@ class WebsiteComponent extends Model implements Auditable
     {
         return $this->belongsTo(WebsiteComponentBlueprint::class);
     }
-
 
 
 }

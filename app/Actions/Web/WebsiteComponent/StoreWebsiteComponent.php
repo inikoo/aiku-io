@@ -23,8 +23,10 @@ class StoreWebsiteComponent
         $res  = new ActionResult();
 
         $modelData['type']=$websiteComponentBlueprint->type;
-        $modelData['name']=$websiteComponentBlueprint->name;
+        $modelData['template']=$websiteComponentBlueprint->template;
         $modelData['arguments']=$websiteComponentBlueprint->sample_arguments;
+        $modelData['settings']=$websiteComponentBlueprint->settings;
+
 
         /** @var \App\Models\Web\WebsiteComponent $websiteComponent */
         $websiteComponent = $websiteComponentBlueprint->websiteComponents()->create($modelData);

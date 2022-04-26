@@ -8,6 +8,7 @@
 
 namespace App\Models\Web;
 
+use App\Models\Account\TenantWebsite;
 use App\Models\Auth\WebsiteUser;
 use App\Models\Marketing\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,7 +35,6 @@ class Website extends Model implements Auditable
     use SoftDeletes;
     use HasFactory;
 
-
     protected $casts = [
         'data'     => 'array',
         'settings' => 'array'
@@ -47,7 +47,15 @@ class Website extends Model implements Auditable
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
 
+        static::updated(function (Website $website) {
+            if ($website->wasChanged('status')) {
+               $website->tenantWebsite->update(['status'=>$website->status]);
+            }
+        });
+    }
 
 
     public function getSlugOptions(): SlugOptions
@@ -68,9 +76,19 @@ class Website extends Model implements Auditable
         return $this->hasOne(WebsiteStats::class);
     }
 
-    public function layout(): HasOne
+    public function layouts(): HasMany
     {
-        return $this->hasOne(WebsiteLayout::class);
+        return $this->hasMany(WebsiteLayout::class);
+    }
+
+    public function currentLayout(): BelongsTo
+    {
+        return $this->belongsTo(WebsiteLayout::class,'current_layout_id');
+    }
+
+    public function tenantWebsite(): HasOne
+    {
+        return $this->hasOne(TenantWebsite::class);
     }
 
     public function websiteUsers(): BelongsToMany
