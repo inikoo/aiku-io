@@ -24,9 +24,10 @@ class CreateHistoricProductsTable extends Migration
                 $table->unsignedDecimal('price', 18)->comment('unit price');
                 $table->string('code')->nullable();
                 $table->string('name', 255)->nullable();
-                $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
-                $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
-                $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
+                $table->unsignedDecimal('pack',8,3)->nullable()->comment('units per pack');
+                $table->unsignedDecimal('outer',8,3)->nullable()->comment('units per outer');
+                $table->unsignedDecimal('carton',8,3)->nullable()->comment('units per carton');
+
                 $table->unsignedDecimal('cbm', 18, 4)->nullable()->comment('to be deleted');
                 $table->unsignedSmallInteger('currency_id')->nullable();
                 //$table->foreign('currency_id')->references('id')->on('aiku.currencies');

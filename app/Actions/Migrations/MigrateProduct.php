@@ -68,7 +68,7 @@ class MigrateProduct extends MigrateModel
                 'name' => $this->auModel->data->{'Product Name'},
 
                 'price' => round($unit_price, 2),
-                'outer' => $units,
+                'outer' => round($units,3),
 
                 'status' => $status,
                 'state'  => $state,

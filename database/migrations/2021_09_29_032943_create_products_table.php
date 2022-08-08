@@ -37,9 +37,9 @@ class CreateProductsTable extends Migration
                 $table->text('description')->nullable();
 
                 $table->unsignedDecimal('price', 18)->comment('unit price');
-                $table->unsignedMediumInteger('pack')->nullable()->comment('units per pack');
-                $table->unsignedMediumInteger('outer')->nullable()->comment('units per outer');
-                $table->unsignedMediumInteger('carton')->nullable()->comment('units per carton');
+                $table->unsignedDecimal('pack',8,3)->nullable()->comment('units per pack');
+                $table->unsignedDecimal('outer',8,3)->nullable()->comment('units per outer');
+                $table->unsignedDecimal('carton',8,3)->nullable()->comment('units per carton');
 
                 $table->unsignedMediumInteger('available')->default(0)->nullable();
                 $table->unsignedBigInteger('image_id')->nullable();
