@@ -23,6 +23,10 @@ class SetupIrisWebsite
     public function handle(TenantWebsite $tenantWebsite, $rewrite = false): ActionResult
     {
         $res      = new ActionResult();
+
+
+        //todo iris in production
+        /*
         $response = Http::acceptJson()
             ->withToken($tenantWebsite->iris_api_key)
             ->post(config('iris.url').'/setup',
@@ -48,6 +52,7 @@ class SetupIrisWebsite
 
 
         }
+        */
 
         return $res;
     }

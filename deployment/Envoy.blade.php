@@ -35,8 +35,20 @@ exit('ERROR: DEPLOYMENT_PATH var empty or not defined');
 $path=$_ENV['DEPLOYMENT_PATH'];
 
 
+if (empty($_ENV['PRODUCTION_ADMIN_EMAIL'])) {
+exit('ERROR: PRODUCTION_ADMIN_EMAIL var empty or not defined');
+}
+$adminEmail=$_ENV['PRODUCTION_ADMIN_EMAIL'];
 
+if (empty($_ENV['PRODUCTION_ADMIN_SLUG'])) {
+exit('ERROR: PRODUCTION_ADMIN_SLUG var empty or not defined');
+}
+$adminSlug=$_ENV['PRODUCTION_ADMIN_SLUG'];
 
+if (empty($_ENV['PRODUCTION_ADMIN_NANE'])) {
+exit('ERROR: PRODUCTION_ADMIN_NANE var empty or not defined');
+}
+$adminName=$_ENV['PRODUCTION_ADMIN_NANE'];
 
 
 $date = ( new DateTime )->format('Y-m-d_H_i_s');

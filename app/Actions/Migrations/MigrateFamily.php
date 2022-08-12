@@ -56,7 +56,12 @@ class MigrateFamily extends MigrateModel
     {
         $department = (new Department())->firstWhere('aurora_id', $this->auModel->data->{'Product Category Department Category Key'});
         if (is_null($department)) {
-            // print "Family ".$this->auModel->data->{'Category Code'}." dont have department  ('.$store->name.') \n";
+
+            if(!$this->auModel->data->{'Product Category Store Key'}){
+                print_r($this->auModel->data);
+            }
+
+             //print "Family ".$this->auModel->data->{'Category Code'}." dont have department ".$this->auModel->data->{'Product Category Store Key'}."  \n";
 
             return (new Shop())->firstWhere('aurora_id', $this->auModel->data->{'Product Category Store Key'});
         } else {
