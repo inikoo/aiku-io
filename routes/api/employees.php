@@ -39,7 +39,7 @@ Route::patch('{employee}/attachments/{attachment}',UpdateEmployeeAttachment::cla
 Route::delete('{employee}/attachments/{attachment}',DestroyEmployeeAttachment::class)->name('attachment.destroy');
 
 Route::get('{employee}/images',ShowEmployeeImages::class)->name('images.index');
-Route::post('{employee}/images',StoreEmployeeImage::class)->name('attachment.store');
+Route::post('{employee}/images',StoreEmployeeImage::class)->name('image.store');
 Route::get('{employee}/images/{image}', ShowEmployeeImage::class)->name('image.show');
 Route::get('{employee}/images/{image}/display',DisplayEmployeeImage::class)->name('image.display');
 Route::patch('{employee}/images/{image}',UpdateEmployeeImage::class)->name('image.update');
