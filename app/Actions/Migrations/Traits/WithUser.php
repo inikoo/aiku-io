@@ -20,7 +20,7 @@ trait WithUser
 {
 
 
-    public function setModel()
+    public function setModel(): void
     {
         $this->model = User::withTrashed()->find($this->auModel->data->aiku_id);
     }

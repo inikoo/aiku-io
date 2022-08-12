@@ -79,7 +79,7 @@ class MigrateDeletedEmployee extends MigrateModel
 
     public function storeModel(): ActionResult
     {
-        return StoreEmployee::run(workplace: $this->parent,  employeeData: $this->modelData['employee']);
+        return StoreEmployee::run(workplace: $this->parent,  modelData: $this->modelData['employee']);
     }
 
 

@@ -60,9 +60,11 @@ class MigrateUser extends MigrateModel
 
     public function parseModelData()
     {
-        $roles = [];
+        $roles        = [];
+
         foreach (DB::connection('aurora')->table('User Group User Bridge')->where('User Key', $this->auModel->data->{'User Key'})->select('User Group Key')->get() as $auRole) {
             foreach (
+
             match ($auRole->{'User Group Key'}) {
                 1, 15 => ['system-admin'],
                 6 => ['human-resources-clerk'],
@@ -96,7 +98,6 @@ class MigrateUser extends MigrateModel
                 $roles[] = $role;
             }
         }
-
 
         $this->modelData['roles'] = $roles;
 
@@ -194,14 +195,8 @@ class MigrateUser extends MigrateModel
         /** @var User $user */
         $user = $this->model;
 
-        /*
-        if ($res->status == 'inserted') {
-            $token = CreateUserToken::run($user);
-            DB::connection('aurora')->table($this->auModel->table)
-                ->where($this->auModel->id_field, $this->auModel->id)
-                ->update(['aiku_token' => $token]);
-        }
-        */
+
+
 
         SyncUserRoles::run($user, $this->modelData['roles']);
 
