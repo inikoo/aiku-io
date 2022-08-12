@@ -12,20 +12,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [JarAuthenticatedSessionController::class, 'create'])
     ->middleware('guest')
-    ->name('login');
+    ->name('jar.login');
 
 Route::post('/login', [JarAuthenticatedSessionController::class, 'setTenant'])
     ->middleware('guest');
 
 Route::get('/proxy_login/{token}', [JarAuthenticatedSessionController::class, 'proxyStore'])
-    ->middleware('guest')->name('proxy_login');
+    ->middleware('guest')->name('jar.proxy_login');
 
 Route::get('/', function () {
     return redirect('/dashboard');
 });
 
 Route::post('/logout', [JarAuthenticatedSessionController::class, 'destroy'])
-    ->name('logout')->middleware(['auth']);
+    ->name('jar.logout')->middleware(['auth']);
 
 
 Route::middleware(['auth'])->group(__DIR__.'/app/root.php');
