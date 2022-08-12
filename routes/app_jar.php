@@ -28,7 +28,7 @@ Route::post('/logout', [JarAuthenticatedSessionController::class, 'destroy'])
     ->name('jar.logout')->middleware(['auth']);
 
 
-Route::middleware(['auth'])->group(__DIR__.'/app/root.php');
+//Route::middleware(['auth'])->group(__DIR__.'/app/root.php');
 
 
 
